@@ -73,8 +73,6 @@ def install_pip_dependencies(download_cache_path=None):
     else:
         virtualenv_local('pip install -r requirements.txt', capture=False)
 
-    virtualenv_local('python setup.py develop')
-
 def setup_configuration():
     """Setup the configuration."""
     if not os.path.exists('django/local.cfg'):
