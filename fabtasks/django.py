@@ -15,10 +15,9 @@
 #
 ###################################################################
 
-from __future__ import absolute_import
-import json
 import os
 import sys
+import json
 
 from fabric.context_managers import lcd
 
@@ -27,7 +26,7 @@ from .environment import virtualenv_local
 
 
 def get_django_settings(*keys):
-    # setup the correct django environment
+	""""setup the correct django environment"""
     sys.path.insert(0, os.path.abspath(os.curdir))
     os.environ['DJANGO_SETTINGS_MODULE'] = 'django.settings'
     # get django settings
@@ -39,8 +38,8 @@ def get_django_settings(*keys):
 
     return result
 
-
 def brand(brand):
+	"""Setup brand names"""
     s = get_django_settings('TEMPLATE_DIRS', 'BRAND')
     template_dirs = s['TEMPLATE_DIRS']
     current_brand = s['BRAND']
@@ -58,7 +57,6 @@ def brand(brand):
     os.environ["CONFIGGLUE_BRANDING_BRAND"] = brand
     os.environ["CONFIGGLUE_BRANDING_BRAND_TEMPLATE_DIR"] = brand
 
-
 def manage(command, *args, **kwargs):
     """Run manage.py command"""
     cmd = [
@@ -69,7 +67,6 @@ def manage(command, *args, **kwargs):
     cmd.extend(args)
 
     virtualenv_local(" ".join(cmd), capture=False)
-
 
 def compilemessages(args=''):
     """Compile .po translation files into binary (.mo)."""
@@ -95,9 +92,6 @@ def makemessages():
                 else:
                     locale_name = lang
                 virtualenv_local(cmd.format(locale_name), capture=False)
-
-def loaddata():
-    pass
 
 def syncdb():
     """Sync the database.

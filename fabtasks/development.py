@@ -18,64 +18,34 @@
 import os
 from urlparse import urlparse
 
-from fabric.api import local, settings
+from fabric.api import settings
 
 from .database import createdb, dropdb, setup_db_access
-from .django import (
-    get_django_settings,
-    manage,
-    syncdb,
-)
+from .django import get_django_settings, manage, syncdb
 from .environment import bootstrap, virtualenv_local
 
 
-class ArgumentError(Exception):
-    pass
+def run(*args, **kwargs):
+    """Run SSO using devserver."""
+    if not args:
+        parsed = urlparse(get_django_settings('SSO_ROOT_URL')['SSO_ROOT_URL'])
+        args = [parsed.netloc]
+    manage('runserver', *args, **kwargs)
 
-
-def is_staging(url):
-    if url is not None:
-        url.rstrip('/')
-    return url in [
-        'https://login.staging.ubuntu.com',
-        'https://login.staging.launchpad.net',
-    ]
-
-
-def is_production(url):
-    if url is not None:
-        url.rstrip('/')
-    return url in [
-        'https://login.ubuntu.com',
-        'https://login.launchpad.net',
-    ]
-
-
-def is_devel():
-    url = os.getenv('SST_BASE_URL', None)
-    return url is None or not (is_staging(url) or is_production(url))
-
-
-def test(coverage=False, extra=''):
+def test(extra='', coverage=False):
     """Run unit tests."""
-    cmd = ['python django/manage.py test --noinput', extra]
-    virtualenv_local(' '.join(cmd), capture=False)
+    args = ['--noinput', extra]
+    manage('test', args)
 
-
-def _is_true(arg, name):
-    if arg.lower() in ('t', 'true', 'on', '1', 'yes'):
-        return True
-    elif arg.lower() in ('f', 'false', 'off', '0', 'no'):
-        return False
-    raise ArgumentError(
-        "Argument {!r} should be boolean, was {!r}".format(name, arg))
-
+def apitests():
+    """Run API tests only."""
+    manage('test', '', 
+    	'--testing_test_discover_root=./identityprovider/tests/api')
 
 def acceptance(headless='true', screenshot='false', report='', quiet='true',
         failfast='false', testcase='', flags=None, tests='', debug='false',
         extended='false'):
     """Run acceptance tests only."""
-
     extended = _is_true(extended, 'extended')
     headless = _is_true(headless, 'headless')
     quiet = _is_true(quiet, 'quiet')
@@ -84,8 +54,7 @@ def acceptance(headless='true', screenshot='false', report='', quiet='true',
     directory = '-d identityprovider/tests/acceptance/%s' % tests
     debug = _is_true(debug, 'debug')
 
-    cmd = ['DJANGO_SETTINGS_MODULE=django.settings PYTHONPATH=.:lib',
-           'sst-run']
+    cmd = ['sst-run']
     if extended:
         cmd.append('--extended-tracebacks')
     if headless:
@@ -109,21 +78,6 @@ def acceptance(headless='true', screenshot='false', report='', quiet='true',
     cmd.append(directory)
     virtualenv_local(' '.join(cmd), capture=False)
 
-
-def apitests():
-    """Run API tests only."""
-    manage(
-        "test --testing_test_discover_root='./identityprovider/tests/api'")
-
-
-def run(*args, **kwargs):
-    """Run SSO using devserver."""
-    if not args:
-        parsed = urlparse(get_django_settings('SSO_ROOT_URL')['SSO_ROOT_URL'])
-        args = [parsed.netloc]
-    manage('runserver', *args, **kwargs)
-
-
 def gargoyle_flags(*args):
     """Define and set the specified gargoyle flags.
 
@@ -137,6 +91,15 @@ def gargoyle_flags(*args):
         assert os.path.exists(json_file), error_msg % (json_file, os.getcwd())
     manage('loaddata', *args)
 
+def jenkins():
+    """Run the tests for jenkins."""
+    bootstrap()
+    # use the system's database
+    virtualenv_local("sed -i 's/db_host = .*/db_host =/g' django/local.cfg")
+    resetdb()
+    manage('loaddata test')
+    manage('jenkins', '', 
+    	'--testing_test_discover_root=')
 
 def resetdb():
     """Drop and recreate then sync the database."""
@@ -146,16 +109,14 @@ def resetdb():
     syncdb()
     setup_db_access()
 
-
-def jenkins():
-    """Run the tests for jenkins."""
-    bootstrap()
-    # use the system's database
-    local("sed -i 's/db_host = .*/db_host =/g' django/local.cfg")
-    resetdb()
-    manage('loaddata test')
-    manage("jenkins --testing_test_discover_root=''")
-
-
 def docs():
+	""""Build docs"""
     virtualenv_local('sphinx-build docs docs/html')
+    
+def _is_true(arg, name):
+    if arg.lower() in ('t', 'true', 'on', '1', 'yes'):
+        return True
+    elif arg.lower() in ('f', 'false', 'off', '0', 'no'):
+        return False
+    raise ArgumentError(
+        "Argument {!r} should be boolean, was {!r}".format(name, arg))

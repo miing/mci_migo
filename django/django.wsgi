@@ -16,7 +16,6 @@
 ###################################################################
 
 import os
-import platform
 import sys
 
 # before doing anything else, patch stdout to avoid breakage in production
@@ -37,7 +36,6 @@ from django.core.handlers.wsgi import WSGIHandler
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-#
 # add extra paths to system path if not already there
 # check if path is already there to avoid path duplication when
 # modwsgi is configured for code reloading

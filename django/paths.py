@@ -15,9 +15,9 @@
 #
 ###################################################################
 
-import sys
 import os
-import os.path
+import sys
+
 
 PATHS = [
     # base and django config
@@ -27,14 +27,18 @@ PATHS = [
     '.env/lib/python%d.%d/site-packages' % sys.version_info[:2],
 ]
 
-# when deployed via cfgmgr, this file (paths.py) should be located in
-# <base>/branches/project
+
 curdir = os.path.abspath(os.path.dirname(__file__))
 base = os.path.abspath(os.path.join(curdir, '..'))
 
 
-def get_paths(paths):
-    """Sets up necessary python paths for Pay in prod/staging"""
+def setup_paths():
+	"""Setup necessary python paths"""
+    sys.path = list(_get_paths(PATHS)) + sys.path
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
+def _get_paths(paths):
+    """Get a set of paths not duplicate"""
     # only include a path if not already in sys.path to avoid duplication of
     # paths when using code reloading
     path_set = set(sys.path)
@@ -44,13 +48,8 @@ def get_paths(paths):
             yield path
 
 
-def setup_paths():
-    sys.path = list(get_paths(PATHS)) + sys.path
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-
-
 if __name__ == '__main__':
     # For use in shell scripting
     # e.g. $(python paths.py)
-    print "export PYTHONPATH=%s" % ":".join(get_paths(PATHS))
+    print "export PYTHONPATH=%s" % ":".join(_get_paths(PATHS))
     print "export DJANGO_SETTINGS_MODULE=settings"

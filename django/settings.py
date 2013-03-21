@@ -15,7 +15,7 @@
 #
 ###################################################################
 
-import os.path
+import os
 
 from django_configglue.utils import configglue
 

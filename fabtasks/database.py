@@ -1,30 +1,29 @@
-# Copyright 2011 Canonical Ltd.  This software is licensed under the
-# GNU Affero General Public License version 3 (see the file LICENSE).
+###################################################################
+#
+# Copyright (c) 2011 Canonical Ltd.
+# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
+# 
+# This software is licensed under the GNU Affero General Public 
+# License version 3 (AGPLv3), as published by the Free Software 
+# Foundation, and may be copied, distributed, and modified under 
+# those terms.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# file LICENSE for more details.
+#
+###################################################################
+
 import os
 import textwrap
 
 from fabric.api import env, local, settings
 from fabric.context_managers import hide
 
-from .constants import PG_VERSION
+from .constants import PG_BIN_PATH
 from .django import get_django_settings, manage, syncdb
 
-
-def createdb():
-    """Create the database."""
-    _set_postgres_environment()
-    local("%(ENV)s %(BIN)s/createdb -U postgres -O postgres %(DATABASE)s" % env.postgres)
-
-def dropdb(warn_only=False):
-    """Remove the database."""
-    _set_postgres_environment()
-    if isinstance(warn_only, basestring):
-        warn_only = warn_only.lower() == 'yes'
-    with settings(warn_only=warn_only):
-        local("%(ENV)s %(BIN)s/dropdb -U postgres %(DATABASE)s" % env.postgres)
-
-def grantuser():
-    pass
 
 def setup_postgresql_server():
     """Setup the PostgreSQL server."""
@@ -41,6 +40,13 @@ def setup_postgresql_server():
     start_database()
     setup_database()
 
+def shutdown_postgresql_server():
+    """Shutdown the PostgreSQL server."""
+    _set_postgres_environment()
+    dropdb()
+    stop_database()
+    local("rm -rf %s" % env.postgres['HOST'])
+
 def start_database():
     """Start the PostgreSQL server."""
     _set_postgres_environment()
@@ -54,13 +60,6 @@ def stop_database():
     cmd = ['%(ENV)s', '%(BIN)s/pg_ctl', 'stop', '-w', '-m', 'fast']
     local(' '.join(cmd) % env.postgres)
 
-def shutdown_postgresql_server():
-    """Shutdown the PostgreSQL server."""
-    _set_postgres_environment()
-    dropdb()
-    stop_database()
-    local("rm -rf %s" % env.postgres['HOST'])
-
 def setup_database():
     """Setup the database."""
     success = _check_database()
@@ -70,6 +69,19 @@ def setup_database():
     syncdb()
     setup_db_access()
 
+def createdb():
+    """Create the database."""
+    _set_postgres_environment()
+    local("%(ENV)s %(BIN)s/createdb -U postgres -O postgres %(DATABASE)s" % env.postgres)
+
+def dropdb(warn_only=False):
+    """Remove the database."""
+    _set_postgres_environment()
+    if isinstance(warn_only, basestring):
+        warn_only = warn_only.lower() == 'yes'
+    with settings(warn_only=warn_only):
+        local("%(ENV)s %(BIN)s/dropdb -U postgres %(DATABASE)s" % env.postgres)
+
 def setup_db_access():
     """Grant access to the database."""
     _set_postgres_environment()
@@ -77,20 +89,6 @@ def setup_db_access():
     if 'pgtools' in django_settings['INSTALLED_APPS']:
         manage('grantuser', env.database['USER'],
                '--django_database_user=postgres')
-
-
-# helpers
-# =======
-
-def _set_database_environment():
-    """Update the environment with the database settings."""
-    if 'database' in env:
-        # environment already set up
-        return
-
-    settings = get_django_settings('DATABASES')
-    db = settings['DATABASES']
-    env.database = db['default']
 
 def _set_postgres_environment():
     """Update the environment with the PostgreSQL settings."""
@@ -102,7 +100,7 @@ def _set_postgres_environment():
 
     pg_env = []
     env.postgres = {
-        'BIN': "/usr/lib/postgresql/%s/bin" % PG_VERSION,
+        'BIN': PG_BIN_PATH
         'DATABASE': env.database['NAME'],
     }
 
@@ -119,6 +117,16 @@ def _set_postgres_environment():
         pg_env.append("PGPORT=%s" % port)
 
     env.postgres['ENV'] = ' '.join(pg_env)
+
+def _set_database_environment():
+    """Update the environment with the database settings."""
+    if 'database' in env:
+        # environment already set up
+        return
+
+    settings = get_django_settings('DATABASES')
+    db = settings['DATABASES']
+    env.database = db['default']
 
 def _check_database():
     """Check the database is accessible."""
