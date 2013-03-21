@@ -64,7 +64,7 @@ get the dependencies from.
 
 .. note::
     You could also set this to use a system database, by changing the "db_"
-    settings in your "django_project/local.cfg" file, under [__no_schema__].
+    settings in your "django/local.cfg" file, under [__no_schema__].
 
 5. Run the tests
 ::
@@ -81,15 +81,15 @@ get the dependencies from.
 ::
     1. For development, it's probably easiest to simply disable Captcha:
     ::
-        Put these settings into your "django_project/local.cfg":
+        Put these settings into your "django/local.cfg":
 
         [captcha]
         disable_captcha_verification = true
 
     2. But if you really want to configure Captcha:
     ::
-        Ref. [captcha] settings in "django_project/config/main.cfg".
-        Put similar settings into your "django_project/local.cfg".
+        Ref. [captcha] settings in "django/config/main.cfg".
+        Put similar settings into your "django/local.cfg".
         (Configuring a local squid proxy server is beyond the scope of this document.)
         If you don't have a reCaptcha key, get one at http://www.google.com/recaptcha
 
@@ -98,7 +98,7 @@ get the dependencies from.
     (Configuring a local mail server is beyond the scope of this document.)
     If you don't have access to a local mail server, you can use a fake one.
 
-    1. Add this to the "django_project/local.cfg" file:
+    1. Add this to the "django/local.cfg" file:
     ::
     [django]
     email_port = 1025
@@ -115,7 +115,7 @@ get the dependencies from.
     http://code.google.com/p/django-saml2-idp/source/browse/trunk/idptest/keys/mk_keys.sh
 
     Once you have the files (certificate.pem and private-key.pem), update your
-    "django_project/local.cfg" to point to them.
+    "django/local.cfg" to point to them.
 
 10. (Optional) Configure Django behind mod_wsgi on apache2.
 ::

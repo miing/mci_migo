@@ -1,3 +1,20 @@
+###################################################################
+#
+# Copyright (c) 2011 Canonical Ltd.
+# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
+# 
+# This software is licensed under the GNU Affero General Public 
+# License version 3 (AGPLv3), as published by the Free Software 
+# Foundation, and may be copied, distributed, and modified under 
+# those terms.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# file LICENSE for more details.
+#
+###################################################################
+
 import os
 from urlparse import urlparse
 
@@ -41,7 +58,7 @@ def is_devel():
 
 def test(coverage=False, extra=''):
     """Run unit tests."""
-    cmd = ['python django_project/manage.py test --noinput', extra]
+    cmd = ['python django/manage.py test --noinput', extra]
     virtualenv_local(' '.join(cmd), capture=False)
 
 
@@ -67,7 +84,7 @@ def acceptance(headless='true', screenshot='false', report='', quiet='true',
     directory = '-d identityprovider/tests/acceptance/%s' % tests
     debug = _is_true(debug, 'debug')
 
-    cmd = ['DJANGO_SETTINGS_MODULE=django_project.settings PYTHONPATH=.:lib',
+    cmd = ['DJANGO_SETTINGS_MODULE=django.settings PYTHONPATH=.:lib',
            'sst-run']
     if extended:
         cmd.append('--extended-tracebacks')
@@ -134,7 +151,7 @@ def jenkins():
     """Run the tests for jenkins."""
     bootstrap()
     # use the system's database
-    local("sed -i 's/db_host = .*/db_host =/g' django_project/local.cfg")
+    local("sed -i 's/db_host = .*/db_host =/g' django/local.cfg")
     resetdb()
     manage('loaddata test')
     manage("jenkins --testing_test_discover_root=''")

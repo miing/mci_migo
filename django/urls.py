@@ -1,3 +1,20 @@
+###################################################################
+#
+# Copyright (c) 2011 Canonical Ltd.
+# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
+# 
+# This software is licensed under the GNU Affero General Public 
+# License version 3 (AGPLv3), as published by the Free Software 
+# Foundation, and may be copied, distributed, and modified under 
+# those terms.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# file LICENSE for more details.
+#
+###################################################################
+
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
@@ -20,14 +37,14 @@ handler404 = 'webui.views.errors.page_not_found'
 urlpatterns = patterns('',
     #(r'^admin/', check_readonly(admin.site.urls)),
     (r'^preflight/', include('preflight.urls')),
-    (r'^admin/', include(nexus.site.urls)),
+    (r'^admin/', include('nexus.site.urls')),
     (r'', include('identityprovider.urls')),
     # Web UI
     (r'', include('webui.urls')),
     # Lazr.restful backwards compatible api
     (r'^api/', include('api.urls')),
     # SAML support
-    (r'^\+saml', include('ubuntu_sso_saml.urls')),
+    (r'^\+saml', include('saml2sso.urls')),
 
     # OpenID views
     (r'^openid/', include('django_openid_auth.urls')),

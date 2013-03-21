@@ -1,5 +1,20 @@
-# Copyright 2011 Canonical Ltd.  This software is licensed under the
-# GNU Affero General Public License version 3 (see the file LICENSE).
+###################################################################
+#
+# Copyright (c) 2011 Canonical Ltd.
+# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
+# 
+# This software is licensed under the GNU Affero General Public 
+# License version 3 (AGPLv3), as published by the Free Software 
+# Foundation, and may be copied, distributed, and modified under 
+# those terms.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# file LICENSE for more details.
+#
+###################################################################
+
 from __future__ import absolute_import
 import json
 import os
@@ -14,7 +29,7 @@ from .environment import virtualenv_local
 def get_django_settings(*keys):
     # setup the correct django environment
     sys.path.insert(0, os.path.abspath(os.curdir))
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'django_project.settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'django.settings'
     # get django settings
     from django.conf import settings
 
@@ -47,7 +62,7 @@ def brand(brand):
 def manage(command, *args, **kwargs):
     """Run manage.py command"""
     cmd = [
-        "python django_project/manage.py",
+        "python django/manage.py",
         command,
     ]
     args += tuple("%s=%s" % (k,v) for (k,v) in kwargs.items())
@@ -58,7 +73,7 @@ def manage(command, *args, **kwargs):
 
 def compilemessages(args=''):
     """Compile .po translation files into binary (.mo)."""
-    cmd = 'python ../django_project/manage.py compilemessages'
+    cmd = 'python ../django/manage.py compilemessages'
     if args:
         cmd += " %s" % args
     for app in APPS:
@@ -72,7 +87,7 @@ def makemessages():
     for app in APPS:
         for lang in supported_languages:
             with lcd(app):
-                cmd = ("python ../django_project/manage.py makemessages "
+                cmd = ("python ../django/manage.py makemessages "
                     "-l {0} -e .html,.txt")
                 if '-' in lang:
                     language, country = lang.split('-')
