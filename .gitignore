@@ -1,0 +1,29 @@
+# generic
+*.pyc
+
+# virtualenv
+.env
+
+# config 
+django/local.cfg
+
+# tests
+.coverage*
+coverage
+*.xml
+tags
+.backup
+reports
+
+# other
+.pyflymakerc*
+.noseids
+sso.log
+sso.wpr
+sso.wpu
+results
+docs/html
+docs/html/*
+log
+scripts/local.cfg-
+oopses/*
