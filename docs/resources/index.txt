@@ -1,0 +1,10 @@
+.. vim: ft=rst
+
+Resources
+=========
+
+.. toctree::
+
+    account
+    token
+    requests

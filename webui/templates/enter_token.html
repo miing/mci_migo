@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010-2013 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Enter confirmation code" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Enter confirmation code" %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>{% blocktrans %}We've sent you a confirmation code. Enter that code below,
+and the email address at which you received it.{% endblocktrans %}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <p>
+      <label for="id_token">{% trans "Confirmation code" %}</label><br />
+      {{ form.confirmation_code }}
+      {% if form.confirmation_code.errors %}
+          <span class="error">{{ form.confirmation_code.errors|join:"" }}</span>
+      {% endif %}
+  </p>
+  <p>
+      <label for="id_email">{% trans "Email address" %}</label><br />
+      {{ form.email }}
+      {% if form.email.errors %}
+          <span class="error">{{ form.email.errors|join:"" }}</span>
+      {% endif %}
+  </p>
+
+  <p><button class="btn" type="submit" name="continue">
+      <span><span>{% trans "Confirm" %}</span></span></button></p>
+</form>
+
+{% endblock %}

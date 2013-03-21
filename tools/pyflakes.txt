@@ -1,0 +1,56 @@
+identityprovider/urls.py: 'from django.conf.urls.defaults import *' used; unable to detect undefined names
+identityprovider/migrations:
+identityprovider/models/__init__.py: 'from account import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from metamodels import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from person import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from emailaddress import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from authtoken import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from openidmodels import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from team import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from api import *' used; unable to detect undefined names
+identityprovider/models/__init__.py: 'from twofactor import *' used; unable to detect undefined names
+identityprovider/tests/acceptance/new_account/passwords_bad_server-side.py: undefined name 'password'
+identityprovider/tests/acceptance/new_account/passwords_bad_server-side.py: undefined name 'password'
+identityprovider/tests/acceptance/new_account/passwords_bad_client-side.py: undefined name 'password'
+identityprovider/tests/acceptance/new_account/passwords_bad_client-side.py: undefined name 'error'
+identityprovider/tests/acceptance/new_account/passwords_valid.py: undefined name 'password'
+identityprovider/tests/acceptance/new_account/passwords_valid.py: undefined name 'password'
+identityprovider/tests/acceptance/new_account/emails_invalid.py: undefined name 'invalid_email'
+identityprovider/tests/acceptance/consumer/SREG_opt_out.py: undefined name 'toggled_elements'
+identityprovider/tests/acceptance/consumer/SREG_opt_out.py: undefined name 'disabled_elements'
+identityprovider/tests/acceptance/consumer/SREG_opt_out.py: undefined name 'returned_sreg'
+identityprovider/tests/acceptance/consumer/SREG_opt_out.py: undefined name 'radio_nickname'
+identityprovider/tests/acceptance/consumer/SREG_opt_out.py: undefined name 'radio_fullname'
+identityprovider/tests/acceptance/consumer/SREG_opt_out.py: undefined name 'radio_email'
+identityprovider/tests/acceptance/consumer/SREG_opt_out.py: undefined name 'radio_language'
+identityprovider/tests/acceptance/consumer/return_private_teams.py: undefined name 'resulting_teams'
+identityprovider/tests/acceptance/consumer/return_private_teams.py: undefined name 'team_names'
+identityprovider/tests/acceptance/emails/email_verification.py: undefined name 'address'
+identityprovider/tests/acceptance/emails/email_verification.py: undefined name 'code'
+identityprovider/tests/acceptance/emails/email_verification.py: undefined name 'error1'
+identityprovider/tests/acceptance/emails/email_verification.py: undefined name 'error2'
+identityprovider/tests/acceptance/emails/valid_address.py: undefined name 'address'
+identityprovider/tests/acceptance/emails/valid_address.py: undefined name 'valid'
+identityprovider/tests/acceptance/emails/valid_address.py: undefined name 'address'
+identityprovider/tests/acceptance/edit/change_password_bad.py: undefined name 'new_password'
+identityprovider/tests/acceptance/edit/change_password_bad.py: undefined name 'new_password'
+identityprovider/tests/acceptance/edit/valid_change_password.py: undefined name 'new_password'
+identityprovider/tests/acceptance/edit/valid_change_password.py: undefined name 'new_password'
+identityprovider/tests/acceptance/edit/valid_change_password.py: undefined name 'new_password'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'password'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'passwordconfirm'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'password'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'passwordconfirm'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'error'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'error'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'error'
+identityprovider/tests/acceptance/edit/illegitimate_passwords.py: undefined name 'error'
+identityprovider/tests/acceptance/root/links.py: undefined name 'link_text'
+identityprovider/tests/acceptance/root/links.py: undefined name 'title'
+identityprovider/tests/acceptance/root/login_requireds.py: undefined name 'email'
+identityprovider/tests/acceptance/root/login_requireds.py: undefined name 'password'
+identityprovider/tests/acceptance/root/login_requireds.py: undefined name 'errors'
+identityprovider/tests/acceptance: unable to detect undefined names
+webui/migrations/:
+webui/urls.py: 'from django.conf.urls.defaults import *' used; unable to detect undefined names
+api/migrations:

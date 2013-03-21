@@ -1,0 +1,11 @@
+[
+  {
+    "pk": 6,
+    "model": "gargoyle.switch",
+    "fields": {
+      "key": "PAPER_DEVICE",
+      "status": 3
+    }
+  }
+]
+

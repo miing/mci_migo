@@ -1,0 +1,25 @@
+{% extends "device/addition-generic.html" %}
+{% load i18n %}
+{% load qrcode %}
+{% block device_instructions %}
+<p>{% blocktrans %}To use your smartphone as an authentication device, please
+install "Google Authenticator" on it.  Go to
+<a href="http://m.google.com/authenticator">http://m.google.com/authenticator</a>
+in your phone's browser or search for "Google Authenticator" on your phone's app
+store/market.{% endblocktrans %}</p>
+
+<p><strong>
+  {% trans "Note: If you flash your phone, you will lose your auth data!" %}
+  </strong>
+  {% trans "Be sure you have a backup auth device before flashing your phone." %}
+</b>
+
+<p>{% trans 'In the "Google Authenticator" app, add a new token and scan this barcode.' %}</p>
+    <img width="250" height="250" class="qrcode" src="{% qrcode_url ident hex_key %}" />
+    <p>{% trans "Or, to set up manually, please enter:" %}</p>
+    <ul>
+        <li>{% trans "Type of key: Counter based" %}</li>
+        <li>{% trans "Account" %}: {{ ident }}</li>
+        <li>{% trans "Key" %}: {{ hex_key|b32encode_hexstring }}</li>
+    </ul>
+{% endblock %}

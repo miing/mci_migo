@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
+Affero General Public License version 3 (see the file LICENSE).
+{% endcomment %}
+
+
+{% block extra_header %}
+<style type="text/css">
+p span.key
+{
+  font-family: monospace;
+  font-size: large;
+}
+</style>
+{% endblock %}
+
+
+{% block title %}
+  {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
+{% endblock %}
+
+
+{% block text_title %}
+  <h1 class="main">{% trans "Add device" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form method="post" action="">
+  {% csrf_token %}
+
+  <p><label>
+    {% trans "Name:" %}<br>
+    {{ form.name }}
+    {% if form.name.errors %}
+      <span class="error" id="name-error">{{ form.name.errors|first }}</span>
+    {% endif %}
+  </label></p>
+
+
+  {% block device_instructions %}
+  <p>
+    {% trans "Shared OATH/HOTP key:" %}<br>
+    <span class="key">
+      {{ formatted_key }}
+    </span>
+  </p>
+  <p>{% blocktrans %}Enter the shared OATH/HOTP key into your device.</p>
+  {% endblocktrans %}
+  {% endblock %}
+
+  <br/>
+  <p>{% blocktrans %}
+    Now, verify your device is configured correctly.  Use your device
+    <em>once</em> to generate a one-time password and enter it below.
+    {% endblocktrans %}</p>
+
+  <p><label>
+    {% trans "One-time password:" %}<br>
+    {{ form.otp }}
+    {% if form.otp.errors %}
+      <span class="error" id="otp-error">{{ form.otp.errors|first }}</span>
+    {% else %}
+      {% if error %}
+        <span class="error">{{ error }}</span>
+      {% endif %}
+    {% endif %}
+  </label></p>
+
+  <p>
+    <input type="hidden" name="type" value="{{ type }}">
+    <input type="hidden" name="hex_key" value="{{ hex_key }}">
+    <button class="btn" type="submit">
+      <span><span>{% trans "Add device" %}</span></span>
+    </button>
+    {% trans "or" %} <a href="{{ device_list_path }}">{% trans "cancel" %}</a>
+  </p>
+
+</form>
+
+{% endblock %}

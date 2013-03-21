@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% comment %}Translators: Title of the SSO FAQ (/+faq) {% endcomment %}
+{% block title %}{% blocktrans %}FAQ - {{ brand_description }}{% endblocktrans %}{% endblock %}
+
+{% block text_title %}
+{% comment %}Translators: Heading of the SSO FAQ (/+faq) {% endcomment %}
+  <h1 class="main">{% trans "Frequently asked questions" %}</h1>
+{% endblock %}
+
+{% block content %}
+{% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    <h2 class="faq-q">{% trans "Why replace the Launchpad login service?" %}</h2>
+
+    <p>
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    {% blocktrans %}The Launchpad login service has served us well for several years but
+Launchpad is not a familiar brand for many Ubuntu users. As Ubuntu
+grows, we'll see more and more users who don't understand the connection
+between Launchpad and Ubuntu and the new Ubuntu login service is
+intended to overcome this problem. It will also enable us to develop
+features which are more oriented to Ubuntu users.{% endblocktrans %}
+    </p>
+
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    <h2 class="faq-q">{% trans "How does the new service differ from the old one?" %}</h2>
+
+    <p>
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    {% blocktrans %}For now, not much apart from the appearance of the site. We have many plans
+for great new features, however, and hope to roll these out once the service
+is established. If you have ideas for other features you'd like to see in
+{{ brand_description }}, we'd love to hear about them.{% endblocktrans %}
+    </p>
+
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    <h2 class="faq-q">{% trans "Is the new service Open Source?" %}</h2>
+
+    <p>
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    {% blocktrans %}Yes, and it's also built and hosted on open source
+technologies (<a href="http://www.python.org/">Python</a>, <a href="http://www.djangoproject.com/">Django</a>, <a href="http://httpd.apache.org/">Apache</a> and <a href="http://www.postgresql.org/">PostgreSQL</a> amongst others).{% endblocktrans %}
+    </p>
+
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    <h2 class="faq-q">{% trans "I have a problem with the new service. Where can I get help?" %}</h2>
+
+    <p>
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    {% blocktrans with support_form_url="support_form"|static_url %}We have an email support channel. You can submit your support requests
+using our <a href="{{ support_form_url }}">support form</a>. If you have found a bug, please take a
+few minutes to tell us about it on our
+<a href="https://bugs.launchpad.net/canonical-identity-provider">Launchpad project's bug tracker</a>.{% endblocktrans %}
+    </p>
+
+    <p>
+    {% comment %}Translators: Text/heading of the SSO FAQ (/+faq) {% endcomment %}
+    {% blocktrans %}We're sure you have more questions. Please
+<a href="https://answers.launchpad.net/canonical-identity-provider">ask your questions on our Launchpad project</a> and we'll do
+our best to respond to them all.{% endblocktrans %}
+    </p>
+{% endblock %}

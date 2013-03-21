@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Unauthorized confirmation code" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Unauthorized confirmation code" %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>{% blocktrans %}You are not authorized to use this confirmation code.
+If this URL was sent to you by email, please make sure you open it in the same browser where you requested it.
+{% endblocktrans %}</p>
+
+<p>{% blocktrans %}You can also seek further assistance on:{% endblocktrans %}</p>
+
+<a href="{{ 'support_form'|static_url }}">{{ "support_form"|static_url }}</a>
+{% endblock %}

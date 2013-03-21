@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% load i18n %}
+
+<body {% block bodyclass %}class="twocols"{% endblock %}>
+
+{% block content %}
+    <div id="mainbar" {% block leftcolclass %}class="box-464"{% endblock %}>
+        {% block leftcol %}{% endblock %}
+    </div>
+    {% if not hide_sidebar %}
+    <div id="sidebar" {% block rightcolclass %}class="box-464"{% endblock %}>
+        {% block rightcol %}{% endblock %}
+    </div>
+    {% endif %}
+    <div style="clear:both">&nbsp;</div>
+{% endblock %}
+
+</body>

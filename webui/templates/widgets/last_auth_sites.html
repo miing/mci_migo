@@ -1,0 +1,30 @@
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% load i18n %}
+
+{% if last_authenticated_sites %}
+<div id="visited-sites">
+    <h2 class="main">{% trans "Sites you last authenticated to" %}</h2>
+
+    <table class="listing">
+        <thead>
+            <tr>
+                <th class="description">{% trans "Site" %}</th>
+                <th class="date">{% trans "Last authenticated" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for site in last_authenticated_sites %}
+            <tr>
+                <td>{% if embedded %}{{ site.trust_root }}{% else %}
+                <a href="{{ site.trust_root }}">{{ site.trust_root }}</a>{% endif %}</td>
+                <td>{{ site.date_last_used|date:"Y-m-d" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}

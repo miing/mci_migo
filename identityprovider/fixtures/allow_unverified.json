@@ -1,0 +1,10 @@
+[
+  {
+    "pk": 8,
+    "model": "gargoyle.switch",
+    "fields": {
+      "key": "ALLOW_UNVERIFIED",
+      "status": 3
+    }
+  }
+]

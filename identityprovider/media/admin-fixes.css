@@ -1,0 +1,13 @@
+
+ul {
+    list-style: none;
+}
+
+ul li {
+    list-style: none;
+}
+
+.aligned ul li label {
+    float: none;
+    width: inherit;
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "pk": 7,
+    "model": "gargoyle.switch",
+    "fields": {
+      "key": "LOGIN_BY_TOKEN",
+      "status": 3
+    }
+  }
+]
+
+

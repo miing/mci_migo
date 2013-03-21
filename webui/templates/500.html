@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% trans "Oops!" %}
+{% endblock %}
+
+{% block text_title %}
+    <h1 class="main">Oops!</h1>
+{% endblock %}
+
+{% block content %}
+        <div>
+          <h3>
+            {% blocktrans %}Sorry, something just went wrong in {{ brand_description }}.{% endblocktrans %}
+          </h3>
+          {% if errormsg %}<p>{{ errormsg }}</p>{% endif %}
+          <p>
+            {% blocktrans %}We&#8217;ve recorded what happened, and we&#8217;ll fix it as soon as possible. Apologies for the inconvenience.{% endblocktrans %}
+          </p>
+          <p>
+            OOPS <abbr>ID</abbr>: {{ oopsid }}
+          </p>
+          {% if request.sentry.id %}
+          <p>
+            Sentry <abbr>ID</abbr>: {{ request.sentry.id }}
+          </p>
+          {% endif %}
+          <pre style="overflow:auto">
+{{traceback}}
+          </pre>
+        </div>
+{% endblock %}

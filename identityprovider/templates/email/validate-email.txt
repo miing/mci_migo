@@ -1,0 +1,13 @@
+{% load i18n %}{% blocktrans %}Hello
+
+We received a request from {{ requester }} using email address {{ requester_email }}, trying to validate the email address {{ toaddress }} for use in the {{ brand_description }}.
+
+Here is your confirmation code:{% endblocktrans %}
+
+{{ token }}
+
+{% blocktrans %}If you made this request, enter this code into the confirmation form, or click the following link to automatically confirm your email address:{% endblocktrans %}
+
+{{ token_url }}
+
+{% include "email/thank_you.txt" %}

@@ -1,0 +1,153 @@
+#!/bin/bash
+
+# Copyright 2010 Canonical Ltd.  This software is licensed under the
+# GNU Affero General Public License version 3 (see the file LICENSE).
+
+# HOWTO
+# ------
+#
+# This script is to be run like:
+#
+#   trunk$ ./scripts/test
+#
+# For the tests to work, both schemaconfig and django-settings have to be in
+# the PYTHONPATH
+#
+
+# Check if we're in right environment
+if ! python -c 'import zope.testbrowser' 2> /dev/null
+then
+    echo "There's no zope.testbrowser installed."
+    echo "Probably you haven't activated right virtual environment."
+    exit 1
+fi
+
+if [ -x `which coverage` ]; then
+    COVERAGE=`which coverage`
+elif [ -x `which python-coverage` ]; then
+    COVERAGE=`which python-coverage`
+else
+    echo "Can't find an installed coverage tool."
+    exit 1
+fi
+
+# Commented out for now as ISD uses the version of coverage
+# packaged with lucid
+# if [  `coverage help | head -n1` ]; then
+    # COVERAGE_RUN="$COVERAGE run"
+    # COVERAGE_COMBINE="$COVERAGE combine"
+    # COVERAGE_REPORT="$COVERAGE html"
+# else
+    COVERAGE_RUN="$COVERAGE -x"
+    COVERAGE_COMBINE="$COVERAGE -c"
+    COVERAGE_REPORT="$COVERAGE -a"
+# fi
+# Cleanup coverage only when running whole test suite
+cleanup="false"
+if [ ${#@} -eq 0 ]
+then
+    cleanup="true"
+    unittest="true"
+    doctest="true"
+fi
+
+case $1 in
+    unittest|unit|u) unittest="true" ;;
+    doctest|doc|d)   doctest="true" ;;
+esac
+
+if [ "$2" != "" ]
+then
+    test_specification=$2
+else
+    test_specification="identityprovider"
+fi
+
+CURRENT_DIR=$(readlink -f $(pwd))
+SCRIPT_DIR=$(readlink -f $(dirname $0))
+PROJECT_DIR=$(readlink -f $(dirname $SCRIPT_DIR))
+
+PYTHONPATH="$PYTHONPATH:$PROJECT_DIR"
+
+if [ "$PYTHONPATH" != "" ]; then
+    ENV="$ENV PYTHONPATH=$PYTHONPATH"
+    export PYTHONPATH=$PYTHONPATH
+fi
+
+if [ "$DJANGO_SETTINGS_MODULE" != "" ]; then
+    ENV="$ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE"
+    export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+fi
+
+# make sure we are in the project folder
+if [ "$PROJECT_DIR" != "$CURRENT_DIR" ]; then
+	echo "This script has to be run from the project root folder."
+	echo "Please follow these steps:"
+	echo "cd $PROJECT_DIR"
+	echo "./scripts/test"
+	exit 2
+fi
+
+# get rid of old coverage files to get a clean report
+if [ "$cleanup" = true ]
+then
+    find . -name '.coverage*' -exec rm -f {} \;
+fi
+
+# coverage in Lucid, as used in this script, creates .coverage owned
+# by root with restrictive permissions.  Create it here to force a sane
+# owner.
+touch .coverage
+
+function is_up() {
+    wget -q -O /dev/null "http://launchpad.dev/"
+}
+
+function wait_until_up() {
+    until is_up; do sleep 0.2; done
+}
+
+if [ "$doctest" = true ]
+then
+    # Get sudo password from user, so next command can be executed
+    # without any prompting
+    sudo date
+
+    sudo $ENV `which python` wsgi_test_server.py &
+    sso_pid=$!
+    trap "sudo kill $sso_pid ; exit" SIGINT
+
+    wait_until_up
+
+    (cd doctests && python runner.py)
+
+    trap SIGINT
+    sudo kill $sso_pid
+    wait $sso_pid
+
+    echo 'Running tests against mock API provider...'
+    cd mockservice/sso_mockserver
+    sudo $ENV python mockserver.py &
+    sso_pid=$!
+    cd ../..
+    (cd doctests && python runner.py -m stories/api-authentications.txt)
+    (cd doctests && python runner.py -m stories/api-workflows.txt)
+    sudo kill $sso_pid
+    wait $sso_pid
+fi
+
+if [ "$unittest" = true ]
+then
+    $COVERAGE_RUN -p manage.py test --noinput $test_specification
+fi
+
+# Creating nice (HTML) coverage report
+rm -rf $PROJECT_DIR/coverage
+
+# coverage found in Lucid won't create the output directory on its
+# own.
+mkdir $PROJECT_DIR/coverage
+
+OMIT="$VIRTUAL_ENV/lib,$VIRTUAL_ENV/src,.config,wsgi_test_server,identityprovider/tests,/usr/lib,/usr/share,settings,manage,urls"
+$COVERAGE_COMBINE
+$COVERAGE_REPORT -d $PROJECT_DIR/coverage --omit=$OMIT

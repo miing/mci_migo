@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% comment %}
+This module is based on code from Django OpenID.  Please see the
+license file in thirdparty/django-openid.
+{% endcomment %}
+
+{% load i18n %}
+<html>
+  <head>
+    <title>Django OpenID Example Consumer</title>
+<link rel="stylesheet" type="text/css"
+      href="{{ STATIC_URL }}ubuntu/styles.css"/>
+  <style type="text/css">
+#content table {
+    width: auto;
+    margin: 0;
+}
+#content td {
+    padding: 0;
+    border: 0;
+}
+  </style>
+  </head>
+  <body class="onecol">
+        <div id="container">
+            <div id="container-inner">
+                <div id="header">
+                    <h1 id="ubuntu-header"><a href="http://www.ubuntu.com/">Ubuntu</a></h1>
+                </div>
+                <div id="title">
+                    <a href="/">{% blocktrans %}{{ brand_description }}{% endblocktrans %}</a>
+                </div>
+                <div id="content">
+    <div id="mainbar">
+  <h2 class="main">This is an example consumer</h2>
+  <p>It is embedded in the {{ brand_description }} provider framework
+    for QA purposes only.  You can see this page because you have TESTING=True
+    in your settings.</p>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="message {{ message.tags }}{% if not user.is_authenticated %} notopbar{% endif %}">
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if url %}
+    <div class="message answer">
+      <p>You authenticated as <a href="{{ url }}">{{ url|escape }}</a></p>
+      <p>
+      {% if sreg %}
+        Simple Registration data returned:
+
+        <ul>
+        {% for pair in sreg %}
+          <li>{{ pair.0 }}: {{ pair.1 }}</li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        The server returned no Simple Registration data.
+      {% endif %}
+
+      {% if teams %}
+        You are currently member of the following teams:
+        <ul>
+          {% for team in teams %}
+            <li>{{ team }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        The server returned no teams data.
+      {% endif %}
+      </p>
+    </div>
+  {% endif %}
+
+  <form method="post" action="{{ consumer_url }}">
+    {% csrf_token %}
+    <input type="hidden" name="openid_identifier" value="{{openid}}" />
+
+    <p>
+      Mode:<br />
+      <label><input type="radio" name="mode" value="setup" checked="1" /> Setup</label><br />
+      <label><input type="radio" name="mode" value="immediate" /> Immediate</label><br />
+    </p>
+
+    <p>
+    Also request:
+    <table>
+      <tr>
+        <td><input type="checkbox" name="sreg" id="id_sreg" onchange="toggle_sreg(this);" /></td>
+        <td><label for="id_sreg">SREG data</label></td>
+      </tr>
+      <tr>
+        <td />
+        <td>
+          <table id="sreg_table" cellspacing="0">
+            <tr>
+              <th>Req</th>
+              <th>Opt</th>
+              <th>No</th>
+              <th>Field</th>
+            </tr>
+            {% for field in sreg_fields %}
+            <tr>
+              {% for i in sreg_states %}
+              <td><input type="radio" name="sreg_{{ field.name }}" id="id_sreg_{{ field.name }}_{{ i }}" value="{{ i }}"{% ifequal i field.default %} checked="checked"{% endifequal %} /></td>
+              {% endfor %}
+              <td>{{ field.label|safe }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="teams" id="id_teams" onchange="toggle_teams(this);" /></td>
+        <td><label for="id_teams">Teams data</label> <input type="text" name="request_teams" id="id_request_teams" value="team1,team2" size="30" /></td>
+      </tr>
+    </table>
+    </p>
+
+    <p>
+        <input type="checkbox" name="forcelongurl" id="id-forcelongurl" value="1" />
+        <label for="id-forcelongurl">Force long return URL</label>
+    </p>
+    <input type="submit" value="Begin" />
+  </form>
+
+  <h2>Test logout</h2>
+  <ul>
+    <li><a href="{{ openid }}+logout?return_to={{ consumer_url|urlencode }}">Logout with return URL</a></li>
+    <li><a href="{{ openid }}+logout">Normal logout</a></li>
+  </ul>
+              </div>
+            </div>
+        </div>
+    </div>
+        <script type="text/javascript">
+
+        function toggle_sreg(src) {
+            var state = "none";
+            if (src.checked) {
+                state = "table";
+            }
+            document.getElementById("sreg_table").style.display = state;
+        }
+
+        function toggle_teams(src) {
+            var state = "hidden";
+            if (src.checked) {
+                state = "visible";
+            }
+            document.getElementById("id_request_teams").style.visibility = state;
+        }
+
+        toggle_sreg(document.getElementById("id_sreg"));
+        toggle_teams(document.getElementById("id_teams"));
+        </script>
+    </body>
+</html>

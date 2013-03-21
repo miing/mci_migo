@@ -1,0 +1,8 @@
+{% load i18n %}{% load static_url %}{% if invalidate_email_url %}{% blocktrans %}If you don't know what this is about, then someone has probably entered your email address by mistake. Sorry about that.
+If you wish to report this email being incorrectly used, please click the following link:{% endblocktrans %}
+
+{{ invalidate_email_url }}
+
+{% blocktrans %}You can also seek further assistance on:{% endblocktrans %}
+
+{{ "support_form"|static_url }}{% endif %}

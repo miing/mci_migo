@@ -1,0 +1,111 @@
+#container {
+    width: 98%;
+}
+
+#header {
+    width: 98%;
+    margin-left: 1%;
+}
+
+#container-inner {
+    width: 100%;;
+}
+
+.box-624 {
+    width: 94%;
+}
+
+body.onecol #content, body.twocols #mainbar, body.twocols #sidebar {
+    width: 94%;
+    padding: 2%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+body.twocols #sidebar {
+    margin-top: -4px;
+    padding-top: 4px;
+}
+
+body.twocols #mainbar {
+    min-height: 0;
+}
+
+#ubuntu-header {
+    left: 2%;
+}
+
+#container-inner #title {
+    height: 100%;
+    margin: 0px;
+}
+
+#mainbar form input[type="text"],
+#mainbar form input[type="password"],
+form textarea,
+#content input[type="text"],
+#content input[type="password"]
+{
+    width: 96%;
+    padding: 2px;
+}
+
+form span.error {
+    float: none;
+    display: block;
+    margin-top: 40px;
+    width: 96%;
+    margin-left: 0;
+    height: 30px;
+}
+
+#footer-logo a {
+    display: none;
+}
+
+#copyright p {
+    display: block;
+}
+
+#copyright {
+    height: 100%;
+    margin: 0 3%;
+}
+
+div#subheader {
+    width: 99%;
+    margin: 0 1%;
+}
+
+div#subheader div {
+    float: none;
+    width: 100%;
+    margin-top: -4px;
+    margin-left: -0.5%;
+}
+
+#title h1 {
+    font-size: 24px;
+    line-height: 28px;
+    margin: 8px;
+    margin-left: 3%;
+}
+
+#language_select input {
+    width: 100px;
+    margin-left: 40%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+div.subheader-menu ul {
+    margin-left: 2.5%;
+}
+
+#subheader ul li a {
+    padding: 14px 8px 0 0.5%;
+}
+
+#content ul li {
+    margin-left: 1em;
+}

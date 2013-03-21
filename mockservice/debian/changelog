@@ -1,0 +1,5 @@
+canonical-mock-identity-provider (2.7.1.dev3) maverick; urgency=low
+
+  * Initial release for maverick.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Tue, 10 Aug 2010 12:58:20 -0300

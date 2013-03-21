@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Account deactivated" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Account deactivated" %}</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+    <p>
+    {% blocktrans %}Your account has been deactivated.{% endblocktrans %}
+    </p>
+</div>
+{% endblock %}

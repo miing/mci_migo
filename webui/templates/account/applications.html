@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Applications you use" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Applications you use" %}</h1>
+{% endblock %}
+
+
+{% block content %}
+{% if tokens %}
+<p>
+  {% blocktrans %}You have used the applications shown here to access your account. If you have stopped using one of these and would like to prevent it from being used to access your account, click its "Delete" button below. You can choose to allow an application to have access again if you like by opening that application and instructing it to access your account. You'll have to provide your username and password before it will be granted access.{% endblocktrans %}
+</p>
+
+<div>
+  <table class="listing">
+    <thead>
+      <tr>
+        <th>{% trans "Application" %}</th>
+        <th class="date">{% trans "Access granted" %}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for token in tokens %}
+      <tr>
+        <td>{{ token.name }}</td>
+        <td>{{ token.created_at|date:"Y-m-d" }}</td>
+        <td class="actions">
+          <form action="{% url applications %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="token_id" value="{{ token.token }}" />
+            <button type="submit" class="btn-sm" name="Delete">
+              <span>{% trans "Delete" %}</span>
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p>{% trans "You don't have any applications associated with this account." %}</p>
+{% endif %}
+{% endblock %}

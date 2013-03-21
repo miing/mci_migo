@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% blocktrans %}Untrusted site: {{ trust_root }}{% endblocktrans %}
+{% endblock %}
+
+{% block content_id %}auth{% endblock %}
+
+{% block content %}
+    <div class="info">
+        <p>{% blocktrans %}Sorry, we don't currently accept requests from
+{{ trust_root }}.{% endblocktrans %}</p>
+    </div>
+    <div class="actions">
+        <a href="+cancel">{% trans "Cancel" %}</a>
+    </div>
+{% endblock %}

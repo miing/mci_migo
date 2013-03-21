@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -o errexit
+
+deb_version=$(dpkg-parsechangelog | sed -r '/^Version/!d
+s/Version: //
+s/-[0-9]+ubuntu[0-9]+//')
+date_version=$(date +%y.%m.%d)
+rev_no=$(bzr revno || true)
+
+if [ "$1" = "deb" ]; then
+    version=$deb_version
+else
+    version=$date_version
+fi
+
+if [ "$rev_no" ]; then
+    # We're standing in a branch, and probably manually cutting a
+    # stable release.
+    version="${version}-r${rev_no}"
+fi
+
+modules="identityprovider"
+
+for m in $modules; do
+    sed -i "s/^__version__.*$/__version__ = '$version'/" $m/__init__.py
+done
+

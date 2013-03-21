@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% trans "Read-only mode" %}
+{% endblock %}
+
+{% block text_title %}
+    <h1 class="main">{% trans "We're currently in read-only mode." %}</h1>
+{% endblock %}
+
+{% block content %}
+        <div>
+          <p>
+            {% blocktrans %}Apologies, the page you're requesting isn't accessible at the moment, as we're running with a minimum set of features. Hopefully we will have the full service up and running again in no time.{% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans %}Please try again in a while.{% endblocktrans %}
+          </p>
+          <a class="btn" href=""><span><span>{% trans "Try again" %}</span></span></a> {% trans "or" %}
+          <a class="btn alt" href="/"><span><span>{% trans "Go to our home page" %}</span></span></a>
+        </div>
+{% endblock %}

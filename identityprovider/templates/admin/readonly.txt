@@ -1,0 +1,10 @@
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file LICENSE).
+
+{% endcomment %}Readonly status per application server
+-------------------------------------------------------------------------------
+{% for server in appservers %}
+ {{server.name}} -- {% if server.reachable %}{% if server.readonly %}In readonly mode{% else %}Operating normally{% endif %}{% else %}Server is unreachable or out of sync{% endif %}{% if server.reachable %}{% for conn in server.connections %}
+   {{conn.id}}: {% if conn.failed %} Failed {% else %} OK {% endif %}{% endfor %}{% endif %}
+{% endfor %}

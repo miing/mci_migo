@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
+Affero General Public License version 3 (see the file LICENSE).
+{% endcomment %}
+
+
+{% block title %}
+  {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
+{% endblock %}
+
+
+{% block text_title %}
+<h1 class="main">{% trans "Generate new codes" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<h3>{% blocktrans %}
+Confirming the new codes will <strong>invalidate</strong> all the previous codes.<br/>
+Please print this new list and <strong>destroy any old lists</strong>.
+{% endblocktrans %}</h3>
+
+{% include 'device/code-list.html' %}
+
+<form method="post">
+  {% csrf_token %}
+  <p>
+    <button class="btn" type="submit">
+      <span><span>{% trans "Confirm new codes" %}</span></span>
+    </button>
+    {% trans "or" %} <a href="{% url device-print device_id %}">{% trans "cancel" %}</a>
+  </p>
+</form>
+{% endblock %}

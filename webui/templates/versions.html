@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Versions" %}{% endblock %}
+
+{% block content %}
+<h1 class="main">{% trans "Versions" %}</h1>
+
+<div>
+  <table class="listing">
+    <thead>
+      <tr>
+        <th>{% trans "Library/Package" %}</th>
+        <th>{% trans "Version" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for item in versions %}
+      <tr><td>{{ item.name }}</td><td>{{ item.version }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

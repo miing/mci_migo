@@ -1,0 +1,6 @@
+{% load i18n %}{% load static_url %}{% blocktrans %}Thank you,
+
+The {{ brand_description }} team{% endblocktrans %}
+{{ "sso_root"|static_url }}
+
+{% include "email/invalidate_email.txt" %}

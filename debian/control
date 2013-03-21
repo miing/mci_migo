@@ -1,0 +1,19 @@
+Source: canonical-identity-provider
+Section: python
+Priority: extra
+Build-Depends: cdbs (>= 0.4.43),
+ debhelper (>= 6),
+ python,
+ python-central (>= 0.6),
+ python-setuptools,
+ bzr
+Maintainer: Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>
+Standards-Version: 3.8.3
+XS-Python-Version: current
+
+Package: python-canonical-identity-provider
+Architecture: all
+XB-Python-Version: ${python:Versions}
+Depends: ${misc:Depends}, ${python:Depends},
+ canonical-identity-provider-web-dependencies
+Description: Canonical OpenID provider

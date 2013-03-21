@@ -1,0 +1,140 @@
+{% load i18n static_url %}<!DOCTYPE html>
+<!--[if IE 7 ]><html class="ie7" lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8 ]><html class="ie8" lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en" dir="ltr" {% block html_extra %}{% endblock %}><!--<![endif]-->
+{% comment %}Copyright 2013 Canonical Ltd. This software is licensed under the GNU Affero General Public License version 3 (see the file LICENSE).{% endcomment %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1, maximum-scale=1">
+    {% block extra_meta %}{% endblock %}
+
+    {% block extra_header %}{% endblock %}
+
+    <title>{% block title %}{% trans "Log in" %}{% endblock %}</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="{{ STATIC_URL }}ubuntu/favicon.ico">
+
+    {% block corecss %}
+    <link href="{{STATIC_URL}}ubuntuone/css/ubuntuone.css" rel="stylesheet" type="text/css">
+    {% endblock %}
+    {% block extra_css %}{% endblock %}
+
+</head>
+<body {% block bodyclass %}class="onecol"{% endblock %} {% if embedded %}onload="blank_targets()"{% endif %}>
+<div id="cont" role="main">
+
+    {% include "_header.html" %}
+
+    <div id="content">
+
+        {% block menu %}
+            <div id="subheader">
+                <div class="subheader-menu">
+                    {% if user.is_authenticated %}
+                        {% include "widgets/ubuntu/logout-button.html" %}
+                    {% else %}
+                        {% include "widgets/ubuntu/login-button.html" %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block readonly %}
+        {% if readonly %}
+            <div class="message warning">
+                {% blocktrans %}We are currently in read-only mode. That means that at the moment you can't create new accounts, update your personal information, or request password reminders.{% endblocktrans %}
+            </div>
+        {% endif %}
+        {% endblock %}
+
+
+        {% block messages %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="message {{ message.tags }}{% if not user.is_authenticated %} notopbar{% endif %}">
+                <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% endblock %}
+
+
+        <div id="title">{% block text_title %}{% endblock %}</div>
+
+        <div id="{% block content_id %}box{% endblock %}">
+        {% block content %}{% endblock %}
+        </div>
+
+        <div id="end-content"></div>
+
+    </div><!-- close #content -->
+
+    {% include "_footer.html" %}
+
+</div><!-- close #cont -->
+
+{% block general_js %}
+
+    {% comment %}To be replaced by u1 js{% endcomment %}
+    <script src="{{ STATIC_URL }}lazr-js/yui/yui-min.js"></script>
+
+{% endblock %}
+
+{% block test_js %}{% endblock %}
+{% block extra_js %}{% endblock %}
+
+{% block disable_submit_buttons_js %}
+    <script type="text/javascript">
+        // disable all submit buttons after initial form submission
+        // to prevent double-clicks
+        YUI().use('node', function (Y) {
+            function set_disablers() {
+                function disable () {
+                    Y.all('input[type=submit]').setAttribute('disabled', true);
+                    Y.all('button[type=submit]').setAttribute('disabled', true);
+                }
+                Y.all('form').on('submit', disable);
+            }
+            Y.on('domready', set_disablers)
+        });
+    </script>
+{% endblock %}
+
+<script type="text/javascript">
+  WebFontConfig = {
+      google: { families: [ 'Ubuntu:400,700:latin', 'Ubuntu+Mono::latin' ] }
+  };
+  (function() {
+      var wf = document.createElement('script');
+      wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+      wf.type = 'text/javascript';
+      wf.async = 'true';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+{% block analytics %}
+    {% if google_analytics_id or rpconfig.ga_snippet %}
+    {% load google_analytics %}
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      {% if google_analytics_id %}
+      _gaq.push(['_setAccount', '{{ google_analytics_id }}']);
+      _gaq.push(['_trackPageview']);
+      {% endif %}
+      {% if rpconfig.ga_snippet %}{% expand_ga_commands rpconfig.ga_snippet %}{% endif %}
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    {% endif %}
+{% endblock %}
+
+
+</body>
+</html>

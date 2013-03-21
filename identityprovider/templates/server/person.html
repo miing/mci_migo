@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <base href="{{ identity_url }}" />
+        <link rel="openid.server"
+            href="{{ provider_url }}" />
+    </head>
+    <body>
+        <h1>
+        {% blocktrans with display_name|escape as name%}OpenID Identity URL for {{ name }}{% endblocktrans %}
+        </h1>
+    </body>
+</html>

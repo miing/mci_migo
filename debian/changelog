@@ -1,0 +1,923 @@
+canonical-identity-provider (12.04.12-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #784818) Notify user of change in preferred email
+  * Protect saml views with twofactor (regardless of user settings)
+  * Removed TWOFACTOR flags and updated scripts to work for Dev/Staging/Production
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Thu, 12 Apr 2012 11:42:17 -0300
+
+canonical-identity-provider (12.03.29-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #960509) Protect main device-altering views (device-addition, device-rename, device-removal) with 2f session "freshness" checks.
+  * Bug (LP: #839216) Redisplays the Captcha widget when the answer was not correct.
+  * fixed failing acceptance tests on revno 376
+  * upgraded httplib2 to 0.7.2
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Thu, 29 Mar 2012 13:00:22 -0300
+
+canonical-identity-provider (12.03.15-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #955163) Enforce 2-f user preference for auto-authorizing RPs
+
+ -- David Owen <david.owen@canonical.com>  Thu, 15 Mar 2012 09:44:19 -0600
+
+canonical-identity-provider (12.05.12-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #952915) Renaming devices should require 2f auth 
+  * Bug (LP: #952925) Editing devices isn't restricted to those a the logged in user owns
+
+ -- Simon Davy <simon.davy@canonical.com>  Mon, 12 Mar 2012 15:18:40 +0000
+
+canonical-identity-provider (12.03.08-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #854854) tick-large image should have a transparent background 
+  * Bug (LP: #937063) Usage of two-factor authentication is a bit unclear 
+  * Bug (LP: #948408) The 2F Auth device management interface is unsightly 
+  * Bug (LP: #948434) When SSO 2 Auth Fails, the 'New Account' frame is shown unintentially, mildly confusing 
+  * Bug (LP: #948440) OOPS occurs if log out is attempted while deleting a device 
+  * Bug (LP: #948995) Inconsistent action buttons
+  * Bug (LP: #904317) Password strength meter doesn't work
+
+ -- Simon Davy <simon.davy@canonical.com>  Thu, 08 Mar 2012 13:48:55 +0000
+
+canonical-identity-provider (12.03.05-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #615432) The warnings should be different for disabled and suspended accounts
+  * Bug (LP: #911949) allow admin to delete/invalidate a user's 2-f device
+  * Bug (LP: #938593) No user instructions for "Report a stolen or lost device…"
+  * Bug (LP: #911929) allow naming 2-f auth devices for easier management
+  * Bug (LP: #934391) adding a yubikey device can result in double submit
+  * Bug (LP: #937086) Choosing among multiple accounts can be confusing.
+  * Bug (LP: #938579) No way for admin to alter 'always require 2-factor' setting on a user's account
+  * Bug (LP: #938610) Remove/replace 'blah blah blah' placeholder text
+  * Bug (LP: #938622) Provide a more descriptive default name for 2-factor devices
+  * Bug (LP: #938655) Add a link to "Report a stolen or lost device" to the 2-factor login page
+  * Bug (LP: #929516) Saving your 2nd factor auth preferences doesn't provide any feedback
+  * Bug (LP: #938597) "Cancel" buttons on 2-factor forms should be a link
+  * Bug (LP: #938600) Typo on 'remove 2-factor device' form
+  * Bug (LP: #938606) Remove unnecessary ellipses from 2-factor UI
+  * Bug (LP: #938618) Use "Delete" or "Remove" consistently in lists
+  * Bug (LP: #938635) Make 2-factor page consistent with others
+  * Bug (LP: #938663) Remove "Are you new?" section from 2-factor auth page
+  * Bug (LP: #938796) Empty table should not be displayed when no 2-factor devices exist
+  * Bug (LP: #940286) yubikey command should stand out a bit more
+  * Bug (LP: #943160) No instructions on which smartphone app I need to install for 2-factor
+  * Bug (LP: #918911) Include RP-specific Google Analytics IDs
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Mon, 05 Mar 2012 08:52:02 -0300
+
+canonical-identity-provider (12.02.24-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #911947) allow admin to easily audit list of sites requiring 2-f auth
+  * Bug (LP: #911944) allow admin to indicate if sites require 2-f auth
+  * Bug (LP: #911937) provide setup instructions for Yubikey users
+  * Bug (LP: #934931) adding a yubikey device can result in a double submit
+  * Bug (LP: #939095) decide process loops on trunk r343 on precise
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Fri, 24 Feb 2012 09:02:03 -0300 
+
+canonical-identity-provider (12.02.16-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #911934) provide QR code for setting up a Google Authenticator device
+  * Bug (LP: #932938) The 2-f "decide" process fails for LP branding
+  * Bug (LP: #927672) Require 2f authentication to manage devices
+  * Bug (LP: #930382) Remove green developers notes on device management
+  * Bug (LP: #930379) When the last device is removed the session's 2f flag should ble cleared
+  * Bug (LP: #911936) provide setup instructions for Google Authenticator
+  * Bug (LP: #930377) When a 2f device is successfully added the session's 2f flag should be set
+  * A fix for unicode handling of login exception messages
+  * Moves our acceptance test helpers into a shared directory.
+  * Adding a second authentication device, or removing an authentication device, requires the user to be two factor authentic
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Thu, 16 Feb 2012 15:47:34 -0300
+
+canonical-identity-provider (12.02.10-0ubuntu1) lucid; urgency=low
+
+  * Added inline form for admins to manage 2-f devices
+  * Fixed redirect during RP authorization
+
+ -- David Owen <david.owen@canonical.com>  Fri, 10 Feb 2012 08:41:12 -0700
+
+canonical-identity-provider (12.02.09-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #928365): Fix two-factor login to work in LP branding
+  * Bug (LP: #923814): Protect all user-pages if user has required two-factor always
+
+ -- David Owen <david.owen@canonical.com>  Thu, 09 Feb 2012 16:06:00 -0700
+
+canonical-identity-provider (12.02.06-0ubuntu1) lucid; urgency=low
+
+  * Fixed feature-flag usage during login
+
+ -- David Owen <david.owen@fugue88.ws>  Mon, 06 Feb 2012 10:33:23 -0700
+
+canonical-identity-provider (12.02.03-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #923808): Reset the user's "always require 2-f" flag when the last 2-f device is removed.
+  * Updated translation files
+
+ -- David Owen <david.owen@canonical.com>  Fri, 03 Feb 2012 08:52:07 -0700
+
+canonical-identity-provider (12.01.17-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #917111): Persistent XSS in EmailAddress.account_admin_link
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 17 Jan 2012 12:45:00 -0300
+
+canonical-identity-provider (12.01.09-0ubuntu1) lucid; urgency=low
+
+  * Improved text on invitation emails (LP: #904880)
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 10 Jan 2012 21:22:43 +0000
+
+canonical-identity-provider (12.01.05-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #904880) Using confirmation link while logged in has broken...
+  * Bug (LP: #700496) Forgotten password reminder is not helpful to user...
+  * Bug (LP: #862944) IntegrityError: duplicate key value violates unique...
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Thu, 05 Jan 2012 13:09:20 -0300
+
+canonical-identity-provider (11.12.07-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #862944) IntegrityError: duplicate key violates unique constraint
+  * Bug (LP: #892334) include link for account verification in mobile platform
+  * Bug (LP: #708738) Add configurable google analytics
+  * Bug (LP: #879001) Don't create sessions for bots, anonymous users, etc.
+  * Index AuthToken's e-mail field, for quickly nullifying other tokens for a single address.
+  * Adding SAML 2.0 Identity Provider functionality for Google Apps and SalesForce Service Points
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Wed, 07 Dec 2011 16:26:38 -0300
+
+canonical-identity-provider (11.11.16-0ubuntu1) lucid; urgency=low
+
+  * Added index to the authtoken table's email column
+
+ -- David Owen <david.owen@canonical.com>  Wed, 16 Nov 2011 15:40:55 -0700
+
+canonical-identity-provider (11.08.03-0ubuntu2) lucid; urgency=low
+
+  * Added missing template for launchpad brand
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Wed, 03 Aug 2011 09:45:01 -0300
+
+canonical-identity-provider (11.08.03-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #820230) TemplateDoesNotExist: launchpad/email/web-newuser.txt
+  * Bug (LP: #820216) api.accounts.me() errors with UnicodeDecodeError
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Wed, 03 Aug 2011 09:11:08 -0300
+
+canonical-identity-provider (11.07.26-0ubuntu1) lucid; urgency=low
+
+  * Updated dependencies to use meta-package
+  * Bug (LP: #814104) The new mobile platform registration flow...
+  * Bug (LP: #813619) private teams cannot be queried by the api
+  * Bug (LP: #808841) Auto-approve for repeat logins doesn't return sreg data
+  * Expose sreg 1.1 and launchpad teams via XRDS document
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 26 Jul 2011 10:28:49 -0300
+
+canonical-identity-provider (11.07.20-0ubuntu1) lucid; urgency=low
+
+  * Added missing django-piston dependency
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Wed, 20 Jul 2011 16:28:38 -0300
+
+canonical-identity-provider (11.07.19-0ubuntu1) lucid; urgency=low
+
+  * Send optional sreg fields to RP if it's trusted and has auto_authorize set
+  * Fixed launchpad css for form labels
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 19 Jul 2011 13:09:08 -0300
+
+canonical-identity-provider (11.07.12-0ubuntu1) lucid; urgency=low
+
+  * Fixed bug in handling multiple OpenIDRPSummary entries
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 12 Jul 2011 15:20:54 -0300
+
+canonical-identity-provider (11.07.11-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #794957) add api parameter to indicate api consumer type
+  * Bug (LP: #121533) Allow OpenID users to select which information to send
+  * Bug (LP: #603195) Added link to Login Support on email sent page
+  * Fixed several instances of missing exception data in OOPS reports.
+  * Fix a bug in the piston api that doesn't correctly handle unquoted parameters
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Mon, 11 Jul 2011 15:49:12 -0300
+
+canonical-identity-provider (11.06.15-0ubuntu2) lucid; urgency=low
+
+  * Fixed some failing tests
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Wed, 15 Jun 2011 16:16:53 -0300
+
+canonical-identity-provider (11.06.15-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #791337) replace lazr.restful api with piston
+  * BUG (LP: #779087) login.launchpad.net has ugly green bar in the old style
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Wed, 15 Jun 2011 11:57:40 -0300
+
+canonical-identity-provider (11.03.15-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #709496) Need a way to set the 'displayname' property for newly created accounts using REST API
+  * Bug (LP: #721318) Enhance diagnostic output of the account-merging script
+  * Bug (LP: #720690) Add django-preflight
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 15 Mar 2011 09:24:33 -0300
+
+canonical-identity-provider (11.02-0ubuntu1) lucid; urgency=low
+
+  * Bug (LP: #716494) when switched to read-only and with the master disabled...
+  * Bug (LP: #611169) [meta] seeing lots of old apache processes "hung" in a Sending Reply state on apache/mod_wsgi servers
+  * Bug (LP: #608869) Update load tests to ensure they're in sync with our codebase and workflows
+  * Bug (LP: #688660) mumble is using an incorrect username from launchpad
+  * Bug (LP: #690604) Request data in oopses are not sanitized
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Sat, 12 Feb 2011 11:08:39 -0300
+
+canonical-identity-provider (11.01.dev2) lucid; urgency=low
+
+  * Fixed failure to generate oops reports from web API
+
+ -- David Owen <david.owen@canonical.com>  Wed, 26 Jan 2011 16:05:59 -0700
+
+canonical-identity-provider (11.01.dev1) lucid; urgency=low
+
+  * Bug (LP #659052) improve language support
+  * Bug (LP #663290) Please split the django oauth backend for lazr.authentication in to a separate project
+  * Bug (LP #644975) Export OpenIdIdentifier to Canonical SSO
+  * Bug (LP #632536) When Logging into LP SSO from LP you shouldn't be told you are going to a 3rd party site
+  * Bug (LP #680256) Enable setting a long query string from the test consumer
+
+ -- David Owen <david.owen@canonical.com>  Mon, 24 Jan 2011 13:14:34 -0700
+
+canonical-identity-provider (10.11) lucid; urgency=low
+
+  * Bug (LP #606336) Logo should be on the top left
+  * Bug (LP #620462) Suspended account should require a password reset
+  * Bug (LP #628395) Log tracebacks for API calls ending in a 500 failure
+  * Bug (LP #655633) Switching out of read-only mode kills the service
+  * Bug (LP #664119) Database statements should timeout after several seconds
+  * Bug (LP #595519) Provide a link on every page to the support form
+  * Bug (LP #619598) Provide an easier way to check if a token+openid corresponds to a user with a verified email
+  * Bug (LP #634988) Update to use configglue
+  * Bug (LP #659246) Feature request: Logout feature on test consumer
+  * Bug (LP #667852) Need to be able to create sso virtualenv with same packages as deployed in lucid
+  * Bug (LP #670144) SSO create_env fails to find egenix package
+  * Bug (LP #611830) Test consumer should allow user to define teams query
+  * Bug (LP #624190) Test consumer should not be CSRF-protected
+  * Bug (LP #624955) "Email already registered" error is not being sent inside a list
+  * Bug (LP #638331) Add account merge script to debian package
+  * Bug (LP #652002) No way to log back in on the logout screen in LP branded site
+  * Bug (LP #660148) Admin hangs when searching for an account
+  * Bug (LP #675933) Small issues with new logout redirect feature
+  * Bug (LP #539638) login.launchpad pages must explain Ubuntu SSO
+  * Bug (LP #602325) Incosistency in the use of links
+  * Bug (LP #602353) The helper text icon should be more obvious
+  * Bug (LP #625206) Add cleaning up of stalled django sessions to cleanup manage.py command
+  * Bug (LP #654706) New Account creation is missing the password strength indicator
+  * Bug (LP #668151) Need ability to create virtualenv from uec
+  * Bug (LP #672685) Launchpad SSO needs it's footer text modifying
+  * Bug (LP #675743) Enable more fine-grained control over sreg fields in test consumer
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Wed, 17 Nov 2010 10:11:01 -0300
+
+canonical-identity-provider (2.9.0.dev3) lucid; urgency=low
+
+  * Bug (LP #451336) Provide a way for consumer to return back to site after logout
+  * Bug (LP #628258) Ubuntu One should have a mobile version for SSO
+  * Bug (LP #652217) Add google analytics
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 05 Oct 2010 11:26:33 -0300
+
+canonical-identity-provider (2.9.0.dev2) lucid; urgency=low
+
+  * Bug (LP #605008) No lanugage picker flag on stale page (CSRF error page)
+  * Bug (LP #647189) Logout screen is redundant and bad grammar
+  * Bug (LP #605008) Usa flag missing from select language on CRSF page
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Wed, 29 Sep 2010 18:34:58 +0200
+
+canonical-identity-provider (2.9.0.dev1) lucid; urgency=low
+
+  * Bug (LP #451336) Need to redirect back to the consumer after logout
+  * Bug (LP #487218) Improve account creation workflow
+  * Bug (LP #631573) Provide minimal desktop theme for SSO
+  * Bug (LP #634325) Allow to get and set preferred language for a user via the OpenID transaction
+  * Bug (LP #638522) Mock server error when invalidating non-existing tokens
+  * Bug (LP #637642) broken image in logon screen
+
+ -- David Owen <david.owen@canonical.com>  Wed, 22 Sep 2010 11:04:41 -0600
+
+canonical-identity-provider (2.8.0.dev7) lucid; urgency=low
+
+  * Fixed deps again, to allow 1.0.18 of web-deps, but still pull in schemaconfig
+
+ -- David Owen <david.owen@canonical.com>  Mon, 13 Sep 2010 09:43:10 -0600
+
+canonical-identity-provider (2.8.0.dev6) lucid; urgency=low
+
+  * Fixed dependency to keep schemaconfig, not configglue (yet)
+
+ -- David Owen <david.owen@canonical.com>  Mon, 30 Aug 2010 10:19:50 -0600
+
+canonical-identity-provider (2.8.0.dev5) lucid; urgency=low
+
+  * Updated content of new user emails.
+  * Updated translation files.
+
+ -- Lukasz Czyzykowski <lukasz.czyzykowski@canonical.com>  Mon, 30 Aug 2010 14:57:48 +0200
+
+canonical-identity-provider (2.8.0.dev4) lucid; urgency=low
+
+  * Bug (LP: #616827) Minor change to email content
+
+ -- David Owen <david.owen@canonical.com>  Fri, 27 Aug 2010 10:42:27 -0600
+
+canonical-identity-provider (2.8.0.dev3) lucid; urgency=low
+
+  * Updated Polish and Chinese translations
+  * Fixed a few typos
+
+ -- David Owen <david.owen@canonical.com>  Thu, 26 Aug 2010 12:57:41 -0600
+
+canonical-identity-provider (2.8.0.dev2) lucid; urgency=low
+
+  * Updated Spanish and German translations
+
+ -- David Owen <david.owen@canonical.com>  Wed, 25 Aug 2010 15:20:36 -0600
+
+canonical-identity-provider (2.8.0.dev1) lucid; urgency=low
+
+  * Bug (LP: #564010) Improve logging
+  * Bug (LP: #583808) schedule cleanup of old nonces and associations
+  * Bug (LP: #608920) csrfmiddlewaretoken confuses Launchpad
+  * Bug (LP: #610931) notify ubuntu one of application token invalidation
+  * Bug (LP: #614646) 'Delete' button on Application page is not displayed in other languages
+  * Bug (LP: #615433) Typo in API error: CanNotResetPassowrdError
+  * Bug (LP: #616528) Validate password strength when resetting password
+  * Bug (LP: #616766) Bad spelling mistakes in the Polish translation
+  * Bug (LP: #616827) Minor change to email content
+  * Bug (LP: #619460) CSRF error page should be styled again
+  * Bug (LP: #620537) Use UbuntuBeta as font if it's available
+
+ -- David Owen <david.owen@canonical.com>  Tue, 24 Aug 2010 12:20:41 -0600
+
+canonical-identity-provider (2.7.1.dev4) lucid; urgency=low
+
+  * Added simplejson and lazr.uri to list of dependencies, as lazr.restful needs them but fails to depend on them on Lucid.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Tue, 17 Aug 2010 17:48:50 -0300
+
+canonical-identity-provider (2.7.1.dev3~lucid1) lucid; urgency=low
+
+  * Packaged for Lucid
+
+ -- David Owen <david.owen@canonical.com>  Thu, 05 Aug 2010 14:29:48 -0600
+
+canonical-identity-provider (2.7.1.dev2) hardy; urgency=low
+
+  * Bug (LP: #611768) teams requests throw exceptions for personless accounts
+
+ -- David Owen <david.owen@canonical.com>  Fri, 30 Jul 2010 12:02:18 -0600
+
+canonical-identity-provider (2.7.1.dev1) hardy; urgency=low
+
+  * Bug (LP: #611442) Notification e-mail with non-ASCII characters causes OOPSes
+
+ -- David Owen <david.owen@canonical.com>  Thu, 29 Jul 2010 15:14:51 -0600
+
+canonical-identity-provider (2.7.0.dev8) hardy; urgency=low
+
+  * Fixed the applications.html and versions.html templates.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Tue, 27 Jul 2010 17:10:13 -0300
+
+canonical-identity-provider (2.7.0.dev7) hardy; urgency=low
+
+  * Removed conflicts from translation files.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Tue, 27 Jul 2010 16:44:02 -0300
+
+canonical-identity-provider (2.7.0.dev6) hardy; urgency=low
+
+  * Updated translation strings for 2.7.0 release.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Tue, 27 Jul 2010 14:00:39 -0300
+
+canonical-identity-provider (2.7.0.dev6~lucid2) lucid; urgency=low
+
+  * Fixed dependency name
+
+ -- David Owen <dsowen@lithium.l.fugue88.ws>  Fri, 23 Jul 2010 15:47:32 -0600
+
+canonical-identity-provider (2.7.0.dev6~lucid1) lucid; urgency=low
+
+  * Packaged for Lucid
+
+ -- David Owen <dsowen@lithium.l.fugue88.ws>  Fri, 23 Jul 2010 14:00:53 -0600
+
+canonical-identity-provider (2.7.0.dev5) hardy; urgency=low
+
+  * Repackaged as 2.7.0.dev5
+  * Updated latest translations
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Thu, 22 Jul 2010 17:01:33 -0300
+
+canonical-identity-provider (2.7.0.dev4) hardy; urgency=low
+
+  * Repackaged as 2.7.0.dev4 (2.7.0.dev3 was previously pushed up)
+  * Fixed "Stength" password meter typo
+  * Enhanced password meter to use translatable strings
+  * Updated translations, including email templates
+  * Blocked access to /+applications when not in Ubuntu theme
+
+ -- David Owen <david.owen@canonical.com>  Mon, 19 Jul 2010 13:07:37 -0600
+
+canonical-identity-provider (2.7.0.dev3) hardy; urgency=low
+
+  * Fixed "Stength" password meter typo
+  * Enhanced password meter to use translatable strings
+  * Updated translations, including email templates
+  * Blocked access to /+applications when not in Ubuntu theme
+
+ -- David Owen <david.owen@canonical.com>  Mon, 19 Jul 2010 12:15:42 -0600
+
+canonical-identity-provider (2.7.0.dev2) hardy; urgency=low
+
+  * Fixed version strings and repackaged
+
+ -- David Owen <david.owen@canonical.com>  Thu, 15 Jul 2010 13:40:59 -0600
+
+canonical-identity-provider (2.7.0.dev1) hardy; urgency=low
+
+  * Packaged 2.7.0 release for staging
+  * Bug (LP: #507214) No Way To Remove Old Emails
+  * Bug (LP: #589335) Make auth tokens shorter so they can be entered manually
+  * Bug (LP: #589345) Add API token management UI to web
+  * Bug (LP: #544370) Readonly code only connects to http
+  * Bug (LP: #550792) Failover backend should recover automatically
+  * Bug (LP: #586799) Add private API for syncing accounts with external systems
+  * Bug (LP: #341754) List of 'details that will be sent' to RP is incomplete
+  * Bug (LP: #539500) +faq and +description shouldn't be available on the Launchpad branded site
+  * Bug (LP: #579111) login.ubuntu.com missing source link or license notice
+  * Bug (LP: #603516) Logo isn't fully compliant with guidelines
+  * Bug (LP: #449708) implement check_immediate for openid requests
+  * Bug (LP: #522829) Make list of previous sites into clickable links
+  * Bug (LP: #545111) Add a view to show the currently running version
+  * Bug (LP: #604596) IE8 plays havoc with the css on the new theme
+
+ -- David Owen <david.owen@canonical.com>  Thu, 15 Jul 2010 10:26:12 -0600
+
+canonical-identity-provider (2.6.1.dev2) hardy; urgency=low
+
+  * Updated translations
+  * Bug (LP: #602353) The helper text icon should be more obvious
+  * Bug (LP: #602731) Password instructions move on page load in LP Theme
+  * Bug (LP: #602737) Non-Javascript captcha human text box transposes to the right of the screen
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Thu, 08 Jul 2010 08:31:29 -0300
+
+canonical-identity-provider (2.6.1.dev1) hardy; urgency=low
+
+  * Packaged 2.6.1 release for staging 
+
+  * Bug (LP: #597401) Openid identity urls should display sanitized output of a user's real name
+  * Bug (LP: #259356) Login Service doesn't focus e-mail address field by default
+  * Bug (LP: #522380) ui changes for rebrand
+  * Bug (LP: #596899) Button on the CSRF page should be orange it looks odd grey
+  * Bug (LP: #596907) Password strength indicator cause tab movement to stop between boxes
+  * Bug (LP: #600598) Wrong ordering of css files causes black border on list of visited sites
+  * Bug (LP: #356621) 'Sign In' button on OpenID login page should be focused by default
+  * Bug (LP: #504439) loginservice-email-sent is using launchpad for feedback and support
+  * Bug (LP: #522751) Orange buttons on https://login.ubuntu.com are difficult to use
+  * Bug (LP: #557022) Password indicators are misaligned and incorrect
+  * Bug (LP: #523383) Buttons should seem clickable (launchpad theme)
+  * Bug (LP: #599331) Password strength indicator cuts into the password text box
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Tue, 06 Jul 2010 10:35:06 -0300
+
+canonical-identity-provider (2.6.0.dev2) hardy; urgency=low
+
+  * Fixed problem with lazr-js css files overriding definitions from SSO
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Fri, 18 Jun 2010 14:55:59 +0200
+
+canonical-identity-provider (2.6.0.dev1) hardy; urgency=low
+
+  * Bug (LP: #586702) typo in chinese translations
+  * Bug (LP: #574911) Launchpad OpenID Provider generates malformed POST
+    assertion responses
+  * Bug (LP: #495006) prefill email on"forgot password" page
+  * Bug (LP: #580460) Some strings are still not fully translator friendly
+  * Bug (LP: #579920) SSO secondary password shouldn't say didn't match when
+    there is an issue with the first
+  * Bug (LP: #588089) warning about unrecognised consumers escapes its own
+    markup
+  * Bug (LP: #544370) Readonly code only connects to http
+  * Bug (LP: #530271) CRSF Warning Needs Conditions
+  * Bug (LP: #589339) Add an API call to reset a user's password
+  * Bug (LP: #506405) Display password strength meter when setting password
+  * Bug (LP: #567354) Automated test coverage is incomplete
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Tue, 15 Jun 2010 18:55:30 +0200
+
+canonical-identity-provider (2.5.0.dev8) hardy; urgency=low
+
+  * Updated version of isd-web-dependencies to 1.0.13
+
+ -- Danny Tamez (Canonical) <danny.tamez@canonical.com>  Tue, 25 May 2010 16:03:05 -0500
+
+canonical-identity-provider (2.5.0.dev7) hardy; urgency=low
+
+  * Updated Chinese, Polish, Spanish and German translations
+
+ -- Danny Tamez (Canonical) <danny.tamez@canonical.com>  Wed, 19 May 2010 22:14:33 -0500
+
+canonical-identity-provider (2.5.0.dev6) hardy; urgency=low
+
+  * No new changes but package was missing some of the previous changes
+
+ -- Danny Tamez (Canonical) <danny.tamez@canonical.com>  Mon, 17 May 2010 10:49:51 -0500
+
+canonical-identity-provider (2.5.0.dev4) hardy; urgency=low
+
+  * Configuration fixes
+
+ -- Danny Tamez (Canonical) <danny.tamez@canonical.com>  Fri, 14 May 2010 21:33:34 -0500
+
+canonical-identity-provider (2.5.0.dev3) hardy; urgency=low
+
+  * Updated Spanish translation
+  * Fix for issue with (LP: #568325) not redirecting to certain pages after
+    selecting a language
+
+ -- Danny Tamez (Canonical) <danny.tamez@canonical.com>  Fri, 14 May 2010 17:41:44 -0500
+
+canonical-identity-provider (2.5.0.dev2) hardy; urgency=low
+
+  * Updated translations
+  * Updates to bugs (LP: #528389), (LP: #570895) and (LP: #571340)
+
+ -- Danny Tamez (Canonical) <danny.tamez@canonical.com>  Wed, 12 May 2010 13:31:04 -0500
+
+canonical-identity-provider (2.5.0.dev1) hardy; urgency=low
+
+  * Bug (LP: #553932) User passwords no longer displayed in OOPS logs.
+  * Bug (LP: #524614) Email setup issue causing excessive email to IS has
+    been fixed.
+  * Bug (LP: #556878) Now able to reactivate a deactivated account.
+  * Bug (LP: #570895) Schema configuration now able to handle multiple
+    implicit sections.
+  * Bug (LP: #531710) Now able to login with unicode characters.
+  * Bug (LP: #544370) Readonly configuration now supports HTTPS.
+  * Bug (LP: #550881) File permissions now correctly set for losas to handle
+    flag files.
+  * Bug (LP: #553966) Fixed issue with account password not found during
+    login.
+  * Bug (LP: #566630) Multiple improvements to admin interface.
+  * Bug (LP: #568327) Test consumer now able to fetch xrds on staging.
+  * Bug (LP: #571340) Schema config now able to handle raw values correctly.
+  * Bug (LP: #572367) OOPS ids now distinguished by branding as well as
+    server and app.
+  * Bug (LP: #524582) Fixed error when rendering /+resetpassword
+  * Bug (LP: #524611) Duplicates removed from APP_SERVERS setting
+  * Bug (LP: #528389) No longer silently failing if a logged in user tries to
+    confirm a new token account
+  * Bug (LP: #556836) Default consumer now able to handle unicode
+  * Bug (LP: #566610) EmailAddress now looks at account to derive person
+    before the person column of email_address is used
+  * Bug (LP: #579561) Fixed missing space in SSO description
+  * Bug (LP: #566778) Fixed crash occurring at login
+
+ -- Danny Tamez (Canonical) <danny.tamez@canonical.com>  Wed, 12 May 2010 13:31:04 -0500
+
+canonical-identity-provider (2.4.0.dev2) hardy; urgency=low
+
+  * Fix FAQ wording: SSO is open source.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Wed, 21 Apr 2010 17:17:00 +0200
+
+canonical-identity-provider (2.4.0.dev1) hardy; urgency=low
+
+  * Codebase i18n'd.
+  * Suspending an account should be easier in the admin UI (bug #544293)
+  * Switched to using new schemaconfig project (bug #556505)
+  * Fixed email verification token approval (bug #525586)
+  * Removed "Login Service" reference from emails (bug #525588)
+  * Do not allow full name to be a single space (bug #540418)
+  * Added nicely formatted offline pages for apache and haproxy (bug #553343)
+  * Expose private teams through the API (bug #562930)
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Fri, 16 Apr 2010 11:16:00 +0200
+
+canonical-identity-provider (2.3.2.dev3) hardy; urgency=low
+
+  * Fixed argument number mismatch in the openid teams code.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Sat, 03 Apr 2010 23:40:00 +0200
+
+canonical-identity-provider (2.3.2.dev2) hardy; urgency=low
+
+  * Fixed the API workflow doctest.
+  * Fixed generate_openid_identifier function installer.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Sat, 03 Apr 2010 20:21:00 +0200
+
+canonical-identity-provider (2.3.2.dev1) hardy; urgency=low
+
+  * Added new api calls (bug #544245, #536983, #541884)
+  * Fixed auth passing in apache (bug #541835)
+  * Fixed captcha proxy issue (bug #541904)
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Fri, 02 Apr 2010 13:48:22 +0200
+
+canonical-identity-provider (2.3.1.dev2) hardy; urgency=low
+
+  * Bugfix to reference the right column in lp_person.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Fri, 26 Mar 2010 17:51:34 -0300
+
+canonical-identity-provider (2.3.1.dev1) hardy; urgency=low
+
+  * Use the new lp_account table (bug #546949)
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Fri, 26 Mar 2010 10:44:20 -0300
+
+canonical-identity-provider (2.3.0.dev2) hardy; urgency=low
+
+  * Bug #527301 - use timeouts when calling remote app server
+  * Bug #538175 -The +decide page has the OP name hard-coded in the template
+
+ -- Danny Tamez <danny.tamez@canonical.com>  Tue, 16 Mar 2010 15:10:34 -0500
+
+canonical-identity-provider (2.3.0.dev1) hardy; urgency=low
+
+  * Bugs addressed 447111, 514213, 522422, 524636, 525563, 525702, 517167,
+      521193, 537657, 502870, 514159, 514459, 497336
+
+ -- Danny Tamez <danny.tamez@canonical.com>  Fri, 12 Mar 2010 16:24:25 -0600
+
+canonical-identity-provider (2.2.2.dev5) hardy; urgency=low
+
+  * Call reCaptcha API over HTTP.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Thu, 11 Mar 2010 14:19:00 +0100
+
+canonical-identity-provider (2.2.2.dev4) hardy; urgency=low
+
+  * Fixed API proxy usage for reCaptcha. (LP: #536983)
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Thu, 11 Mar 2010 11:28:00 +0100
+
+canonical-identity-provider (2.2.2.dev3) hardy; urgency=low
+
+  * Fixed merge problems
+
+ -- Danny Tamez <danny.tamez@canonical.com>  Tue, 09 Mar 2010 16:05:37 -0600
+
+canonical-identity-provider (2.2.2.dev2) hardy; urgency=low
+
+  * Made query filters for email also be case insensitive
+
+ -- Danny Tamez <danny.tamez@canonical.com>  Mon, 08 Mar 2010 21:23:21 -0600
+
+canonical-identity-provider (2.2.2.dev1) hardy; urgency=low
+
+  * Fixed issue with duplicate emails being created via New Account if email
+    only differed via case
+  * Fixed issue where emails created in SSO were not available in Launchpad
+  * Fixed issue where duplicate emails could be created via add new email in
+    edit account
+  * Removed ability of logging in via an unverified email
+
+ -- Danny Tamez <danny.tamez@canonical.com>  Mon, 08 Mar 2010 16:03:18 -0600
+
+canonical-identity-provider (2.2.1.dev1) hardy; urgency=low
+
+  * New replicated tables and supportin code for non-auth-set data, read-only
+    and prefixed with lp_
+  * Added protection from cross site scripting attacks
+  * Displaying a user friendly message instead of an oops when captcha is down
+  * Form validation added for password fields when non ascii characters are
+    entered
+
+ -- Danny Tamez <danny.tamez@canonical.com>  Wed, 24 Feb 2010 14:04:04 -0600
+canonical-identity-provider (2.2.0.dev11) hardy; urgency=low
+
+  * Fixed the wsgi file to avoid calling WSGIApplication.configure_server
+    multiple times.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Fri, 19 Feb 2010 07:48:06 -0300
+
+canonical-identity-provider (2.2.0.dev10) hardy; urgency=low
+
+  * Fixed several issues brought up in the LP branding review.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Thu, 18 Feb 2010 11:02:37 -0300
+
+canonical-identity-provider (2.2.0.dev9) hardy; urgency=low
+
+  * Added missing RequestContexts for rendering new branded base.html
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Thu, 18 Feb 2010 08:59:40 -0300
+
+canonical-identity-provider (2.2.0.dev8) hardy; urgency=low
+
+  * Bugfix for static page view (+faq and +description)
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Wed, 17 Feb 2010 15:24:59 -0300
+
+canonical-identity-provider (2.2.0.dev7) hardy; urgency=low
+
+  * Fixed setup.py to install the WADL file (site.zcml).
+  * Added the APIUser to the objects that can be managed from the admin.
+  * Removed identityprovider/models/captcha.py altogether, as it wasn't used
+    any more and imported Image.
+  * The embedded consumer uses the Ubuntu styling, as it had lost all styling
+    with the branding changes.
+  * Rearranged the settings to be more like those in config-staging.
+  * Added postgresql-plpython-8.3 to the space-shuttle script as it's needed
+    for generate_openid_identifier.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Wed, 17 Feb 2010 10:51:00 +0100
+
+canonical-identity-provider (2.2.0.dev6) hardy; urgency=low
+
+  * Added python-lazr.authentication dependency.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Tue, 16 Feb 2010 18:46:00 +0100
+
+canonical-identity-provider (2.2.0.dev5) hardy; urgency=low
+
+  * Conflict with lazr.restful 0.9.18 or greater.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Tue, 16 Feb 2010 17:41:00 +0100
+
+canonical-identity-provider (2.2.0.dev4) hardy; urgency=low
+
+  * The dependency should read python-lazr.restful.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Tue, 16 Feb 2010 15:37:00 +0100
+
+canonical-identity-provider (2.2.0.dev3) hardy; urgency=low
+
+  * Added lazr.restful (= 0.9.17) to the dependencies.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Tue, 16 Feb 2010 15:17:00 +0100
+
+canonical-identity-provider (2.2.0.dev2) hardy; urgency=low
+
+  * Fixed missing comma in debian/control.
+  * Moved webservices module under identityprovider package.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Tue, 16 Feb 2010 12:28:00 +0100
+
+canonical-identity-provider (2.2.0.dev1) hardy; urgency=low
+
+  * Changed to new replicated tables for non-auth-set data (#492038)
+  * Created an API for account creation and login (#506349)
+  * Implemented SSO service database fail-over (#490596)
+  * Made sso service re-brandable (#440607)
+  * Allowed trust root matches with or without trailing slash (#497075)
+  * DB failover flag files location is configurable (#517708)
+  * Buttons show as clickable (#504859)
+  * Provided automatic way of installing generate_openid_identifier in
+    database (#507028)
+  * Auto login works consistently (#512800)
+  * Unnecessary information no longer displayed when creating a new account
+    (#513008)
+  * QA Consumer SREG fields properly handled (#513988)
+  * Embedded consumer plays well with https (#521079)
+  * Reviewed Admin objects (#497336)
+  * Email is case insensitive (#515254)
+
+ -- Ricardo Kirkner <ricardo.kirkner@canonical.com>  Mon, 15 Feb 2010 17:32:18 -0300
+
+canonical-identity-provider (2.1.2.dev1) hardy; urgency=low
+
+  * Added a "What's this?" page (#516304)
+  * Added a FAQ (#516306)
+  * Fixed the URL of noscript reCaptcha (#517465)
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Tue, 09 Feb 2010 20:24:00 +0100
+
+canonical-identity-provider (2.1.1.dev2) hardy; urgency=low
+
+  * Added memcached and python-memcache as dependencies
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Thu, 28 Jan 2010 09:27:25 -0300
+
+canonical-identity-provider (2.1.1.dev1) hardy; urgency=low
+
+  * Bumped version to 2.1.1
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Wed, 27 Jan 2010 16:01:03 -0300
+
+canonical-identity-provider (2.1.0.dev6) hardy; urgency=low
+
+  * Added an embedded consumer for testing.
+  * Fixed a bug with untrusted RPs.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Mon, 25 Jan 2010 11:38:20 -0300
+
+canonical-identity-provider (2.1.0.dev5) hardy; urgency=low
+
+  * Switched back to using non lp_ tables
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Mon, 11 Jan 2010 12:02:07 -0300
+
+canonical-identity-provider (2.1.0.dev4) hardy; urgency=low
+
+  * Added missing preferred email setting code snippet.
+  * Depend on canonical-isd-web-dependencies >= 1.0.5.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Fri,  8 Jan 2010 17:30:00 +0100
+
+canonical-identity-provider (2.1.0.dev3) hardy; urgency=low
+
+  * Merged fix for week password.
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Thu, 07 Jan 2010 16:23:40 +0100
+canonical-identity-provider (2.1.0.dev2) hardy; urgency=low
+
+  * Improved oops generating (LP:#495455)
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Thu, 07 Jan 2010 13:39:03 +0100
+canonical-identity-provider (2.1.0.dev1) hardy; urgency=low
+
+ * Minimum password strength policy is now enforced (LP:#495480)
+
+ * Email addresses aren't leaked during login/new account
+   workflows (LP:#495486)
+
+ * Rate limitation is enforced for login requests (LP:#495490)
+
+ * Failed responses do not automatically redirect back to the
+   openid provider (LP:#497066)
+
+ * Secure session cookies are used (LP:#495587)
+
+ * Re-enabled ability to delete unverified emails (LP:#491319)
+
+ * Recaptcha uses https service to avoid browser security alerts (LP:#492373)
+
+ * Captcha failures are handled so user actions aren't blocked (LP:#492031)
+
+  Other bugs addressed during this release:
+    LP:#496895, LP:#494646, LP:#495139, LP:#495489, LP:#496920,
+    LP:#497026, LP:#497045, LP:#497069
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Wed, 06 Jan 2010 15:56:14 -0300
+
+canonical-identity-provider (2.0.0.dev6) hardy; urgency=low
+
+  * Changed OpenIDAssociation's primary key from server_url over to
+    handle
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Fri, 11 Dec 2009 09:38:55 -0300
+
+canonical-identity-provider (2.0.0.dev5) hardy; urgency=low
+
+  * storeAssociation tries to update an association instead of blindly
+    creating new ones.
+
+  * Started work for load testing.
+
+  * Small fixes to an email template.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>  Thu, 10 Dec 2009 17:42:33 -0300
+
+canonical-identity-provider (2.0.0.dev4) hardy; urgency=low
+
+  * Pre-release tweaks to design, layout and copy.
+
+  * Improved test coverage, added test fixtures to run tests with a known
+    database state, and fixed tests to run with the new layout.
+
+  * Added a setting to disable captcha verification.
+
+  * Fixed the X-XRDS-Location header spelling.
+
+ -- Anthony Lenton <anthony.lenton@canonical.com>   Fri, 04 Dec 2009 08:21:41 -0300
+
+canonical-identity-provider (2.0.0.dev3) hardy; urgency=low
+
+  * Just bumped the build number.
+
+ -- Szilveszter Farkas (Canonical) <szilveszter.farkas@canonical.com>  Fri, 27 Nov 2009 16:17:00 +0100
+
+canonical-identity-provider (2.0.0.dev2) hardy; urgency=low
+
+  * Updated dependencies to point to new ISD meta package
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Thu, 26 Nov 2009 16:23:57 +0100
+
+canonical-identity-provider (2.0.0.dev1) hardy; urgency=low
+
+  * Initial release.
+
+ -- Łukasz Czyżykowski <lukasz.czyzykowski@canonical.com>  Thu, 12 Nov 2009 10:58:20 +0100

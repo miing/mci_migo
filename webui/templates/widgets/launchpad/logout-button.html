@@ -1,0 +1,16 @@
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% load i18n %}
+
+<form action="/+logout" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="loggingout" value="1" />
+    {% if not readonly %}<a href="/+edit" class="sprite person">{% endif %}
+    {% if user.username %}{{ user.username }}{% else %}{{ user.displayname }}{% endif %}
+    {% if not readonly %}</a>{% endif %}
+    &bull;
+    <input type="submit" name="logout" value="Log Out" />
+</form>

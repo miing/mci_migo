@@ -1,0 +1,4 @@
+radio_nickname^radio_fullname^radio_email^radio_language^toggled_elements^disabled_elements^returned_sreg
+'id_sreg_nickname_2'^'id_sreg_fullname_2'^'id_sreg_email_2'^'id_sreg_language_2'^'None'^"['id_email','id_nickname','id_fullname','id_language']"^"['fullname: ISD Test','nickname: isdtest','email: isdtest@canonical.com','language: en']"
+'id_sreg_nickname_1'^'id_sreg_fullname_1'^'id_sreg_email_1'^'id_sreg_language_1'^"['id_email','id_nickname','id_fullname','id_language']"^'None'^'None'
+'id_sreg_nickname_1'^'id_sreg_fullname_1'^'id_sreg_email_2'^'id_sreg_language_1'^"['id_nickname','id_language']"^"['id_email']"^"['nickname: isdtest','email: isdtest@canonical.com','language: en']"

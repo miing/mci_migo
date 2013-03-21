@@ -1,0 +1,321 @@
+.. vim: ft=rst
+
+.. _token:
+
+=====
+Token
+=====
+
+Ubuntu SSO uses tokens of different kinds for different aspects of the
+service. Currently it knows about the following types of tokens
+
+* :ref:`OAuth token <token_oauth>`
+* :ref:`Password reset token <token_password>`
+
+
+.. _token_oauth:
+
+===========
+OAuth token
+===========
+
+An `OAuth token` represents a token used to sign requests using the OAuth 1.0a
+spec.
+
+Data structure
+==============
+
+* consumer_key
+* consumer_secret
+* token_key
+* token_secret
+* token_name
+* date_created
+* date_updated
+
+Use cases
+=========
+
+.. _token_oauth-create:
+
+Create an oauth token
+---------------------
+
+.. http:post:: /api/v2/tokens/oauth
+
+    Creates a new OAuth token
+
+    :form email: user's email address
+    :form password: user's password
+    :form token_name: a name for the token
+    :form otp: one-time password (optional)
+
+    :status 200: existing token returned
+    :status 201: token created
+    :status 401: invalid credentials or otp password required
+    :status 403: invalid otp provided
+    :status 403: account is suspended or inactive
+    :status 403: email invalidated
+
+A consumer requesting an authentication token must provide a *token name*.
+This name will be used by the *user* to identify the token when doing token
+management. The recommended scheme for token names is
+"application_name-device_name".
+
+This allows a user to easily identify which tokens belong to which application
+or to which device. For example they may wish to revoke all tokens for a
+particular application across their devices, or revoke all tokens on a
+particular device.
+
+If a token name is requested that already exists (for this user) then the
+existing token will be returned (status code 200) instead of a new one being 
+created (status code 201).
+
+If an otp (one-time-password) is provided then it will checked against any
+two factor devices registered for the account. If the otp does not match any
+devices then a 403 will be returned.
+
+If an otp is required for the account, but not sent, then a 401 will be
+returned.
+
+
+Errors
+......
+
+* **INVALID_CREDENTIALS**: Provided email/password is not correct.
+
+  Error status code 401.
+
+  This error has no additional fields in ``extra``.
+
+* **ACCOUNT_SUSPENDED**: Account has been suspended.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+* **ACCOUNT_DEACTIVATED**: Account has been deactivated.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+* **EMAIL_INVALIDATED**: This email address has been invalidated.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+* **TWOFACTOR_REQUIRED**: 2-factor authentication required.
+
+  Error status code 401.
+
+  This error has no additional fields in ``extra``.
+
+* **TWOFACTOR_FAILURE**: The provided 2-factor key is not recognised.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+
+Examples
+........
+
+**Request**:
+
+    .. sourcecode:: http
+
+        POST /api/v2/tokens/oauth HTTP/1.1
+        Host: login.ubuntu.com
+        Accept: application/json
+
+        {
+            "email": "foo@foo.com",
+            "password": "thepassword",
+            "token_name": "the-name"
+        }
+
+    If 2-factor authentication is required:
+
+    .. sourcecode:: http
+
+        POST /api/v2/tokens/oauth HTTP/1.1
+        Host: login.ubuntu.com
+        Accept: application/json
+
+        {
+            "email": "foo@foo.com",
+            "password": "thepassword",
+            "token_name": "the-name",
+            "otp": "123456"
+        }
+
+**Response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 201 CREATED
+        Content-Type: application/json
+        Location: /api/v2/tokens/oauth/the-key
+
+        {
+            "href": "https://login.ubuntu.com/api/v2/tokens/oauth/the-key",
+            "token_key": "token-key",
+            "token_secret": "token-secret",
+            "token_name": "token-name",
+            "consumer_key": "consumer-key",
+            "consumer_secret": "consumer-secret"
+            "date_created": "2013-01-11 12:43:23",
+            "date_updated": "2013-01-11 12:43:23"
+        }
+
+    If credentials don't match:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: application/json
+
+        {
+            "code": "INVALID_CREDENTIALS",
+            "message": "Your email/password isn't correct.",
+            "extra": {}
+        }
+
+    If 2-factor authentication is required:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORISED
+        Content-Type: application/json
+
+        {
+            "code": "TWOFACTOR_REQUIRED",
+            "message": "This account requires 2-factor authentication.",
+            "extra": {}
+        }
+
+.. _token_password:
+
+====================
+Password reset token
+====================
+
+A `password reset token` represents a token used to request a password reset.
+This token will be generated and an email will be sent to the user's
+preferred email address including a value that has to be
+provided when specifying the new password.
+
+Data structure
+==============
+
+* email
+
+Use cases
+=========
+
+.. _token_password-create:
+
+Create a password reset token
+-----------------------------
+
+.. http:post:: /api/v2/tokens/password
+
+    Creates a new password reset token
+
+    :form email: user's email address
+
+    :status 201: token created
+    :status 403: account suspended
+    :status 403: account deactivated
+    :status 403: can not reset password
+    :status 403: email invalidated
+    :status 403: too many tokens
+
+A consumer requesting a password reset token must provide an *email* address.
+This email address will be used to look up the user's account in order to send
+the user an email containing a *token* that must be provided when setting
+the new password.
+
+To prevent spamming unknowing users by sending multiple password reset emails,
+only a maximum amount of non-consumed tokens will be allowed
+to exist at any given time. When such limit is reached, attempting to create a
+new token will result in an error response.
+
+Errors
+......
+
+* **ACCOUNT_SUSPENDED**: Account has been suspended.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+* **ACCOUNT_DEACTIVATED**: Account has been deactivated.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+* **EMAIL_INVALIDATED**: This email address has been invalidated.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+* **CAN_NOT_RESET_PASSWORD**: Can not reset password.
+
+  Error status code 403.
+
+  This error has no additional fields in ``extra``.
+
+* **TOO_MANY_TOKENS**: Too many non-consumed tokens exist. Further token
+  creation is not allowed until existing tokens expire or are consumed.
+
+  Error status is 403.
+
+  This error has no additional fields in ``extra``.
+
+
+Examples
+........
+
+**Request**:
+
+    .. sourcecode:: http
+
+        POST /api/v2/tokens/password HTTP/1.1
+        Host: login.ubuntu.com
+        Accept: application/json
+
+        {
+            "email": "foo@foo.com"
+        }
+
+**Response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 201 CREATED
+        Content-Type: application/json
+        Location: /api/v2/tokens/password/the-key
+
+        {
+            "email": "foo@foo.com",
+        }
+
+    If too many tokens exist:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 403 FORBIDDEN
+        Content-Type: application/json
+
+        {
+            "code": "TOO_MANY_TOKENS",
+            "message": "Too many non-consumed tokens exist. Further token "
+                       "creation is not allowed until existing tokens "
+                       "are consumed.",
+            "extra": {}
+        }

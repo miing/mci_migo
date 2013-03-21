@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Add an email" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Add an email address to your account" %}</h1>
+{% endblock %}
+
+{% block content_id %}auth{% endblock %}
+
+{% block content %}
+    <p>{% blocktrans %}Enter your email address, and we will send you instructions on how to confirm your account.{% endblocktrans %}</p>
+
+    <form action="{% url new_email %}" method="post" name="newemailform">
+        {% csrf_token %}
+        <p class="input-row{% if form.newemail.errors %} haserrors{% endif %}">
+            <label for="id_newemail">{% trans "Email address" %}</label>
+            <br />
+            {{ form.newemail }}
+            {% if form.newemail.errors %}
+                <span class="error">{{ form.newemail.errors|first }}</span>
+            {% endif %}
+        </p>
+        <p class="actions">
+            <button type="submit" class="btn" name="continue"><span><span>{% trans "Send instructions" %}</span></span></button>
+            {% trans "or" %}
+            <a href=".">{% trans "cancel" %}</a>
+        </p>
+    </form>
+    <script type="text/javascript">
+    document.newemailform.newemail.focus();
+    </script>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% trans "Delete unverified email" %}
+{% endblock %}
+
+{% block text_title %}
+  <h2 class="main">{% blocktrans %}Delete {{ email }}?{% endblocktrans %}</h2>
+{% endblock %}
+
+{% block content_id %}auth{% endblock %}
+
+{% block content %}
+    <div class="info">
+        <p>{% blocktrans %}Are you sure you want to delete this email address?{% endblocktrans %}</p>
+    </div>
+    <div class="actions">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <p>
+                <button type="submit" class="btn" name="delete"><span><span>{% trans "Yes, delete" %}</span></span></button>
+                {% trans "or" %}
+                {% include "common/cancel_link.html" %}
+            </p>
+        </form>
+    </div>
+    <br style="clear: both" />
+{% endblock %}

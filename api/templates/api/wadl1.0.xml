@@ -1,0 +1,1399 @@
+<?xml version="1.0"?>
+<!DOCTYPE application [
+  <!ENTITY nbsp "\&#160;">
+]>
+<wadl:application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://research.sun.com/wadl/2006/10"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wadl="http://research.sun.com/wadl/2006/10"
+                  xsi:schemaLocation="http://research.sun.com/wadl/2006/10/wadl.xsd">
+
+  <!--There is one "service root" resource, located (as you'd expect)
+      at the service root. This very document is the WADL
+      representation of the "service root" resource.-->
+  <wadl:resources base="{{ baseurl }}/api/1.0/">
+    <wadl:resource path="" type="#service-root"/>
+  </wadl:resources>
+
+  <!--A "service root" resource responds to GET.-->
+  <wadl:resource_type id="service-root">
+    <wadl:doc>The root of the web service.</wadl:doc>
+    <wadl:method name="GET" id="service-root-get">
+      <wadl:response>
+        <wadl:representation href="#service-root-json"/>
+        <wadl:representation mediaType="application/vnd.sun.wadl+xml" id="service-root-wadl"/>
+        </wadl:response>
+      </wadl:method>
+  </wadl:resource_type>
+
+  <!--The JSON representation of a "service root" resource contains a
+      number of links to collection-type resources.-->
+  <wadl:representation mediaType="application/json" id="service-root-json">
+    
+      <wadl:param style="plain"
+                  path="$['registrations_collection_link']"
+                  name="registrations_collection_link">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#registrations"/>
+      </wadl:param>
+    
+    
+      <wadl:param style="plain"
+                  path="$['authentications_collection_link']"
+                  name="authentications_collection_link">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#authentications"/>
+      </wadl:param>
+    
+    
+      <wadl:param style="plain"
+                  path="$['captchas_collection_link']"
+                  name="captchas_collection_link">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#captchas"/>
+      </wadl:param>
+    
+    
+      <wadl:param style="plain"
+                  path="$['accounts_collection_link']"
+                  name="accounts_collection_link">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#accounts"/>
+      </wadl:param>
+    
+    
+      <wadl:param style="plain"
+                  path="$['validations_collection_link']"
+                  name="validations_collection_link">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#accounts"/>
+      </wadl:param>
+    
+    <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+      <wadl:doc>The link to the WADL description of this resource.</wadl:doc>
+      <wadl:link/>
+    </wadl:param>
+  </wadl:representation>
+
+  <!--In addition to the service root, this document describes all the
+      types of resources you might encounter as you browse this web
+      service.-->
+
+  <!--Begin resource_type definitions for collection resources.-->
+  
+    <wadl:resource_type id="accounts">
+      
+      <wadl:method name="GET" id="accounts-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#account-page"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="accounts-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method id="accounts-me" name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Get details for the currently authenticated user.
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true" fixed="me">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="accounts-team_memberships" name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Query account for team memberships
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="team_memberships">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="team_names">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of team names to check
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="accounts-validate_email" name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Validate email by sending token user received in email
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="validate_email">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="email_token">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Email validation token.
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+    </wadl:resource_type>
+
+  
+  
+    <wadl:resource_type id="authentications">
+      
+      <wadl:method name="GET" id="authentications-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#authentication-page"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="authentications-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method id="authentications-me" name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Get details for the currently authenticated user.
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true" fixed="me">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-authenticate"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Obtain OAuth token for logged in user
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true" fixed="authenticate">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="token_name">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Token name.
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-team_memberships"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Query user for team memberships
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="team_memberships">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="team_names">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of team names to check
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="openid_identifier">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+OpenID Identifier used for asking forteam memberships on behalf of other user.
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-validate_token"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+<p>Check that a token is valid.</p>
+<p>If valid, this method return the token and consumer secrets</p>
+
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="validate_token">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="token">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+The token you want to validate
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="consumer_key">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+The consumer key (openid identifier)
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="false"
+                        name="max_age">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Maximum age (in seconds) for which the token is considered valid.
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-account_by_openid"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Retrieve account information based on OpenID identifier
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="account_by_openid">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="openid">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+OpenID Identifier of the account
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-validate_email"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Validate email by sending token user received in email
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="validate_email">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="email_token">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Email validation token.
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-account_by_email"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Retrieve account information based on email address
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="account_by_email">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="email">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Email address of the account
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-list_tokens"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Get the currently valid tokens for a given user
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true" fixed="list_tokens">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="consumer_key">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+User's OpenID identifier
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="authentications-invalidate_token"
+                   name="POST">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Make the given token invalid
+</wadl:doc>
+        <wadl:request>
+          <wadl:representation
+    mediaType="application/x-www-form-urlencoded">
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="invalidate_token">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="token">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+The token you want to invalidate
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="consumer_key">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+The consumer key (openid identifier)
+</wadl:doc>
+              
+            </wadl:param>
+          </wadl:representation>
+        </wadl:request>
+        
+      </wadl:method>
+    </wadl:resource_type>
+
+  
+  
+    <wadl:resource_type id="captchas">
+      
+      <wadl:method name="GET" id="captchas-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#captcha-page"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="captchas-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method id="captchas-new" name="POST">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Generate a new captcha
+</wadl:doc>
+        <wadl:request>
+          <wadl:representation
+    mediaType="application/x-www-form-urlencoded">
+            <wadl:param style="query" name="ws.op"
+                        required="true" fixed="new">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+          </wadl:representation>
+        </wadl:request>
+        
+      </wadl:method>
+    </wadl:resource_type>
+
+  
+  
+    <wadl:resource_type id="registrations">
+      
+      <wadl:method name="GET" id="registrations-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#registration-page"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="registrations-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method id="registrations-me" name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Get details for the currently authenticated user.
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true" fixed="me">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="registrations-team_memberships"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Query account for team memberships
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="team_memberships">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="team_names">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of team names to check
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="registrations-validate_email"
+                   name="GET">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Validate email by sending token user received in email
+</wadl:doc>
+        <wadl:request>
+          
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="validate_email">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="email_token">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Email validation token.
+</wadl:doc>
+              
+            </wadl:param>
+          
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="registrations-request_password_reset_token"
+                   name="POST">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Request password reset code to be sent to the email
+</wadl:doc>
+        <wadl:request>
+          <wadl:representation
+    mediaType="application/x-www-form-urlencoded">
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="request_password_reset_token">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="email">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Email address.
+</wadl:doc>
+              
+            </wadl:param>
+          </wadl:representation>
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="registrations-set_new_password"
+                   name="POST">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Set new password for given user
+</wadl:doc>
+        <wadl:request>
+          <wadl:representation
+    mediaType="application/x-www-form-urlencoded">
+            <wadl:param style="query" name="ws.op"
+                        required="true"
+                        fixed="set_new_password">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="new_password">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+New password
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="token">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Password reset token.
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="email">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Email address.
+</wadl:doc>
+              
+            </wadl:param>
+          </wadl:representation>
+        </wadl:request>
+        
+      </wadl:method>
+      <wadl:method id="registrations-register" name="POST">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Generate a new captcha
+</wadl:doc>
+        <wadl:request>
+          <wadl:representation
+    mediaType="application/x-www-form-urlencoded">
+            <wadl:param style="query" name="ws.op"
+                        required="true" fixed="register">
+              <wadl:doc>The name of the operation being invoked.</wadl:doc>
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="captcha_solution">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Solution for the generated captcha.
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="captcha_id">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+ID for the generated captcha
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="password">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Password should be at least 8 characters long.
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="false"
+                        name="displayname">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Full name
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="true"
+                        name="email">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Email address.
+</wadl:doc>
+              
+            </wadl:param>
+            <wadl:param style="query" required="false"
+                        name="platform">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Consumer platform.
+</wadl:doc>
+
+            </wadl:param>
+            <wadl:param style="query" required="false"
+                        name="validate_redirect_to">
+             <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+URL to redirect to after email validation.
+</wadl:doc>
+              
+            </wadl:param>
+          </wadl:representation>
+        </wadl:request>
+        
+      </wadl:method>
+    </wadl:resource_type>
+
+  
+  <!--End resource_type definitions for collection resources.-->
+
+  <!--Begin representation and resource_type definitions for entry
+      resources and the collections that contain them. -->
+  
+    <wadl:resource_type id="account">
+      
+      <wadl:method name="GET" id="account-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#account-full"/>
+          <wadl:representation
+    mediaType="application/xhtml+xml" id="account-xhtml"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="account-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method name="PUT" id="account-put">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#account-full"/>
+        </wadl:request>
+      </wadl:method>
+
+      <wadl:method name="PATCH" id="account-patch">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#account-diff"/>
+        </wadl:request>
+      </wadl:method>
+
+      
+
+    </wadl:resource_type>
+
+
+    <wadl:representation mediaType="application/json"
+                         id="account-full">
+      <wadl:param style="plain" name="self_link" path="$['self_link']">
+        <wadl:doc>The canonical link to this resource.</wadl:doc>
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#account"/>
+      </wadl:param>
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:doc>
+          The link to the WADL description of this resource.
+        </wadl:doc>
+        <wadl:link/>
+      </wadl:param>
+      <wadl:param style="plain" name="http_etag" path="$['http_etag']">
+        <wadl:doc>
+          The value of the HTTP ETag for this resource.
+        </wadl:doc>
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <wadl:representation mediaType="application/json"
+                         id="account-diff">
+      <wadl:param style="plain" required="false"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <!--Collection page for this type of entry-->
+    <wadl:resource_type id="account-page-resource">
+      <wadl:method name="GET" id="account-page-resource-get">
+        <wadl:response>
+          <wadl:representation href="#account-page"/>
+        </wadl:response>
+      </wadl:method>
+    </wadl:resource_type>
+
+    <wadl:representation mediaType="application/json"
+                         id="account-page">
+
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:link/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="total_size" path="$['total_size']" required="true"/>
+
+      <wadl:param style="plain" name="start" path="$['start']" required="true"/>
+
+      <wadl:param style="plain" name="next_collection_link" path="$['next_collection_link']">
+        <wadl:link resource_type="#account-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="prev_collection_link" path="$['prev_collection_link']">
+        <wadl:link resource_type="#account-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="entries" path="$['entries']" required="true"/>
+
+      <wadl:param style="plain" name="entry_links" path="$['entries'][*]['self_link']">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#account"/>
+      </wadl:param>
+  </wadl:representation>
+
+  
+  
+    <wadl:resource_type id="authentication">
+      
+      <wadl:method name="GET" id="authentication-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#authentication-full"/>
+          <wadl:representation
+    mediaType="application/xhtml+xml"
+    id="authentication-xhtml"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="authentication-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method name="PUT" id="authentication-put">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#authentication-full"/>
+        </wadl:request>
+      </wadl:method>
+
+      <wadl:method name="PATCH" id="authentication-patch">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#authentication-diff"/>
+        </wadl:request>
+      </wadl:method>
+
+      
+
+    </wadl:resource_type>
+
+
+    <wadl:representation mediaType="application/json"
+                         id="authentication-full">
+      <wadl:param style="plain" name="self_link" path="$['self_link']">
+        <wadl:doc>The canonical link to this resource.</wadl:doc>
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#authentication"/>
+      </wadl:param>
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:doc>
+          The link to the WADL description of this resource.
+        </wadl:doc>
+        <wadl:link/>
+      </wadl:param>
+      <wadl:param style="plain" name="http_etag" path="$['http_etag']">
+        <wadl:doc>
+          The value of the HTTP ETag for this resource.
+        </wadl:doc>
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <wadl:representation mediaType="application/json"
+                         id="authentication-diff">
+      <wadl:param style="plain" required="false"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <!--Collection page for this type of entry-->
+    <wadl:resource_type id="authentication-page-resource">
+      <wadl:method name="GET"
+                   id="authentication-page-resource-get">
+        <wadl:response>
+          <wadl:representation href="#authentication-page"/>
+        </wadl:response>
+      </wadl:method>
+    </wadl:resource_type>
+
+    <wadl:representation mediaType="application/json"
+                         id="authentication-page">
+
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:link/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="total_size" path="$['total_size']" required="true"/>
+
+      <wadl:param style="plain" name="start" path="$['start']" required="true"/>
+
+      <wadl:param style="plain" name="next_collection_link" path="$['next_collection_link']">
+        <wadl:link resource_type="#authentication-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="prev_collection_link" path="$['prev_collection_link']">
+        <wadl:link resource_type="#authentication-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="entries" path="$['entries']" required="true"/>
+
+      <wadl:param style="plain" name="entry_links" path="$['entries'][*]['self_link']">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#authentication"/>
+      </wadl:param>
+  </wadl:representation>
+
+  
+  
+    <wadl:resource_type id="captcha">
+      
+      <wadl:method name="GET" id="captcha-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#captcha-full"/>
+          <wadl:representation
+    mediaType="application/xhtml+xml" id="captcha-xhtml"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="captcha-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method name="PUT" id="captcha-put">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#captcha-full"/>
+        </wadl:request>
+      </wadl:method>
+
+      <wadl:method name="PATCH" id="captcha-patch">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#captcha-diff"/>
+        </wadl:request>
+      </wadl:method>
+
+      
+
+    </wadl:resource_type>
+
+
+    <wadl:representation mediaType="application/json"
+                         id="captcha-full">
+      <wadl:param style="plain" name="self_link" path="$['self_link']">
+        <wadl:doc>The canonical link to this resource.</wadl:doc>
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#captcha"/>
+      </wadl:param>
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:doc>
+          The link to the WADL description of this resource.
+        </wadl:doc>
+        <wadl:link/>
+      </wadl:param>
+      <wadl:param style="plain" name="http_etag" path="$['http_etag']">
+        <wadl:doc>
+          The value of the HTTP ETag for this resource.
+        </wadl:doc>
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['content']" name="content">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Captcha content
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Captcha ID
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <wadl:representation mediaType="application/json"
+                         id="captcha-diff">
+      <wadl:param style="plain" required="false"
+                  path="$['content']" name="content">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Captcha content
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Captcha ID
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <!--Collection page for this type of entry-->
+    <wadl:resource_type id="captcha-page-resource">
+      <wadl:method name="GET" id="captcha-page-resource-get">
+        <wadl:response>
+          <wadl:representation href="#captcha-page"/>
+        </wadl:response>
+      </wadl:method>
+    </wadl:resource_type>
+
+    <wadl:representation mediaType="application/json"
+                         id="captcha-page">
+
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:link/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="total_size" path="$['total_size']" required="true"/>
+
+      <wadl:param style="plain" name="start" path="$['start']" required="true"/>
+
+      <wadl:param style="plain" name="next_collection_link" path="$['next_collection_link']">
+        <wadl:link resource_type="#captcha-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="prev_collection_link" path="$['prev_collection_link']">
+        <wadl:link resource_type="#captcha-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="entries" path="$['entries']" required="true"/>
+
+      <wadl:param style="plain" name="entry_links" path="$['entries'][*]['self_link']">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#captcha"/>
+      </wadl:param>
+  </wadl:representation>
+
+  
+  
+    <wadl:resource_type id="registration">
+      
+      <wadl:method name="GET" id="registration-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#registration-full"/>
+          <wadl:representation
+    mediaType="application/xhtml+xml"
+    id="registration-xhtml"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="registration-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method name="PUT" id="registration-put">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#registration-full"/>
+        </wadl:request>
+      </wadl:method>
+
+      <wadl:method name="PATCH" id="registration-patch">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#registration-diff"/>
+        </wadl:request>
+      </wadl:method>
+
+      
+
+    </wadl:resource_type>
+
+
+    <wadl:representation mediaType="application/json"
+                         id="registration-full">
+      <wadl:param style="plain" name="self_link" path="$['self_link']">
+        <wadl:doc>The canonical link to this resource.</wadl:doc>
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#registration"/>
+      </wadl:param>
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:doc>
+          The link to the WADL description of this resource.
+        </wadl:doc>
+        <wadl:link/>
+      </wadl:param>
+      <wadl:param style="plain" name="http_etag" path="$['http_etag']">
+        <wadl:doc>
+          The value of the HTTP ETag for this resource.
+        </wadl:doc>
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <wadl:representation mediaType="application/json"
+                         id="registration-diff">
+      <wadl:param style="plain" required="false"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <!--Collection page for this type of entry-->
+    <wadl:resource_type id="registration-page-resource">
+      <wadl:method name="GET"
+                   id="registration-page-resource-get">
+        <wadl:response>
+          <wadl:representation href="#registration-page"/>
+        </wadl:response>
+      </wadl:method>
+    </wadl:resource_type>
+
+    <wadl:representation mediaType="application/json"
+                         id="registration-page">
+
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:link/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="total_size" path="$['total_size']" required="true"/>
+
+      <wadl:param style="plain" name="start" path="$['start']" required="true"/>
+
+      <wadl:param style="plain" name="next_collection_link" path="$['next_collection_link']">
+        <wadl:link resource_type="#registration-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="prev_collection_link" path="$['prev_collection_link']">
+        <wadl:link resource_type="#registration-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="entries" path="$['entries']" required="true"/>
+
+      <wadl:param style="plain" name="entry_links" path="$['entries'][*]['self_link']">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#registration"/>
+      </wadl:param>
+  </wadl:representation>
+
+  
+  
+    <wadl:resource_type id="validation">
+      
+      <wadl:method name="GET" id="validation-get">
+        <wadl:response>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#validation-full"/>
+          <wadl:representation
+    mediaType="application/xhtml+xml" id="validation-xhtml"/>
+          <wadl:representation
+    mediaType="application/vnd.sun.wadl+xml"
+    id="validation-wadl"/>
+        </wadl:response>
+      </wadl:method>
+
+      <wadl:method name="PUT" id="validation-put">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#validation-full"/>
+        </wadl:request>
+      </wadl:method>
+
+      <wadl:method name="PATCH" id="validation-patch">
+        <wadl:request>
+          <wadl:representation
+    href="{{ baseurl }}/api/1.0/#validation-diff"/>
+        </wadl:request>
+      </wadl:method>
+
+      
+
+    </wadl:resource_type>
+
+
+    <wadl:representation mediaType="application/json"
+                         id="validation-full">
+      <wadl:param style="plain" name="self_link" path="$['self_link']">
+        <wadl:doc>The canonical link to this resource.</wadl:doc>
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#validation"/>
+      </wadl:param>
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:doc>
+          The link to the WADL description of this resource.
+        </wadl:doc>
+        <wadl:link/>
+      </wadl:param>
+      <wadl:param style="plain" name="http_etag" path="$['http_etag']">
+        <wadl:doc>
+          The value of the HTTP ETag for this resource.
+        </wadl:doc>
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="true"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <wadl:representation mediaType="application/json"
+                         id="validation-diff">
+      <wadl:param style="plain" required="false"
+                  path="$['preferred_email']"
+                  name="preferred_email">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Primary email address
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['unverified_emails']"
+                  name="unverified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of unverified emails
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['id']" name="id">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+Account ID
+</wadl:doc>
+        
+      </wadl:param>
+      <wadl:param style="plain" required="false"
+                  path="$['verified_emails']"
+                  name="verified_emails">
+        <wadl:doc xmlns="http://www.w3.org/1999/xhtml">
+List of verified emails
+</wadl:doc>
+        
+      </wadl:param>
+    </wadl:representation>
+
+    <!--Collection page for this type of entry-->
+    <wadl:resource_type id="validation-page-resource">
+      <wadl:method name="GET"
+                   id="validation-page-resource-get">
+        <wadl:response>
+          <wadl:representation href="#validation-page"/>
+        </wadl:response>
+      </wadl:method>
+    </wadl:resource_type>
+
+    <wadl:representation mediaType="application/json"
+                         id="validation-page">
+
+      <wadl:param style="plain" name="resource_type_link" path="$['resource_type_link']">
+        <wadl:link/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="total_size" path="$['total_size']" required="true"/>
+
+      <wadl:param style="plain" name="start" path="$['start']" required="true"/>
+
+      <wadl:param style="plain" name="next_collection_link" path="$['next_collection_link']">
+        <wadl:link resource_type="#validation-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="prev_collection_link" path="$['prev_collection_link']">
+        <wadl:link resource_type="#validation-page-resource"/>
+      </wadl:param>
+
+      <wadl:param style="plain" name="entries" path="$['entries']" required="true"/>
+
+      <wadl:param style="plain" name="entry_links" path="$['entries'][*]['self_link']">
+        <wadl:link resource_type="{{ baseurl }}/api/1.0/#validation"/>
+      </wadl:param>
+  </wadl:representation>
+
+  
+  <!--End representation and resource_type definitions for entry
+      resources. -->
+
+  <!--Finally, describe the 'hosted binary file' type.-->
+  <wadl:resource_type id="HostedFile">
+    <wadl:method name="GET" id="HostedFile-get">
+      <wadl:response>
+        <wadl:representation status="303">
+          <wadl:param style="header" name="Location"/>
+        </wadl:representation>
+      </wadl:response>
+    </wadl:method>
+    <wadl:method name="PUT" id="HostedFile-put"/>
+    <wadl:method name="DELETE" id="HostedFile-delete"/>
+  </wadl:resource_type>
+
+  <!--Define a data type for binary data.-->
+  <xsd:simpleType name="binary">
+   <xsd:list itemType="byte"/>
+  </xsd:simpleType>
+
+</wadl:application>

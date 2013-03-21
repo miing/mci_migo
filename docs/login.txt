@@ -1,0 +1,17 @@
+.. vim: ft=rst
+
+Login
+=====
+
+Login is performed by creating an :ref:`OAuth token <token_oauth>` resource.
+Refer to :ref:`"Create an oauth token" <token_oauth-create>` for details.
+
+Examples
+--------
+
+::
+
+    curl -d '{"email": "foo@foo.com", "password": "thepassword", "token_name": "foo-desktop"}' \
+         -H 'Content-Type: application/json' \
+         -X POST \
+         https://login.ubuntu.com/api/v2/tokens/oauth

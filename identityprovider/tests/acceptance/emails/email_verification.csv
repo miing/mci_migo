@@ -1,0 +1,5 @@
+code^address^error1^error2
+'asdf'^'zxvc@zxvc.com'^False^False
+''^'zxvc@zxvc.com'^True^False
+'asdf'^''^False^True
+''^''^True^True

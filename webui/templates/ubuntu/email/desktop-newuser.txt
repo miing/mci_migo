@@ -1,0 +1,9 @@
+{% load i18n %}{% blocktrans %}Hello
+
+As a final step of the {{ brand_description }} account creation process, please validate the email address {{ toaddress }}. {{ brand_description }} enables convenient access to a variety of Ubuntu-related services like Ubuntu One with the same username and password.
+
+Copy and paste the confirmation code below into the desktop application.{% endblocktrans %}
+
+{{ token }}
+
+{% include "email/thank_you.txt" %}

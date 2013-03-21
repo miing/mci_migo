@@ -1,0 +1,10 @@
+[
+  {
+    "pk": 3,
+    "model": "gargoyle.switch",
+    "fields": {
+      "key": "PREFLIGHT",
+      "status": 3
+    }
+  }
+]

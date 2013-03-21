@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010-2013 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Email invalidation" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Email invalidation" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<div class="info">
+  <p>{% blocktrans %}Are you sure you want to invalidate the email address {{ email }}?{% endblocktrans %}</p>
+</div>
+<div class="actions">
+  <form action="" method="POST">
+    {% csrf_token %}
+    <p>
+      <button type="submit" class="btn" name="invalidate"><span><span>{% trans "Yes, invalidate" %}</span></span></button>
+      {% trans "or" %} {% include "common/cancel_link.html" %}
+    </p>
+  </form>
+</div>
+
+{% endblock %}

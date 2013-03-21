@@ -1,0 +1,8 @@
+{% load i18n %}{% load static_url %}{% blocktrans %}Hello {{ display_name }},{% endblocktrans %}
+
+{% blocktrans %}Following our email from {{ days_of_warning }} days ago about your {{ brand_description }} account, we have deleted your account.{% endblocktrans %}
+{% blocktrans %}If you have any questions, please contact us at:{% endblocktrans %}
+
+{{ "support_form"|static_url }}
+
+{% include "email/thank_you.txt" %}

@@ -1,0 +1,222 @@
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file LICENSE).
+
+===============================================
+Testing Authentication Requirements For Methods
+===============================================
+
+
+Check that authentication restrictions are enforced for given api
+methods. This is done for every type of user there is in the system
+and for every exposed method.
+
+First of all import all required bits here:
+
+    >>> from lazr.restfulclient.resource import ServiceRoot
+    >>> from lazr.restfulclient.errors import HTTPError
+    >>> from lazr.restfulclient.authorize import BasicHttpAuthorizer
+    >>> from oauth.oauth import OAuthToken
+    >>> from lazr.restfulclient.authorize.oauth import OAuthAuthorizer
+
+If we're not testing against the mock service, we'll also need these:
+    >>> if real_webservice:
+    ...     from identityprovider.models import (Account, EmailAddress,
+    ...         AccountPassword, APIUser)
+    ...     from identityprovider.models.const import (AccountStatus,
+    ...         AccountCreationRationale, EmailStatus)
+    ...     from identityprovider.utils import encrypt_launchpad_password
+
+Test When No Credentials Are Supplied
+=====================================
+
+Check that user without any credentials (`None`) can access
+methods: ``registrations.register`` and ``captchas.new``
+
+    >>> credentials = None
+    >>> api = ServiceRoot(credentials, 'http://openid.launchpad.dev/api/1.0')
+    >>> api.registrations.register
+    <lazr.restfulclient.resource.NamedOperation ...>
+    >>> api.captchas.new
+    <lazr.restfulclient.resource.NamedOperation ...>
+
+But all other methods are inaccessible:
+
+    >>> methods = ['api.authentications.authenticate',
+    ...            'api.authentications.invalidate_token',
+    ...            'api.authentications.validate_token',
+    ...            'api.authentications.list_tokens',
+    ...            'api.accounts.me',
+    ...            'api.accounts.validate_email']
+    >>> for method_name in methods:
+    ...     try:
+    ...         exec method_name
+    ...     except HTTPError, e:
+    ...         print "%s %s" % (method_name, e.response.status)
+    api.authentications.authenticate 401
+    api.authentications.invalidate_token 401
+    api.authentications.validate_token 401
+    api.authentications.list_tokens 401
+    api.accounts.me 401
+    api.accounts.validate_email 401
+
+
+Test When Basic Auth Credentials For Normal Users Are Supplied
+==============================================================
+
+Set up an account first, if we're not using the mock provider...
+
+    >>> if real_webservice:
+    ...     account, created = Account.objects.get_or_create(
+    ...         defaults={'creation_rationale':
+    ...             AccountCreationRationale.OWNER_CREATED_LAUNCHPAD,
+    ...             'status': AccountStatus.ACTIVE,
+    ...             },
+    ...         displayname='',
+    ...         emailaddress__email='blu@example.com'
+    ...         )
+    ...     if created:
+    ...         emailobj = account.emailaddress_set.create(
+    ...             email='blu@example.com',
+    ...             status=EmailStatus.NEW
+    ...             )
+    ...         password = encrypt_launchpad_password('logdf3D')
+    ...         password_obj = AccountPassword.objects.create(
+    ...             password=password,
+    ...             account=account,
+    ...             )
+
+Basic Authentication credentials are only good for accessing
+``authentications.authenticate`` method:
+
+    >>> authorizer = BasicHttpAuthorizer('blu@example.com', 'logdf3D')
+    >>> api = ServiceRoot(authorizer, 'http://openid.launchpad.dev/api/1.0')
+    >>> api.authentications.authenticate
+    <lazr.restfulclient.resource.NamedOperation ...>
+
+But rest of ``authentications`` calls are protected
+(``registrations.register`` is not protected by anything which means
+that it doesn't care about ``WWW-Authenticate`` header so it is always
+accessible, no matter which ahtuentication mechanism you're using).
+
+    >>> methods = ['api.authentications.list_tokens',
+    ...            'api.authentications.invalidate_token',
+    ...            'api.authentications.validate_token',
+    ...            'api.accounts.me',
+    ...            'api.accounts.validate_email']
+    >>> for method_name in methods:
+    ...     try:
+    ...         exec 'print ' + method_name
+    ...     except HTTPError, e:
+    ...         print "%s %s" % (method_name, e.response.status)
+    <lazr.restfulclient.resource.NamedOperation ...>
+    <lazr.restfulclient.resource.NamedOperation ...>
+    <lazr.restfulclient.resource.NamedOperation ...>
+    api.accounts.me 401
+    api.accounts.validate_email 401
+
+Ok, so you can access the rest of the authentication calls, but you can't
+actually call them.
+
+    >>> api.authentications.list_tokens(consumer_key='myopenid')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 403: FORBIDDEN
+    ...
+    >>> api.authentications.invalidate_token(consumer_key='myopenid',
+    ...     token='mytoken')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 403: FORBIDDEN
+    ...
+    >>> api.authentications.validate_token(consumer_key='myopenid',
+    ...     token='mytoken')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 403: FORBIDDEN
+    ...
+
+Test When OAuth Auth Credentials For Normal Users Are Supplied
+==============================================================
+
+After going through ``authentications.authenticate`` you'll have ``OAuth``
+token and be able to access only ``accounts.me`` and
+``accounts.validate_email``.
+
+    >>> if real_webservice:
+    ...     tokenobj = account.create_oauth_token('this-machine')
+    ...     token = tokenobj.serialize()
+    ... else:
+    ...     token = {"token": "this-is-a-valid-token",
+    ...              "token_secret": "this-is-a-valid-token-secret",
+    ...              "consumer_key": "consumer",
+    ...              "consumer_secret": "big-secret"}
+
+    >>> oauth_token = OAuthToken(token['token'], token['token_secret'])
+    >>> authorizer = OAuthAuthorizer(token['consumer_key'],
+    ...    token['consumer_secret'], oauth_token)
+    >>> api = ServiceRoot(authorizer, 'http://openid.launchpad.dev/api/1.0')
+
+Now only ``accounts.me`` and ``accounts.validate_email`` should be
+accessible:
+
+    >>> api.accounts.me
+    <lazr.restfulclient.resource.NamedOperation ...>
+    >>> api.accounts.validate_email
+    <lazr.restfulclient.resource.NamedOperation ...>
+
+Rest of the API calls should return 401 error:
+    >>> methods = ['api.authentications.authenticate',
+    ...            'api.authentications.invalidate_token',
+    ...            'api.authentications.validate_token',
+    ...            'api.authentications.list_tokens',
+    ...           ]
+    >>> for method_name in methods:
+    ...     try:
+    ...         exec method_name
+    ...     except HTTPError, e:
+    ...         print "%s %s" % (method_name, e.response.status)
+    api.authentications.authenticate 401
+    api.authentications.invalidate_token 401
+    api.authentications.validate_token 401
+    api.authentications.list_tokens 401
+
+
+Test When Basic Auth Credentials For Server API User Are Supplied
+=================================================================
+
+Set up an API user first if we're not using the mock service...
+    >>> if real_webservice:
+    ...     password = encrypt_launchpad_password('password')
+    ...     user, created = APIUser.objects.get_or_create(
+    ...         username='MyUsername', password=password)
+
+By providing credentials for API user you should get access to
+different set of API calls:
+
+    >>> authorizer = BasicHttpAuthorizer('MyUsername', 'password')
+    >>> api = ServiceRoot(authorizer, 'http://openid.launchpad.dev/api/1.0')
+    >>> api.authentications.validate_token
+    <lazr.restfulclient.resource.NamedOperation ...>
+    >>> api.authentications.list_tokens
+    <lazr.restfulclient.resource.NamedOperation ...>
+    >>> api.authentications.invalidate_token
+    <lazr.restfulclient.resource.NamedOperation ...>
+
+Rest of the methods should be inaccessible:
+
+    >>> methods = ['api.authentications.authenticate',
+    ...            'api.accounts.me',
+    ...            'api.accounts.validate_email']
+    >>> for method_name in methods:
+    ...     try:
+    ...         exec 'print ' + method_name
+    ...     except HTTPError, e:
+    ...         print "%s %s" % (method_name, e.response.status)
+    <lazr.restfulclient.resource.NamedOperation ...>
+    api.accounts.me 401
+    api.accounts.validate_email 401
+    >>> api.authentications.authenticate(token_name='this-machine')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 403: FORBIDDEN
+    ...

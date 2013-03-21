@@ -1,0 +1,2957 @@
+# French translation for canonical-identity-provider
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the canonical-identity-provider package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: canonical-identity-provider\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-30 17:42+0100\n"
+"PO-Revision-Date: 2012-02-13 19:51+0000\n"
+"Last-Translator: rustyBSD <cypherique@ymail.com>\n"
+"Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-02-14 05:56+0000\n"
+"X-Generator: Launchpad (build 14781)\n"
+
+#: branding.py:10
+msgid "Launchpad Login Service"
+msgstr "Service d'authentification Launchpad"
+
+#: branding.py:11
+msgid ""
+"A Launchpad Login Service account is free and gives you access to Ubuntu "
+"One, the Ubuntu Shop and many more useful services."
+msgstr ""
+"Le compte utilisateur Launchpad est gratuit et permet l'accès à Ubuntu One, "
+"à la boutique Ubuntu et à de nombreux autres services utiles."
+
+#: branding.py:14
+msgid "Create a Launchpad Login Service account"
+msgstr "Créer un compte utilisateur Launchpad"
+
+#: branding.py:15
+msgid ""
+"This is the Launchpad login service, built on OpenID. The service enables "
+"you to use your Launchpad account to log into OpenID-enabled sites around "
+"the Internet."
+msgstr ""
+"Ceci est le le service d'authentification Launchpad, basé sur OpenID. Ce "
+"service vous permet d'utiliser votre compte Launchpad pour vous connecter "
+"sur les nombreux sites Internet permettant l'authentification par OpenID."
+
+#: branding.py:18
+msgid ""
+"You have used your Single Sign On ID to access a site which is <em>not</em> "
+"recognised by Launchpad Login Service:"
+msgstr ""
+"Vous avez utilisé votre identifiant d'authentification unique pour vous "
+"connecter à un site qui n'est <em>pas</em> reconnu par le service de "
+"connexion à Launchpad."
+
+#: branding.py:21
+msgid "Complete your Launchpad Login Service registration"
+msgstr "Terminer votre inscription au service de connexion Launchpad"
+
+#: branding.py:22
+msgid "Reset your Launchpad Login Service password"
+msgstr "Réinitialiser votre mot de passe de connexion au service Launchpad."
+
+#: branding.py:23
+msgid ""
+"There's no page with this address in the Launchpad Login Service. Check that "
+"you entered the address correctly and try again."
+msgstr ""
+"Il n'y a aucun compte avec cette adresse sur le service de connexion "
+"Launchpad. Vérifiez votre saisie et réessayez."
+
+#: branding.py:26
+msgid "Sorry, something just went wrong in Launchpad Login Service."
+msgstr ""
+"Désolé, une erreur vient de se produire sur le service d'authentification "
+"Launchpad."
+
+#: branding.py:28
+msgid ""
+"You are now logged out of the Launchpad Login Service website. However, you "
+"have not been automatically logged out of every website that uses this "
+"website."
+msgstr ""
+"Vous êtes maintenant déconnecté du site Web du service d'authentification "
+"Launchpad. Cependant, vous n'avez pas été automatiquement déconnecté de tous "
+"les sites Web utilisant ce site."
+
+#: branding.py:35 templates/ubuntu/base.html:54
+msgid "Ubuntu Single Sign On"
+msgstr "Compte d'accès unique Ubuntu"
+
+#: branding.py:36
+msgid ""
+"An Ubuntu Single Sign On account is free and gives you access to Ubuntu One, "
+"the Ubuntu Shop and many more useful services."
+msgstr ""
+"Un compte Ubuntu Single Sign On est gratuit et vous permet d'accéder à "
+"Ubuntu One, Ubuntu Shop et beaucoup d'autres services utiles."
+
+#: branding.py:39
+msgid "Create an Ubuntu Single Sign On account"
+msgstr "Créer un compte Ubuntu Single Sign On"
+
+#: branding.py:40
+msgid ""
+"This is the Ubuntu SSO service, built on OpenID. The service enables you to "
+"use your Ubuntu SSO account to log into various sites run by Canonical and "
+"Ubuntu."
+msgstr ""
+"Ceci est le service Ubuntu SSO, basé sur OpenID. Le service vous permet "
+"d'utiliser votre compte Ubuntu SSO pour vous connecter aux différents sites "
+"gérés par Canonical et Ubuntu."
+
+#: branding.py:43
+msgid ""
+"You have used your Single Sign On ID to access a site which is <em>not</em> "
+"recognised by Ubuntu Single Sign On:"
+msgstr ""
+"Vous essayez de vous identifier sur un site qui n'est <em>pas</em> reconnu "
+"par Ubuntu Single Sign On :"
+
+#: branding.py:46
+msgid "Complete your Ubuntu Single Sign On registration"
+msgstr "Terminez votre inscription au Compte Unique Ubuntu"
+
+#: branding.py:47
+msgid "Reset your Ubuntu Single Sign On password"
+msgstr "Réinitialisez votre mot de passe Ubuntu Single Sign On"
+
+#: branding.py:48
+msgid ""
+"There's no page with this address in the Ubuntu Single Sign On service. "
+"Check that you entered the address correctly and try again."
+msgstr ""
+"Il n'y a pas de page avec cette adresse dans le service Ubuntu Single Sign "
+"On. Vérifiez que vous avez entré l'adresse correctement et essayez à nouveau."
+
+#: branding.py:51
+msgid "Sorry, something just went wrong in Ubuntu Single Sign On."
+msgstr "Désolé, quelque chose s'est mal passé dans Ubuntu Single Sign On."
+
+#: branding.py:53
+msgid ""
+"You are now logged out of the Ubuntu Single Sign On (SSO) website. However, "
+"you have not been automatically logged out of every website that uses this "
+"SSO website."
+msgstr ""
+"Vous êtes maintenant déconnecté du site Web Ubuntu Single Sign On (SSO). "
+"Cependant, vous n'avez pas été automatiquement déconnecté de chaque site Web "
+"qui utilise ce site Web SSO."
+
+#: fields.py:35
+msgid "Please enter a 6-digit or 8-digit one-time password."
+msgstr ""
+
+#: forms.py:38 forms.py:43 forms.py:240
+msgid "Required field."
+msgstr "Champ requis."
+
+#: forms.py:39
+msgid "Invalid value."
+msgstr "Valeur incorrecte."
+
+#. Translators: This is used on all email-related input forms.
+#: forms.py:45
+msgid "Invalid email."
+msgstr "Adresse électronique invalide."
+
+#: forms.py:104 forms.py:229 api10/forms.py:38
+msgid "Invalid characters in password"
+msgstr "Caractères invalides dans le mot de passe"
+
+#: forms.py:106 forms.py:231 api10/forms.py:14
+#: templates/widgets/passwords.html:27
+msgid ""
+"Password must be at least 8 characters long, and must contain at least one "
+"number and an upper case letter."
+msgstr ""
+"Le mot de passe doit comporter au moins 8 caractères et doit contenir au "
+"moins un chiffre et une majuscule."
+
+#: forms.py:117 forms.py:251
+msgid "Passwords didn't match"
+msgstr "Les mots de passe ne correspondent pas"
+
+#: forms.py:150
+msgid "Unknown confirmation code."
+msgstr "Code de confirmation invalide."
+
+#: forms.py:207 forms.py:223
+msgid "Required field"
+msgstr "Champ requis"
+
+#: forms.py:215
+msgid "Please select an already validated address."
+msgstr "Veuillez sélectionner une adresse déjà validée."
+
+#: forms.py:277
+msgid "Email already registered."
+msgstr "Adresse électronique déjà enregistrée."
+
+#: forms.py:461
+msgid "The name must contain at least one non-whitespace character."
+msgstr ""
+
+#: utils.py:119
+#, python-format
+msgid "The email address %s can not be used to log in as it belongs to a team."
+msgstr ""
+"L'adresse e-mail %s ne peut pas être utilisée pour vous connecter car elle "
+"appartient déjà à un groupe."
+
+#: utils.py:146 tests/unit/test_utils.py:72
+msgid "Enter a valid e-mail address."
+msgstr "Entrez une addresse électronique valide."
+
+#: utils.py:147
+msgid "Please enter a valid email address."
+msgstr "Veuillez saisir une adresse de courriel valide."
+
+#: widgets.py:65
+#, python-format
+msgid "Set on %s"
+msgstr "Positionné sur %s"
+
+#: api10/forms.py:66
+msgid "Wrong captcha solution."
+msgstr "Erreur de saisie du Captcha."
+
+#: backend/base.py:157
+#, python-format
+msgid ""
+"Attempted to %(command)s while in read-only mode: '%(sql)s' %% (%(params)s)"
+msgstr ""
+"Tentative de %(command)s en mode lecture seule : '%(sql)s' %% (%(params)s)"
+
+#: management/commands/cleanup.py:24
+#, fuzzy
+msgid "Clean unnecessary/stalled data from database."
+msgstr ""
+"Nettoyage des données inutiles/inutilisées de la base de données.\n"
+"\n"
+"Supprime actuellement les nonces et associations de l'OpenID.\n"
+
+#: management/commands/readonly.py:23
+msgid "List available application servers."
+msgstr "Liste les serveurs d'applications disponibles."
+
+#: management/commands/readonly.py:25
+msgid "Select all servers."
+msgstr "Selectionner tous les serveurs."
+
+#: management/commands/readonly.py:27
+msgid "Set server to read-only."
+msgstr "Positionner le serveur en lecture seule"
+
+#: management/commands/readonly.py:29
+msgid "Set server to read-write."
+msgstr "Configurer le serveur en mode lecture/écriture."
+
+#: management/commands/readonly.py:33
+msgid "Enable database."
+msgstr "Activer la base de donnée."
+
+#: management/commands/readonly.py:37
+msgid "Disable database."
+msgstr "Désactiver la base de données."
+
+#: management/commands/readonly.py:39
+msgid ""
+"\n"
+"Manage readonly mode.\n"
+"\n"
+"options --set, --clear, --enable and --disable are all mutually exclusive.\n"
+"You can only choose one at a time.\n"
+msgstr ""
+"\n"
+"Gérer le mode lecture seule\n"
+"\n"
+"les options --set, --clear, --enable et --disable sont toutes mutuellement "
+"exclusives\n"
+"Vous ne pouvez en choisir qu'une seule à la fois.\n"
+
+#: management/commands/readonly.py:45
+msgid "<server server ...>"
+msgstr "<serveur serveur ...>"
+
+#: management/commands/readonly.py:59
+msgid "Enter at least one server, or specify the --all option."
+msgstr "Entrez au moins un serveur ou spécifiez l'option --all"
+
+#: management/commands/readonly.py:60
+msgid "Use --list to get a list of configured servers."
+msgstr "Utilisez --list pour obtenir une liste des serveurs configurés."
+
+#: management/commands/readonly.py:71
+msgid "Enter one of --set, --clear, --enable or --disable."
+msgstr "Entrez --set, --clear, --enable ou --disable."
+
+#: middleware/dbfailover.py:66
+msgid "No backup connections left"
+msgstr "Pas de connexions de secours restantes"
+
+#: models/account.py:94
+msgid "account"
+msgstr "compte"
+
+#: models/account.py:95
+msgid "accounts"
+msgstr "comptes"
+
+#: models/account.py:348
+msgid "account password"
+msgstr "mot de passe du compte"
+
+#: models/account.py:349
+msgid "account passwords"
+msgstr "mots de passe du compte"
+
+#: models/account.py:352
+#, python-format
+msgid "Password for %s"
+msgstr "Mot de passe pour %s"
+
+#: models/account.py:366
+#, fuzzy
+msgid "LP OpenID Identifier"
+msgstr "Identifiant OpenID"
+
+#: models/account.py:367
+#, fuzzy
+msgid "LP OpenID Identifiers"
+msgstr "Identifiant OpenID"
+
+#: models/account.py:370
+#, fuzzy, python-format
+msgid "LP OpenID Identifier for %s"
+msgstr "Identifiant OpenID"
+
+#: models/api.py:37
+msgid "API user"
+msgstr "Utilisateur de l'API"
+
+#: models/api.py:38
+msgid "API users"
+msgstr "Utilisateurs de l'API"
+
+#: models/authtoken.py:109
+msgid ": Validate your email address"
+msgstr ": Validez votre adresse de courriel"
+
+#: models/authtoken.py:121 views/account.py:156
+msgid "Validate your email address"
+msgstr "Validez votre adresse de courriel"
+
+#: models/authtoken.py:133
+msgid "Forgotten Password"
+msgstr "Mot de passe oublié"
+
+#: models/authtoken.py:148
+msgid "Finish your registration"
+msgstr "Terminez votre inscription"
+
+#: models/const.py:49
+msgid "Not activated"
+msgstr "Non activé"
+
+#: models/const.py:51
+msgid "Active"
+msgstr "Activé"
+
+#: models/const.py:53
+msgid "Deactivated (by user)"
+msgstr "Désactivé (par l'utilisateur)"
+
+#: models/const.py:55
+msgid "Suspended (by admin)"
+msgstr "Suspendu (par l'administrateur)"
+
+#: models/emailaddress.py:32
+msgid "Email addresses"
+msgstr "Adresses électroniques"
+
+#: models/openidmodels.py:167
+msgid "OpenID RP Config"
+msgstr "Configuration OpenID RP"
+
+#: models/openidmodels.py:168
+msgid "OpenID RP Configs"
+msgstr "Configurations OpenID RP"
+
+#: models/twofactor.py:106
+msgid "Invalid otp length, should be 6 or 8 characters"
+msgstr ""
+
+#. Translators: This is the title of a page only displayed when the browser request was old (ie. had an incorrect csrf token).
+#: templates/403-csrf.html:11
+msgid "Stale request"
+msgstr "Mauvaise requête"
+
+#. Translators: This is the heading of a page only displayed when the browser request was old (ie. had an incorrect csrf token).
+#: templates/403-csrf.html:16
+msgid "Your page was stale."
+msgstr "Votre page était inutilisée"
+
+#. Translators: This is the text of a page only displayed when the browser request was old (ie. had an incorrect csrf token).
+#: templates/403-csrf.html:23
+msgid ""
+"Apologies, the page you came from was a little old.  Perhaps you navigated "
+"here from a browser window other than the one you used to login.  If so, try "
+"using the other browser window.  Or, try your action again, starting from "
+"our home page."
+msgstr ""
+"Toutes nos excuses, la page d'où vous venez est un peu vieille. Vous êtes "
+"peut-être arrivé ici à partir d'une fenêtre du navigateur autre que celle "
+"que vous avez utilisé pour vous connecter. Si tel est le cas, essayez "
+"d'utiliser l'autre fenêtre du navigateur. Ou, essayez à nouveau, depuis "
+"notre page d'accueil."
+
+#: templates/403-csrf.html:25 templates/readonly.html:26
+msgid "Go to our home page"
+msgstr "Aller à notre page d'acceuil"
+
+#: templates/404.html:10
+msgid "Not found"
+msgstr "Introuvable"
+
+#: templates/404.html:21
+#, python-format
+msgid "(Error <abbr>ID</abbr>: %(oopsid)s)"
+msgstr "(Erreur <abbr>ID</abbr> : %(oopsid)s)"
+
+#: templates/500.html:10
+msgid "Oops!"
+msgstr "Oups !"
+
+#: templates/500.html:24
+msgid ""
+"We&#8217;ve recorded what happened, and we&#8217;ll fix it as soon as "
+"possible. Apologies for the inconvenience."
+msgstr ""
+"Nous avons enregistré ce qui vient de se passer et nous corrigerons ce "
+"problème dès que possible. Veuillez accepter nos excuses pour le dérangement."
+
+#: templates/500.html:27
+#, fuzzy, python-format
+msgid "(OOPS <abbr>ID</abbr>: %(oopsid)s)"
+msgstr "(Erreur <abbr>ID</abbr> : %(oopsid)s)"
+
+#: templates/500.html:31
+#, fuzzy, python-format
+msgid "(Sentry <abbr>ID</abbr>: %(request.sentry.id)s)"
+msgstr "(Erreur <abbr>ID</abbr> : %(oopsid)s)"
+
+#: templates/cookies.html:9 templates/cookies.html.py:12
+msgid "Cookies required"
+msgstr "Les cookies sont nécessaires"
+
+#: templates/cookies.html:18
+msgid ""
+"Cookies are required to use this service. Please enable cookies in your "
+"browser."
+msgstr ""
+"Les cookies sont nécessaires pour utiliser ce service. Veuillez activer les "
+"cookies dans votre navigateur."
+
+#: templates/decide.html:10
+#, python-format
+msgid "Authenticate to %(trust_root)s"
+msgstr "Authentifier auprès de %(trust_root)s"
+
+#: templates/decide.html:25
+#, python-format
+msgid ""
+"If you proceed, the following information will be available to "
+"%(rpconfigname)s:"
+msgstr ""
+"Si vous continuez, les informations suivantes seront accessibles à "
+"%(rpconfigname)s"
+
+#: templates/decide.html:27
+msgid ""
+"If you proceed, the following information will be available to the website:"
+msgstr ""
+"Si vous continuez, les informations suivantes seront accessibles au site "
+"Web :"
+
+#: templates/decide.html:42 templates/decide.html.py:46
+#, fuzzy
+msgid "Team membership:"
+msgstr "Membres de l'équipe"
+
+#: templates/decide.html:62
+msgid "Yes, sign me in"
+msgstr "Oui, connectez-moi"
+
+#: templates/decide.html:63 templates/readonly.html:25
+#: templates/account/confirm_new_email.html:30
+#: templates/account/delete_email.html:29 templates/account/edit.html:105
+#: templates/account/new_email.html:32
+#: templates/admin/readonly_confirm.html:75
+#: templates/device/addition-generic.html:76 templates/device/removal.html:32
+#: templates/device/rename.html:35 templates/device/types.html:62
+#: templates/launchpad/registration/login.html:81
+#: templates/launchpad/registration/twofactor.html:36
+#: templates/registration/confirm_new_account.html:30
+#: templates/registration/forgot_password.html:38
+#: templates/registration/new_account.html:68
+#: templates/registration/old_confirm_new_account.html:73
+#: templates/registration/reset_password.html:67
+#: templates/ubuntu/registration/login.html:86
+#: templates/ubuntu/registration/twofactor.html:35
+msgid "or"
+msgstr "ou"
+
+#: templates/decide.html:64 templates/account/confirm_new_email.html:31
+#: templates/account/delete_email.html:30 templates/account/new_email.html:33
+#: templates/device/addition-generic.html:76 templates/device/removal.html:32
+#: templates/device/rename.html:35 templates/device/types.html:62
+#: templates/launchpad/registration/login.html:82
+#: templates/launchpad/registration/twofactor.html:37
+#: templates/registration/confirm_new_account.html:31
+#: templates/registration/forgot_password.html:39
+#: templates/registration/new_account.html:69
+#: templates/registration/old_confirm_new_account.html:75
+#: templates/registration/reset_password.html:69
+#: templates/ubuntu/registration/login.html:90
+#: templates/ubuntu/registration/twofactor.html:36
+msgid "cancel"
+msgstr "annuler"
+
+#: templates/enter_token.html:9 templates/enter_token.html.py:12
+msgid "Enter confirmation code"
+msgstr "Entrez le code de confirmation"
+
+#: templates/enter_token.html:16
+msgid ""
+"We've sent you a confirmation code.  Enter that code below, and the email "
+"address at which you received it."
+msgstr ""
+"Nous vous avons envoyé un code de confirmation. Entrez ce code ci-dessous "
+"ainsi que l'adresse de courriel à laquelle vous l'avez reçu."
+
+#: templates/enter_token.html:22 templates/registration/email_sent.html:32
+msgid "Confirmation code"
+msgstr "Code de confirmation"
+
+#: templates/enter_token.html:30 templates/account/emails.html:91
+#: templates/account/new_email.html:23
+#: templates/launchpad/registration/login.html:34
+#: templates/registration/forgot_password.html:23
+#: templates/registration/new_account.html:48
+#: templates/ubuntu/registration/login.html:44
+msgid "Email address"
+msgstr "Adresse électronique"
+
+#: templates/invalid_identifier.html:9
+msgid "Invalid identifier"
+msgstr "Identifiant incorrect"
+
+#: templates/invalid_identifier.html:12
+#, python-format
+msgid ""
+"A site identifying as %(trust_root)s has asked us for confirmation that "
+"%(identifier)s is your identity URL. However, that is not a valid OpenID "
+"identity URL for this site, such as <strong>%(root_url)s~USER</strong>."
+msgstr ""
+"Un site identifié comme étant %(trust_root)s nous a demandé de confirmer que "
+"%(identifier)s était votre URL d'identification. Cependant, ce n'est pas une "
+"URL d'identification OpenID correcte pour ce site, du type <strong>"
+"%(root_url)s~USER</strong>."
+
+#: templates/invalid_identifier.html:17 templates/account/new_email.html:31
+#: templates/launchpad/registration/login.html:80
+#: templates/launchpad/registration/twofactor.html:35
+#: templates/registration/confirm_new_account.html:29
+#: templates/registration/email_sent.html:36
+#: templates/registration/forgot_password.html:37
+#: templates/registration/new_account.html:67
+#: templates/registration/old_confirm_new_account.html:72
+#: templates/registration/reset_password.html:65
+#: templates/ubuntu/registration/login.html:85
+#: templates/ubuntu/registration/twofactor.html:34
+msgid "Continue"
+msgstr "Continuer"
+
+#: templates/limitexceeded.html:10 templates/limitexceeded.html.py:14
+msgid "Rate limit exceeded"
+msgstr "Taux limite dépassé"
+
+#: templates/limitexceeded.html:20
+msgid ""
+"You have made too many failed requests to the SSO authentication server over "
+"a short period of time."
+msgstr ""
+"Vous avez fait trop de requêtes défaillantes au serveur d'authentification "
+"SSO en peu de temps."
+
+#: templates/limitexceeded.html:23 templates/readonly.html:23
+msgid "Please try again in a while."
+msgstr "Veuillez réessayer dans un moment."
+
+#: templates/limitexceeded.html:25 templates/readonly.html:25
+msgid "Try again"
+msgstr "Réessayez"
+
+#: templates/person.html:19
+#, python-format
+msgid "OpenID Identity URL for %(name)s"
+msgstr "URL d'identification OpenID pour %(name)s"
+
+#: templates/post-assertion.html:12
+msgid "OpenID transaction in progress"
+msgstr ""
+
+#: templates/preauth_fail.html:9
+msgid "Pre-authorization not approved"
+msgstr "Pré-autorisation non approuvée"
+
+#: templates/preauth_fail.html:13
+#, python-format
+msgid ""
+"A site identifying as %(trust_root)s has asked us for pre-authorization. "
+"However, that site is not approved for pre-authorization."
+msgstr ""
+"Le site %(trust_root)s nous a demandé une pré-autorisation. Toutefois, ce "
+"site n'est pas habilité pour les pré-autorisations."
+
+#: templates/readonly.html:10
+msgid "Read-only mode"
+msgstr "Mode lecture seule"
+
+#: templates/readonly.html:14
+msgid "We're currently in read-only mode."
+msgstr "Nous sommes actuellement en mode lecture seule."
+
+#: templates/readonly.html:20
+msgid ""
+"Apologies, the page you're requesting isn't accessible at the moment, as "
+"we're running with a minimum set of features. Hopefully we will have the "
+"full service up and running again in no time."
+msgstr ""
+"Veuillez nous excuser, la page que vous demandez n'est pas accessible pour "
+"le moment car nous fonctionnons en mode dégradé avec un minimum de "
+"fonctionnalités. Nous espérons que le service complet sera opérationnel dans "
+"les plus brefs délais."
+
+#: templates/select_language.html:10 templates/select_language.html.py:14
+#: templates/ubuntu/base.html:96
+msgid "Choose your language"
+msgstr "Choisissez votre langue"
+
+#: templates/select_language.html:30
+msgid "Can't find your language?"
+msgstr "Vous ne trouvez pas votre langue ?"
+
+#: templates/select_language.html:31
+msgid ""
+"We welcome volunteers to help us translate this site to new languages. If "
+"you are able to help, please visit our <a href=\"https://translations."
+"launchpad.net/canonical-identity-provider\">translations site</a> to get "
+"started."
+msgstr ""
+"Les volontaires sont bienvenus pour nous aider à traduire ce site dans de "
+"nouvelles langues. Si vous êtes en mesure de nous aider, merci de consulter "
+"notre <a href=\"https://translations.launchpad.net/canonical-identity-"
+"provider\">site de traduction</a>."
+
+#: templates/server_info.html:9
+msgid "This is an OpenID server"
+msgstr "Ceci est un serveur OpenID"
+
+#: templates/server_info.html:13
+msgid ""
+"This page is meant to be called from an OpenID-enabled site and therefore "
+"has no user-facing functions."
+msgstr ""
+"Cette page est prévue pour être appelée depuis un site utilisant OpenID et "
+"n'a donc pas de fonctions d'interface utilisateur."
+
+#: templates/untrusted.html:10
+#, python-format
+msgid "Untrusted site: %(trust_root)s"
+msgstr "Site non fiable : %(trust_root)s"
+
+#: templates/untrusted.html:17
+#, python-format
+msgid ""
+"Sorry, we don't currently accept requests from\n"
+"%(trust_root)s."
+msgstr ""
+"Désolé, nous n'acceptons pas les requêtes provenant de\n"
+"%(trust_root)s."
+
+#: templates/untrusted.html:21 templates/admin/readonly_confirm.html:75
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/versions.html:9 templates/versions.html.py:12
+msgid "Versions"
+msgstr "Versions"
+
+#: templates/versions.html:18
+msgid "Library/Package"
+msgstr "Bibliothèque/Paquet"
+
+#: templates/versions.html:19
+msgid "Version"
+msgstr "Version"
+
+#: templates/account/applications.html:9
+#: templates/account/applications.html:12
+msgid "Applications you use"
+msgstr "Applications utilisées"
+
+#: templates/account/applications.html:19
+msgid ""
+"You have used the applications shown here to access your account. If you "
+"have stopped using one of these and would like to prevent it from being used "
+"to access your account, click its \"Delete\" button below. You can choose to "
+"allow an application to have access again if you like by opening that "
+"application and instructing it to access your account. You'll have to "
+"provide your username and password before it will be granted access."
+msgstr ""
+"Vous avez utilisé les applications listées ici pour accéder à votre compte. "
+"Si vous avez cessé d'utiliser une de ces applications et souhaitez empêcher "
+"son utilisation pour accéder à votre compte, cliquez sur le bouton "
+"\"Supprimer\" ci-dessous. Vous pouvez autoriser une application à avoir de "
+"nouveau accès en lançant cette application et en lui fournissant les "
+"informations pour accéder à votre compte. Vous devrez fournir vos nom "
+"d'utilisateur et mot de passe avant qu'elle soit autorisée à accéder."
+
+#: templates/account/applications.html:26
+msgid "Application"
+msgstr "Application"
+
+#: templates/account/applications.html:27
+msgid "Access granted"
+msgstr "Accès autorisé"
+
+#: templates/account/applications.html:41 templates/account/emails.html:52
+#: templates/account/emails.html.py:73 templates/device/list.html:79
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/account/applications.html:51
+msgid "You don't have any applications associated with this account."
+msgstr "Vous n'avez aucune application associée à ce compte."
+
+#: templates/account/confirm_new_email.html:9
+msgid "Complete email address validation"
+msgstr "Terminez la validation de l'adresse de courriel"
+
+#: templates/account/confirm_new_email.html:12
+#, python-format
+msgid "Validate %(email)s?"
+msgstr "Valider %(email)s ?"
+
+#: templates/account/confirm_new_email.html:19
+msgid "Are you sure you want to confirm and validate this email address?"
+msgstr ""
+"Êtes-vous certain de vouloir confirmer et valider cette adresse e-mail ?"
+
+#: templates/account/confirm_new_email.html:28
+#: templates/admin/readonly_confirm.html:74
+msgid "Yes, I'm sure"
+msgstr "Oui, j'en suis sûr"
+
+#: templates/account/deactivated.html:9 templates/account/deactivated.html:12
+msgid "Account deactivated"
+msgstr "Compte désactivé"
+
+#: templates/account/deactivated.html:18
+msgid "Your account has been deactivated."
+msgstr "Votre compte a été désactivé."
+
+#: templates/account/delete_email.html:10
+#, fuzzy
+msgid "Delete unverified email"
+msgstr "Supprimer les adresses e-mail non vérifiées"
+
+#: templates/account/delete_email.html:14
+#, fuzzy, python-format
+msgid "Delete %(email)s?"
+msgstr "Valider %(email)s ?"
+
+#: templates/account/delete_email.html:21
+#, fuzzy
+msgid "Are you sure you want to delete this unverified email address?"
+msgstr ""
+"Voulez vous vraiment supprimer cette adresse électronique non vérifiée ?"
+
+#: templates/account/delete_email.html:28
+#, fuzzy
+msgid "Yes, delete"
+msgstr "Oui, supprimer"
+
+#: templates/account/edit.html:10
+#, python-format
+msgid "%(account_displayname)s's details"
+msgstr "Détails de %(account_displayname)s"
+
+#: templates/account/edit.html:61
+msgid "Your account"
+msgstr "Votre compte"
+
+#: templates/account/edit.html:69 templates/registration/new_account.html:38
+#: templates/registration/old_confirm_new_account.html:61
+msgid "Full name"
+msgstr "Nom complet"
+
+#: templates/account/edit.html:80
+msgid "Preferred email"
+msgstr "Adresse de courriel préférée"
+
+#: templates/account/edit.html:81
+msgid ""
+"This email address is passed on to other sites when requested as part of the "
+"login process."
+msgstr ""
+"Cette adresse de courriel est transmise à d'autres sites lorsqu'elle est "
+"demandée dans le cadre du processus de connexion."
+
+#: templates/account/edit.html:92
+msgid "Manage email addresses"
+msgstr "Gérer les adresses de courriel"
+
+#: templates/account/edit.html:102 templates/device/list.html:54
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: templates/account/edit.html:106
+msgid "exit without updating"
+msgstr "sortir sans mettre à jour"
+
+#: templates/account/emails.html:10
+#, python-format
+msgid "%(account_displayname)s's email addresses"
+msgstr "Adresses de courriel de %(account_displayname)s"
+
+#: templates/account/emails.html:25
+msgid "Your email addresses"
+msgstr "Vos adresses de courriel"
+
+#: templates/account/emails.html:33
+msgid "You have no email addresses associated with your account."
+msgstr "Vous n'avez pas d'adresses de courriel associées à votre compte"
+
+#: templates/account/emails.html:38
+msgid "Verified"
+msgstr "Vérifiée"
+
+#: templates/account/emails.html:46
+msgid "(preferred)"
+msgstr "(favorite)"
+
+#: templates/account/emails.html:64
+msgid "Unverified"
+msgstr "Non vérifiée"
+
+#: templates/account/emails.html:72
+msgid "Verify"
+msgstr "Vérifier"
+
+#: templates/account/emails.html:84
+msgid "Add email address"
+msgstr "Ajouter une adresse de courriel"
+
+#: templates/account/emails.html:86
+msgid ""
+"Enter your email address, and we will send you instructions on how to verify "
+"it."
+msgstr ""
+"Entrez votre adresse de courriel et nous vous enverrons les instructions "
+"pour la vérifier."
+
+#: templates/account/emails.html:99
+msgid "Add address"
+msgstr "Ajouter une adresse"
+
+#: templates/account/emails.html:101
+msgid "or <a href=\"/\">cancel</a>"
+msgstr "ou <a href=\"/\">annuler</a>"
+
+#: templates/account/new_email.html:9
+msgid "Add an email"
+msgstr "Ajouter une adresse de courriel"
+
+#: templates/account/new_email.html:12
+msgid "Add an email address to your account"
+msgstr "Ajouter une adresse de courriel à votre compte"
+
+#: templates/account/new_email.html:18
+msgid ""
+"Enter your email address, and we will send you instructions on how to "
+"confirm your account."
+msgstr ""
+"Entrez votre adresse de courriel et nous vous enverrons les instructions "
+"pour confirmer votre compte."
+
+#: templates/account/suspended.html:9 templates/account/suspended.html:12
+msgid "Account suspended"
+msgstr "Compte suspendu"
+
+#: templates/account/suspended.html:18
+msgid "Your account has been suspended."
+msgstr "Votre compte a été suspendu"
+
+#: templates/account/tokens.html:9 templates/account/tokens.html.py:12
+msgid "List of tokens"
+msgstr "Liste des autorisations"
+
+#: templates/account/tokens.html:18
+msgid ""
+"Below is a list of applications which have used your Single Sign On account "
+"to authenticate. You can force an application to re-authenticate by clicking "
+"its associated \"Revoke\" button."
+msgstr ""
+"Une liste d'applications ayant utiliser votre compte Sigle Sign On pour "
+"s'identifier se trouve ci-dessous. Vous pouvez forcer une application à se "
+"ré-identifier en cliquant sur le bouton \"Révoquer\" associé."
+
+#: templates/account/tokens.html:25
+msgid "Token name"
+msgstr "Nom de l'autorisation"
+
+#: templates/account/tokens.html:26
+msgid "Created"
+msgstr "Créé"
+
+#: templates/account/tokens.html:40
+msgid "Revoke"
+msgstr "Révoquer"
+
+#: templates/account/tokens.html:50
+msgid "You don't have any tokens associated with this account."
+msgstr "Aucune autorisation n'est associée avec ce compte."
+
+#: templates/admin/login.html:17 templates/nexus/login.html:17
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/admin/login.html:33 templates/nexus/login.html:33
+#, fuzzy
+msgid "Username:"
+msgstr "Nom d'utilisateur LaunchPad"
+
+#: templates/admin/login.html:37 templates/nexus/login.html:37
+#, fuzzy
+msgid "Password:"
+msgstr "Mot de passe"
+
+#: templates/admin/login.html:42 templates/launchpad/base.html:12
+#: templates/nexus/login.html:42 templates/ubuntu/base.html:14
+msgid "Log in"
+msgstr "Connexion"
+
+#: templates/admin/login.html:52 templates/nexus/login.html:52
+#, fuzzy
+msgid "Sign in with Ubuntu SSO"
+msgstr "Se connecter à Ubuntu Single Sign On"
+
+#: templates/admin/readonly.html:11 templates/admin/readonly_confirm.html:11
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/admin/readonly.html:13 templates/admin/readonly_confirm.html:13
+msgid "Readonly Admin"
+msgstr "Lecture seule pour l'administrateur"
+
+#: templates/admin/readonly.html:19
+msgid "Readonly status per application server"
+msgstr "Statut de lecture seule pour l'application serveur"
+
+#: templates/admin/readonly.html:27
+msgid "In readonly mode"
+msgstr "En mode de lecture seule"
+
+#: templates/admin/readonly.html:28
+msgid "Automatically failed over"
+msgstr "Automatiquement ignoré."
+
+#: templates/admin/readonly.html:30
+msgid "All recovery attempts have failed"
+msgstr "Toutes les tentatives de récupération ont échoué."
+
+#: templates/admin/readonly.html:32
+#, python-format
+msgid "Next recovery attempt in %(next_recovery_due)s seconds"
+msgstr "Nouvelle tentative de récupération dans %(next_recovery_due)s secondes"
+
+#: templates/admin/readonly.html:36
+msgid "Manually disabled"
+msgstr "Désactivé manuellement"
+
+#: templates/admin/readonly.html:37
+msgid "Will not attempt automatic recovery"
+msgstr "Ne tentera pas de récupération automatique"
+
+#: templates/admin/readonly.html:43
+msgid "Leave readonly"
+msgstr "Laisser en mode de lecture seule"
+
+#: templates/admin/readonly.html:47
+msgid "Operating normally"
+msgstr "Fonctionne normalement"
+
+#: templates/admin/readonly.html:51
+msgid "Set readonly"
+msgstr "Passer en lecture seule"
+
+#: templates/admin/readonly.html:55
+msgid "Server is unreachable or out of sync"
+msgstr "Le serveur est inaccessible ou non synchronisé"
+
+#: templates/admin/readonly.html:73
+msgid "Enable"
+msgstr "Activer"
+
+#: templates/admin/readonly.html:77
+msgid "Disable"
+msgstr "Désactiver"
+
+#: templates/admin/readonly.html:89
+msgid "Leave readonly on all appservers"
+msgstr "Laisser en lecture seule sur tous les serveurs d'applications"
+
+#: templates/admin/readonly.html:94
+msgid "Set readonly on all appservers"
+msgstr "Passer en lecture seule sur tous les serveurs d'application"
+
+#: templates/admin/readonly_confirm.html:14
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: templates/admin/readonly_confirm.html:21
+msgid "Are you sure?"
+msgstr "Êtes-vous sûr(e) ?"
+
+#: templates/admin/readonly_confirm.html:25
+msgid "You're not operating on all appservers"
+msgstr "Vous n'agissez pas sur tous les serveurs d'application"
+
+#: templates/admin/readonly_confirm.html:28
+msgid ""
+"Changing readonly mode on a single application server can lead to "
+"inconsistent states and unexpected behaviour."
+msgstr ""
+"Modifier le mode lecture seule sur un seul serveur d'application peut "
+"engendrer des états inconsistants et un comportement inattendu."
+
+#: templates/admin/readonly_confirm.html:35
+msgid ""
+"Make sure the master database connection is enabled on all app servers "
+"<b>before</b> leaving readonly mode!"
+msgstr ""
+"Assurez vous que la connexion à la base de donnée principale est activé sur "
+"tous les serveurs d'application <b>avant</b> de quitter le mode lecture "
+"seule !"
+
+#: templates/admin/readonly_confirm.html:44
+#, python-format
+msgid ""
+"You are about to enable readonly mode on appserver <b>%(appserver)s</b>."
+msgstr ""
+"Vous êtes sur le point d'activer le mode lecture seule sur le serveur "
+"d'application <b>%(appserver)s</b>."
+
+#: templates/admin/readonly_confirm.html:46
+msgid "You are about to enable readonly mode globally."
+msgstr "Vous êtes sur le point d'activer globalement le mode lecture seule."
+
+#: templates/admin/readonly_confirm.html:47
+msgid "All appservers will be passed to read-only mode if you confirm."
+msgstr ""
+"Tous les serveurs d'applications vont être passés en mode de lecture seule "
+"si vous confirmez."
+
+#: templates/admin/readonly_confirm.html:52
+#, python-format
+msgid "You are about to clear readonly mode on appserver <b>%(appserver)s</b>."
+msgstr ""
+"Vous êtes sur le point de désactiver le mode de lecture seule sur le serveur "
+"d'application <b>%(appserver)s</b>"
+
+#: templates/admin/readonly_confirm.html:53
+#, python-format
+msgid ""
+"If you confirm, <b>%(appserver)s</b> will attempt to resume normal operation "
+"with its master database connection."
+msgstr ""
+"Si vous confirmez, <b> %(appserver)s</b> va essayer de reprendre l'opération "
+"normale avec la connexion à sa base de données principale."
+
+#: templates/admin/readonly_confirm.html:55
+msgid "You are about to clear readonly mode globally."
+msgstr ""
+"Vous êtes sur le point de désactiver le mode lecture seule de façon globale."
+
+#: templates/admin/readonly_confirm.html:56
+msgid "If you confirm, all appservers will attempt to resume normal operation."
+msgstr ""
+"Si vous confirmez, tous les serveurs d'application vont essayer de revenir à "
+"leur fonctionnement normal."
+
+#: templates/admin/readonly_confirm.html:60
+#, python-format
+msgid ""
+"You are about to enable the <b>%(conn)s</b> database connection on appserver "
+"<b>%(appserver)s</b>."
+msgstr ""
+"Vous êtes sur le point d'activer la connexion de la base de données de <b>"
+"%(conn)s</b> sur le serveur d'application 8<b>%(appserver)s</b>."
+
+#: templates/admin/readonly_confirm.html:63
+#, python-format
+msgid ""
+"You are about to disable the <b>%(conn)s</b> database connection on "
+"appserver <b>%(appserver)s</b>."
+msgstr ""
+"Vous êtes sur le point de désactiver la connexion de la base de données de "
+"<b>%(conn)s</b> sur le serveur d'application <b>%(appserver)s</b>."
+
+#: templates/device/addition-generic.html:22 templates/device/list.html:22
+#: templates/device/pad-printout.html:11 templates/device/pad-removal.html:11
+#: templates/device/pad-verification.html:11 templates/device/removal.html:11
+#: templates/device/rename.html:10 templates/device/types.html:11
+#: templates/device/verification.html:11
+#, python-format
+msgid "%(user)s's devices"
+msgstr ""
+
+#: templates/device/addition-generic.html:27
+#: templates/device/addition-generic.html:74 templates/device/types.html:60
+msgid "Add device"
+msgstr ""
+
+#: templates/device/addition-generic.html:36 templates/device/rename.html:24
+msgid "Name:"
+msgstr ""
+
+#: templates/device/addition-generic.html:46
+#: templates/device/addition-yubi.html:5
+msgid "Shared AES key:"
+msgstr ""
+
+#: templates/device/addition-generic.html:51
+msgid ""
+"Enter the shared AES key into your device.</p>\n"
+"  "
+msgstr ""
+
+#: templates/device/addition-generic.html:59
+#, fuzzy
+msgid "One-time password:"
+msgstr "Re-saisissez le mot de passe"
+
+#: templates/device/addition-google.html:5
+msgid ""
+"To use your smartphone as an authentication device, please\n"
+"install \"Google Authenticator\" on it.  Go to\n"
+"<a href=\"http://m.google.com/authenticator\">http://m.google.com/"
+"authenticator</a>\n"
+"in your phone's browser or search for \"Google Authenticator\" on your "
+"phone's app\n"
+"store/market."
+msgstr ""
+
+#: templates/device/addition-google.html:10
+msgid ""
+"In the \"Google Authenticator\" app, add a new token and scan this barcode."
+msgstr ""
+
+#: templates/device/addition-google.html:12
+msgid "Or, to set up manually, please enter:"
+msgstr ""
+
+#: templates/device/addition-google.html:14
+msgid "Type of key: Counter based"
+msgstr ""
+
+#: templates/device/addition-google.html:15
+#, fuzzy
+msgid "Account"
+msgstr "compte"
+
+#: templates/device/addition-google.html:16
+msgid "Key"
+msgstr ""
+
+#: templates/device/addition-yubi.html:11
+msgid "Programming a YubiKey requires you to"
+msgstr ""
+
+#: templates/device/addition-yubi.html:12
+msgid "install"
+msgstr ""
+
+#: templates/device/addition-yubi.html:15
+msgid ""
+"To program the YubiKey as an authentication device, on\n"
+"    the short press of the YubiKey, execute the following command line:"
+msgstr ""
+
+#: templates/device/addition-yubi.html:24
+msgid ""
+"To program the long press of the YubiKey,\n"
+"    execute the following command line:"
+msgstr ""
+
+#: templates/device/list.html:27
+#, fuzzy
+msgid "Your authentication devices"
+msgstr "L'authentification OpenID a échoué."
+
+#: templates/device/list.html:36
+#, fuzzy
+msgid "Require an authentication device"
+msgstr "L'authentification OpenID a échoué."
+
+#: templates/device/list.html:42
+msgid "Always"
+msgstr ""
+
+#: templates/device/list.html:47
+msgid "Only when logging in to sites that request it"
+msgstr ""
+
+#: templates/device/list.html:61
+msgid "Authentication devices you've added"
+msgstr ""
+
+#: templates/device/list.html:66
+msgid "Name"
+msgstr ""
+
+#: templates/device/list.html:76 templates/device/rename.html:33
+#, fuzzy
+msgid "Rename"
+msgstr "Nom de l'autorisation"
+
+#: templates/device/list.html:87
+#, fuzzy
+msgid "You don't have any authentication devices associated with this account."
+msgstr "Vous n'avez aucune application associée à ce compte."
+
+#: templates/device/list.html:91 templates/device/types.html:16
+#, fuzzy
+msgid "Add a new authentication device"
+msgstr "L'authentification OpenID a échoué."
+
+#: templates/device/list.html:94
+#: templates/launchpad/registration/twofactor.html:41
+#: templates/ubuntu/registration/twofactor.html:40
+msgid "Report a lost or stolen device"
+msgstr ""
+
+#: templates/device/removal.html:16
+#, fuzzy
+msgid "Delete device?"
+msgstr "Supprimer"
+
+#: templates/device/removal.html:21
+msgid ""
+"Are you sure that you want to delete the following\n"
+"authentication device?"
+msgstr ""
+
+#: templates/device/removal.html:30
+msgid "Delete this device"
+msgstr ""
+
+#: templates/device/rename.html:15
+msgid "Rename device"
+msgstr ""
+
+#: templates/device/verification.html:16
+msgid "Verify your device"
+msgstr ""
+
+#: templates/launchpad/base.html:40
+#, fuzzy
+msgid "Log in / Register"
+msgstr "Se connecter ou s'inscrire"
+
+#: templates/launchpad/base.html:61 templates/launchpad/base.html.py:73
+#: templates/ubuntu/base.html:74
+msgid ""
+"We are currently in read-only mode. That means that at the moment you can't "
+"create new accounts, update your personal information, or request password "
+"reminders."
+msgstr ""
+"Nous sommes actuellement en mode de lecture seule. Vous ne pouvez donc pas "
+"créer de compte, mettre à jour vos informations personnelles ou redemander "
+"un mot de passe."
+
+#: templates/launchpad/base.html:90
+msgid ""
+"&copy;&nbsp;2004-2011&nbsp;<a href=\"http://canonical.com/\">Canonical&nbsp;"
+"Ltd.</a> &bull;\n"
+"                    <a href=\"https://launchpad.net/canonical-identity-"
+"provider\">Get the code</a> &bull;\n"
+"                    <a href=\"https://answers.launchpad.net/canonical-"
+"identity-provider\">FAQs</a>  &bull;\n"
+"                    <a href=\"https://forms.canonical.com/lp-login-support/"
+"\">Contact SSO Support</a>\n"
+"                    "
+msgstr ""
+
+#: templates/launchpad/base.html:96
+msgid ""
+"Launchpad account management is provided by the <a href=\"https://login."
+"ubuntu.com\">Ubuntu Single Sign On service</a>"
+msgstr ""
+
+#: templates/launchpad/email/desktop-newuser.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"Thank you for registering with the Launchpad Login Service.\n"
+"\n"
+"Copy and paste the confirmation code below into the desktop application.\n"
+"\n"
+"%(token)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake. Sorry about that. You don't need to do anything "
+"further. Just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Merci de vous être enregistré auprès du Service d'authentification "
+"Launchpad.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Entrez ce code dans le champ d'enregistrement, ou cliquez sur le lien "
+"suivant afin de confirmer automatiquement votre inscription :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, une personne tierce a du saisir, par "
+"erreur, votre adresse électronique dans le Service d'authentification "
+"Launchpad. Veuillez nous en excuser. Vous n'avez rien d'autre à faire, "
+"effacez simplement ce message.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'Équipe du service d'authentification Launchpad."
+
+#: templates/launchpad/email/email-validation-token.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request to validate the email address %(toaddress)s for use in "
+"the Launchpad Login Service.\n"
+"\n"
+"If you made this request, please copy and paste the confirmation code below "
+"into the desktop application to complete the process to add %(toaddress)s to "
+"your existing Launchpad Login Service account.\n"
+"\n"
+"%(token)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it as "
+"a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Bonjour,\n"
+"\n"
+"Nous avons reçu une demande de validation de l'adresse électronique "
+"%(toaddress)s pour utilisation dans le service d'authentification "
+"Launchpad.\n"
+"\n"
+"Si vous êtes à l'origine de cette demande, merci de copier le code de "
+"confirmation ci-dessous dans la fenêtre de l'application, afin de terminer "
+"le processus d'ajout de %(toaddress)s à votre compte.\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Si vous n'êtes pas à l'origine de cette demande, merci d'ignorer ce message "
+"ou de le corréler à une éventuelle tentative de compromission de vos "
+"données.\n"
+"\n"
+"Merci,\n"
+"\n"
+"L'équipe du service d'authentification Launchpad."
+
+#: templates/launchpad/email/forgottenpassword.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"You have requested a new password for your Launchpad Login Service account.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"%(token)s\n"
+"\n"
+"Enter this code into the password-reset form, or click the following link to "
+"automatically confirm your reset:\n"
+"\n"
+"%(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone else has entered your "
+"email address at the Launchpad Login Service. Sorry about that. You don't "
+"need to do anything further, just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Bonjour,\n"
+"\n"
+"Vous avez demandé un nouveau mot de passe pour votre compte du service "
+"d'authentification Launchpad.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Entrez ce code dans le champ de réinitialisation du mot de passe, ou cliquez "
+"sur le lien ci dessous pour confirmer automatiquement la réinitialisation du "
+"mot de passe.\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, une tierce personne a du saisir "
+"votre adresse électronique dans le service d'authentification Launchpad. "
+"Veuillez nous en excuser. Vous n'avez rien d'autre à faire, effacez "
+"simplement ce message.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'équipe du service d'authentification Launchpad."
+
+#: templates/launchpad/email/impersonate-warning.txt:2
+#, fuzzy, python-format
+msgid ""
+"We've received a request to create a new account with your email address.\n"
+"\n"
+"If this was you, perhaps you've forgotten your password?\n"
+"\n"
+"%(forgotten_password_url)s\n"
+"\n"
+"If not, someone may be trying to impersonate you. If you get more requests "
+"like this, please let us know.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Nous avons reçu une demande de création d'un nouveau compte avec votre "
+"adresse électronique.\n"
+"\n"
+"S'il s'agissait de vous, peut-être avez vous oublié votre mot de passe ?\n"
+"\n"
+"    %(forgotten_password_url)s\n"
+"\n"
+"Si non, quelqu'un essaye peut être de se faire passer pour vous. Si vous "
+"recevez d'autres requêtes similaires, merci de nous en faire part.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'équipe du service d'authentification Launchpad"
+
+#: templates/launchpad/email/invitation.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"You have requested a new password for the Launchpad Login Service using the\n"
+"following email address:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"This email address is however not associated with any Launchpad Login "
+"Service\n"
+"accounts. If you want to create a new Launchpad Login Service account using\n"
+"this email address, please go to:\n"
+"\n"
+"%(signup)s\n"
+"\n"
+"If you don't know what this is about, then someone else has entered your "
+"email\n"
+"address at the Launchpad Login Service. Sorry about that. You don't need to "
+"do\n"
+"anything further, just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Bonjour,\n"
+"\n"
+"Vous avez demandé un nouveau mot de passe pour votre compte du service "
+"d'authentification Launchpad.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Entrez ce code dans le champ de réinitialisation du mot de passe, ou cliquez "
+"sur le lien ci dessous pour confirmer automatiquement la réinitialisation du "
+"mot de passe.\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, une tierce personne a du saisir "
+"votre adresse électronique dans le service d'authentification Launchpad. "
+"Veuillez nous en excuser. Vous n'avez rien d'autre à faire, effacez "
+"simplement ce message.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'équipe du service d'authentification Launchpad."
+
+#: templates/launchpad/email/mobile-newuser.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"Thank you for registering with the Launchpad Login Service.\n"
+"\n"
+"Copy and paste the confirmation code below into your mobile device "
+"application.\n"
+"\n"
+"%(token)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake. Sorry about that. You don't need to do anything "
+"further. Just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Merci de vous être enregistré auprès du Service d'authentification "
+"Launchpad.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Entrez ce code dans le champ d'enregistrement, ou cliquez sur le lien "
+"suivant afin de confirmer automatiquement votre inscription :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, une personne tierce a du saisir, par "
+"erreur, votre adresse électronique dans le Service d'authentification "
+"Launchpad. Veuillez nous en excuser. Vous n'avez rien d'autre à faire, "
+"effacez simplement ce message.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'Équipe du service d'authentification Launchpad."
+
+#: templates/launchpad/email/validate-email.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request from %(requester)s using email address "
+"%(requester_email)s, trying to validate the email address %(toaddress)s for "
+"use in the Launchpad Login Service.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"%(token)s\n"
+"\n"
+"If you made this request, enter this code into the confirmation form, or "
+"click the following link to automatically confirm your email address:\n"
+"\n"
+"%(token_url)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it "
+"on\n"
+"\n"
+"%(support_form_url)s\n"
+"\n"
+"as a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Nous avons reçu une demande de la part de %(requester)s utilisant l'adresse "
+"électronique %(requester_email)s, afin de valider l'adresse %(toaddress)s "
+"pourutilisation dans le service d'authentififcation Launchpad.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Si vous êtes à l'origine de cette demande, entrez ce code dans le champ "
+"d'information, ou cliquez sur le lien suivant pour confirmer automatiquement "
+"votre adresse :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous n'êtes pas à l'origine de cette demande, merci d'ignorer ce message "
+"ou de nous en faire part sur\n"
+"\n"
+"    %(support_form_url)s\n"
+"\n"
+"comme une possible attaque de sécurité sur vos données.\n"
+"\n"
+"Merci,\n"
+"\n"
+"L'équipe du service d'authentififcation Launchpad"
+
+#: templates/launchpad/email/web-newuser.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"Thank you for registering with the Launchpad Login Service.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"%(token)s\n"
+"\n"
+"Enter this code into the registration form, or click the following link to "
+"automatically confirm your account:\n"
+"\n"
+"%(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake at the Launchpad Login Service web site. Sorry "
+"about that. You don't need to do anything further, just delete this "
+"message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Merci de vous être enregistré auprès du Service d'authentification "
+"Launchpad.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Entrez ce code dans le champ d'enregistrement, ou cliquez sur le lien "
+"suivant afin de confirmer automatiquement votre inscription :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, une personne tierce a du saisir, par "
+"erreur, votre adresse électronique dans le Service d'authentification "
+"Launchpad. Veuillez nous en excuser. Vous n'avez rien d'autre à faire, "
+"effacez simplement ce message.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'Équipe du service d'authentification Launchpad."
+
+#: templates/launchpad/registration/login.html:21
+msgid "Log in to Launchpad Login Service"
+msgstr "Se connecter au service d'authentification Launchpad"
+
+#: templates/launchpad/registration/login.html:27
+#, python-format
+msgid "You are here because %(rpconfigname)s uses the Launchpad Login Service."
+msgstr ""
+"Vous êtes ici parce que %(rpconfigname)s utilise le service "
+"d'authentification Launchpad."
+
+#: templates/launchpad/registration/login.html:43
+#: templates/ubuntu/registration/login.html:52
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/launchpad/registration/login.html:55
+#: templates/ubuntu/registration/login.html:65
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+#: templates/launchpad/registration/login.html:59
+#: templates/ubuntu/registration/login.html:69
+#, fuzzy
+msgid "Two Factor Authentication"
+msgstr "Dernière authentification"
+
+#: templates/launchpad/registration/login.html:61
+#: templates/ubuntu/registration/login.html:71
+#, fuzzy
+msgid "Device Password"
+msgstr "Mot de passe"
+
+#: templates/launchpad/registration/login.html:75
+msgid "Create a new account"
+msgstr "Créer un nouveau compte"
+
+#: templates/launchpad/registration/login.html:94
+msgid ""
+"This is the Launchpad login service utilizing <a href=\"http://openid.net/"
+"\">OpenID</a> technology. This site allows you to use <a href=\"https://"
+"launchpad.net/people/+me\">your Launchpad account</a> to log into OpenID-"
+"enabled sites around the Internet."
+msgstr ""
+"Voici le service de connexion Launchpad utilisant la technologie <a href="
+"\"http://openid.net/\">OpenID</a>. Ce site vous autorise à utiliser <a href="
+"\"https://launchpad.net/people/+me\">votre compte Launchpad</a> pour vous "
+"connecter sur les sites compatibles OpenID d'Internet."
+
+#: templates/launchpad/registration/login.html:97
+msgid ""
+"To learn more about using this service, please review the <a href=\"https://"
+"help.launchpad.net/OpenID\">instructions</a>."
+msgstr ""
+"Pour en savoir plus sur l'utilisation de ce service, référez vous à la <a "
+"href=\"https://help.launchpad.net/OpenID\">documentation</a>."
+
+#: templates/launchpad/registration/login.html:100
+msgid ""
+"If you want to change any of your account's details, you can do so by "
+"logging in using the form beside."
+msgstr ""
+"Si vous voulez changer les détails de votre compte, vous pouvez le faire en "
+"vous connectant avec le formulaire ci-contre."
+
+#: templates/launchpad/registration/login.html:105
+msgid "What is Launchpad and a Launchpad Account?"
+msgstr "Qu'est-ce que Launchpad et pourquoi un compte Launchpad ?"
+
+#: templates/launchpad/registration/login.html:108
+msgid ""
+"Launchpad is the central point where we gather all sorts of interactions "
+"around Ubuntu, Canonical and free software generally. You can use your "
+"Launchpad account to report bugs, to find or contribute translations, to "
+"find specs, to contribute code."
+msgstr ""
+"Launchpad est le point central où nous rassemblons toutes sortes "
+"d'interactions autour d'Ubuntu, de Canonical et des logiciels libres en "
+"général. Vous pouvez utiliser votre compte Launchpad pour signaler des "
+"bogues, trouver ou contribuer à des traductions, trouver des informations ou "
+"contribuer au développement des logiciels."
+
+#: templates/launchpad/registration/logout.html:9
+#: templates/launchpad/registration/logout.html:12
+#: templates/ubuntu/registration/logout.html:9
+#: templates/ubuntu/registration/logout.html:12
+msgid "You have been logged out"
+msgstr "Vous êtes maintenant déconnecté"
+
+#: templates/launchpad/registration/logout.html:20
+#, fuzzy, python-format
+msgid ""
+"\n"
+"    <a href=\"%(return_to_url)s\">Return to %(site_name)s</a>"
+msgstr ""
+"\n"
+"     <span class=\"big\">Revenir à <a href=\"%(return_to_url)s\">"
+"%(site_name)s</a></span>"
+
+#: templates/launchpad/registration/logout.html:23
+#, fuzzy
+msgid "Log back in to Launchpad Login Service"
+msgstr "Se connecter au service d'authentification Launchpad"
+
+#: templates/launchpad/registration/twofactor.html:13
+#: templates/ubuntu/registration/twofactor.html:12
+msgid "To continue use 2 factor authentication"
+msgstr ""
+
+#: templates/launchpad/registration/twofactor.html:28
+#: templates/ubuntu/registration/twofactor.html:27
+msgid ""
+"To get a new one-time password on your mobile device\n"
+"                or keyfob, press the 'refresh' button."
+msgstr ""
+
+#: templates/registration/bad_token.html:9
+#: templates/registration/bad_token.html:12
+msgid "Unauthorized confirmation code"
+msgstr "Code de confirmation non autorisé"
+
+#: templates/registration/bad_token.html:16
+msgid ""
+"You are not authorized to use this confirmation code. If this URL was sent "
+"to you by email, please make sure you open it in the same browser where you "
+"requested it."
+msgstr ""
+"Vous n'êtes pas autorisé à utiliser ce code de confirmation. Si cette "
+"adresse vous a été envoyée par courrier électronique, assurez-vous de "
+"l'avoir ouverte dans le même navigateur que celui où vous en avait été fait "
+"la demande."
+
+#: templates/registration/confirm_new_account.html:9
+#: templates/registration/old_confirm_new_account.html:9
+msgid "Complete your registration"
+msgstr "Compléter votre enregistrement"
+
+#: templates/registration/confirm_new_account.html:24
+#, python-format
+msgid "The account for %(email)s is ready to be created."
+msgstr ""
+"Le compte associé à l'adresse électronique %(email)s est prêt à être créé."
+
+#: templates/registration/email_sent.html:23
+msgid ""
+"We've sent you a 6 digit confirmation code.  To continue, enter that code "
+"below."
+msgstr ""
+"Nous vous avons envoyé un code de confirmation à six caractères. Pour "
+"continuer, entrez ce code ci-dessous."
+
+#: templates/registration/email_sent.html:38
+msgid " or, <a href=\"/+emails\">return to email addresses</a>"
+msgstr " ou, <a href=\"/+emails\">retour aux adresses mail</a>"
+
+#: templates/registration/email_sent.html:45
+msgid "Haven&rsquo;t received it?"
+msgstr "Vous ne l'avez pas reçu ?"
+
+#: templates/registration/email_sent.html:46
+msgid ""
+"If you don&rsquo;t receive the message within a few minutes, it might be "
+"because:"
+msgstr ""
+"Si vous ne recevez aucun message d'ici quelques minutes, cela peut être "
+"causé par :"
+
+#: templates/registration/email_sent.html:48
+msgid ""
+"Your mail provider uses &ldquo;greylisting&rdquo; to reduce spam. If so, "
+"you&rsquo;ll need to wait an hour or two for the message to arrive."
+msgstr ""
+"Votre fournisseur de courriel utilise une « liste grise » pour réduire le "
+"spam. Si c'est le cas, vous devrez attendre une heure ou deux avant "
+"l'arrivée du message."
+
+#: templates/registration/email_sent.html:49
+msgid ""
+"Your mail provider mistakenly blocks messages from this site. Try signing up "
+"using a service like <a href=\"http://gmail.com/\">Gmail</a> or <a href="
+"\"http://mail.yahoo.com/\">Yahoo Mail</a>."
+msgstr ""
+"Votre fournisseur de courriel bloque les messages provenant de ce site par "
+"erreur. Essayez de vous connecter en utilisant un service tel que <a href="
+"\"http://gmail.com/\">Gmail</a> ou <a href=\"http://mail.yahoo.com/\">Yahoo "
+"Mail</a>."
+
+#: templates/registration/email_sent.html:54
+msgid ""
+"If neither of those work, <a href='https://forms.canonical.com/sso-support/' "
+"title='Contact Login Support' >our service might be having a problem.</a>"
+msgstr ""
+
+#: templates/registration/forgot_password.html:9
+#: templates/registration/reset_password.html:9
+msgid "Reset password"
+msgstr "Réinitialiser le mot de passe"
+
+#: templates/registration/forgot_password.html:18
+msgid ""
+"Enter your email address, and we will send you instructions on how to reset "
+"your password."
+msgstr ""
+"Entrez votre adresse électronique et nous vous enverrons les instructions "
+"pour réinitialiser votre mot de passe."
+
+#: templates/registration/forgot_password.html:31
+#: templates/registration/new_account.html:57
+msgid "Type the two words into the field below"
+msgstr "Entrez les deux mots dans le champ ci-dessous"
+
+#: templates/registration/logout_to_confirm.html:9
+#: templates/registration/logout_to_confirm.html:12
+msgid "Can not use confirmation code while logged in"
+msgstr ""
+"Vous ne pouvez pas utiliser le code de confirmation tant que vous êtes "
+"connecté."
+
+#: templates/registration/logout_to_confirm.html:16
+msgid ""
+"You have attempted to confirm an account while logged in as someone else.  "
+"We've cancelled your request. Please log out and create your new account "
+"again."
+msgstr ""
+"Vous essayez de confirmer un compte en vous connectant en tant que quelqu'un "
+"d'autre. Nous avons annulé votre requête. Veuillez vous déconnecter et créer "
+"un nouveau compte."
+
+#: templates/registration/new_account.html:9
+msgid "Create account"
+msgstr "Créer un compte"
+
+#: templates/registration/new_account.html:33
+msgid ""
+"Enter the following information, and we will send you instructions on how to "
+"confirm your account."
+msgstr ""
+"Entrez les informations suivantes, et nous vous enverrons des instructions "
+"pour confirmer la création de votre compte."
+
+#: templates/registration/old_confirm_new_account.html:32
+#: templates/registration/reset_password.html:33
+#: templates/widgets/passwords_head_content.html:251
+msgid "Strength: too short"
+msgstr "Robustesse : trop court"
+
+#: templates/registration/old_confirm_new_account.html:33
+#: templates/registration/reset_password.html:34
+#: templates/widgets/passwords_head_content.html:252
+msgid "Strength: weak"
+msgstr "Robustesse : faible"
+
+#: templates/registration/old_confirm_new_account.html:34
+#: templates/registration/reset_password.html:35
+#: templates/widgets/passwords_head_content.html:253
+msgid "Strength: fair"
+msgstr "Complexité : moyenne"
+
+#: templates/registration/old_confirm_new_account.html:35
+#: templates/registration/reset_password.html:36
+#: templates/widgets/passwords_head_content.html:254
+msgid "Strength: good"
+msgstr "Robustesse : bonne"
+
+#: templates/registration/old_confirm_new_account.html:36
+#: templates/registration/reset_password.html:37
+#: templates/widgets/passwords_head_content.html:255
+msgid "Strength: strong"
+msgstr "Robustesse : forte"
+
+#: templates/static/description.html:10
+msgid "What's this? - Ubuntu Single Sign On"
+msgstr "Qu'est-ce que c'est ? - Ubuntu Single Sign On"
+
+#: templates/static/description.html:13
+msgid "What's this?"
+msgstr "Qu'est-ce que c'est ?"
+
+#: templates/static/description.html:18
+msgid ""
+"The goal of this service is to provide a single, central login service\n"
+"for all Ubuntu-related sites, thus making it more convenient for Ubuntu\n"
+"users and community members to access information, communicate, and\n"
+"contribute. This service will replace the existing Launchpad login\n"
+"service that is currently in use for many Ubuntu-related sites, although\n"
+"existing Launchpad accounts will continue to work in the new service."
+msgstr ""
+"Le but de ce service est de vous fournir une plateforme de connexion unique "
+"et centralisée\n"
+"pour tous les sites liés à Ubuntu, facilitant ainsi l'accès aux "
+"informations, la communication\n"
+"et la contribution des utilisateurs Ubuntu et des membres de la communauté. "
+"Ce service\n"
+"remplacera le service de connexion Launchpad actuellement utilisé par de "
+"nombreux sites\n"
+"liés à Ubuntu, les comptes Launchpad actuels étant compatibles avec le "
+"nouveau service."
+
+#: templates/static/description.html:27
+msgid ""
+"Over the next few months we will be moving all of the Ubuntu and\n"
+"Canonical related sites that currently use the Launchpad service to this\n"
+"service, starting with sites we manage directly and then working with\n"
+"community site owners to move the community-managed sites."
+msgstr ""
+"Dans les prochains mois, nous migrerons l'ensemble des sites liés à Ubuntu "
+"et à\n"
+"Canonical vers ce service, en commençant par les sites que nous gérons "
+"directement.\n"
+"Nous travaillerons ensuite avec les gestionnaires des divers sites "
+"communautaires\n"
+"afin de les aider à migrer."
+
+#: templates/static/description.html:34
+msgid ""
+"Because of the number of existing Ubuntu users who have created accounts\n"
+"in Launchpad for the purpose of logging into other sites, we have set\n"
+"both services to share account data during the transition. Launchpad is\n"
+"in the process of enabling users to log in with an Ubuntu account and,\n"
+"once completed, this sharing will be removed. This does mean that you\n"
+"will be able to log into this service and Launchpad with the same\n"
+"credentials for a while. We realise this is something internet users\n"
+"have been encouraged to not do but it is a necessary side-effect of the\n"
+"transition. Doing this ensures you won't lose access to services you've\n"
+"purchased from us in the past or your account histories in the sites\n"
+"you've previously visited, as long as you use your existing Launchpad\n"
+"credentials on this site."
+msgstr ""
+"En raison du nombre d'utilisateurs d'Ubuntu ayant créé un compte sur\n"
+"Launchpad dans le but de se connecter à d'autres sites, nous avons\n"
+"configuré les deux services afin qu'ils partagent leurs données pendant\n"
+"la transition. Launchpad permettra bientôt aux utilisateurs de se connecter\n"
+"avec un compte Ubuntu, et, lorsque la transition sera terminée, ce partage\n"
+"sera supprimé. Cela signifie que vous serez en mesure de vous connecter à\n"
+"ce service et à Launchpad avec les mêmes identifiants pendant un certain\n"
+"temps. Nous réalisons que ceci est quelque chose que les internautes ne "
+"sont\n"
+"pas encouragés à faire, mais c'est un effet secondaire nécessaire de la "
+"transition.\n"
+"Ceci vous assure de ne pas perdre l'accès aux services que vous nous avez "
+"acheté\n"
+"par le passé ainsi que l'historique des sites que vous avez déjà visité, "
+"aussi\n"
+"longtemps que vous utiliserez vos identifiants Launchpad existants sur ce "
+"site."
+
+#: templates/static/description.html:49
+#, fuzzy, python-format
+msgid ""
+"We have answers to some questions on our <a href=\"/+faq\">FAQ page</a>. If "
+"you have\n"
+"more questions, please <a href=\"https://answers.launchpad.net/canonical-"
+"identity-provider\">submit them on Launchpad</a> and we'll do our\n"
+"best to respond to them. We also have an email support channel - you\n"
+"can submit your support requests using our <a href=\"%(support_form_url)s"
+"\">support form</a>. If\n"
+"you have found a bug, please take a few minutes to tell us about it on our "
+"<a href=\"https://bugs.launchpad.net/canonical-identity-provider\">Launchpad "
+"project's bug tracker</a>."
+msgstr ""
+"Nous avons des réponses à un certain nombre de questions sur la page de "
+"notre <a href=\"/+faq\">FAQ</a>.\n"
+"Si vous avez d'autres questions, veuillez <a href=\"https://answers."
+"launchpad.net/canonical-identity-provider\">les soumettre à Launchpad</a>\n"
+"nous ferons de notre mieux pour y répondre. Nous avons aussi un service "
+"d'assistance par courrier électronique - vous pouvez\n"
+"envoyer vos demandes d'aide à <a href=\"https://forms.canonical.com/sso-"
+"support/\">https://forms.canonical.com/sso-support</a>.\n"
+"Si vous avez trouvé un bogue, prenez quelques minutes pour nous le décrire "
+"sur le <a href=\"https://bugs.launchpad.net/canonical-identity-provider"
+"\">projet Launchpad</a>."
+
+#: templates/static/device-help.html:10
+#, fuzzy
+msgid "Authentication device help - Ubuntu Single Sign On"
+msgstr "Qu'est-ce que c'est ? - Ubuntu Single Sign On"
+
+#: templates/static/device-help.html:13
+msgid "Authentication device help"
+msgstr ""
+
+#: templates/static/device-help.html:17
+msgid "Device lost or stolen?"
+msgstr ""
+
+#: templates/static/device-help.html:19
+msgid ""
+"We need to remove the device from your account to prevent\n"
+"    someone using it to gain access to your account.  Please phone the IS\n"
+"    emergency helpline immediately!"
+msgstr ""
+
+#: templates/static/device-help.html:24
+msgid "Problems logging in?"
+msgstr ""
+
+#: templates/static/device-help.html:26
+#, python-format
+msgid ""
+"We can help\n"
+"    get a device working again or set you up with some temporary tokens to\n"
+"    enable you to continue with your work.  If it's not urgent, please use "
+"the\n"
+"    <a href=\"%(support_form_url)s\">login support form</a> and someone will "
+"get\n"
+"    back to you soon.  If it is urgent, please phone the IS emergency\n"
+"    helpline."
+msgstr ""
+
+#. Translators: Title of the SSO FAQ (/+faq)
+#: templates/static/faq.html:10
+msgid "FAQ - Ubuntu Single Sign On"
+msgstr "FAQ - Authentification Unique Ubuntu"
+
+#. Translators: Heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:14
+msgid "Frequently asked questions"
+msgstr "Foire aux questions"
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:19
+msgid "Why replace the Launchpad login service?"
+msgstr "Pourquoi remplacer le service de connexion Launchpad ?"
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:23
+msgid ""
+"The Launchpad login service has served us well for several years but\n"
+"Launchpad is not a familiar brand for many Ubuntu users. As Ubuntu\n"
+"grows, we'll see more and more users who don't understand the connection\n"
+"between Launchpad and Ubuntu and the new Ubuntu login service is\n"
+"intended to overcome this problem. It will also enable us to develop\n"
+"features which are more oriented to Ubuntu users."
+msgstr ""
+"Le service de connexion Launchpad nous a bien servi depuis de nombreuses "
+"années,\n"
+" mais Launchpad n'est pas une marque connue pour beaucoup d'utilisateurs "
+"d'Ubuntu.\n"
+" Comme Ubuntu prend de l'importance, de plus en plus d'utilisateurs ne "
+"comprendront pas\n"
+" le lien entre Launchpad et  Ubuntu. Le nouveau service d'authentification "
+"unique d'Ubuntu\n"
+" a pour but d'effacer ce problème. Il nous permettra également de développer "
+"des applications\n"
+" qui seront plus orientées vers les utilisateurs d'Ubuntu."
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:32
+msgid "How does the new service differ from the old one?"
+msgstr "En quoi le nouveau service diffère de l'ancien ?"
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:36
+msgid ""
+"For now, not much apart from the appearance of the site. We have many plans\n"
+"for great new features, however, and hope to roll these out once the "
+"service\n"
+"is established. If you have ideas for other features you'd like to see in\n"
+"Ubuntu single sign on, we'd love to hear about them."
+msgstr ""
+"Actuellement, peu de changement hormis l'apparence du site. Nous avons "
+"cependant \n"
+"de nombreux projets pour de nouvelles applications que nous espérons "
+"pouvoir \n"
+"mettre en œuvre une fois le service actif. Si vous avez des idées d'autres \n"
+"fonctionnalités que vous souhaiteriez voir intégrées au service de Compte\n"
+"Unique Ubuntu, n'hésitez pas à nous en faire part."
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:43
+msgid "Is the new service Open Source?"
+msgstr "Le nouveau service est-il libre ?"
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:47
+msgid ""
+"Yes, and it's also built and hosted on open source\n"
+"technologies (<a href=\"http://www.python.org/\">Python</a>, <a href="
+"\"http://www.djangoproject.com/\">Django</a>, <a href=\"http://httpd.apache."
+"org/\">Apache</a> and <a href=\"http://www.postgresql.org/\">PostgreSQL</a> "
+"amongst others)."
+msgstr ""
+"Oui, et il est également construit et hébergé sur des technologies \n"
+"libres (<a href=\"http://www.python.org/\">Python</a>, <a href=\"http://www."
+"djangoproject.com/\">Django</a>, <a href=\"http://httpd.apache.org/"
+"\">Apache</a> et <a href=\"http://www.postgresql.org/\">PostgreSQL</a> entre "
+"autres)."
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:52
+msgid "I have a problem with the new service. Where can I get help?"
+msgstr ""
+"J'ai un problème avec le nouveau service. Où puis-je obtenir de l'aide ?"
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:56
+#, fuzzy
+msgid ""
+"We have an email support channel. You can submit your support requests\n"
+"using our <a href=\"https://forms.canonical.com/sso-support/\">support form</"
+"a>. If you have found a bug, please take a\n"
+"few minutes to tell us about it on our\n"
+"<a href=\"https://bugs.launchpad.net/canonical-identity-provider\">Launchpad "
+"project's bug tracker</a>."
+msgstr ""
+"Nous avons un service d'aide par courrier électronique. Vous pouvez demander "
+"de l'aide en utilisant notre formulaire \n"
+"à l'adresse <a href=\"https://forms.canonical.com/sso-support/\">https://"
+"forms.canonical.com/sso-support</a>.\n"
+" Si vous avez trouvé un bogue, merci de prendre quelques minutes pour nous "
+"en informer à l'adresse \n"
+"<a href=\"https://bugs.launchpad.net/canonical-identity-provider\">https://"
+"bugs.launchpad.net/canonical-identity-provider</a>."
+
+#. Translators: Text/heading of the SSO FAQ (/+faq)
+#: templates/static/faq.html:64
+#, fuzzy
+msgid ""
+"We're sure you have more questions. Please\n"
+"<a href=\"https://answers.launchpad.net/canonical-identity-provider\">ask "
+"your questions on our Launchpad project</a> and we'll do\n"
+"our best to respond to them all."
+msgstr ""
+"Vous avez sûrement d'autres questions. Veuillez nous les poser à l'adresse \n"
+"<a href=\"https://answers.launchpad.net/canonical-identity-provider"
+"\">https://answers.launchpad.net/canonical-identity-provider</a>\n"
+" et nous ferons de notre mieux pour y répondre."
+
+#: templates/ubuntu/base.html:97
+msgid "Login support"
+msgstr ""
+
+#: templates/ubuntu/base.html:106
+#, fuzzy
+msgid ""
+"&copy; 2009-2011 Canonical Ltd.\n"
+"<a href=\"https://launchpad.net/canonical-identity-provider\">Source code "
+"for this service</a> is licensed under the <a href=\"http://www.gnu.org/"
+"licenses/agpl-3.0.html\">AGPL</a>.<br />\n"
+"Ubuntu and Canonical are registered trademarks of Canonical Group Ltd.<br /"
+">\n"
+"Please review our <a href=\"http://ubuntu.com/legal\">Terms of Service</a> "
+"as well as our <a href=\"http://ubuntu.com/legal#privacy\">Privacy Policy</"
+"a>."
+msgstr ""
+"&copy; 2009-2010 Canonical Ltd.  \n"
+"<a href=\"https://launchpad.net/canonical-identity-provider\">Le code source "
+"de ce service</a> est sous licence <a href=\"http://www.gnu.org/licenses/"
+"agpl-3.0.html\">AGPL</a>.<br />\n"
+"Ubuntu et Canonical sont des marques déposées de Canonical Group Ltd.<br />\n"
+"Veuillez consulter nos <a href=\"http://ubuntu.com/legal\">Conditions "
+"d'utilisation</a> ainsi que notre <a href=\"http://ubuntu.com/legal#privacy"
+"\">Politique de Confidentialité</a>."
+
+#: templates/ubuntu/email/desktop-newuser.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"As a final step of the Ubuntu Single Sign On (SSO) account creation process, "
+"please validate the email address %(toaddress)s. Ubuntu SSO enables "
+"convenient access to a variety of Ubuntu-related services like Ubuntu One "
+"with the same username and password.\n"
+"\n"
+"Copy and paste the confirmation code below into the desktop application.\n"
+"\n"
+"%(token)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake. Sorry about that. You don't need to do anything "
+"further. Just delete this message.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team\n"
+"https://login.ubuntu.com/"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Afin de terminer la création d'un compte Ubuntu Single Sign On (SSO), "
+"veuillez valider l'adresse électronique %(toaddress)s. Ubuntu SSO permet "
+"l'accès à de nombreux services en rapport avec Ubuntu, tel que Ubuntu One, "
+"avec les mêmes identifiants et mots de passe.\n"
+"\n"
+"Copiez le code de confirmation ci dessous dans la fenêtre de "
+"l'application :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, quelqu'un a probablement entrer "
+"votre adresse de courriel par erreur. Veuillez nous en excuser. Vous n'avez "
+"rien d'autre à faire, effacez simplement ce message.\n"
+"\n"
+"Merci,\n"
+"\n"
+"L'Équipe d'Ubuntu Single Sign On\n"
+"https://login.ubuntu.com/"
+
+#: templates/ubuntu/email/email-validation-token.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request to validate the email address %(toaddress)s for use in "
+"the Ubuntu Single Sign On service.\n"
+"\n"
+"If you made this request, please copy and paste the confirmation code below "
+"into the desktop application to complete the process to add %(toaddress)s to "
+"your existing Ubuntu Single Sign On service account.\n"
+"\n"
+"%(token)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it as "
+"a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Nous avons reçu une demande de validation de l'adresse électronique "
+"%(toaddress)s pour une utilisation du service Ubuntu Single Sign On "
+"(Authentification unique Ubuntu).\n"
+"\n"
+"Si vous êtes à l'origine de cette demande, merci de copier le code ci-"
+"dessous dans la fenêtre de l'application afin de terminer l'ajout de "
+"l'adresse %(toaddress)s à votre compte du service Ubuntu Single Sign On.\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Si vous n'êtes pas à l'origine de cette demande, merci d'ignorer ce message "
+"ou de nous en faire part comme d'une tentative d'attaque de sécurité sur vos "
+"données.\n"
+"\n"
+"Merci,\n"
+"\n"
+"L'Équipe Ubuntu Single Sign On"
+
+#: templates/ubuntu/email/forgottenpassword.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"You have requested a new password for your Ubuntu Single Sign On account.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"%(token)s\n"
+"\n"
+"Enter this code into the password-reset form, or click the following link to "
+"automatically confirm your reset:\n"
+"\n"
+"%(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone else has entered your "
+"email address at the Ubuntu Single Sign On service. Sorry about that. You "
+"don't need to do anything further, just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Vous avez demandé un nouveau mot de passe pour votre compte Ubuntu Single "
+"Sign On.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Entrez ce code dans le champ de réinitialisation du mot de passe, ou cliquez "
+"sur le lien ci-dessous afin de confirmer automatiquement ce changement :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, quelqu'un a probablement entré votre "
+"adresse électronique dans le service Ubuntu Single Sign On. Veuillez nous en "
+"excuser. Vous n'avez donc rien d'autre à faire que d'effacer ce message.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'Équipe Ubuntu Single Sign On"
+
+#: templates/ubuntu/email/impersonate-warning.txt:2
+#, fuzzy, python-format
+msgid ""
+"We've received a request to create a new account with your email address.\n"
+"\n"
+"If this was you, perhaps you've forgotten your password?\n"
+"\n"
+"%(forgotten_password_url)s\n"
+"\n"
+"If not, someone may be trying to impersonate you. If you get more requests "
+"like this, please let us know.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+"Nous avons reçu une requête de création d'un nouveau compte avec votre "
+"adresse électronique.\n"
+"\n"
+"Si vous en êtes à l'origine, peut être avez vous oublié votre mot de "
+"passe ?\n"
+"\n"
+"    %(forgotten_password_url)s\n"
+"\n"
+"Si ce n'est pas le cas, quelqu'un essaie peut être de se faire passer pour "
+"vous. Si vous recevez d'autres requêtes comme celle-ci, Veuillez nous en "
+"informer.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'équipe Ubuntu Single Sign On"
+
+#: templates/ubuntu/email/invitation.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"You have requested a new password for the Ubuntu Single Sign On service\n"
+"using the following email address:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"This email address is however not associated with any Ubuntu Single Sign On\n"
+"accounts. If you want to create a new Ubuntu Single Sign On account using\n"
+"this email address, please go to:\n"
+"\n"
+"%(signup)s\n"
+"\n"
+"If you don't know what this is about, then someone else has entered your\n"
+"email address at the Ubuntu Single Sign On service. Sorry about that.\n"
+"You don't need to do anything further, just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Vous avez demandé un nouveau mot de passe pour votre compte Ubuntu Single "
+"Sign On.\n"
+"\n"
+"Voici votre code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Entrez ce code dans le champ de réinitialisation du mot de passe, ou cliquez "
+"sur le lien ci-dessous afin de confirmer automatiquement ce changement :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, quelqu'un a probablement entré votre "
+"adresse électronique dans le service Ubuntu Single Sign On. Veuillez nous en "
+"excuser. Vous n'avez donc rien d'autre à faire que d'effacer ce message.\n"
+"\n"
+"Cordialement,\n"
+"\n"
+"L'Équipe Ubuntu Single Sign On"
+
+#: templates/ubuntu/email/mobile-newuser.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"As a final step of the Ubuntu Single Sign On (SSO) account creation process, "
+"please validate the email address %(toaddress)s. Ubuntu SSO enables "
+"convenient access to a variety of Ubuntu-related services like Ubuntu One "
+"with the same username and password.\n"
+"\n"
+"Click the following link to automatically confirm your account:\n"
+"\n"
+"%(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake. Sorry about that. You don't need to do anything "
+"further. Just delete this message.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team\n"
+"https://login.ubuntu.com/"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Afin de terminer la création d'un compte Ubuntu Single Sign On (SSO), "
+"veuillez valider l'adresse électronique %(toaddress)s. Ubuntu SSO permet "
+"l'accès à de nombreux services en rapport avec Ubuntu, tel que Ubuntu One, "
+"avec les mêmes identifiants et mots de passe.\n"
+"\n"
+"Copiez le code de confirmation ci dessous dans la fenêtre de "
+"l'application :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, quelqu'un a probablement entrer "
+"votre adresse de courriel par erreur. Veuillez nous en excuser. Vous n'avez "
+"rien d'autre à faire, effacez simplement ce message.\n"
+"\n"
+"Merci,\n"
+"\n"
+"L'Équipe d'Ubuntu Single Sign On\n"
+"https://login.ubuntu.com/"
+
+#: templates/ubuntu/email/validate-email.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request from %(requester)s using email address "
+"%(requester_email)s, trying to validate the email address %(toaddress)s for "
+"use in the Ubuntu Single Sign On service.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"%(token)s\n"
+"\n"
+"If you made this request, enter this code into the confirmation form, or "
+"click the following link to automatically confirm your email address:\n"
+"\n"
+"%(token_url)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it "
+"on\n"
+"\n"
+"%(support_form_url)s\n"
+"\n"
+"as a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Nous avons reçu une requête de %(requester)s utilisant l'adresse "
+"%(requester_email)s, et essayant de valider l'adresse %(toaddress)s afin "
+"d'être utilisée dans le service Ubuntu Single Sign On.\n"
+"\n"
+"Voici le code de confirmation associé :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Si vous êtes l'auteur de cette requête, entrez ce code dans le champ de "
+"confirmation, ou suivez le lien suivant pour valider l'adresse "
+"automatiquement :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, veuillez ignorer ce message ou le "
+"rapporter sur\n"
+"\n"
+"    %(support_form_url)s\n"
+"\n"
+"comme étant une tentative d'attaque de sécurité sur vos données.\n"
+"\n"
+"Merci,\n"
+"\n"
+"L'Équipe d'Ubuntu Single Sign On"
+
+#: templates/ubuntu/email/web-newuser.txt:2
+#, fuzzy, python-format
+msgid ""
+"Hello\n"
+"\n"
+"As a final step of the Ubuntu Single Sign On (SSO) account creation process, "
+"please validate the email address %(toaddress)s. Ubuntu SSO enables "
+"convenient access to a variety of Ubuntu-related services like Ubuntu One "
+"with the same username and password.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"%(token)s\n"
+"\n"
+"Enter this code into the registration form, or click the following link to "
+"automatically confirm your account:\n"
+"\n"
+"%(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake. Sorry about that. You don't need to do anything "
+"further. Just delete this message.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team\n"
+"https://login.ubuntu.com/"
+msgstr ""
+"Bonjour\n"
+"\n"
+"Pour valider la dernière étape du processus de création de votre compte "
+"Ubuntu Single Sign On (SSO), veuillez valider l'adresse électronique "
+"%(toaddress)s. Ubuntu SSO permet d'accéder facilement à des services liés à "
+"Ubuntu comme Ubuntu One avec le même nom d'utilisateur et mot de passe.\n"
+"\n"
+"Voici le code de confirmation :\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Veuillez recopier ce code dans le formulaire d'inscription, ou suivre le "
+"lien suivant pour confirmer automatiquement la création de votre compte :\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"Si vous ne savez pas de quoi il s'agit, une personne a probablement saisie "
+"votre adresse électronique par erreur. Veuillez nous en excuser. Vous n'avez "
+"donc pas besoin de faire autre chose. Supprimez simplement ce message.\n"
+"\n"
+"Merci,\n"
+"\n"
+"L'Équipe d'Ubuntu Single Sign On\n"
+"https://login.ubuntu.com/"
+
+#: templates/ubuntu/registration/login.html:31
+msgid "Log in to Ubuntu Single Sign On"
+msgstr "Se connecter à Ubuntu Single Sign On"
+
+#: templates/ubuntu/registration/login.html:36
+msgid ""
+"Please note that if you've registered with Launchpad you can use your "
+"existing Launchpad credentials to log in."
+msgstr ""
+"Veuillez noter que si vous avez un compte Launchpad, vous pouvez utiliser "
+"vos identifiants Launchpad pour vous connecter."
+
+#: templates/ubuntu/registration/login.html:88
+#, fuzzy, python-format
+msgid "go back to %(rpconfig_name)s"
+msgstr "Se connecter à %(rpconfigname)s"
+
+#: templates/ubuntu/registration/login.html:104
+msgid "Are you new?"
+msgstr "Êtes-vous nouveau ?"
+
+#: templates/ubuntu/registration/login.html:106
+msgid ""
+"This is a new service to provide a single, central login service for all "
+"Ubuntu-related sites."
+msgstr ""
+"Il s'agit d'un nouveau service destiné à fournir un service "
+"d'authentification unique et centralisé pour tous les sites liés à Ubuntu."
+
+#: templates/ubuntu/registration/login.html:110
+msgid "Find out more"
+msgstr "Pour en savoir plus"
+
+#: templates/ubuntu/registration/login.html:118
+msgid "New account"
+msgstr "Nouveau compte"
+
+#: templates/ubuntu/registration/logout.html:19
+#, fuzzy, python-format
+msgid ""
+"\n"
+"    <p class=\"returnto highlight\"><a href=\"%(return_to_url)s\">Return to "
+"%(site_name)s</a></p>"
+msgstr ""
+"\n"
+"     <span class=\"big\">Revenir à <a href=\"%(return_to_url)s\">"
+"%(site_name)s</a></span>"
+
+#: templates/ubuntu/registration/logout.html:25
+msgid "Sites you may still be logged into"
+msgstr "Sites auxquels vous pouvez être encore connecté"
+
+#: templates/ubuntu/registration/logout.html:29
+#: templates/widgets/last_auth_sites.html:15
+msgid "Site"
+msgstr "Site"
+
+#: templates/ubuntu/registration/logout.html:30
+#: templates/widgets/last_auth_sites.html:16
+msgid "Last authenticated"
+msgstr "Dernière authentification"
+
+#: templates/widgets/last_auth_sites.html:10
+msgid "Sites you last authenticated to"
+msgstr "Derniers sites auxquels vous vous êtes connectés"
+
+#: templates/widgets/passwords.html:19
+msgid "Choose password"
+msgstr "Choisir un mot de passe"
+
+#: templates/widgets/passwords.html:32
+msgid "Retype password"
+msgstr "Re-saisissez le mot de passe"
+
+#: templates/widgets/recaptcha.html:11
+msgid "Get a visual challenge"
+msgstr "Utiliser un test visuel"
+
+#: templates/widgets/recaptcha.html:12
+msgid "Get an audio challenge"
+msgstr "Utiliser un test audio"
+
+#: templates/widgets/recaptcha.html:13
+msgid "Get a new challenge"
+msgstr "Essayer un autre test"
+
+#: templates/widgets/recaptcha.html:14
+msgid "Type the two words:"
+msgstr "Saisissez les deux mots suivant :"
+
+#: templates/widgets/recaptcha.html:15
+msgid "Type what you hear:"
+msgstr "Écrivez ce que vous entendez :"
+
+#: templates/widgets/recaptcha.html:16
+msgid "Help"
+msgstr "Aide"
+
+#: templates/widgets/recaptcha.html:17
+msgid "Play sound again"
+msgstr "Rejouer le son"
+
+#: templates/widgets/recaptcha.html:18
+msgid "Download sound as MP3"
+msgstr "Téléchargez le son au format MP3"
+
+#: templates/widgets/recaptcha.html:19
+msgid "Incorrect. Try again."
+msgstr "Incorrect. Veuillez réessayer."
+
+#: templates/widgets/recaptcha.html:26
+msgid ""
+"It appears that our captcha service was unable to load on this page. This "
+"may be caused by a plugin on your browser. Please correct this and try "
+"again. If the problem persists, please contact <a href=\"https://forms."
+"canonical.com/sso-support/\">Ubuntu SSO support</a>"
+msgstr ""
+"Le service captcha semble ne pas avoir pu être chargé sur cette page. Une "
+"extension du navigateur en est peut-être la cause. Veuillez corriger le "
+"problème et réessayer. Si le problème persiste, merci de contacter <a href="
+"\"https://forms.canonical.com/sso-support/\">Ubuntu SSO support</a>."
+
+#: templates/widgets/trusted_rp.html:9
+msgid "Sign in"
+msgstr ""
+
+#: templates/widgets/unknown_rp.html:13
+msgid "Warning:"
+msgstr "Important :"
+
+#: templates/widgets/unknown_rp.html:14
+#, python-format
+msgid "<em>%(trust_root)s</em> does not look like a trustworthy URL."
+msgstr "<em>%(trust_root)s</em> ne semble pas être une URL de confiance."
+
+#: templates/widgets/ubuntu/login-button.html:10
+msgid "Log in or Register"
+msgstr "Se connecter ou s'inscrire"
+
+#: templates/widgets/ubuntu/logout-button.html:20
+msgid "Edit"
+msgstr "Modifier"
+
+#: templates/widgets/ubuntu/logout-button.html:25
+#, fuzzy
+msgid "Authentication Devices"
+msgstr "L'authentification OpenID a échoué."
+
+#: templates/widgets/ubuntu/logout-button.html:27
+msgid "Applications"
+msgstr "Applications"
+
+#: templates/widgets/ubuntu/logout-button.html:31
+#: templates/widgets/ubuntu/logout-button.html:33
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#. Translators: Displayed as an in-line message after update (/)
+#: views/account.py:78 views/devices.py:89
+msgid "Your account details have been successfully updated"
+msgstr "Les détails de votre compte ont été mis à jour avec succès"
+
+#: views/account.py:157
+#, python-format
+msgid ""
+"We&rsquo;ve just emailed %(email_to)s (from %(email_from)s) with "
+"instructions on validating your email address."
+msgstr ""
+"Un courriel contenant les instructions pour valider votre adresse vient "
+"d'être envoyé à %(email_to)s (de la part de %(email_from)s)."
+
+#: views/account.py:203
+#, fuzzy, python-format
+msgid "The unverified email address %s was deleted successfully"
+msgstr "L'adresse électronique non vérifiée %s a été supprimée avec succès"
+
+#: views/account.py:222
+#, python-format
+msgid "'%s' token was revoked successfully"
+msgstr "L'autorisation « %s » a été révoquée avec succès."
+
+#: views/consumer.py:162
+#, python-format
+msgid "OpenID discovery error: %s"
+msgstr "Erreur de découverte OpenID : %s"
+
+#: views/consumer.py:269
+msgid "OpenID authentication cancelled."
+msgstr "Authentication OpenID annulé."
+
+#: views/consumer.py:272
+msgid "OpenID Provider reports setup needed (not currently logged in)."
+msgstr ""
+"Le fournisseur OpenID rapporte qu'une configuration est nécessaire (vous "
+"n'êtes pas encore identifié)."
+
+#: views/consumer.py:275
+msgid "OpenID authentication failed."
+msgstr "L'authentification OpenID a échoué."
+
+#: views/devices.py:38
+msgid "Yubikey"
+msgstr ""
+
+#: views/devices.py:39
+msgid "Google Authenticator"
+msgstr ""
+
+#: views/devices.py:40
+#, fuzzy
+msgid "Authentication device"
+msgstr "L'authentification OpenID a échoué."
+
+#: views/devices.py:190
+#, fuzzy, python-format
+msgid "Authentication device '%s' has been successfully added"
+msgstr "Les détails de votre compte ont été mis à jour avec succès"
+
+#: views/devices.py:195
+#, fuzzy
+msgid "The one-time password didn't match the AES key."
+msgstr "Le mot de passe ne correspond pas"
+
+#: views/devices.py:255
+#, fuzzy, python-format
+msgid "Authentication device '%s' has been successfully deleted"
+msgstr "Les détails de votre compte ont été mis à jour avec succès"
+
+#: views/devices.py:277
+msgid ""
+"Authentication device '{original}' has been successfully renamed to "
+"'{renamed}'"
+msgstr ""
+
+#: views/ui.py:111
+msgid "Password didn't match."
+msgstr "Le mot de passe ne correspond pas"
+
+#: views/ui.py:118
+msgid ""
+"Your account has been suspended. Please contact login support to re-enable it"
+msgstr ""
+
+#: views/ui.py:122
+#, fuzzy
+msgid ""
+"Your account has been deactivated. To reactivate it, please reset your "
+"password"
+msgstr "Votre compte a été désactivé."
+
+#: views/ui.py:144
+msgid "The password is invalid"
+msgstr ""
+
+#: views/ui.py:482 views/ui.py:726 views/ui.py:761
+msgid "Your account was created successfully"
+msgstr "Votre compte a été créé avec succès."
+
+#: views/ui.py:537
+msgid "Warning"
+msgstr "Avertissement"
+
+#: views/ui.py:660
+msgid "Registration mail sent"
+msgstr "Un courriel d'inscription a été envoyé."
+
+#: views/ui.py:661
+#, python-format
+msgid ""
+"We&rsquo;ve just emailed %(email_to)s (from %(email_from)s) to confirm your "
+"address."
+msgstr ""
+"Un courriel de confirmation a été envoyé à %(email_to)s par (from "
+"%(email_from)s)."
+
+#: views/ui.py:773
+msgid "Please log in to use this confirmation code"
+msgstr "Merci de vous connecter pour utiliser ce code de confirmation"
+
+#: views/ui.py:796
+#, python-format
+msgid "The email address %s has been validated"
+msgstr "L'adresse de courriel %s a été validée"
+
+#: views/ui.py:945
+msgid "Forgotten your password?"
+msgstr "Mot de passe oublié ?"
+
+#: views/ui.py:946
+#, python-format
+msgid ""
+"We&rsquo;ve just emailed %(email_to)s (from %(email_from)s) with "
+"instructions on resetting your password."
+msgstr ""
+"Un courriel contenant les instructions pour réinitialiser votre mot de passe "
+"vient d'être envoyé à %(email_to)s (de la part de %(email_from)s)."
+
+#: views/ui.py:952
+msgid "Check that you&rsquo;ve actually entered a subscribed email address."
+msgstr "Vérifiez que vous avez bien saisi une adresse électronique existante."
+
+#: views/ui.py:1006
+#, python-format
+msgid ""
+"Your account was reactivated, and the preferred email address was set to %s."
+msgstr ""
+"Votre compte a été réactivé et votre adresse électronique par défaut est "
+"désormais %s."
+
+#~ msgid "Display name"
+#~ msgstr "Afficher le nom"
+
+#~ msgid "Can query private teams"
+#~ msgstr "Possibilité d'interroger des équipes privées"
+
+#~ msgid "Auto-authorize"
+#~ msgstr "Autorisation automatique"
+
+#~ msgid "Only one email address can be preferred."
+#~ msgstr "Vous ne pouvez préférer qu'une seule adresse électronique."
+
+#~ msgid "Your account has been deactivated"
+#~ msgstr "Votre compte a été désactivé"
+
+#~ msgid "LP account"
+#~ msgstr "Compte LP"
+
+#~ msgid "LP accounts"
+#~ msgstr "Comptes LP"
+
+#~ msgid "LP account for %s"
+#~ msgstr "Compte LP pour %s"
+
+#~ msgid "Only your identity URL"
+#~ msgstr "Seulement votre URL d'identification"
+
+#~ msgid "Continue to 3rd-party site"
+#~ msgstr "Continuer vers le site tiers"
+
+#~ msgid "You are ready to continue to the 3rd-party site."
+#~ msgstr "Vous êtes prêts à continuer vers le site tiers."
+
+#~ msgid "Remove %(email)s?"
+#~ msgstr "Supprimer %(email)s ?"
+
+#~ msgid "Remove"
+#~ msgstr "Supprimer"
+
+#~ msgid "If neither of those work, our service might be having a problem."
+#~ msgstr ""
+#~ "Si rien de ceci ne fonctionne, notre service rencontre peut-être des "
+#~ "problèmes."
+
+#~ msgid ""
+#~ "You are here because %(rpconfigname)s uses the Ubuntu Single Sign On "
+#~ "service."
+#~ msgstr ""
+#~ "Vous êtes ici car %(rpconfigname)s utilise le service Ubuntu Single Sign "
+#~ "On."
+
+#~ msgid "Logged in as <strong>%(displayname)s</strong>"
+#~ msgstr "Connecté en tant que <strong>%(displayname)s</strong>"
+
+#~ msgid "Log Out"
+#~ msgstr "Se déconnecter"

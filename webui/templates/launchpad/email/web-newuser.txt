@@ -1,0 +1,13 @@
+{% load i18n %}{% blocktrans %}Hello
+
+Thank you for registering with the {{ brand_description }}.
+
+Here is your confirmation code:{% endblocktrans %}
+
+{{ token }}
+
+{% blocktrans %}Enter this code into the registration form, or click the following link to automatically confirm your account:{% endblocktrans %}
+
+{{ token_url }}
+
+{% include "email/thank_you.txt" %}

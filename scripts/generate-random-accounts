@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+# Copyright 2010 Canonical Ltd.  This software is licensed under the
+# GNU Affero General Public License version 3 (see the file LICENSE).
+
+import os
+import sys
+import random
+import string
+import math
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+sys.path.append('.')
+
+# percent of accounts with associated person
+ACCOUNTS_WITH_PERSON = 0.8
+ACCOUNT_MAX_EMAILS = 5
+
+from identityprovider.models import Account, Person, LPOpenIdIdentifier
+from identityprovider.models.const import (
+    AccountCreationRationale, EmailStatus, AccountStatus)
+
+
+def generate_string(length):
+    return "".join(random.choice(string.lowercase)
+                   for x in range(random.randint(length - 3, length + 3)))
+
+
+def generate_password():
+    return (generate_string(10) + random.choice(string.digits) +
+            random.choice(string.uppercase))
+
+
+def generate_email():
+    return "%s@%s.%s" % (generate_string(5), generate_string(8),
+                         random.choice(["com", "edu", "co.uk", "pl", "org"]))
+
+
+def generate_lp_name():
+    while True:
+        name = "-".join(generate_string(6)
+                        for c in range(random.randint(1, 3)))
+        if Person.objects.filter(name=name).count() == 0:
+            return name
+
+
+def generate_person(account):
+    lp_openid = LPOpenIdIdentifier.objects.create(
+        openid_identifier=account.openid_identifier)
+    Person.objects.create(
+        displayname=account.displayname,
+        name=generate_lp_name(),
+        lp_account=lp_openid.lp_account
+    )
+
+
+def generate_account():
+    account = Account.objects.create_account(
+        " ".join([generate_string(5).title(), generate_string(5).title()]),
+        generate_email(),
+        generate_password(),
+        random.choice(dict(AccountCreationRationale._get_choices()).keys())
+    )
+    for i in range(random.randint(0, ACCOUNT_MAX_EMAILS - 1)):
+        try:
+            account.emailaddress_set.create(
+                qemail=generate_email(),
+                status=random.choice([EmailStatus.NEW,
+                                      EmailStatus.VALIDATED])
+                )
+        except Exception:
+            # Ignore case when generated email is already in the db
+            pass
+    if random.random() > (1.0 - ACCOUNTS_WITH_PERSON):
+        generate_person(account)
+
+    statuses = [(0.9, AccountStatus.SUSPENDED),
+                (0.8, AccountStatus.DEACTIVATED),
+                (0.6, AccountStatus.NOACCOUNT),
+                (0.0, AccountStatus.ACTIVE)]
+    for probability, status in statuses:
+        if random.random() > probability:
+            account.status = status
+            account.save()
+            break
+    return account
+
+if __name__ == '__main__':
+    try:
+        accounts_count = int(sys.argv[1])
+        print "Generating %d accounts" % accounts_count
+
+        interval = 10 ** (int(math.log10(accounts_count)) - 1)
+        for i in xrange(accounts_count):
+            generate_account()
+            if i > 0 and (i % interval) == 0:
+                print "Created %d accounts" % i
+        print "Created %d accounts" % accounts_count
+
+    except (ValueError, IndexError, TypeError):
+        print "Usage: %s number-of-accounts-to-create" % sys.argv[0]

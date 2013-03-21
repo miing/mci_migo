@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% trans "Choose your language" %}
+{% endblock %}
+
+{% block text_title %}
+    <h1 class="main">{% trans "Choose your language" %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div id="language_select">
+    {% for lang in supported_languages %}
+    <form action="" method="post">
+		{% csrf_token %}
+        <input type="hidden" name="next" value="{{next}}" />
+        <input type="hidden" name="language" value="{{lang.0}}" />
+        <div><input type="submit" name="submit" value="{{lang.1|capfirst}}"
+            style="background: transparent url('{{ STATIC_URL }}flags/{{lang.0}}.png') center left no-repeat" />
+        </div>
+    </form>
+    {% endfor %}
+    </div>
+    <h2 class="main">{% trans "Can't find your language?" %}</h2>
+    <p>{% blocktrans %}We welcome volunteers to help us translate this site to new languages. If you are able to help, please visit our <a href="https://translations.launchpad.net/canonical-identity-provider">translations site</a> to get started.{% endblocktrans %}
+    </p>
+{% endblock %}
+
+{% comment %} Removing language link from footer on this page {% endcomment %}
+{% block language_footer %}{% endblock %}

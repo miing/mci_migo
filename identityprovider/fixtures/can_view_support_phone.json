@@ -1,0 +1,10 @@
+[
+  {
+    "pk": 2,
+    "model": "gargoyle.switch",
+    "fields": {
+      "key": "CAN_VIEW_SUPPORT_PHONE",
+      "status": 3
+    }
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "pk": 1,
+    "model": "gargoyle.switch",
+    "fields": {
+      "key": "CAPTCHA",
+      "status": 3
+    }
+  }
+]

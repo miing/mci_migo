@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<ol id="codes" class="codelist">
+{% for code in codes %}
+  <li>
+    {% if forloop.counter0 < counter|default:0 %}
+      <strike>{{ code }}</strike>
+    {% else %}
+      {{ code }}
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>
+
+<style media="print">
+* { display: none; }
+{% comment %}
+You have to explicitly make visible every elem from html down
+{% endcomment %}
+html, body, #container, #container-inner, body.onecol #content,
+#box, .codelist, .codelist * {
+    display: block !important; margin: 0; padding: 0;
+}
+</style>

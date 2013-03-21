@@ -1,0 +1,670 @@
+[
+    {
+        "pk": 1,
+        "model": "identityprovider.account",
+        "fields": {
+            "status": 20,
+            "displayname": "Mark Shuttleworth",
+            "status_comment": null,
+            "old_openid_identifier": "123/mark",
+            "date_created": "2005-06-06 08:59:51",
+            "date_status_set": "2005-06-06 08:59:51",
+            "openid_identifier": "mark_oid",
+            "creation_rationale": 8,
+            "twofactor_required": false
+        }
+    },
+    {
+        "pk": "mark_oid",
+        "model": "identityprovider.lpopenididentifier",
+        "fields": {"lp_account": 1, "date_created": "2005-06-06 08:59:51"}
+    },
+    {
+        "pk": 12,
+        "model": "identityprovider.account",
+        "fields": {
+            "status": 20,
+            "displayname": "Sample Person",
+            "status_comment": null,
+            "old_openid_identifier": "123/name12",
+            "date_created": "2005-06-06 08:59:51",
+            "date_status_set": "2005-06-06 08:59:51",
+            "openid_identifier": "name12_oid",
+            "creation_rationale": 8,
+            "twofactor_required": false
+        }
+    },
+    {
+        "pk": 66,
+        "model": "identityprovider.account",
+        "fields": {
+            "status": 10,
+            "displayname": "Diogo Matsubara",
+            "status_comment": null,
+            "old_openid_identifier": "456/matsubara",
+            "date_created": "2006-12-13 21:19:06",
+            "date_status_set": "2006-12-13 21:19:06",
+            "openid_identifier": "matsubara_oid",
+            "creation_rationale": 4,
+            "twofactor_required": false
+        }
+    },
+    {
+        "pk": 243610,
+        "model": "identityprovider.account",
+        "fields": {
+            "status": 20,
+            "displayname": "Gold Member",
+            "status_comment": null,
+            "old_openid_identifier": null,
+            "date_created": "2007-12-14 16:52:15.403833",
+            "date_status_set": "2007-12-14 16:52:15.403833",
+            "openid_identifier": "cCGE3LA",
+            "creation_rationale": 1,
+            "twofactor_required": false
+        }
+    },
+    {
+        "pk": "cCGE3LA",
+        "model": "identityprovider.lpopenididentifier",
+        "fields": {"lp_account": 10, "date_created": "2005-06-06 08:59:51"}
+    },
+
+    {
+        "pk": 243611,
+        "model": "identityprovider.account",
+        "fields": {
+            "status": 20,
+            "displayname": "Owner",
+            "status_comment": null,
+            "old_openid_identifier": null,
+            "date_created": "2007-12-14 16:52:15.403833",
+            "date_status_set": "2007-12-14 16:52:15.403833",
+            "openid_identifier": "MGWJnTL",
+            "creation_rationale": 1,
+            "twofactor_required": false
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "identityprovider.accountpassword",
+        "fields": {
+            "account": 1,
+            "password": "7whYlTsp37YAwPVAzJmQ5T6+3jKRglh4Vv1Empr/ek2S87QzkJDHQQ=="
+        }
+    },
+    {
+        "pk": 12,
+        "model": "identityprovider.accountpassword",
+        "fields": {
+            "account": 12,
+            "password": "7whYlTsp37YAwPVAzJmQ5T6+3jKRglh4Vv1Empr/ek2S87QzkJDHQQ=="
+        }
+    },
+    {
+        "pk": 243610,
+        "model": "identityprovider.accountpassword",
+        "fields": {
+            "account": 243610,
+            "password": "7whYlTsp37YAwPVAzJmQ5T6+3jKRglh4Vv1Empr/ek2S87QzkJDHQQ=="
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 4,
+            "lp_person": 1,
+            "account": 1,
+            "email": "mark@example.com",
+            "date_created": "2006-10-16 18:31:43"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 4,
+            "lp_person": 12,
+            "account": 12,
+            "email": "test@canonical.com",
+            "date_created": "2006-10-16 18:31:43"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 1,
+            "lp_person": 12,
+            "account": 12,
+            "email": "testtest@canonical.com",
+            "date_created": "2006-10-16 18:31:43.547829"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "identityprovider.invalidatedemailaddress",
+        "fields": {
+            "account": 12,
+            "email": "testtesttest@canonical.com",
+            "date_created": "2006-10-16 18:31:43.54821"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 2,
+            "lp_person": 12,
+            "account": 12,
+            "email": "testing@canonical.com",
+            "date_created": "2006-10-16 18:31:43.548591"
+        }
+    },
+    {
+        "pk": 45,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 4,
+            "lp_person": 17,
+            "account": null,
+            "email": "support@ubuntu.com",
+            "date_created": "2006-10-16 18:31:43.621341"
+        }
+    },
+    {
+        "pk": 46,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 4,
+            "lp_person": 18,
+            "account": null,
+            "email": "support@kubuntu.com",
+            "date_created": "2006-10-16 18:31:43.621341"
+        }
+    },
+    {
+        "pk": 47,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 4,
+            "lp_person": 19,
+            "account": null,
+            "email": "support@isd.com",
+            "date_created": "2006-10-16 18:31:43.621341"
+        }
+    },
+    {
+        "pk": 61,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 1,
+            "lp_person": null,
+            "account": 66,
+            "email": "matsubara@async.com.br",
+            "date_created": "2006-12-13 21:19:06"
+        }
+    },
+    {
+        "pk": 70,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 4,
+            "lp_person": 243610,
+            "account": 243610,
+            "email": "member@canonical.com",
+            "date_created": "2007-12-14 16:52:15.403833"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "Mark Shuttleworth",
+            "teamowner": null,
+            "teamdescription": null,
+            "name": "mark",
+            "language": null,
+            "fti": "'mark':1A,2A 'shuttleworth':3A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2005-06-06 08:59:51.591618",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": 8,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false,
+            "lp_account": 1
+        }
+    },
+    {
+        "pk": 12,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "Sample Person",
+            "teamowner": null,
+            "teamdescription": null,
+            "name": "name12",
+            "language": null,
+            "fti": "'sampl':2A 'name12':1A 'person':3A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2005-06-06 08:59:51.612277",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": true,
+            "creation_rationale": 8,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false,
+            "lp_account": 12
+        }
+    },
+	{
+        "pk": "name12_oid",
+        "model": "identityprovider.lpopenididentifier",
+        "fields": {"lp_account": 12, "date_created": "2005-06-06 08:59:51"}
+	},
+    {
+        "pk": 66,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "Diogo Matsubara",
+            "teamowner": null,
+            "teamdescription": null,
+            "name": "matsubara",
+            "language": null,
+            "fti": "'diogo':2A 'matsubara':1A,3A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2006-12-13 21:19:06.369142",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": 4,
+            "creation_comment": "when importing the Portuguese (Brazil) (pt_BR) translation of evolution-2.2-test in Evolution trunk",
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false,
+            "lp_account": 66
+        }
+    },
+    {
+        "pk": 17,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "Ubuntu Team",
+            "teamowner": 1,
+            "teamdescription": "This Team is responsible for the Ubuntu Distribution",
+            "name": "ubuntu-team",
+            "language": null,
+            "fti": "'team':3A,5A 'ubuntu':2A,4A 'ubuntu-team':1A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2005-06-06 08:59:51.60576",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": null,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false
+        }
+    },
+    {
+        "pk": 18,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "Kubuntu Team",
+            "teamowner": 1,
+            "teamdescription": "This Team is responsible for the Kubuntu Distribution",
+            "name": "kubuntu-team",
+            "language": null,
+            "fti": "'team':3A,5A 'kubuntu':2A,4A 'kubuntu-team':1A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2005-06-06 08:59:51.60576",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": null,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false
+        }
+    },
+    {
+        "pk": 19,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "ISD Team",
+            "teamowner": 1,
+            "teamdescription": "This Team is responsible for ISD",
+            "name": "isd-team",
+            "language": null,
+            "fti": "'team':3A,5A 'isd':2A,4A 'isd-team':1A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2005-06-06 08:59:51.60576",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": null,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false
+        }
+    },
+    {
+        "pk": 243610,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "Gold Member",
+            "teamowner": null,
+            "teamdescription": null,
+            "name": "member",
+            "language": null,
+            "fti": "'gold':2A 'member':1A,3A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2007-12-14 16:52:15.403833",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": 1,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false,
+            "lp_account": 10
+        }
+    },
+    {
+        "pk": 243611,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "Owner",
+            "teamowner": null,
+            "teamdescription": null,
+            "name": "owner",
+            "language": null,
+            "fti": "'owner':1A,2A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2007-12-14 16:52:15.403833",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": 1,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 1,
+            "verbose_bugnotifications": false,
+            "lp_account": 243611
+        }
+    },
+    {
+        "pk": 243612,
+        "model": "identityprovider.person",
+        "fields": {
+            "displayname": "My Team",
+            "teamowner": 243611,
+            "teamdescription": null,
+            "name": "myteam",
+            "language": null,
+            "fti": "'team':3A 'myteam':1A",
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "subscriptionpolicy": 1,
+            "merged": null,
+            "datecreated": "2007-12-14 16:52:15.403833",
+            "addressline1": null,
+            "addressline2": null,
+            "organization": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "postcode": null,
+            "phone": null,
+            "homepage_content": null,
+            "icon": null,
+            "mugshot": null,
+            "hide_email_addresses": false,
+            "creation_rationale": null,
+            "creation_comment": null,
+            "registrant": null,
+            "logo": null,
+            "renewal_policy": 10,
+            "personal_standing": 0,
+            "personal_standing_reason": null,
+            "mail_resumption_date": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "mailing_list_receive_duplicates": true,
+            "visibility": 20,
+            "verbose_bugnotifications": false
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "team": 17,
+            "person": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "team": 18,
+            "person": 1
+        }
+    },
+    {
+        "pk": 3,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "team": 19,
+            "person": 1
+        }
+    },
+    {
+        "pk": 158,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "team": 243612,
+            "person": 243611
+        }
+    },
+    {
+        "pk": 160,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "team": 243612,
+            "person": 243610
+        }
+    },
+    {
+        "pk": 161,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "team": 17,
+            "person": 243610
+        }
+    },
+    {
+        "pk": 164,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "team": 18,
+            "person": 243610
+        }
+    },
+    {
+        "pk": 5,
+        "model": "identityprovider.openidrpsummary",
+        "fields": {
+            "account": 12,
+            "openid_identifier": "http://openid.launchpad.dev/+id/name12_oid",
+            "trust_root": "https://shop.canonical.com",
+            "date_created": "2008-02-04 13:01:01.000001",
+            "date_last_used": "2008-02-04 13:01:01.000001",
+            "total_logins": 1
+        }
+    }
+]

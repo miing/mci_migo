@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% comment %}Translators: This is the title of a page only displayed when the browser request was old (ie. had an incorrect csrf token).{% endcomment %}
+    {% trans "Stale request" %}
+{% endblock %}
+
+{% block text_title %}
+    {% comment %}Translators: This is the heading of a page only displayed when the browser request was old (ie. had an incorrect csrf token).{% endcomment %}
+    <h1 class="main">{% trans "Your page was stale." %}</h1>
+{% endblock %}
+
+{% block content %}
+        <div>
+          <p>
+            {% comment %}Translators: This is the text of a page only displayed when the browser request was old (ie. had an incorrect csrf token).{% endcomment %}
+            {% blocktrans %}Apologies, the page you came from was a little old.  Perhaps you navigated here from a browser window other than the one you used to login.  If so, try using the other browser window.  Or, try your action again, starting from our home page.{% endblocktrans %}
+          </p>
+          <a class="btn" href="/"><span><span>{% trans "Go to our home page" %}</span></span></a>
+        </div>
+{% endblock %}

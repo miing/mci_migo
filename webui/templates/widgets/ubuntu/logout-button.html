@@ -1,0 +1,41 @@
+{% comment %}
+Copyright 2010, 2012 Canonical Ltd.  This software is licensed under
+the GNU Affero General Public License version 3 (see the file
+LICENSE).
+{% endcomment %}
+
+{% load gargoyle_tags %}
+{% load i18n %}
+{% load menu_item %}
+
+<ul>
+
+{% if token %}
+    {% url account-index token=token as account_url %}
+{% else %}
+    {% url account-index as account_url %}
+{% endif %}
+{% menu_item "account" user.displayname account_url %}
+
+{% if token and not readonly %}
+    {% url account-edit token=token as edit_url %}
+    {% menu_item "edit" _("Edit") edit_url %}
+{% endif %}
+
+{% if not token and not readonly %}
+  {% ifswitch TWOFACTOR %}
+    {% url device-list as device_url %}
+    {% menu_item "devices" _("Authentication Devices") device_url %}
+  {% endifswitch %}
+  {% url applications as applications_url %}
+  {% menu_item "applications" _("Applications") applications_url %}
+{% endif %}
+
+{% if token %}
+    {% url logout token=token as logout_url %}
+{% else %}
+    {% url logout as logout_url %}
+{% endif %}
+{% menu_item "logout" _("Log out") logout_url %}
+
+</ul>

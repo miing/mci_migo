@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# ./scripts/run-acceptance-tests -- run acceptance tests for an environment.
+#
+# Usage: ./scripts/run-acceptance-tests ENVIRONMENT CONFIG_BRANCH FLAGS
+#
+# where:
+# - ENVIRONMENT is one of "production", "dev" or "staging".
+# - CONFIG_BRANCH is the URL of a branch that will live in branches/project
+# - FLAGS are the flags to pass to 'fab acceptance'.   Not needed for "dev".
+#   Recommended FLAGS for staging and production is "twofactor;paper_device"
+
+set -e
+
+TARGET=$1
+CONFIG_BRANCH="lp:~canonical-isd-hackers/isd-configs/sso-config"
+
+if [ "$TARGET" = "production" ]; then
+    SST_BASE_URL=https://login.ubuntu.com
+    FLAGS="twofactor;preflight;saml2;paper_device;login_by_token;allow_unverified;captcha;login_by_phone;optional_captcha"
+elif [ "$TARGET" = "staging" ]; then
+    SST_BASE_URL=https://login.staging.ubuntu.com
+    FLAGS="twofactor;preflight;saml2;paper_device;login_by_token;allow_unverified;captcha;login_by_phone;optional_captcha"
+else
+    SST_BASE_URL=""
+    FLAGS=""
+fi
+
+# Some Jenkins jobs copy workspace.tar.gz from successful build.
+if [ -r "workspace.tar.gz" ]; then
+    tar zxf workspace.tar.gz -C .
+fi
+
+# make sure that dependencies are up to date
+./scripts/bootstrap-with-cache.sh
+if [ -d branches/project ]; then
+    bzr pull -d branches/project
+else
+    bzr branch ${CONFIG_BRANCH} branches/project
+fi
+
+# Set up the correct Django configuration.
+rm django_project/local.cfg
+ln -s `pwd`/scripts/local.cfg-${TARGET} django_project/local.cfg
+
+# clean old results
+rm -rf results/*
+
+# run tests
+if [ ${TARGET} = "dev" ]; then
+    # dev is special: we need to start it up.
+    ./scripts/acceptance-dev.sh
+else
+    SST_BASE_URL=$SST_BASE_URL fab acceptance:screenshot=true,report=xml,extended=true,flags=$FLAGS
+fi

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Complete your registration" %}{% endblock %}
+
+{% block extra_header_top %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssreset/reset-min.css"></link>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssfonts/fonts-min.css"></link>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssbase/base-min.css"></link>
+{% endblock %}
+
+{% block extra_header %}
+<script type="text/javascript" src="{{ STATIC_URL }}lazr-js/lazr/lazr-meta.js"></script>
+<script type="text/javascript">
+    var LAZR_YUI_CONFIG = {
+        filter: "min",
+        base: "{{ STATIC_URL }}lazr-js/",
+        modules: LAZR_MODULES,
+        insertBefore: "style-overrides"
+    };
+    var LP = YUI(LAZR_YUI_CONFIG);
+    LP.use('node', 'event', 'lazr.passwordmeter', function(Y){
+        var passwordMeter = new Y.PasswordMeter({
+            input: '#id_password',
+            contentBox: '#password_strength',
+            tabIndex: null,
+            messages: ['{% trans "Strength: too short" %}',
+                       '{% trans "Strength: weak" %}',
+                       '{% trans "Strength: fair" %}',
+                       '{% trans "Strength: good" %}',
+                       '{% trans "Strength: strong" %}']
+        });
+        passwordMeter.render();
+    });
+</script>
+<style id="style-overrides" type="text/css">
+div.yui-passwordmeter {
+    clear: left;
+}
+#password_strength {
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% blocktrans %}Complete your {{ brand_description }} registration{% endblocktrans %}</h1>
+{% endblock %}
+
+{% block content_id %}auth{% endblock %}
+
+{% block content %}
+    <form id="login-form" class="longfields" method="post" name="loginform">
+        {% csrf_token %}
+        <p class="input-row{% if form.displayname.errors %} haserrors{% endif %}">
+            <label for="id_displayname">{% trans "Full name" %}</label>
+            <br />
+            {{ form.displayname }}
+            {% if form.displayname.errors %}
+                <span class="error">
+                    {{ form.displayname.errors|first }}
+                </span>
+            {% endif %}
+        </p>
+        {% include "widgets/passwords.html" %}
+        <p class="actions">
+            <button type="submit" name="continue" class="btn"><span><span>{% trans "Continue" %}</span></span></button>
+            {% trans "or" %}
+            {% include "common/cancel_link.html" %}
+        </p>
+        <div style="clear: both">&nbsp;</div>
+    </form>
+
+<script type="text/javascript">
+document.loginform.displayname.focus();
+</script>
+{% endblock %}

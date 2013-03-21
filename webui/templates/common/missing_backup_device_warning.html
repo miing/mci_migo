@@ -1,0 +1,19 @@
+{% load i18n %}
+
+{% if need_backup_device_warning %}
+{% url device-addition as add_device %}
+<div class="message warning" id="missing_backup_device">
+  <p>
+    {% blocktrans %}We strongly recommend having two authentication devices,
+    a <strong>primary</strong> device and a <strong>secondary</strong>
+    or backup device.
+    </br>
+    Having two authentication devices means you can continue to access your
+    account with your secondary device should your primary device be lost or
+    stolen.
+    </br>
+    </br>
+    Click to <a href="{{ add_device }}">add a backup device</a>.{% endblocktrans %}
+  </p>
+</div>
+{% endif %}

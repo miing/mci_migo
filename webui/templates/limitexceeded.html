@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% trans "Rate limit exceeded" %}
+{% endblock %}
+
+{% block text_title %}
+    <h1 class="main">{% trans "Rate limit exceeded" %}</h1>
+{% endblock %}
+
+{% block content %}
+        <div>
+          <p>
+            {% blocktrans %}You have made too many failed requests to the {{ brand_description }} authentication server over a short period of time.{% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans %}Please try again in a while.{% endblocktrans %}
+          </p>
+          <a class="btn" href="/"><span><span>{% trans "Try again" %}</span></span></a>
+        </div>
+{% endblock %}

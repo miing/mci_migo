@@ -1,0 +1,43 @@
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% load i18n %}
+{% load static_url %}
+<script type="text/javascript">
+    var RecaptchaOptions = {
+        theme: 'white',
+        custom_translations: {
+          visual_challenge : "{% trans "Get a visual challenge" %}",
+          audio_challenge : "{% trans "Get an audio challenge" %}",
+          refresh_btn : "{% trans "Get a new challenge" %}",
+          instructions_visual : "{% trans "Type the two words:" %}",
+          instructions_audio : "{% trans "Type what you hear:" %}",
+          help_btn : "{% trans "Help" %}",
+          play_again : "{% trans "Play sound again" %}",
+          cant_hear_this : "{% trans "Download sound as MP3" %}",
+          incorrect_try_again : "{% trans "Incorrect. Try again." %}"
+        },
+    };
+</script>
+<div {% if captcha_error %}class='captchaError'{% endif %}>
+{% ifequal captcha_error "&error=no-challenge" %}
+<p>
+{% blocktrans with "support_form"|static_url as support_form_url %}
+It appears that our captcha service was unable to load on this page.
+This may be caused by a plugin on your browser.
+Please correct this and try again. If the problem persists, please <a href="{{ support_form_url }}">contact support</a>
+{% endblocktrans %}
+</p>
+{% endifequal %}
+<script type="text/javascript" src="{{ CAPTCHA_API_URL_SECURE }}/challenge?k={{ CAPTCHA_PUBLIC_KEY }}{{ captcha_error }}">
+</script>
+<noscript>
+    <iframe src="{{ CAPTCHA_API_URL_SECURE }}/noscript?k={{ CAPTCHA_PUBLIC_KEY }}" height="300" width="500" frameborder="0">
+    </iframe>
+    <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+    </textarea>
+    <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+</noscript>
+</div>

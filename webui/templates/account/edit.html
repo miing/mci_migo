@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% blocktrans %}{{ account_displayname }}'s details{% endblocktrans %}
+{% endblock %}
+
+{% block extra_header_top %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssreset/reset-min.css"></link>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssfonts/fonts-min.css"></link>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssbase/base-min.css"></link>
+{% endblock %}
+
+{% block extra_header %}
+{% include "widgets/passwords_head_content.html" %}
+<script language="JavaScript" type="text/javascript">
+    function addLoadEvent(func) {
+        // add func to the onload event
+        var oldonload = window.onload;
+        if (typeof window.onload != "function") {
+            window.onload = func;
+        } else {
+            window.onload = function() {
+                if (oldonload) {
+                    oldonload();
+                }
+                func();
+            }
+        }
+    }
+
+    function disable_autocomplete() {
+        // disable autocomplete without invalidating html markup
+        if (document.getElementsByTagName) {
+            var inputElements = document.getElementsByTagName("input");
+            for (i=0; inputElements[i]; i++) {
+                if (inputElements[i].className && (inputElements[i].className.indexOf("disableAutoComplete") != -1)) {
+                    // disable autocomplete
+                    inputElements[i].setAttribute("autocomplete", "off");
+                    // remove any already autocompleted value
+                    inputElements[i].value = "";
+                    // remove any styling already applied by the previos
+                    // autocomplete
+                    inputElements[i].focus();
+                    inputElements[i].blur();
+                }//if current input element has the disableAutoComplete class set.
+            }//loop thru input elements
+        }//basic DOM-happiness-check
+    }
+
+    addLoadEvent(disable_autocomplete);
+</script>
+{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Your account" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+{% include "common/unverified_email_warning.html" %}
+{% include "common/missing_backup_device_warning.html" %}
+{% include "common/printed_codes_nearly_exhausted_warning.html" %}
+
+<form action="" method="post" class="shortfields">
+    {% csrf_token %}
+    <fieldset class="undecorated{% if enable_device_prefs %} boxed{% endif %}">
+        {% if enable_device_prefs %}
+        <legend>{% trans "Personal Details" %}</legend>
+        {% endif %}
+        <p {% if form.displayname.errors %}class="haserrors"{% endif %}>
+            <label class="formLabel" for="id_displayname">{% trans "Full name" %}</label>
+            <br />
+            {{ form.displayname }}
+            {% if form.displayname.errors %}
+                <span class="error">
+                    {{ form.displayname.errors|first }}
+                </span>
+            {% endif %}
+        </p>
+        <p style="margin-bottom:6px"
+            {% if form.preferred_email.errors %} class="haserrors"{% endif %}>
+            <label class="formLabel tooltip" for="id_preferred_email">
+              {% trans "Preferred email" %}
+              <span class="description tooltip sprite help">
+                <span class="invisible-link">?</span>
+                <span class="tooltip-content">
+                {% blocktrans %}This email address is passed on to other sites when requested as part of the login process.{% endblocktrans %}
+                </span>
+                <span class="tooltip-tail">&nbsp;</span>
+              </span>
+            </label>
+            <br />
+            {% if form.preferred_email %}
+                {% if form.preferred_email.errors %}
+                    <span class="error">
+                        {{ form.preferred_email.errors|first }}
+                    </span>
+                    <br />
+                {% endif %}
+                {{ form.preferred_email }}
+                <span class="formHelp">{{ form.preferred_email.help_text }}</span>
+            {% else %}
+                {# Manually added, it will be ignored by the django form #}
+                <input type="text" value="{{ unverified_email|default_if_none:'' }}" disabled="true" />
+            {% endif %}
+        </p>
+        {% if not embedded %}
+        <p><a href="/+emails" data-qa-id="_qa_manage_email_addresses_link">{% trans "Manage email addresses" %}</a></p>
+        {% endif %}
+
+        {% if not readonly %}
+        {% include "widgets/passwords.html" %}
+        {% endif %}
+
+    </fieldset>
+
+    {% if enable_device_prefs %}
+    <fieldset class="undecorated boxed">
+        <legend>{% trans "Authentication Devices" %}</legend>
+        <p {% if form.twofactor_required.errors %}class="haserrors"{% endif %}>
+            {{ form.twofactor_required }}
+            {% if form.twofactor_required.errors %}
+            <span class="error">{{ form.twofactor_required.errors|first }}</span>
+            {% endif %}
+        </p>
+        <p {% if form.warn_about_backup_device.errors %}class="haserrors"{% endif %}>
+            {{ form.warn_about_backup_device }}
+            <label class="formLabel" for="id_warn_about_backup_device">
+            {{ form.warn_about_backup_device.label }}
+            </label>
+            {% if form.warn_about_backup_device.errors %}
+            <span class="error">{{ form.warn_about_backup_device.errors|first }}</span>
+            {% endif %}
+        </p>
+    </fieldset>
+    {% endif %}
+
+    <p class="actions">
+    {% if not readonly %}
+        <button type="submit" class="btn" name="update"><span><span>{% trans "Update" %}</span></span></button>
+    {% endif %}
+    {% if token %}
+        {% trans "or" %}
+        <a href=".">{% trans "exit without updating" %}</a>
+    {% endif %}
+    </p>
+</form>
+
+{% include "widgets/last_auth_sites.html" %}
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
+Affero General Public License version 3 (see the file LICENSE).
+{% endcomment %}
+
+
+{% block title %}
+  {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
+{% endblock %}
+
+
+{% block text_title %}
+  <h1 class="main">{% trans "Verify your device" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<p>{% blocktrans %}Verify your device "My Yubi Key" by generating a password and
+entering it below.{% endblocktrans %}</p>
+
+<form method="post">
+
+  <p><label>
+    {% trans "One-time password:" %}<br>
+    <input type="password" name="otp" autocomplete="off"><br>
+    <span class="formHelp">{% trans "6 or 8 digits" %}</span>
+  </label></p>
+
+  <p>
+    <button class="btn"><span><span>{% trans "Verify" %}</span></span></button>
+    {% trans "or" %}
+    <a href="/device-list">{% trans "cancel" %}</a>
+  </p>
+
+</form>
+
+{% endblock %}

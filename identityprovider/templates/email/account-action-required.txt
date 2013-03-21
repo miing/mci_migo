@@ -1,0 +1,21 @@
+{% load i18n %}{% load static_url %}{% blocktrans %}Hello {{ requester }}!{% endblocktrans %}
+{% blocktrans with account_created=created|date %}
+We noticed that your {{ brand_description }} account was created on {{ account_created }} and you have not verified an email address linked to that account. We need you to verify an email address in order to fully activate your account.
+
+Click the following link to automatically confirm this email address:{% endblocktrans %}
+
+{{ token_url }}
+
+{% blocktrans %}Or you can verify any of your email addresses by visiting this page:{% endblocktrans %}
+
+{{ emails_url }}
+
+{% blocktrans %}If you do not verify an email address in the next {{ days_of_warning }} days, we will {{ action }} this account.{% endblocktrans %}
+{% ifequal action 'suspend' %}{% blocktrans %}If this happens and you want to keep the account, please contact our support staff to get it reactivated:{% endblocktrans %}
+
+{{ "support_form"|static_url }}
+
+{% include "email/thank_you.txt" %}
+{% else %}
+{% include "email/thank_you.txt" %}
+{% endifequal %}

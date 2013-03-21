@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% blocktrans %}Authentication device help - {{ brand_description }}{% endblocktrans %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Authentication device help" %}</h1>
+{% endblock %}
+
+{% block content %}
+  <p>
+    {% blocktrans with "twofactor_faq"|static_url as 2FFAQ %}
+    If your device is lost or stolen or you are having trouble logging in,
+    please review the
+    <a href="{{2FFAQ}}#Help">2-Factor Auth FAQ</a>
+    for details on how to get help and the type of information you will need
+    to provide.
+    {% endblocktrans %}
+  </p>
+
+  <h2>{% trans "Device lost or stolen?" %}</h2>
+  <p>
+    {% blocktrans %}We need to remove the device from your account to prevent
+    someone using it to gain access to your account.  Please contact us
+    immediately to resolve this!  You can reach ISD in the #isd channel on
+    IRC, or IS in the #is channel, or phone the IS emergency helpline.
+    {% endblocktrans %}
+  </p>
+
+  <h2>{% trans "Problems logging in?" %}</h2>
+  <p>
+    {% blocktrans with "twofactor_faq"|static_url as 2FFAQ %}
+    We can help get a device working again or set you up with some temporary
+    tokens to enable you to continue with your work.  If it's not urgent,
+    please send email to the ISD Support address as described in the
+    <a href="{{2FFAQ}}#Help">2-Factor Auth FAQ</a>
+    and someone will get back to you soon.
+    {% endblocktrans %}
+  </p>
+  {% if support_phone %}
+  <p>
+    {% blocktrans %}If it is urgent, please phone the IS emergency helpline at
+    <span id="support-phone">{{ support_phone }}</span>.{% endblocktrans %}
+  </p>
+  {% endif %}
+{% endblock %}

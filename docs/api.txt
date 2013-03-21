@@ -1,0 +1,90 @@
+.. vim: ft=rst
+
+===
+API
+===
+
+General considerations
+======================
+
+* SSL only
+* JSON
+* UTF-8
+
+Rate limiting
+=============
+
+TBD
+
+Standard response codes
+=======================
+
+Success:
+
+- :http:statuscode:`200`
+- :http:statuscode:`201`
+
+Errors:
+
+- :http:statuscode:`400`
+- :http:statuscode:`401`
+- :http:statuscode:`403`
+- :http:statuscode:`404`
+- :http:statuscode:`405`
+- :http:statuscode:`406`
+- :http:statuscode:`409`
+- :http:statuscode:`415`
+
+Standard response format
+========================
+
+Success:
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+        "href": "https://login.ubuntu.com/api/v2/accounts/openid123",
+        "openid": "https://login.ubuntu.com/+id/openid123",
+        "email": "foo@foo.com",
+        "displayname": "Foo Bar Baz",
+        "status": "NEW",
+        "verified": True,
+        "emails": [
+            {
+                "href": "https://login.ubuntu.com/api/v2/emails/foo@foo.com"
+            }
+        ]
+    }
+
+Error:
+
+.. sourcecode:: http
+
+    HTTP/1.1 400 BAD REQUEST
+    Content-Type: application/json
+
+    {
+        "code": "INVALID_DATA",
+        "message": "Invalid request data.",
+        "extra": {
+            "displayname": "Field required"
+        }
+    }
+
+
+Standard errors
+===============
+
+The following generic error codes are currently defined:
+
+* **INVALID_DATA**: Input data failed to validate
+
+  Error status code 400.
+
+  The ``extra`` field includes the names of the fields that failed to validate,
+  and a reason why they failed.
+
+See the relevant documentation for errors specific to each api.

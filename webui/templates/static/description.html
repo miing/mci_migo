@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% blocktrans %}What's this? - {{ brand_description }}{% endblocktrans %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "What's this?" %}</h1>
+{% endblock %}
+
+{% block content %}
+    <p>
+    {% blocktrans %}The goal of this service is to provide a single, central login service
+for all Ubuntu-related sites, thus making it more convenient for Ubuntu
+users and community members to access information, communicate, and
+contribute. This service will replace the existing Launchpad login
+service that is currently in use for many Ubuntu-related sites, although
+existing Launchpad accounts will continue to work in the new service.{% endblocktrans %}
+    </p>
+
+    <p>
+    {% blocktrans %}Over the next few months we will be moving all of the Ubuntu and
+Canonical related sites that currently use the Launchpad service to this
+service, starting with sites we manage directly and then working with
+community site owners to move the community-managed sites.{% endblocktrans %}
+    </p>
+
+    <p>
+    {% blocktrans %}Because of the number of existing Ubuntu users who have created accounts
+in Launchpad for the purpose of logging into other sites, we have set
+both services to share account data during the transition. Launchpad is
+in the process of enabling users to log in with an Ubuntu account and,
+once completed, this sharing will be removed. This does mean that you
+will be able to log into this service and Launchpad with the same
+credentials for a while. We realise this is something internet users
+have been encouraged to not do but it is a necessary side-effect of the
+transition. Doing this ensures you won't lose access to services you've
+purchased from us in the past or your account histories in the sites
+you've previously visited, as long as you use your existing Launchpad
+credentials on this site.{% endblocktrans %}
+    </p>
+
+    <p>
+    {% blocktrans with "support_form"|static_url as support_form_url %}We have answers to some questions on our <a href="/+faq">FAQ page</a>. If you have
+more questions, please <a href="https://answers.launchpad.net/canonical-identity-provider">submit them on Launchpad</a> and we'll do our
+best to respond to them. We also have an email support channel - you
+can submit your support requests using our <a href="{{ support_form_url }}">support form</a>. If
+you have found a bug, please take a few minutes to tell us about it on our <a href="https://bugs.launchpad.net/canonical-identity-provider">Launchpad project's bug tracker</a>.{% endblocktrans %}
+    </p>
+{% endblock %}

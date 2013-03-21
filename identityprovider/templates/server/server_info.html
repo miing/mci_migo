@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "This is an OpenID server" %}{% endblock %}
+
+{% block content %}
+    <p>{% blocktrans %}This is {{ brand_description }}, built on OpenID. The service enables you to use your {{ brand_description }} account to log into various sites run by Canonical and Ubuntu.{% endblocktrans %}
+    </p>
+    <p>{% blocktrans %}This page is meant to be called from an OpenID-enabled site and therefore has no user-facing functions.{% endblocktrans %}</p>
+{% endblock %}
+

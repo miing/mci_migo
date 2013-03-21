@@ -1,0 +1,101 @@
+{% extends "admin/index.html" %} 
+{% load i18n %} 
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs"><a href="/admin/">
+{% trans "Home" %}</a> &rsaquo;
+<a href="/admin/identityprovider/">Identityprovider</a> &rsaquo;
+{% trans "Readonly Admin" %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{% trans "Readonly status per application server" %}</h1>
+    {% for server in appservers %}
+        <div class="module">
+        <table summary="DB connections on {{server.name}}.">
+        <caption>{{server.name}}</caption>
+        <tr><th scope="row">
+            {{server.state}}
+{% if server.reachable %}
+    {% if server.readonly %}{% trans "In readonly mode" %}<ul>
+        {% if server.automatic %}<li>{% trans "Automatically failed over" %}</li>
+            {% ifequal server.next_recovery_due None %}
+                <li>{% trans "All recovery attempts have failed" %}</li>
+            {% else %}
+                <li>{% blocktrans with server.next_recovery_due|floatformat as next_recovery_due %}Next recovery attempt in {{next_recovery_due}} seconds{% endblocktrans %}
+                </li>
+            {% endifequal %}
+        {% else %}
+            <li>{% trans "Manually disabled" %}</li>
+            <li>{% trans "Will not attempt automatic recovery" %}</li>
+        {% endif %}
+        </ul>
+        </th>
+        <td>
+            <a href="/readonly/{{server.name}}/clear/" class="addlink">
+                {% trans "Leave readonly" %}
+            </a>
+        </td>
+    {% else %}
+        {% trans "Operating normally" %}
+        </th>
+        <td>
+            <a href="/readonly/{{server.name}}/set/" class="deletelink">
+                {% trans "Set readonly" %}
+            </a>
+        </td>
+    {% endif %}
+    {% else %}{% trans "Server is unreachable or out of sync" %}
+        </th><td></td>
+    {% endif %}
+    </tr>
+    {% if server.reachable %}
+    {% for conn in server.connections %}
+        <tr>
+            <td scope="row">
+                {% if conn.failed %}
+                <img src="{{admin_media_prefix}}/img/admin/icon-no.gif"/>
+                {% else %}
+                <img src="{{admin_media_prefix}}/img/admin/icon-yes.gif"/>
+                {% endif %}
+            {{conn.id}}:
+                {% if conn.failed %} Failed {% else %} OK {% endif %}
+            </td><td>
+            {% if conn.failed %}
+    <a href="/readonly/{{server.name}}/enable/{{conn.id}}" class="addlink">
+        {% trans "Enable" %}
+    </a>
+            {% else %}
+    <a href="/readonly/{{server.name}}/disable/{{conn.id}}" class="deletelink">
+        {% trans "Disable" %}
+    </a>
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </table>
+        </div>
+    {% endfor %}
+    {% if clear_all_readonly %}<p>
+                <a href="/readonly/clear/" class="addlink">
+                    {% trans "Leave readonly on all appservers" %}
+                </a>
+    </p>{% endif %}
+    {% if set_all_readonly %}<p>
+                <a href="/readonly/set/" class="deletelink">
+                    {% trans "Set readonly on all appservers" %}
+                </a>
+    </p>{% endif %}
+</div>
+
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

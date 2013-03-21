@@ -1,0 +1,190 @@
+.. vim: ft=rst
+
+.. _account:
+
+=======
+Account
+=======
+
+
+Data structure
+==============
+
+An Account resource provides the following fields:
+
+* **href**
+
+  Link to the account resource itself.
+
+* **openid**
+
+  Claimed user open id.
+
+* **preferredemail**
+
+  Preferred email address.
+
+* **displayname**
+
+  Display name for the user.
+
+* **status**
+
+  Status of the account. Possible values are:
+        - 'Not activated'
+        - 'Active'
+        - 'Deactivated (by user)'
+        - 'Suspended (by admin)'
+
+* **verified**
+
+  True if the account is verified (atm, it checks if the user
+  has a validated email address).
+
+* **emails**
+
+  List of email addresses associated to the user, each one with an 'href' field
+  linking to the corresponding email resource.
+
+
+Use cases
+=========
+
+.. _account-create:
+
+Create an account
+-----------------
+
+.. http:post:: /api/v2/accounts
+
+    Creates a new account
+
+    :form email: user's email address
+    :form password: user's password
+    :form displayname: user's name
+
+    :form captcha_id: (optional)
+    :form captcha_solution: (optional)
+    :form create_captcha: (optional, defaults to True)
+
+    :status 201: account created
+    :status 401: captcha required
+
+
+Errors
+......
+
+* **ALREADY_REGISTERED**: This email address is already registered.
+
+  The error uses a 409 code, indicating a conflict.
+
+  The ``extra`` field includes:
+
+  - ``email``: the email that was used to register
+
+* **CAPTCHA_FAILURE**: Failed response to captcha challenge.
+
+  Error status code 403.
+
+  This error has one field in the ``extra`` attribute.
+
+  - ``capture_message``: the error message returned by recaptcha.
+
+* **CAPTCHA_REQUIRED**: A captcha challenge is required to complete the request.
+
+  Error status code 401.
+
+  If ``create_captcha`` is True (the default), this error will include
+  two fields in the ``extra`` attribute. If False, ``extra`` will be
+  empty.
+
+  - ``image_url``: a link to an image containing the captcha challenge to be
+    answered
+
+  - ``captcha_id``: the identifier for this specific challenge (which should
+    be sent back along with the user provided response)
+
+  The consumer should present the user with the image referred by the
+  ``image_url`` attribute, and collect a response from the user.
+
+  The consumer should then retry the request, including two ``extra`` parameters:
+
+  - ``captcha_id`` (as provided in the error response)
+  - ``captcha_solution``: the user provided response to the captcha challenge
+
+
+Examples
+........
+
+**Request**:
+
+    .. sourcecode:: http
+
+        POST /api/v2/accounts HTTP/1.1
+        Host: login.ubuntu.com
+        Accept: application/json
+
+        {
+            "email": "foo@foo.com",
+            "password": "thepassword",
+            "displayname": "Foo Bar Baz"
+        }
+
+    If captcha is required
+
+    .. sourcecode:: http
+
+
+        POST /api/v2/accounts HTTP/1.1
+        Host: login.ubuntu.com
+        Accept: application/json
+
+        {
+            "email": "foo@foo.com",
+            "password": "thepassword",
+            "displayname": "Foo Bar Baz",
+            "captcha_id": "some-captcha-id",
+            "captcha_solution": "the solution"
+        }
+
+
+**Response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 201 CREATED
+        Vary: Accept
+        Content-Type: application/json
+        Location: /api/v2/accounts/openid123
+
+        {
+            "href": "https://login.ubuntu.com/api/v2/accounts/openid123",
+            "openid": "https://login.ubuntu.com/+id/openid123",
+            "preferredemail": "foo@foo.com",
+            "displayname": "Foo Bar Baz",
+            "status": "NEW",
+            "verified": False,
+            "emails": [
+                {
+                    "href": "https://login.ubuntu.com/api/v2/emails/foo@foo.com",
+                }
+            ]
+        }
+
+    If captcha is required
+
+    .. sourcecode:: http
+
+        HTTP/1.1 401 UNAUTHORIZED
+        Vary: Accept
+        Content-Type: application/json
+
+        {
+            "code": "CAPTCHA_REQUIRED",
+            "message": "Captcha validation required.",
+            "extra": {
+                "image_url": "https://www.google.com/recaptcha/image/foo.jpg",
+                "captcha_id": "some-captcha-id"
+            }
+        }
+

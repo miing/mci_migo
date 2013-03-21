@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+{% load gargoyle_tags %}
+
+{% comment %}
+Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
+Affero General Public License version 3 (see the file LICENSE).
+{% endcomment %}
+
+
+{% block title %}
+  {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
+{% endblock %}
+
+
+{% block text_title %}
+  <h1 class="main">{% trans "Add a new authentication device" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form method="post" action="">
+  {% csrf_token %}
+
+  <dl>
+
+    <dt style="font-weight: bold"><label>
+      <input type="radio" name="type" value="google" id="type_google" checked="checked"> {% trans "Smartphone or Tablet" %}
+    </label></dt>
+    <dd style="margin-left: 2em">
+    <p><label for="type_google">{% blocktrans %}Android, Apple, or Blackberry mobile device with the Google Authenticator app;
+          or Windows phone with the Auth7 app{% endblocktrans %}</label></p>
+    </dd>
+
+    <dt style="font-weight: bold"><label>
+      <input type="radio" name="type" value="yubi" id="type_yubi"> {% trans "YubiKey" %}
+      </label></dt>
+    <dd style="margin-left: 2em">
+      <p><label for="type_yubi">{% blocktrans %}USB YubiKey one time password generator{% endblocktrans %}</label></p>
+    </dd>
+
+    <dt style="font-weight: bold"><label>
+      <input type="radio" name="type" value="generic" id="type_generic"> {% trans "Generic HOTP device" %}
+    </label></dt>
+    <dd style="margin-left: 2em">
+      <p><label for="type_generic">{% blocktrans %}Any other OATH/HOTP compatible device{% endblocktrans %}</label></p>
+    </dd>
+
+    {% ifswitch PAPER_DEVICE request %}
+      <dt style="font-weight: bold"><label>
+        <input type="radio" name="type" value="paper" id="type_paper"> {% trans "Printable Backup Codes" %}
+      </label></dt>
+      <dd style="margin-left: 2em">
+        <p><label for="type_paper">{% blocktrans %}A list of backup codes to
+        print.{% endblocktrans %}</label></p>
+      </dd>
+    {% endifswitch %}
+
+  </dl>
+
+  <p>
+    <button class="btn" type="submit">
+      <span><span>{% trans "Add device" %}</span></span>
+    </button>
+    {% trans "or" %} <a href="{{ device_list_path }}">{% trans "cancel" %}</a>
+  </p>
+  <p>
+    {% blocktrans with "twofactor_faq"|static_url as 2FFAQ %}
+    The <a href="{{2FFAQ}}#Devices">2-Factor Auth FAQ</a>
+    has details on compatible devices.
+    {% endblocktrans %}
+  </p>
+
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% load i18n %}{% blocktrans %}Hello
+
+Thank you for registering with the {{ brand_description }}.
+
+Copy and paste the confirmation code below into the desktop application.{% endblocktrans %}
+
+{{ token }}
+
+{% include "email/thank_you.txt" %}

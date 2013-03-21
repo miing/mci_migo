@@ -1,0 +1,7 @@
+{% load i18n %}{% blocktrans %}We've received a request to create a new account with your email address, however an account is already registered with this email address.
+
+If this was you, and you've forgotten your password, please visit this address to reset it:{% endblocktrans %}
+
+{{ forgotten_password_url }}
+
+{% include "email/thank_you.txt" %}

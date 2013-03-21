@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% load i18n %}
+{% load static_url %}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+    <head>
+        <title>{% block title %}{% trans "Log in" %}{% endblock %}</title>
+        <link rel="shortcut icon" href="{{ STATIC_URL }}launchpad/favicon.png" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}launchpad/styles.css"/>
+        {% block extra_header %}{% endblock %}
+        <script src="{{ STATIC_URL }}lazr-js/yui/yui-min.js"></script>
+        <script type="text/javascript">
+            // disable all submit buttons after initial form submission
+            // to prevent double-clicks
+            YUI().use('node', function (Y) {
+                function set_disablers() {
+                    function disable () {
+                        Y.all('input[type=submit]').setAttribute('disabled', true);
+                        Y.all('button[type=submit]').setAttribute('disabled', true);
+                    }
+                    Y.all('form').on('submit', disable);
+                }
+                Y.on('domready', set_disablers)
+            });
+        </script>
+    </head>
+    <body>
+        <body id="document">
+            <div class="yui-d0">
+                <div id="locationbar" class="login-logout">
+                    <div id="logincontrol">
+                        {% if user.is_authenticated %}
+                            {% include "widgets/launchpad/logout-button.html" %}
+                        {% else %}
+                            <a href="/+login">{% trans "Log in or create account" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div id="maincontent" class="yui-main">
+                <div class="yui-b" dir="ltr">
+                    <div>
+                        <div id="homepage" class="homepage">
+                            <div class="top-portlet">
+                                <img src="{{ STATIC_URL }}launchpad/launchpad-logo-and-name.png" alt="" id="lplogo" />
+                            </div>
+                            <div class="yui-g">
+                                <div class="yui-u first">
+
+                <div id="title">{% block text_title %}{% endblock %}</div>
+
+                <div id="content">
+                    {% if readonly %}
+                        <div class="message warning">
+        {% blocktrans %}We are currently in read-only mode. That means that at the moment you can't create new accounts, update your personal information, or request password reminders.{% endblocktrans %}
+                        </div>
+                    {% endif %}
+
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="message {{ message.tags }}{% if not user.is_authenticated %} notopbar{% endif %}">
+                            <p>{{ message }}</p>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if readonly %}
+                        <div class="message">
+                            {% blocktrans %}We are currently in read-only mode. That means that at the moment you can't create new accounts, update your personal information, or request password reminders.{% endblocktrans %}
+                        </div>
+                    {% endif %}
+
+                    <div id="{% block content_id %}box{% endblock %}">
+                        {% block content %}{% endblock %}
+                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="footer" class="footer">
+                <div class="colophon">
+                    {% blocktrans with current_year=current_date|date:"Y" support_form_url="support_form"|static_url %}
+                    &copy;&nbsp;2004-{{ current_year }}&nbsp;<a href="http://canonical.com/">Canonical&nbsp;Ltd.</a> &bull;
+                    <a href="https://launchpad.net/canonical-identity-provider">Get the code</a> &bull;
+                    <a href="https://answers.launchpad.net/canonical-identity-provider">FAQs</a>  &bull;
+                    <a href="{{ support_form_url }}">Contact Support</a>
+                    {% endblocktrans %}<br />
+                    <small>
+                      {% blocktrans %}Launchpad account management is provided by the <a href="https://login.ubuntu.com">Ubuntu Single Sign On service</a>{% endblocktrans %}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% if rpconfig.ga_snippet %}{% load google_analytics %}
+        <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+
+          {% expand_ga_commands rpconfig.ga_snippet %}
+
+          (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+        </script>
+        {% endif %}
+    </body>
+</html>

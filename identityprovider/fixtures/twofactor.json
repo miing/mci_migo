@@ -1,0 +1,10 @@
+[
+  {
+    "pk": 5,
+    "model": "gargoyle.switch",
+    "fields": {
+      "key": "TWOFACTOR",
+      "status": 3
+    }
+  }
+]

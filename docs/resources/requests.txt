@@ -1,0 +1,76 @@
+.. vim: ft=rst
+
+.. _requests:
+
+========
+Requests
+========
+
+A controller resource to operate on OAuth requests.
+
+Data structure
+==============
+
+* is_valid: boolean
+
+Use cases
+=========
+
+.. _requests-validate:
+
+Validate a request
+------------------
+
+.. http:post:: /api/v2/requests/validate
+
+    Validates an OAuth-signed request.
+
+    :form http_url: the target url that was originally OAuth signed
+    :form http_method: the target http method that was originally OAuth signed
+    :form authorization: the OAuth Authorization header resulting from signing with OAuth the http request to the url `http_url` using method `http_method`
+
+    :status 200: whether the request authorization header is valid or not
+
+This method does not require authentication, and returns whether the given
+OAuth authorization header is valid for the given http_url and http_method.
+
+Examples
+........
+
+**Request**:
+
+    .. sourcecode:: http
+
+        POST /api/v2/requests/validate HTTP/1.1
+        Host: login.ubuntu.com
+        Accept: application/json
+
+        {
+            "http_url": "http://foo.com",
+            "http_method": "GET",
+            "authorization": 'OAuth realm="Some client", oauth_version="1.0", oauth_signature="OitsO7PakZXODFSQsjoMQNOrkP4%3D", oauth_token="xgrsJDHzSQqFWhElJgpTvOZOCkQsLxMYVEtPZhRVteMTUHWyry", oauth_nonce="39751507", oauth_timestamp="1360097166", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="64we8bn"'.
+        }
+
+**Response**:
+
+    If signature is valid:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "is_valid": True,
+        }
+
+    If signature is not valid:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "is_valid": False,
+        }

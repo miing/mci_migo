@@ -1,0 +1,14 @@
+{% load i18n %}
+
+{% if need_verify_email_warning  %}
+{% url verify_email as verify %}
+<div id="unverified_email_warning" class="message warning">
+  <p>
+    {% blocktrans with unverified_email.id as email_id %}
+    You have not verified your email address {{ unverified_email }}.
+    </br>
+    Click to <a href="{{ verify }}?id={{ email_id }}">verify your email address</a>.
+    {% endblocktrans %}
+  </p>
+</div>
+{% endif %}

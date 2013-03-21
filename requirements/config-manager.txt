@@ -1,0 +1,20 @@
+# Code branch
+canonical-identity-provider                                bzr+ssh://bazaar.isd/~canonical-isd-hackers/canonical-identity-provider/trunk;revno=724
+# Config branch
+canonical-identity-provider/branches/project               bzr+ssh://bazaar.isd/~canonical-isd-hackers/isd-configs/sso-config;revno=268
+# Translations branch
+canonical-identity-provider/branches/translations          bzr+ssh://bazaar.isd/~canonical-isd-hackers/canonical-identity-provider/translations
+
+# Canonical owned dependencies
+canonical-identity-provider/branches/ssoclient             bzr+ssh://bazaar.launchpad.net/~canonical-isd-hackers/canonical-identity-provider/ssoclient;revno=4
+canonical-identity-provider/branches/django-oauth-backend  bzr+ssh://bazaar.launchpad.net/~canonical-isd-hackers/django-oauth-backend/trunk;revno=18
+canonical-identity-provider/branches/django-pgtools        bzr+ssh://bazaar.launchpad.net/~canonical-isd-hackers/django-pgtools/trunk;revno=7
+
+# Upstream dependencies
+canonical-identity-provider/branches/django-model-utils    bzr+ssh://bazaar.launchpad.net/~ubuntuone-pqm-team/django-model-utils/stable;revno=110
+canonical-identity-provider/branches/django-modeldict      bzr+ssh://bazaar.launchpad.net/~ubuntuone-pqm-team/django-modeldict/stable;revno=1.4.1
+canonical-identity-provider/branches/oauthlib              bzr+ssh://bazaar.launchpad.net/~ubuntuone-pqm-team/oauthlib/stable;revno=0.3.7
+canonical-identity-provider/branches/requests              bzr+ssh://bazaar.launchpad.net/~ubuntuone-pqm-team/requests/stable;revno=v1.1.0
+canonical-identity-provider/branches/requests-oauthlib     bzr+ssh://bazaar.launchpad.net/~ubuntuone-pqm-team/requests-oauthlib/stable;revno=16
+canonical-identity-provider/branches/gargoyle              bzr+ssh://bazaar.launchpad.net/~ubuntuone-pqm-team/gargoyle/stable;revno=0.10.6
+canonical-identity-provider/branches/nexus                 bzr+ssh://bazaar.launchpad.net/~ubuntuone-pqm-team/django-nexus/stable;revno=v0.2.3

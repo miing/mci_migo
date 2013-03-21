@@ -1,0 +1,81 @@
+{% extends "admin/index.html" %} 
+{% load i18n %} 
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs"><a href="/admin/">
+{% trans "Home" %}</a> &rsaquo;
+<a href="/admin/identityprovider/">Identityprovider</a> &rsaquo;
+<a href="/readonly">{% trans "Readonly Admin" %}</a> &rsaquo;
+{% trans "Confirm" %}
+</div>
+{% endblock %}
+
+{% block content %}
+<pre>{{ appservers }}</pre>
+<div id="content" class="colM">
+    <h1>{% trans "Are you sure?" %}</h1>
+    {% if appserver %}
+    <div class="system-message">
+    <p class="system-message-title">
+    {% blocktrans %}You're not operating on all appservers{% endblocktrans %}
+    </p>
+    <p>
+    {% blocktrans %}Changing readonly mode on a single application server can lead to inconsistent states and unexpected behaviour.{% endblocktrans %}
+    </p>
+    </div>
+    {% else %}
+    {% ifequal action "clear" %}
+    <div class="system-message">
+    <p class="system-message-title">
+    {% blocktrans %}Make sure the master database connection is enabled on all app servers <b>before</b> leaving readonly mode!{% endblocktrans %}
+    </p>
+    </div>
+    {% endifequal %}
+    {% endif %}
+
+    <p>
+    {% ifequal action "set" %}
+        {% if appserver %}
+            {% blocktrans %}You are about to enable readonly mode on appserver <b>{{ appserver }}</b>.{% endblocktrans %}
+        {% else %}
+            {% blocktrans %}You are about to enable readonly mode globally.{% endblocktrans %}</p><p>
+            {% blocktrans %}All appservers will be passed to read-only mode if you confirm.{% endblocktrans %}
+        {% endif %}
+    {% else %}
+    {% ifequal action "clear" %}
+        {% if appserver %}
+            {% blocktrans %}You are about to clear readonly mode on appserver <b>{{ appserver }}</b>.{% endblocktrans %}</p><p>
+            {% blocktrans %}If you confirm, <b>{{ appserver }}</b> will attempt to resume normal operation with its master database connection.{% endblocktrans %}</p>
+        {% else %}
+            {% blocktrans %}You are about to clear readonly mode globally.{% endblocktrans %}</p><p>
+            {% blocktrans %}If you confirm, all appservers will attempt to resume normal operation.{% endblocktrans %}
+        {% endif %}
+    {% else %}
+    {% ifequal action "enable" %}
+    {% blocktrans %}You are about to enable the <b>{{ conn }}</b> database connection on appserver <b>{{ appserver }}</b>.{% endblocktrans %}
+    {% else %}
+    {% ifequal action "disable" %}
+    {% blocktrans %}You are about to disable the <b>{{ conn }}</b> database connection on appserver <b>{{ appserver }}</b>.{% endblocktrans %}
+    {% endifequal %}
+    {% endifequal %}
+    {% endifequal %}
+    {% endifequal %}
+    </p>
+    <form method="POST" action="">
+		{% csrf_token %}
+        <input type="hidden" name="action" value="{{action}}" />
+        <input type="hidden" name="appserver" value="{{appserver}}" />
+        <input type="hidden" name="conn" value="{{conn}}" />
+        <input type="submit" value="{% trans "Yes, I'm sure" %}" />
+        {% trans "or" %} <a href="/readonly">{% trans "Cancel" %}</a>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

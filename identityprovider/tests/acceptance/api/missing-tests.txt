@@ -1,0 +1,7 @@
+A list of acceptance tests that are still needed for the api:
+
+
+* Reset password api failure mode for a suspended account
+* Reset password api failure mode for a deactivated account
+* Reset password api failure mode for an invalidated email address
+* Reset password api failure mode for  too many tokens

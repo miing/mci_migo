@@ -1,0 +1,2107 @@
+# Hungarian translation for canonical-identity-provider
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the canonical-identity-provider package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: canonical-identity-provider\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-30 05:57-0500\n"
+"PO-Revision-Date: 2010-09-21 17:36+0000\n"
+"Last-Translator: Szilveszter Farkas <Szilveszter.Farkas@gmail.com>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-12 04:58+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: admin.py:20 admin.py:133
+msgid "Display name"
+msgstr "Megjelenítendő név"
+
+#: admin.py:28
+msgid "Can query private teams"
+msgstr "Privát csoportokat is lekérdezhet"
+
+#: admin.py:30
+msgid "Auto-authorize"
+msgstr "Automatikus engedélyezés"
+
+#: admin.py:80 templates/enter_token.html:33 templates/account/emails.html:90
+#: templates/account/new_email.html:22
+#: templates/launchpad/registration/login.html:33
+#: templates/registration/forgot_password.html:22
+#: templates/registration/new_account.html:32
+#: templates/ubuntu/registration/login.html:40
+msgid "Email address"
+msgstr "E-mail cím"
+
+#: admin.py:95
+msgid "Only one email address can be preferred."
+msgstr "Csak egy e-mail cím lehet elsődleges."
+
+#: admin.py:102
+msgid "Email addresses"
+msgstr "E-mail címek"
+
+#: admin.py:129 admin.py:149
+msgid "LP username"
+msgstr "LP felhasználónév"
+
+#: admin.py:135
+msgid "OpenID identifier"
+msgstr "OpenID azonosító"
+
+#: branding.py:10 templates/launchpad/base.html:19
+msgid "Launchpad Login Service"
+msgstr "Launchpad bejelentkező szolgáltatás"
+
+#: branding.py:11
+msgid ""
+"A Launchpad Login Service account is free and gives you access to Ubuntu "
+"One, the Ubuntu Shop and many more useful services."
+msgstr ""
+"Az ingyenes Launchpad bejelentkező szolgáltatáshoz tartozó fiók segítségével "
+"hozzáférhet az Ubuntu One-hoz, az Ubuntu Shop-hoz, és még további hasznos "
+"szolgáltatásokhoz."
+
+#: branding.py:14
+msgid "Create a Launchpad Login Service account"
+msgstr "Launchpad bejelentkező szolgáltatás fiók létrehozása"
+
+#: branding.py:15
+msgid ""
+"This is the Launchpad login service, built on OpenID. The service enables "
+"you to use your Launchpad account to log into OpenID-enabled sites around "
+"the Internet."
+msgstr ""
+"Ez itt az OpenID alapú Launchpad bejelentkező szolgáltatás, amelynek "
+"segítségével bármilyen OpenID-t támogató weboldalra bejelentkezhet a "
+"Launchpad fiókjával."
+
+#: branding.py:18
+msgid ""
+"You have used your Single Sign On ID to access a site which is <em>not</em> "
+"recognised by Launchpad Login Service:"
+msgstr ""
+"Olyan oldalhoz kívánt hozzáférni, amelyet <em>nem</em> ismer fel a Launchpad "
+"bejelentkező szolgáltatás:"
+
+#: branding.py:21
+msgid "Complete your Launchpad Login Service registration"
+msgstr "Launchpad bejelentkező szolgáltatás regisztráció befejezése"
+
+#: branding.py:22
+msgid "Reset your Launchpad Login Service password"
+msgstr "Launchpad bejelentkező szolgáltatás jelszavának visszaállítása"
+
+#: branding.py:23
+msgid ""
+"There's no page with this address in the Launchpad Login Service. Check that "
+"you entered the address correctly and try again."
+msgstr ""
+"Ezen a címen nem található oldal a Launchpad bejelentkező szolgáltatásban. "
+"Ellenőrizze, hogy helyesen adta-e meg a címet és próbálja újra."
+
+#: branding.py:26
+msgid "Sorry, something just went wrong in Launchpad Login Service."
+msgstr "Elnézést, valami elromlott a Launchpad bejelentkező szolgáltatásban."
+
+#: branding.py:28
+msgid ""
+"You are now logged out of the Launchpad Login Service website. However, you "
+"have not been automatically logged out of every website that uses this "
+"website."
+msgstr ""
+
+#: branding.py:35 templates/ubuntu/base.html:37
+msgid "Ubuntu Single Sign On"
+msgstr "Ubuntu Single Sign On"
+
+#: branding.py:36
+msgid ""
+"An Ubuntu Single Sign On account is free and gives you access to Ubuntu One, "
+"the Ubuntu Shop and many more useful services."
+msgstr ""
+"Egy ingyenes Ubuntu Single Sign On fiók hozzáférést biztosít az Ubuntu One-"
+"hoz, az Ubuntu Shop-hoz és további hasznos szolgáltatásokhoz."
+
+#: branding.py:39
+msgid "Create an Ubuntu Single Sign On account"
+msgstr "Ubuntu Single Sign On fiók létrehozása"
+
+#: branding.py:40
+msgid ""
+"This is the Ubuntu SSO service, built on OpenID. The service enables you to "
+"use your Ubuntu SSO account to log into various sites run by Canonical and "
+"Ubuntu."
+msgstr ""
+"Ez itt az OpenID alapú Ubuntu Single Sign On szolgáltatás, amelynek "
+"segítségével bejelentkezhet a Canonical és az Ubuntu által üzemeltetett "
+"weboldalakra."
+
+#: branding.py:43
+msgid ""
+"You have used your Single Sign On ID to access a site which is <em>not</em> "
+"recognised by Ubuntu Single Sign On:"
+msgstr ""
+"Olyan oldalhoz kívánt hozzáférni, amelyet <em>nem</em> ismer fel az Ubuntu "
+"Single Sign On szolgáltatás:"
+
+#: branding.py:46
+msgid "Complete your Ubuntu Single Sign On registration"
+msgstr "Ubuntu Single Sign On regisztráció befejezése"
+
+#: branding.py:47
+msgid "Reset your Ubuntu Single Sign On password"
+msgstr "Ubuntu Single Sign On jelszó visszaállítása"
+
+#: branding.py:48
+msgid ""
+"There's no page with this address in the Ubuntu Single Sign On service. "
+"Check that you entered the address correctly and try again."
+msgstr ""
+"Ezen a címen nem található oldal az Ubuntu Single Sign On szolgáltatásban. "
+"Ellenőrizze, hogy helyesen adta-e meg a címet és próbálja újra."
+
+#: branding.py:51
+msgid "Sorry, something just went wrong in Ubuntu Single Sign On."
+msgstr "Elnézést, valami elromlott az Ubuntu Single Sign On szolgáltatásban."
+
+#: branding.py:53
+msgid ""
+"You are now logged out of the Ubuntu Single Sign On (SSO) website. However, "
+"you have not been automatically logged out of every website that uses this "
+"SSO website."
+msgstr ""
+
+#: forms.py:23 forms.py:28 forms.py:246
+msgid "Required field."
+msgstr "Kötelező megadni."
+
+#: forms.py:24
+msgid "Invalid value."
+msgstr "Érvénytelen érték."
+
+#: forms.py:29
+msgid "Invalid email."
+msgstr "Érvénytelen e-mail."
+
+#: forms.py:56 forms.py:64 forms.py:75
+msgid "Password didn't match."
+msgstr "A jelszavak nem egyeznek meg."
+
+#: forms.py:68
+msgid "Your account has been deactivated"
+msgstr "A fiókja letiltásra került"
+
+#: forms.py:111 forms.py:235 webservice/forms.py:33
+msgid "Invalid characters in password"
+msgstr "Érvénytelen karakterek a jelszóban"
+
+#: forms.py:113 forms.py:237 templates/widgets/passwords.html:27
+#: webservice/forms.py:15
+msgid ""
+"Password must be at least 8 characters long, and must contain at least one "
+"number and an upper case letter."
+msgstr ""
+"A jelszónak legalább 8 karakter hosszúnak kell lennie, és tartalmaznia kell "
+"legalább egy számot és egy nagybetűt."
+
+#: forms.py:124 forms.py:257
+msgid "Passwords didn't match"
+msgstr "Hibás jelszó"
+
+#: forms.py:157
+msgid "Unknown confirmation code."
+msgstr ""
+
+#: forms.py:213 forms.py:229
+msgid "Required field"
+msgstr "Kötelező mező"
+
+#: forms.py:221
+msgid "Please select an already validated address."
+msgstr "Kérem válasszon egy megerősített címet."
+
+#: forms.py:283
+msgid "Email already registered."
+msgstr "Már regisztrált e-mail cím."
+
+#: utils.py:112
+#, python-format
+msgid ""
+"The email address %s can not be used to log in as it belongs to a team."
+msgstr ""
+"Az e-mail címet (%s) nem lehet bejelentkezéshez használni, mert az egy "
+"csoporthoz tartozik."
+
+#: utils.py:139 tests/test_utils.py:74
+msgid "Enter a valid e-mail address."
+msgstr "Adjon meg egy valós e-mail címet."
+
+#: utils.py:140
+msgid "Please enter a valid email address."
+msgstr "Adjon meg egy valós e-mail címet."
+
+#: widgets.py:65
+#, python-format
+msgid "Set on %s"
+msgstr "Beállítva ekkor: %s"
+
+#: backend/base.py:163
+#, python-format
+msgid ""
+"Attempted to %(command)s while in read-only mode: '%(sql)s' %% (%(params)s)"
+msgstr ""
+"%(command)s parancsot kísérelt meg futtatni csak olvasható módban: '%(sql)s' "
+"%% (%(params)s)"
+
+#: management/commands/cleanup.py:13
+msgid ""
+"Clean unnecessary/stalled data from database.\n"
+"\n"
+"Currently it deletes OpenID nonces and associations.\n"
+msgstr ""
+
+#: management/commands/readonly.py:23
+msgid "List available application servers."
+msgstr "Elérhető alkalmazás-kiszolgálók listázása."
+
+#: management/commands/readonly.py:25
+msgid "Select all servers."
+msgstr "Összes kiszolgáló kiválasztása."
+
+#: management/commands/readonly.py:27
+msgid "Set server to read-only."
+msgstr "Kiszolgáló átállítása csak olvasható módba."
+
+#: management/commands/readonly.py:29
+msgid "Set server to read-write."
+msgstr "Kiszolgáló átállítása írható-olvasható módba."
+
+#: management/commands/readonly.py:33
+msgid "Enable database."
+msgstr "Adatbázis engedélyezése."
+
+#: management/commands/readonly.py:37
+msgid "Disable database."
+msgstr "Adatbázis letiltása."
+
+#: management/commands/readonly.py:39
+msgid ""
+"\n"
+"Manage readonly mode.\n"
+"\n"
+"options --set, --clear, --enable and --disable are all mutually exclusive.\n"
+"You can only choose one at a time.\n"
+msgstr ""
+"\n"
+"Csak olvasható mód kezelése.\n"
+"\n"
+"A --set, --clear, --enable és --disable kapcsolók egymást kizáróak.\n"
+"Közülük csak az egyiket lehet használni egy parancson belül.\n"
+
+#: management/commands/readonly.py:45
+msgid "<server server ...>"
+msgstr "<kiszolgáló kiszolgáló ...>"
+
+#: management/commands/readonly.py:59
+msgid "Enter at least one server, or specify the --all option."
+msgstr ""
+"Adjon meg legalább egy kiszolgálót, vagy használja az --all kapcsolót."
+
+#: management/commands/readonly.py:60
+msgid "Use --list to get a list of configured servers."
+msgstr "Használja a --list kapcsolót a beállított kiszolgálók listázásához."
+
+#: management/commands/readonly.py:71
+msgid "Enter one of --set, --clear, --enable or --disable."
+msgstr ""
+"Adjon meg legalább egyet a következők közül: --set, --clear, --enable, vagy -"
+"-disable."
+
+#: middleware/dbfailover.py:66
+msgid "No backup connections left"
+msgstr "Nem maradt használható kapcsolat"
+
+#: models/account.py:95
+msgid "account"
+msgstr "fiók"
+
+#: models/account.py:96
+msgid "accounts"
+msgstr "fiókok"
+
+#: models/account.py:287
+msgid "account password"
+msgstr "jelszó"
+
+#: models/account.py:288
+msgid "account passwords"
+msgstr "jelszavak"
+
+#: models/account.py:291
+#, python-format
+msgid "Password for %s"
+msgstr "%s jelszava"
+
+#: models/account.py:303
+msgid "LP account"
+msgstr "LP fiók"
+
+#: models/account.py:304
+msgid "LP accounts"
+msgstr "LP fiókok"
+
+#: models/account.py:307
+#, python-format
+msgid "LP account for %s"
+msgstr "%s LP fiókja"
+
+#: models/api.py:37
+msgid "API user"
+msgstr "API felhasználó"
+
+#: models/api.py:38
+msgid "API users"
+msgstr "API felhasználók"
+
+#: models/authtoken.py:109
+msgid ": Validate your email address"
+msgstr ""
+
+#: models/authtoken.py:121 views/account.py:135
+msgid "Validate your email address"
+msgstr ""
+
+#: models/authtoken.py:133
+msgid "Forgotten Password"
+msgstr ""
+
+#: models/authtoken.py:148
+msgid "Finish your registration"
+msgstr ""
+
+#: models/const.py:49
+msgid "Not activated"
+msgstr "Inaktív"
+
+#: models/const.py:51
+msgid "Active"
+msgstr "Aktív"
+
+#: models/const.py:53
+msgid "Deactivated (by user)"
+msgstr "Deaktivált (felhasználó által)"
+
+#: models/const.py:55
+msgid "Suspended (by admin)"
+msgstr "Letiltott (adminisztrátor által)"
+
+#: models/openidmodels.py:127
+msgid "OpenID RP Config"
+msgstr "OpenID RP konfiguráció"
+
+#: models/openidmodels.py:128
+msgid "OpenID RP Configs"
+msgstr "OpenID RP konfigurációk"
+
+#: templates/403-csrf.html:10
+msgid "Stale request"
+msgstr "Elévült kérés"
+
+#: templates/403-csrf.html:14
+msgid "Your page was stale."
+msgstr "Az oldal elévült."
+
+#: templates/403-csrf.html:20
+msgid ""
+"Apologies, the page you came from was a little old.  Perhaps you navigated "
+"here from a browser window other than the one you used to login.  If so, try "
+"using the other browser window.  Or, try your action again, starting from "
+"our home page."
+msgstr ""
+"Elnézést, de az oldal amelyről érkezett kicsit régi volt. Talán nem abban a "
+"böngészőablakban nyitotta meg ezt az oldalt, amelyben bejelentkezett. Ha ez "
+"így van, próbálja újra a másik böngészőablakból, vagy induljon el a "
+"kezdőlapunkról."
+
+#: templates/403-csrf.html:22 templates/readonly.html:26
+msgid "Go to our home page"
+msgstr "Vissza a kezdőlapra"
+
+#: templates/404.html:10
+msgid "Not found"
+msgstr "Nincs találat"
+
+#: templates/404.html:21 templates/500.html:27
+#, python-format
+msgid "(Error <abbr>ID</abbr>: %(oopsid)s)"
+msgstr "(Hiba azonosító: %(oopsid)s)"
+
+#: templates/500.html:10
+msgid "Oops!"
+msgstr "Hoppá!"
+
+#: templates/500.html:24
+msgid ""
+"We&#8217;ve recorded what happened, and we&#8217;ll fix it as soon as "
+"possible. Apologies for the inconvenience."
+msgstr ""
+"Rögzítettük a történteket, és minél előbb javítani fogjuk a problémát. "
+"Elnézést a kellemetlenségért."
+
+#: templates/cookies.html:9 templates/cookies.html.py:12
+msgid "Cookies required"
+msgstr "Sütik szükségesek"
+
+#: templates/cookies.html:18
+msgid ""
+"Cookies are required to use this service. Please enable cookies in your "
+"browser."
+msgstr ""
+"A szolgáltatás használatához sütik kellenek. Engedélyezze a böngészőjében a "
+"sütiket."
+
+#: templates/decide.html:10
+#, python-format
+msgid "Authenticate to %(trust_root)s"
+msgstr "%(trust_root)s hitelesítése"
+
+#: templates/decide.html:25
+#, python-format
+msgid ""
+"If you proceed, the following information will be available to "
+"%(rpconfigname)s:"
+msgstr ""
+"Ha folytatja, az alábbi információ lesz elérhető %(rpconfigname)s számára:"
+
+#: templates/decide.html:27
+msgid ""
+"If you proceed, the following information will be available to the website:"
+msgstr "Ha folytatja, az alábbi információ lesz elérhető a weboldal számára:"
+
+#: templates/decide.html:37
+msgid "Team membership"
+msgstr ""
+
+#: templates/decide.html:41
+msgid "Only your identity URL"
+msgstr "Csak az azonosító URL"
+
+#: templates/decide.html:49
+msgid "Yes, sign me in"
+msgstr "Igen, bejelentkezek"
+
+#: templates/decide.html:50 templates/readonly.html:25
+#: templates/account/confirm_new_email.html:29
+#: templates/account/delete_email.html:28 templates/account/edit.html:135
+#: templates/account/new_email.html:31
+#: templates/admin/readonly_confirm.html:74
+#: templates/launchpad/registration/login.html:64
+#: templates/registration/confirm_new_account.html:29
+#: templates/registration/forgot_password.html:37
+#: templates/registration/new_account.html:52
+#: templates/registration/old_confirm_new_account.html:73
+#: templates/registration/reset_password.html:67
+#: templates/ubuntu/registration/login.html:68
+msgid "or"
+msgstr "vagy"
+
+#: templates/decide.html:51 templates/account/confirm_new_email.html:30
+#: templates/account/delete_email.html:29 templates/account/new_email.html:32
+#: templates/launchpad/registration/login.html:65
+#: templates/registration/confirm_new_account.html:30
+#: templates/registration/forgot_password.html:38
+#: templates/registration/new_account.html:53
+#: templates/registration/old_confirm_new_account.html:75
+#: templates/registration/reset_password.html:69
+#: templates/ubuntu/registration/login.html:69
+msgid "cancel"
+msgstr "mégse"
+
+#: templates/enter_token.html:9 templates/enter_token.html.py:12
+msgid "Enter confirmation code"
+msgstr ""
+
+#: templates/enter_token.html:16
+msgid ""
+"We've sent you a confirmation code.  Enter that code below, and the email "
+"address at which you received it."
+msgstr ""
+
+#: templates/enter_token.html:25 templates/registration/email_sent.html:31
+msgid "Confirmation code"
+msgstr ""
+
+#: templates/invalid_identifier.html:9
+msgid "Invalid identifier"
+msgstr "Érvénytelen azonosító"
+
+#: templates/invalid_identifier.html:12
+#, python-format
+msgid ""
+"A site identifying as %(trust_root)s has asked us for confirmation that "
+"%(identifier)s is your identity URL. However, that is not a valid OpenID "
+"identity URL for this site, such as <strong>%(root_url)s~USER</strong>."
+msgstr ""
+"Egy oldal (%(trust_root)s) megerősítést kért, hogy %(identifier)s az Ön "
+"azonosító URL-je, azonban ez nem egy érvényes OpenID azonosító URL ebben a "
+"szolgáltatásban. A helyes formátum: "
+"<strong>%(root_url)s~FELHASZNÁLÓ</strong>."
+
+#: templates/invalid_identifier.html:16 templates/account/new_email.html:30
+#: templates/launchpad/registration/login.html:63
+#: templates/registration/confirm_new_account.html:28
+#: templates/registration/email_sent.html:35
+#: templates/registration/forgot_password.html:36
+#: templates/registration/new_account.html:51
+#: templates/registration/old_confirm_new_account.html:72
+#: templates/registration/reset_password.html:65
+#: templates/ubuntu/registration/login.html:67
+msgid "Continue"
+msgstr "Folytatás"
+
+#: templates/limitexceeded.html:10 templates/limitexceeded.html.py:14
+msgid "Rate limit exceeded"
+msgstr "Túllépte a kapcsolati korlátot"
+
+#: templates/limitexceeded.html:20
+msgid ""
+"You have made too many failed requests to the SSO authentication server over "
+"a short period of time."
+msgstr "Túl sok hibás kérést küldött a kiszolgálóhoz rövid idő alatt."
+
+#: templates/limitexceeded.html:23 templates/readonly.html:23
+msgid "Please try again in a while."
+msgstr "Próbálkozzon újra később."
+
+#: templates/limitexceeded.html:25 templates/readonly.html:25
+msgid "Try again"
+msgstr "Újra"
+
+#: templates/person.html:19
+#, python-format
+msgid "OpenID Identity URL for %(name)s"
+msgstr ""
+
+#: templates/post-assertion.html:10 templates/post-assertion.html.py:14
+msgid "Continue to 3rd-party site"
+msgstr "Továbblépés harmadik fél oldalára"
+
+#: templates/post-assertion.html:20
+msgid "You are ready to continue to the 3rd-party site."
+msgstr "Kész továbblépni a harmadik fél oldalára."
+
+#: templates/preauth_fail.html:9
+msgid "Pre-authorization not approved"
+msgstr "Előzetes meghatalmazás elutasítva"
+
+#: templates/preauth_fail.html:13
+#, python-format
+msgid ""
+"A site identifying as %(trust_root)s has asked us for pre-authorization. "
+"However, that site is not approved for pre-authorization."
+msgstr ""
+"Egy olyan oldal (%(trust_root)s) próbálta meg az előzetes engedélyezést "
+"használni, amely számára ez nincs engedélyezve."
+
+#: templates/readonly.html:10
+msgid "Read-only mode"
+msgstr "Csak olvasható mód"
+
+#: templates/readonly.html:14
+msgid "We're currently in read-only mode."
+msgstr "Csak olvasható mód."
+
+#: templates/readonly.html:20
+msgid ""
+"Apologies, the page you're requesting isn't accessible at the moment, as "
+"we're running with a minimum set of features. Hopefully we will have the "
+"full service up and running again in no time."
+msgstr ""
+"Elnézést, a kért oldal nem elérhető jelenleg, mert csak minimális "
+"funkcionalitással üzemelünk. Remélhetőleg hamarosan az összes szolgáltatás "
+"működőképes lesz."
+
+#: templates/select_language.html:10 templates/select_language.html.py:14
+#: templates/ubuntu/base.html:79
+msgid "Choose your language"
+msgstr "Válasszon nyelvet"
+
+#: templates/select_language.html:29
+msgid "Can't find your language?"
+msgstr "Nem találja az anyanyelvét?"
+
+#: templates/select_language.html:30
+msgid ""
+"We welcome volunteers to help us translate this site to new languages. If "
+"you are able to help, please visit our <a "
+"href=\"https://translations.launchpad.net/canonical-identity-"
+"provider\">translations site</a> to get started."
+msgstr ""
+"Várunk segítőkész önkénteseket, hogy segítsenek lefordítani ezt a "
+"szolgáltatást újabb nyelvekre. Ha segítene, látogassa meg a <a "
+"href=\"https://translations.launchpad.net/canonical-identity-"
+"provider\">fordítói oldalunkat</a>."
+
+#: templates/server_info.html:9
+msgid "This is an OpenID server"
+msgstr "Ez egy OpenID kiszolgáló"
+
+#: templates/server_info.html:13
+msgid ""
+"This page is meant to be called from an OpenID-enabled site and therefore "
+"has no user-facing functions."
+msgstr ""
+"Ez az oldal OpenID kiszolgáló funkciókat lát el, ezért semmilyen "
+"felhasználók számára hasznos funkcionalitása nincs."
+
+#: templates/untrusted.html:10
+#, python-format
+msgid "Untrusted site: %(trust_root)s"
+msgstr "Nem megbízható oldal: %(trust_root)s"
+
+#: templates/untrusted.html:17
+#, python-format
+msgid ""
+"Sorry, we don't currently accept requests from\n"
+"%(trust_root)s."
+msgstr ""
+"Elnézést, jelenleg nem fogadunk el kéréseket a következő weboldaltól:\n"
+"%(trust_root)s."
+
+#: templates/untrusted.html:21 templates/admin/readonly_confirm.html:74
+msgid "Cancel"
+msgstr "Mégse"
+
+#: templates/versions.html:9 templates/versions.html.py:12
+msgid "Versions"
+msgstr ""
+
+#: templates/versions.html:18
+msgid "Library/Package"
+msgstr ""
+
+#: templates/versions.html:19
+msgid "Version"
+msgstr ""
+
+#: templates/account/applications.html:9
+#: templates/account/applications.html:12
+msgid "Applications you use"
+msgstr ""
+
+#: templates/account/applications.html:19
+msgid ""
+"You have used the applications shown here to access your account. If you "
+"have stopped using one of these and would like to prevent it from being used "
+"to access your account, click its \"Delete\" button below. You can choose to "
+"allow an application to have access again if you like by opening that "
+"application and instructing it to access your account. You'll have to "
+"provide your username and password before it will be granted access."
+msgstr ""
+
+#: templates/account/applications.html:26
+msgid "Application"
+msgstr ""
+
+#: templates/account/applications.html:27
+msgid "Access granted"
+msgstr ""
+
+#: templates/account/applications.html:40
+msgid "Delete"
+msgstr ""
+
+#: templates/account/applications.html:50
+msgid "You don't have any applications associated with this account."
+msgstr ""
+
+#: templates/account/confirm_new_email.html:9
+msgid "Complete email address validation"
+msgstr "E-mail cím megerősítésének befejezése"
+
+#: templates/account/confirm_new_email.html:12
+#, python-format
+msgid "Validate %(email)s?"
+msgstr "Megerősíti a következő e-mail címet: %(email)s?"
+
+#: templates/account/confirm_new_email.html:19
+msgid "Are you sure you want to confirm and validate this email address?"
+msgstr "Biztos benne, hogy megerősíti ezt az e-mail címet?"
+
+#: templates/account/confirm_new_email.html:27
+#: templates/admin/readonly_confirm.html:73
+msgid "Yes, I'm sure"
+msgstr "Igen, biztos vagyok"
+
+#: templates/account/deactivated.html:9 templates/account/deactivated.html:12
+msgid "Account deactivated"
+msgstr "Fiók deaktiválva"
+
+#: templates/account/deactivated.html:18
+msgid "Your account has been deactivated."
+msgstr "A fiókja deaktiválásra került."
+
+#: templates/account/delete_email.html:10
+msgid "Remove unverified email"
+msgstr "Nem ellenőrzött e-mail törlése"
+
+#: templates/account/delete_email.html:14
+#, python-format
+msgid "Remove %(email)s?"
+msgstr "Törli a következő e-mailt: %(email)s?"
+
+#: templates/account/delete_email.html:21
+msgid "Are you sure you want to remove this unverified email address?"
+msgstr "Biztos benne, hogy törölni akarja ezt a megerősítetlen e-mail címet?"
+
+#: templates/account/delete_email.html:27
+msgid "Yes, remove"
+msgstr "Igen, törlöm"
+
+#: templates/account/edit.html:10
+#, python-format
+msgid "%(account_displayname)s's details"
+msgstr "%(account_displayname)s adatai"
+
+#: templates/account/edit.html:35
+#: templates/registration/old_confirm_new_account.html:33
+#: templates/registration/reset_password.html:34
+msgid "Strength: too short"
+msgstr ""
+
+#: templates/account/edit.html:36
+#: templates/registration/old_confirm_new_account.html:34
+#: templates/registration/reset_password.html:35
+msgid "Strength: weak"
+msgstr ""
+
+#: templates/account/edit.html:37
+#: templates/registration/old_confirm_new_account.html:35
+#: templates/registration/reset_password.html:36
+msgid "Strength: fair"
+msgstr ""
+
+#: templates/account/edit.html:38
+#: templates/registration/old_confirm_new_account.html:36
+#: templates/registration/reset_password.html:37
+msgid "Strength: good"
+msgstr ""
+
+#: templates/account/edit.html:39
+#: templates/registration/old_confirm_new_account.html:37
+#: templates/registration/reset_password.html:38
+msgid "Strength: strong"
+msgstr ""
+
+#: templates/account/edit.html:92
+msgid "Your account"
+msgstr "Az Ön fiókja"
+
+#: templates/account/edit.html:99 templates/registration/new_account.html:22
+#: templates/registration/old_confirm_new_account.html:61
+msgid "Full name"
+msgstr "Teljes név"
+
+#: templates/account/edit.html:110
+msgid "Preferred email"
+msgstr "Elsődleges e-mail"
+
+#: templates/account/edit.html:111
+msgid ""
+"This email address is passed on to other sites when requested as part of the "
+"login process."
+msgstr ""
+"Ezt az e-mail címet továbbítjuk azon oldalaknak, akik ezt kérik a "
+"bejelentkezési folyamat részeként."
+
+#: templates/account/edit.html:122
+msgid "Manage email addresses"
+msgstr ""
+
+#: templates/account/edit.html:132
+msgid "Update"
+msgstr "Módosítások mentése"
+
+#: templates/account/edit.html:136
+msgid "exit without updating"
+msgstr "kilépés módosítások mentése nélkül"
+
+#: templates/account/emails.html:10
+#, python-format
+msgid "%(account_displayname)s's email addresses"
+msgstr ""
+
+#: templates/account/emails.html:25
+msgid "Your email addresses"
+msgstr ""
+
+#: templates/account/emails.html:33
+msgid "You have no email addresses associated with your account."
+msgstr ""
+
+#: templates/account/emails.html:38
+msgid "Verified"
+msgstr ""
+
+#: templates/account/emails.html:46
+msgid "(preferred)"
+msgstr ""
+
+#: templates/account/emails.html:52 templates/account/emails.html.py:73
+msgid "Remove"
+msgstr ""
+
+#: templates/account/emails.html:64
+msgid "Unverified"
+msgstr ""
+
+#: templates/account/emails.html:72
+msgid "Verify"
+msgstr "Megerősítés"
+
+#: templates/account/emails.html:84
+msgid "Add email address"
+msgstr ""
+
+#: templates/account/emails.html:86
+msgid ""
+"Enter your email address, and we will send you instructions on how to verify "
+"it."
+msgstr ""
+
+#: templates/account/emails.html:98
+msgid "Add address"
+msgstr ""
+
+#: templates/account/emails.html:100
+msgid "or <a href=\"/\">cancel</a>"
+msgstr ""
+
+#: templates/account/new_email.html:9
+msgid "Add an email"
+msgstr "E-mail hozzáadása"
+
+#: templates/account/new_email.html:12
+msgid "Add an email address to your account"
+msgstr "E-mail cím hozzáadása a fiókhoz"
+
+#: templates/account/new_email.html:18
+msgid ""
+"Enter your email address, and we will send you instructions on how to "
+"confirm your account."
+msgstr ""
+"Írja be az e-mail címét, és elküldjük a fiók megerősítéséhez szükséges "
+"információkat."
+
+#: templates/account/suspended.html:9 templates/account/suspended.html:12
+msgid "Account suspended"
+msgstr "Fiók letiltva"
+
+#: templates/account/suspended.html:18
+msgid "Your account has been suspended."
+msgstr "A fiókja le lett tiltva."
+
+#: templates/account/tokens.html:9 templates/account/tokens.html.py:12
+msgid "List of tokens"
+msgstr ""
+
+#: templates/account/tokens.html:18
+msgid ""
+"Below is a list of applications which have used your Single Sign On account "
+"to authenticate. You can force an application to re-authenticate by clicking "
+"its associated \"Revoke\" button."
+msgstr ""
+
+#: templates/account/tokens.html:25
+msgid "Token name"
+msgstr ""
+
+#: templates/account/tokens.html:26
+msgid "Created"
+msgstr ""
+
+#: templates/account/tokens.html:39
+msgid "Revoke"
+msgstr ""
+
+#: templates/account/tokens.html:49
+msgid "You don't have any tokens associated with this account."
+msgstr ""
+
+#: templates/admin/readonly.html:11 templates/admin/readonly_confirm.html:11
+msgid "Home"
+msgstr "Kezdőlap"
+
+#: templates/admin/readonly.html:13 templates/admin/readonly_confirm.html:13
+msgid "Readonly Admin"
+msgstr "Csak olvasható mód adminisztrációja"
+
+#: templates/admin/readonly.html:19
+msgid "Readonly status per application server"
+msgstr "Csak olvasható állapot alkalmazáskiszolgálónként"
+
+#: templates/admin/readonly.html:27
+msgid "In readonly mode"
+msgstr "Csak olvasható módban"
+
+#: templates/admin/readonly.html:28
+msgid "Automatically failed over"
+msgstr ""
+
+#: templates/admin/readonly.html:30
+msgid "All recovery attempts have failed"
+msgstr ""
+
+#: templates/admin/readonly.html:32
+#, python-format
+msgid "Next recovery attempt in %(next_recovery_due)s seconds"
+msgstr ""
+
+#: templates/admin/readonly.html:36
+msgid "Manually disabled"
+msgstr ""
+
+#: templates/admin/readonly.html:37
+msgid "Will not attempt automatic recovery"
+msgstr ""
+
+#: templates/admin/readonly.html:43
+msgid "Leave readonly"
+msgstr "Kihagyás"
+
+#: templates/admin/readonly.html:47
+msgid "Operating normally"
+msgstr "Normális működés"
+
+#: templates/admin/readonly.html:51
+msgid "Set readonly"
+msgstr "Beállítás csak olvashatóvá"
+
+#: templates/admin/readonly.html:55
+msgid "Server is unreachable or out of sync"
+msgstr "A kiszolgáló nem elérhető, vagy nem naprakész"
+
+#: templates/admin/readonly.html:73
+msgid "Enable"
+msgstr "Engedélyezés"
+
+#: templates/admin/readonly.html:77
+msgid "Disable"
+msgstr "Letiltás"
+
+#: templates/admin/readonly.html:89
+msgid "Leave readonly on all appservers"
+msgstr "Minden alkalmazás-kiszolgáló csak olvashatóként hagyása"
+
+#: templates/admin/readonly.html:94
+msgid "Set readonly on all appservers"
+msgstr "Minden alkalmazás-kiszolgáló beállítása csak olvashatóvá"
+
+#: templates/admin/readonly_confirm.html:14
+msgid "Confirm"
+msgstr "Megerősítés"
+
+#: templates/admin/readonly_confirm.html:21
+msgid "Are you sure?"
+msgstr "Biztosan ezt szeretné?"
+
+#: templates/admin/readonly_confirm.html:25
+msgid "You're not operating on all appservers"
+msgstr "Nem az összes alkalmazás-kiszolgálón dolgozik."
+
+#: templates/admin/readonly_confirm.html:28
+msgid ""
+"Changing readonly mode on a single application server can lead to "
+"inconsistent states and unexpected behaviour."
+msgstr ""
+"A csak olvasható mód megváltoztatása egyetlen alkalmazás-kiszolgálón "
+"inkonzisztens állapotokhoz és kiszmíthatatlan viselkedéshez vezethet."
+
+#: templates/admin/readonly_confirm.html:35
+msgid ""
+"Make sure the master database connection is enabled on all app servers "
+"<b>before</b> leaving readonly mode!"
+msgstr ""
+"Győződjön meg róla, hogy a master adatbázis-kapcsolat minden alkalmazás-"
+"kiszolgálón engedélyezve van <b>mielőtt</b> elhagyná a csak olvasható módot!"
+
+#: templates/admin/readonly_confirm.html:44
+#, python-format
+msgid ""
+"You are about to enable readonly mode on appserver <b>%(appserver)s</b>."
+msgstr ""
+"Engedélyezni készül a csak olvasható módot a következő alkalmazás-"
+"kiszolgálón: <b>%(appserver)s</b>."
+
+#: templates/admin/readonly_confirm.html:46
+msgid "You are about to enable readonly mode globally."
+msgstr "A csak olvasható mód globális bekapcsolására készül."
+
+#: templates/admin/readonly_confirm.html:47
+msgid "All appservers will be passed to read-only mode if you confirm."
+msgstr ""
+"Ha jóváhagyja, akkor minden alkalmazás-kiszolgáló csak olvasható módba fog "
+"kerülni."
+
+#: templates/admin/readonly_confirm.html:52
+#, python-format
+msgid ""
+"You are about to clear readonly mode on appserver <b>%(appserver)s</b>."
+msgstr ""
+"El kívánja hagyni a csak olvasható módot a következő alkalmazás-kiszolgálón: "
+"<b>%(appserver)s</b>."
+
+#: templates/admin/readonly_confirm.html:53
+#, python-format
+msgid ""
+"If you confirm, <b>%(appserver)s</b> will attempt to resume normal operation "
+"with its master database connection."
+msgstr ""
+"Ha jóváhagyja, akkor a következő alkalmazás-kiszolgáló normál módba fog "
+"kerülni a master adatbázis-kapcsolatát használva: <b>%(appserver)s</b>."
+
+#: templates/admin/readonly_confirm.html:55
+msgid "You are about to clear readonly mode globally."
+msgstr "Arra készül, hogy teljesen elhagyja a csak olvasható módot."
+
+#: templates/admin/readonly_confirm.html:56
+msgid ""
+"If you confirm, all appservers will attempt to resume normal operation."
+msgstr ""
+"Ha jóváhagyja, minden alkalmazás-kiszolgáló megkísérli a normál üzembe való "
+"visszaállást."
+
+#: templates/admin/readonly_confirm.html:60
+#, python-format
+msgid ""
+"You are about to enable the <b>%(conn)s</b> database connection on appserver "
+"<b>%(appserver)s</b>."
+msgstr ""
+"Arra készül, hogy engedélyezze az adatbázis-kapcsolatot (<b>%(conn)s</b>) a "
+"következő alkalmazás-kiszolgálón: <b>%(appserver)s</b>."
+
+#: templates/admin/readonly_confirm.html:63
+#, python-format
+msgid ""
+"You are about to disable the <b>%(conn)s</b> database connection on "
+"appserver <b>%(appserver)s</b>."
+msgstr ""
+"Arra készül, hogy letiltsa az adatbázis-kapcsolatot (<b>%(conn)s</b>) a "
+"következő alkalmazás-kiszolgálón: <b>%(appserver)s</b>."
+
+#: templates/launchpad/base.html:12 templates/ubuntu/base.html:13
+msgid "Log in"
+msgstr "Bejelentkezés"
+
+#: templates/launchpad/base.html:34 templates/ubuntu/base.html:57
+msgid ""
+"We are currently in read-only mode. That means that at the moment you can't "
+"create new accounts, update your personal information, or request password "
+"reminders."
+msgstr ""
+"Jelenleg csak olvasható módban van a szolgáltatás. Ez azt jelenti, hogy nem "
+"lehet új fiókokat létrehozni, személyes beállításokat frissíteni, vagy "
+"jelszavakat visszaállítani."
+
+#: templates/launchpad/email/email-validation-token.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request to validate the email address %(toaddress)s for use in "
+"the Launchpad Login Service.\n"
+"\n"
+"If you made this request, please copy and paste the confirmation code below "
+"into the desktop application to complete the process to add %(toaddress)s to "
+"your existing Launchpad Login Service account.\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it as "
+"a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+
+#: templates/launchpad/email/forgottenpassword.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"You have requested a new password for your Launchpad Login Service account.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Enter this code into the password-reset form, or click the following link to "
+"automatically confirm your reset:\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone else has entered your "
+"email address at the Launchpad Login Service. Sorry about that. You don't "
+"need to do anything further, just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+
+#: templates/launchpad/email/impersonate-warning.txt:2
+#, python-format
+msgid ""
+"We've received a request to create a new account with your email address.\n"
+"\n"
+"If this was you, perhaps you've forgotten your password?\n"
+"\n"
+"    %(forgotten_password_url)s\n"
+"\n"
+"If not, someone may be trying to impersonate you. If you get more requests "
+"like this, please let us know.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+
+#: templates/launchpad/email/newuser.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"Thank you for registering with the Launchpad Login Service.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Enter this code into the registration form, or click the following link to "
+"automatically confirm your account:\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake at the Launchpad Login Service web site. Sorry "
+"about that. You don't need to do anything further, just delete this "
+"message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+
+#: templates/launchpad/email/validate-email.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request from %(requester)s using email address "
+"%(requester_email)s, trying to validate the email address %(toaddress)s for "
+"use in the Launchpad Login Service.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"If you made this request, enter this code into the confirmation form, or "
+"click the following link to automatically confirm your email address:\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it "
+"on\n"
+"\n"
+"    %(support_form_url)s\n"
+"\n"
+"as a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Launchpad Login Service team"
+msgstr ""
+
+#: templates/launchpad/registration/login.html:21
+msgid "Log in to Launchpad Login Service"
+msgstr "Belejentkezés a Launchpad bejelentkező szolgáltatásba"
+
+#: templates/launchpad/registration/login.html:27
+#, python-format
+msgid ""
+"You are here because %(rpconfigname)s uses the Launchpad Login Service."
+msgstr ""
+"Azért van itt, mert %(rpconfigname)s a Launchpad bejelentkező szolgáltatást "
+"használja."
+
+#: templates/launchpad/registration/login.html:42
+#: templates/ubuntu/registration/login.html:48
+msgid "Password"
+msgstr "Jelszó"
+
+#: templates/launchpad/registration/login.html:53
+#: templates/ubuntu/registration/login.html:61
+msgid "Forgot your password?"
+msgstr "Elfelejtette a jelszavát?"
+
+#: templates/launchpad/registration/login.html:58
+msgid "Create a new account"
+msgstr "Új fiók létrehozása"
+
+#: templates/launchpad/registration/login.html:76
+msgid ""
+"This is the Launchpad login service utilizing <a "
+"href=\"http://openid.net/\">OpenID</a> technology. This site allows you to "
+"use <a href=\"https://launchpad.net/people/+me\">your Launchpad account</a> "
+"to log into OpenID-enabled sites around the Internet."
+msgstr ""
+"Ez itt az <a href=\"http://openid.net/\">OpenID</a> technológiára épülő "
+"Launchpad bejelentkező szolgáltatás, amelynek segítségével a Launchpad "
+"fiókját használva hozzáférhet OpenID-t használó weboldalakhoz szerte az "
+"interneten."
+
+#: templates/launchpad/registration/login.html:79
+msgid ""
+"To learn more about using this service, please review the <a "
+"href=\"https://help.launchpad.net/OpenID\">instructions</a>."
+msgstr ""
+"További információért tekintse át az <a "
+"href=\"https://help.launchpad.net/OpenID\">ismertető oldalt</a> (csak "
+"angolul érhető el)."
+
+#: templates/launchpad/registration/login.html:82
+msgid ""
+"If you want to change any of your account's details, you can do so by "
+"logging in using the form beside."
+msgstr ""
+"Ha a fiókjával kapcsolatos bármilyen információt meg szeretne változtatni, "
+"jelentkezzen be az oldalt található űrlap használatával."
+
+#: templates/launchpad/registration/login.html:86
+msgid "What is Launchpad and a Launchpad Account?"
+msgstr "Mi a Launchpad és egy Launchpad fiók?"
+
+#: templates/launchpad/registration/login.html:89
+msgid ""
+"Launchpad is the central point where we gather all sorts of interactions "
+"around Ubuntu, Canonical and free software generally. You can use your "
+"Launchpad account to report bugs, to find or contribute translations, to "
+"find specs, to contribute code."
+msgstr ""
+"A Launchpad egy Ubuntu, Canonical és szabad szoftveres projektek "
+"gyűjtőhelyeként szolgáló weboldal. Launchpad fiókjával hibákat jelenthet be, "
+"fordításokat küldhet be, specifikációkat kereshet, vagy forráskódot "
+"böngészhet."
+
+#: templates/registration/bad_token.html:9
+#: templates/registration/bad_token.html:12
+msgid "Unauthorized confirmation code"
+msgstr ""
+
+#: templates/registration/bad_token.html:16
+msgid ""
+"You are not authorized to use this confirmation code. If this URL was sent "
+"to you by email, please make sure you open it in the same browser where you "
+"requested it."
+msgstr ""
+
+#: templates/registration/confirm_new_account.html:9
+#: templates/registration/old_confirm_new_account.html:9
+msgid "Complete your registration"
+msgstr "Regisztráció befejezése"
+
+#: templates/registration/confirm_new_account.html:24
+#, python-format
+msgid "The account for %(email)s is ready to be created."
+msgstr ""
+
+#: templates/registration/email_sent.html:23
+msgid ""
+"We've sent you a 6 digit confirmation code.  To continue, enter that code "
+"below."
+msgstr ""
+
+#: templates/registration/email_sent.html:37
+msgid " or, <a href=\"/+emails\">return to email addresses</a>"
+msgstr ""
+
+#: templates/registration/email_sent.html:44
+msgid "Haven&rsquo;t received it?"
+msgstr "Nem kapta meg?"
+
+#: templates/registration/email_sent.html:45
+msgid ""
+"If you don&rsquo;t receive the message within a few minutes, it might be "
+"because:"
+msgstr ""
+"Ha nem kapja meg a levelet pár percen belül, az az alábbiak miatt lehetséges:"
+
+#: templates/registration/email_sent.html:46
+msgid ""
+"Your mail provider uses &ldquo;greylisting&rdquo; to reduce spam. If so, "
+"you&rsquo;ll need to wait an hour or two for the message to arrive."
+msgstr ""
+"A levelező szolgáltatója ún. \"greylisting\" (szürkelista) technológiát "
+"használ a levélszemét csökkentésére. Amennyiben ez így van, pár órán belül "
+"megkapja a levelet."
+
+#: templates/registration/email_sent.html:47
+msgid ""
+"Your mail provider mistakenly blocks messages from this site. Try signing up "
+"using a service like <a href=\"http://gmail.com/\">Gmail</a> or <a "
+"href=\"http://mail.yahoo.com/\">Yahoo Mail</a>."
+msgstr ""
+
+#: templates/registration/email_sent.html:52
+msgid "If neither of those work, our service might be having a problem."
+msgstr "Ha a fentiek közül egyik sem működik, akkor nálunk van a probléma."
+
+#: templates/registration/forgot_password.html:9
+#: templates/registration/reset_password.html:9
+msgid "Reset password"
+msgstr "Jelszó visszaállítása"
+
+#: templates/registration/forgot_password.html:18
+msgid ""
+"Enter your email address, and we will send you instructions on how to reset "
+"your password."
+msgstr ""
+"Az e-mail címe megadása után küldünk további információkat a jelszava "
+"visszaállításáról."
+
+#: templates/registration/forgot_password.html:30
+#: templates/registration/new_account.html:41
+msgid "Type the two words into the field below"
+msgstr "Írja be a az alábbi mezőbe a képen olvasható két szót"
+
+#: templates/registration/logout.html:9 templates/registration/logout.html:12
+msgid "You have been logged out"
+msgstr ""
+
+#: templates/registration/logout.html:18
+#, python-format
+msgid ""
+"\n"
+"     <span class=\"big\">Return to <a "
+"href=\"%(return_to_url)s\">%(site_name)s</a></span>"
+msgstr ""
+
+#: templates/registration/logout.html:25
+msgid "Sites you may still be logged into"
+msgstr ""
+
+#: templates/registration/logout.html:29
+#: templates/widgets/last_auth_sites.html:15
+msgid "Site"
+msgstr "Oldal"
+
+#: templates/registration/logout.html:30
+#: templates/widgets/last_auth_sites.html:16
+msgid "Last authenticated"
+msgstr "Utolsó hitelesítés"
+
+#: templates/registration/logout_to_confirm.html:9
+#: templates/registration/logout_to_confirm.html:12
+msgid "Can not use confirmation code while logged in"
+msgstr ""
+
+#: templates/registration/logout_to_confirm.html:16
+msgid ""
+"You have attempted to confirm an account while logged in as someone else.  "
+"We've cancelled your request. Please log out and create your new account "
+"again."
+msgstr ""
+"Bejelentkezett felhasználóként próbált meg egy újonnan létrehozott fiókot "
+"megerősíteni, ezért töröltük a kérését. Jelentkezzen ki, és próbálja meg "
+"újra létrehozni a fiókját."
+
+#: templates/registration/new_account.html:9
+msgid "Create account"
+msgstr "Fiók létrehozása"
+
+#: templates/registration/new_account.html:18
+msgid ""
+"Enter the following information, and we will send you instructions on how to "
+"confirm your account."
+msgstr ""
+
+#: templates/static/description.html:9
+msgid "What's this? - Ubuntu Single Sign On"
+msgstr "Mi ez? - Ubuntu Single Sign On"
+
+#: templates/static/description.html:12
+msgid "What's this?"
+msgstr "Mi ez?"
+
+#: templates/static/description.html:17
+msgid ""
+"The goal of this service is to provide a single, central login service\n"
+"for all Ubuntu-related sites, thus making it more convenient for Ubuntu\n"
+"users and community members to access information, communicate, and\n"
+"contribute. This service will replace the existing Launchpad login\n"
+"service that is currently in use for many Ubuntu-related sites, although\n"
+"existing Launchpad accounts will continue to work in the new service."
+msgstr ""
+"Ezen szolgáltatás célja egységes, központi bejelentkezés biztosítása minden\n"
+"Ubuntuval kapcsolatos weboldal számára, kényelmesebbé téve az Ubuntu\n"
+"felhasználóknak és a közösség tagjainak az információhoz való hozzáférést,\n"
+"a kommunikációt, és a közreműködést. Ez a szolgáltatás ki fogja váltani a "
+"létező\n"
+"Launchpad bejelentkező szolgáltatást, amelyet még mindig használ néhány "
+"Ubuntuval\n"
+"kapcsolatos weboldal. A létező Launchpad fiókok továbbra is használhatók az "
+"új szolgáltatással."
+
+#: templates/static/description.html:26
+msgid ""
+"Over the next few months we will be moving all of the Ubuntu and\n"
+"Canonical related sites that currently use the Launchpad service to this\n"
+"service, starting with sites we manage directly and then working with\n"
+"community site owners to move the community-managed sites."
+msgstr ""
+"Az elkövetkező néhány hónap folyamán az összes jelenleg Launchpad "
+"bejelentkező szolgáltatást használó Ubuntu és Canonical weboldalt átállítjuk "
+"erre a szolgáltatásra. Az általunk karbantartott oldalakkal kezdjük, később "
+"pedig a tulajdonosokkal együttműködve a közösség által karbantartott "
+"oldalakat állítjuk át."
+
+#: templates/static/description.html:33
+msgid ""
+"Because of the number of existing Ubuntu users who have created accounts\n"
+"in Launchpad for the purpose of logging into other sites, we have set\n"
+"both services to share account data during the transition. Launchpad is\n"
+"in the process of enabling users to log in with an Ubuntu account and,\n"
+"once completed, this sharing will be removed. This does mean that you\n"
+"will be able to log into this service and Launchpad with the same\n"
+"credentials for a while. We realise this is something internet users\n"
+"have been encouraged to not do but it is a necessary side-effect of the\n"
+"transition. Doing this ensures you won't lose access to services you've\n"
+"purchased from us in the past or your account histories in the sites\n"
+"you've previously visited, as long as you use your existing Launchpad\n"
+"credentials on this site."
+msgstr ""
+"A Launchpad fiókkal rendelkező Ubuntu felhasználók magas számára való "
+"tekintettel az átállás időszaka alatt közös adatbázist használ a két "
+"szolgáltatás. Folyamatban van a Launchpad felkészítése az Ubuntu fiókok "
+"elfogadására. Amint ez kész, a közös adatbázis megszűnik. Ez azt jelenti, "
+"hogy bizonyos ideig ugyanazzal a jelszóval tud belépni mind a Launchpadra, "
+"mind ebbe a szolgáltatásba. Tudjuk, hogy ez nem túl szerencsés megoldás az "
+"internetes világban, de szükséges feltétele az átállásnak. Ez biztosítja "
+"azt, hogy semmilyen korábban igénybe vett szolgáltatás használatától sem "
+"fosztjuk meg, amíg a létező Launchpad hozzáférését használja ezen az oldalon."
+
+#: templates/static/description.html:48
+msgid ""
+"We have answers to some questions on our <a href=\"/+faq\">FAQ page</a>. If "
+"you have\n"
+"more questions, please <a href=\"https://answers.launchpad.net/canonical-"
+"identity-provider\">submit them on Launchpad</a> and we'll do our\n"
+"best to respond to them. We also have an email support channel - you\n"
+"can submit your support requests using our support form at <a "
+"href=\"https://forms.canonical.com/sso-"
+"support/\">https://forms.canonical.com/sso-support</a>. If\n"
+"you have found a bug, please take a few minutes to tell us about it on our "
+"<a href=\"https://bugs.launchpad.net/canonical-identity-provider\">Launchpad "
+"project</a>."
+msgstr ""
+"Néhány kérdésre van válaszunk a <a href=\"/+faq\">GYIK (FAQ)</a> oldalon. Ha "
+"további kérdései lennének, küldje el őket a <a "
+"href=\"https://answers.launchpad.net/canonical-identity-"
+"provider\">Launchpadon keresztül</a>. Elérhető továbbá e-mailes "
+"terméktámogatás is, amelyet a <a href=\"https://forms.canonical.com/sso-"
+"support/\">https://forms.canonical.com/sso-support</a> címen található űrlap "
+"kitöltésével vehet igénybe. Ha programozási hibát talál, küldje be a <a "
+"href=\"https://bugs.launchpad.net/canonical-identity-provider\">Launchpad "
+"projektoldalunkon</a> keresztül."
+
+#: templates/static/faq.html:9
+msgid "FAQ - Ubuntu Single Sign On"
+msgstr "GYIK (FAQ) - Ubuntu Single Sign On"
+
+#: templates/static/faq.html:12
+msgid "Frequently asked questions"
+msgstr "Gyakran ismételt kérdések"
+
+#: templates/static/faq.html:16
+msgid "Why replace the Launchpad login service?"
+msgstr "Miért kerül leváltásra a Launchpad bejelentkező szolgáltatás?"
+
+#: templates/static/faq.html:19
+msgid ""
+"The Launchpad login service has served us well for several years but\n"
+"Launchpad is not a familiar brand for many Ubuntu users. As Ubuntu\n"
+"grows, we'll see more and more users who don't understand the connection\n"
+"between Launchpad and Ubuntu and the new Ubuntu login service is\n"
+"intended to overcome this problem. It will also enable us to develop\n"
+"features which are more oriented to Ubuntu users."
+msgstr ""
+"A Launchpad bejelentkező szolgáltatás jól teljesített az évek során, de a "
+"Launchpad nevet sok Ubuntu felhasználó nem ismeri. Ahogyan az Ubuntu "
+"növekszik, egyre több olyan felhasználó lesz, akik nem értik a Launchpad és "
+"az Ubuntu közötti kapcsolatot. Ezt szeretné orvosolni az Ubuntu Single Sign "
+"On szolgáltatás."
+
+#: templates/static/faq.html:27
+msgid "How does the new service differ from the old one?"
+msgstr "Miben különbözik az új szolgáltatás a régitől?"
+
+#: templates/static/faq.html:30
+msgid ""
+"For now, not much apart from the appearance of the site. We have many plans\n"
+"for great new features, however, and hope to roll these out once the "
+"service\n"
+"is established. If you have ideas for other features you'd like to see in\n"
+"Ubuntu single sign on, we'd love to hear about them."
+msgstr ""
+"Jelenleg nem sokban, a megjelenést leszámítva. Azonban nagy terveink vannak "
+"remek új funckciókra, és reményeink szerint ezeket szépen fokozatosan "
+"elkezdjük megjelentetni a szolgáltatás stabilizálódása után. Ha bármilyen "
+"ötlete lenne, vagy valamilyen funkciót szívesen látna, ne habozzon "
+"megosztani nekünk."
+
+#: templates/static/faq.html:36
+msgid "Is the new service Open Source?"
+msgstr "Nyílt forráskódú az új szolgáltatás?"
+
+#: templates/static/faq.html:39
+msgid ""
+"Yes, and it's also built and hosted on open source\n"
+"technologies (<a href=\"http://www.python.org/\">Python</a>, <a "
+"href=\"http://www.djangoproject.com/\">Django</a>, <a "
+"href=\"http://httpd.apache.org/\">Apache</a> and <a "
+"href=\"http://www.postgresql.org/\">PostgreSQL</a> amongst others)."
+msgstr ""
+"Igen, továbbá nyílt forráskódú technológiák segítségével fejlesztjük és "
+"szolgáljuk ki:\n"
+"többek között <a href=\"http://www.python.org/\">Python</a>, <a "
+"href=\"http://www.djangoproject.com/\">Django</a>, <a "
+"href=\"http://httpd.apache.org/\">Apache</a> és <a "
+"href=\"http://www.postgresql.org/\">PostgreSQL</a>."
+
+#: templates/static/faq.html:43
+msgid "I have a problem with the new service. Where can I get help?"
+msgstr "Problémám akadt az új szolgáltatással. Hogyan kaphatok segítséget?"
+
+#: templates/static/faq.html:46
+msgid ""
+"We have an email support channel. You can submit your support requests\n"
+"using our support form at <a href=\"https://forms.canonical.com/sso-"
+"support/\">https://forms.canonical.com/sso-support</a>. If you have found a "
+"bug, please take a\n"
+"few minutes to tell us about it at\n"
+"<a href=\"https://bugs.launchpad.net/canonical-identity-"
+"provider\">https://bugs.launchpad.net/canonical-identity-provider</a>."
+msgstr ""
+"Lehetőség van e-mailes segítségnyújtásra. Ehhez a következő címen találhatő "
+"űrlapot kell kitölteni: <a href=\"https://forms.canonical.com/sso-"
+"support/\">https://forms.canonical.com/sso-support</a>. Ha programozási "
+"hibát talált a szolgáltatásban, azt a következő címen jelezze: <a "
+"href=\"https://bugs.launchpad.net/canonical-identity-"
+"provider\">https://bugs.launchpad.net/canonical-identity-provider</a>."
+
+#: templates/static/faq.html:53
+msgid ""
+"We're sure you have more questions. Please submit them at\n"
+"<a href=\"https://answers.launchpad.net/canonical-identity-"
+"provider\">https://answers.launchpad.net/canonical-identity-provider</a> and "
+"we'll do\n"
+"our best to respond to them all."
+msgstr ""
+"Ha további kérdései lennének, felteheti őket a <a "
+"href=\"https://answers.launchpad.net/canonical-identity-"
+"provider\">https://answers.launchpad.net/canonical-identity-provider</a> "
+"címen, és legjobb tudásunk szerint válaszolni fogunk rájuk."
+
+#: templates/ubuntu/base.html:89
+msgid ""
+"&copy; 2009-2010 Canonical Ltd.  \n"
+"<a href=\"https://launchpad.net/canonical-identity-provider\">Source code "
+"for this service</a> is licensed under the <a "
+"href=\"http://www.gnu.org/licenses/agpl-3.0.html\">AGPL</a>.<br />\n"
+"Ubuntu and Canonical are registered trademarks of Canonical Group Ltd.<br "
+"/>\n"
+"Please review our <a href=\"http://ubuntu.com/legal\">Terms of Service</a> "
+"as well as our <a href=\"http://ubuntu.com/legal#privacy\">Privacy "
+"Policy</a>."
+msgstr ""
+
+#: templates/ubuntu/email/api-newuser.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"As a final step of the Ubuntu Single Sign On (SSO) account creation process, "
+"please validate the email address %(toaddress)s. Ubuntu SSO enables "
+"convenient access to a variety of Ubuntu-related services like Ubuntu One "
+"with the same username and password.\n"
+"\n"
+"Copy and paste the confirmation code below into the desktop application.\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake. Sorry about that. You don't need to do anything "
+"further. Just delete this message.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team\n"
+"https://login.ubuntu.com/"
+msgstr ""
+
+#: templates/ubuntu/email/email-validation-token.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request to validate the email address %(toaddress)s for use in "
+"the Ubuntu Single Sign On service.\n"
+"\n"
+"If you made this request, please copy and paste the confirmation code below "
+"into the desktop application to complete the process to add %(toaddress)s to "
+"your existing Ubuntu Single Sign On service account.\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it as "
+"a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+
+#: templates/ubuntu/email/forgottenpassword.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"You have requested a new password for your Ubuntu Single Sign On account.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Enter this code into the password-reset form, or click the following link to "
+"automatically confirm your reset:\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone else has entered your "
+"email address at the Ubuntu Single Sign On service. Sorry about that. You "
+"don't need to do anything further, just delete this message.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+
+#: templates/ubuntu/email/impersonate-warning.txt:2
+#, python-format
+msgid ""
+"We've received a request to create a new account with your email address.\n"
+"\n"
+"If this was you, perhaps you've forgotten your password?\n"
+"\n"
+"    %(forgotten_password_url)s\n"
+"\n"
+"If not, someone may be trying to impersonate you. If you get more requests "
+"like this, please let us know.\n"
+"\n"
+"Regards,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+
+#: templates/ubuntu/email/newuser.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"As a final step of the Ubuntu Single Sign On (SSO) account creation process, "
+"please validate the email address %(toaddress)s. Ubuntu SSO enables "
+"convenient access to a variety of Ubuntu-related services like Ubuntu One "
+"with the same username and password.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"Enter this code into the registration form, or click the following link to "
+"automatically confirm your account:\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"If you don't know what this is about, then someone has probably entered your "
+"email address by mistake. Sorry about that. You don't need to do anything "
+"further. Just delete this message.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team\n"
+"https://login.ubuntu.com/"
+msgstr ""
+
+#: templates/ubuntu/email/validate-email.txt:2
+#, python-format
+msgid ""
+"Hello\n"
+"\n"
+"We received a request from %(requester)s using email address "
+"%(requester_email)s, trying to validate the email address %(toaddress)s for "
+"use in the Ubuntu Single Sign On service.\n"
+"\n"
+"Here is your confirmation code:\n"
+"\n"
+"    %(token)s\n"
+"\n"
+"If you made this request, enter this code into the confirmation form, or "
+"click the following link to automatically confirm your email address:\n"
+"\n"
+"    %(token_url)s\n"
+"\n"
+"If you did not make this request, please ignore this message or report it "
+"on\n"
+"\n"
+"    %(support_form_url)s\n"
+"\n"
+"as a possible attempt at a security attack on your data.\n"
+"\n"
+"Thank you,\n"
+"\n"
+"The Ubuntu Single Sign On team"
+msgstr ""
+
+#: templates/ubuntu/registration/login.html:23
+msgid "Log in to Ubuntu Single Sign On"
+msgstr "Bejelentkezés az Ubuntu Single Sign On szolgáltatásba"
+
+#: templates/ubuntu/registration/login.html:29
+#, python-format
+msgid ""
+"You are here because %(rpconfigname)s uses the Ubuntu Single Sign On service."
+msgstr ""
+"Azért van itt, mert %(rpconfigname)s az Ubuntu Single Sign On szolgáltatást "
+"használja."
+
+#: templates/ubuntu/registration/login.html:34
+msgid ""
+"Please note that if you've registered with Launchpad you can use your "
+"existing Launchpad credentials to log in."
+msgstr ""
+"Ha regisztrált már a Launchpad oldalon, akkor be tud jelentkezni az ottani "
+"adataival."
+
+#: templates/ubuntu/registration/login.html:81
+msgid "Are you new?"
+msgstr "Új látogató?"
+
+#: templates/ubuntu/registration/login.html:83
+msgid ""
+"This is a new service to provide a single, central login service for all "
+"Ubuntu-related sites."
+msgstr ""
+"Ez egy új szolgáltatás, amely egységes, központi megoldást nyújt az "
+"Ubuntuval kapcsolatos weboldalakra való bejelentkezésre."
+
+#: templates/ubuntu/registration/login.html:87
+msgid "Find out more"
+msgstr "További információ"
+
+#: templates/ubuntu/registration/login.html:95
+msgid "New account"
+msgstr "Új fiók"
+
+#: templates/widgets/last_auth_sites.html:10
+msgid "Sites you last authenticated to"
+msgstr "A közelmúltban hitelesített oldalak"
+
+#: templates/widgets/passwords.html:19
+msgid "Choose password"
+msgstr "Jelszó kiválasztása"
+
+#: templates/widgets/passwords.html:32
+msgid "Retype password"
+msgstr "Jelszó megerősítése"
+
+#: templates/widgets/recaptcha.html:11
+msgid "Get a visual challenge"
+msgstr "Kérek egy új vizuális próbát"
+
+#: templates/widgets/recaptcha.html:12
+msgid "Get an audio challenge"
+msgstr "Kérek egy hangos próbát"
+
+#: templates/widgets/recaptcha.html:13
+msgid "Get a new challenge"
+msgstr "Kérek egy új próbát"
+
+#: templates/widgets/recaptcha.html:14
+msgid "Type the two words:"
+msgstr "Írja be a képen látható két szót:"
+
+#: templates/widgets/recaptcha.html:15
+msgid "Type what you hear:"
+msgstr "Írja be, amit hall:"
+
+#: templates/widgets/recaptcha.html:16
+msgid "Help"
+msgstr "Segítség"
+
+#: templates/widgets/recaptcha.html:17
+msgid "Play sound again"
+msgstr "Hang lejátszása újra"
+
+#: templates/widgets/recaptcha.html:18
+msgid "Download sound as MP3"
+msgstr "Hang letöltése MP3 formátumban"
+
+#: templates/widgets/recaptcha.html:19
+msgid "Incorrect. Try again."
+msgstr "Helytelen. Próbálja újra."
+
+#: templates/widgets/recaptcha.html:26
+msgid ""
+"It appears that our captcha service was unable to load on this page. This "
+"may be caused by a plugin on your browser. Please correct this and try "
+"again. If the problem persists, please contact <a "
+"href=\"https://forms.canonical.com/sso-support/\">Ubuntu SSO support</a>"
+msgstr ""
+"Úgy tűnik, hogy a captcha szolgáltatás nem töltődött be. Ezt okozhatja "
+"például egy böngésző bővítmény. Tiltsa le a bővítményeket, majd próbálja "
+"újra. Ha a probléma továbbra is fennáll, vegye fel a kapcsolatot az <a "
+"href=\"https://forms.canonical.com/sso-support/\">Ubuntu SSO "
+"támogatással</a>."
+
+#: templates/widgets/trusted_rp.html:9
+#, python-format
+msgid "Sign in to %(rpconfigname)s"
+msgstr "Bejelentkezés a következő oldalra: %(rpconfigname)s"
+
+#: templates/widgets/unknown_rp.html:13
+msgid "Warning:"
+msgstr "Figyelmeztetés:"
+
+#: templates/widgets/unknown_rp.html:14
+#, python-format
+msgid "<em>%(trust_root)s</em> does not look like a trustworthy URL."
+msgstr "A következő URL megbízhatatlan: <em>%(trust_root)s</em>"
+
+#: templates/widgets/launchpad/logout-button.html:10
+#, python-format
+msgid "Logged in as <strong>%(displayname)s</strong>"
+msgstr "Bejelentkezve: <strong>%(displayname)s</strong>"
+
+#: templates/widgets/launchpad/logout-button.html:14
+#: templates/widgets/ubuntu/logout-button.html:14
+msgid "Edit"
+msgstr "Módosítás"
+
+#: templates/widgets/launchpad/logout-button.html:18
+msgid "Log Out"
+msgstr "Kijelentkezés"
+
+#: templates/widgets/ubuntu/login-button.html:10
+msgid "Log in or Register"
+msgstr ""
+
+#: templates/widgets/ubuntu/logout-button.html:18
+msgid "Applications"
+msgstr ""
+
+#: templates/widgets/ubuntu/logout-button.html:21
+msgid "Log out"
+msgstr "Kijelentkezés"
+
+#: views/account.py:58
+msgid "Your account details have been successfully updated"
+msgstr "A fiók adatainak módosításai sikeresen mentésre kerültek"
+
+#: views/account.py:136
+#, python-format
+msgid ""
+"We&rsquo;ve just emailed %(email_to)s (from %(email_from)s) with "
+"instructions on validating your email address."
+msgstr ""
+
+#: views/account.py:186
+#, python-format
+msgid "The unverified email address %s was removed successfully"
+msgstr "A nem ellenőrzött e-mail cím (%s) sikeresen törlésre került."
+
+#: views/account.py:205
+#, python-format
+msgid "'%s' token was revoked successfully"
+msgstr ""
+
+#: views/consumer.py:136
+#, python-format
+msgid "OpenID discovery error: %s"
+msgstr "OpenID felfedezési hiba: %s"
+
+#: views/consumer.py:229
+msgid "OpenID authentication cancelled."
+msgstr "OpenID hitelesítés megszakítva."
+
+#: views/consumer.py:232
+msgid "OpenID Provider reports setup needed (not currently logged in)."
+msgstr ""
+
+#: views/consumer.py:235
+msgid "OpenID authentication failed."
+msgstr "OpenID hitelesítés sikertelen."
+
+#: views/ui.py:248 views/ui.py:459 views/ui.py:488
+msgid "Your account was created successfully"
+msgstr "A fiókja sikeresen létrehozva"
+
+#: views/ui.py:301
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
+#: views/ui.py:395
+msgid "Registration mail sent"
+msgstr "Regisztrációs e-mail elküldve"
+
+#: views/ui.py:396
+#, python-format
+msgid ""
+"We&rsquo;ve just emailed %(email_to)s (from %(email_from)s) to confirm your "
+"address."
+msgstr ""
+"Ebben a pillanatban küldtünk egy levelet (erre a címre: %(email_to)s, erről "
+"a címről: %(email_from)s), hogy megerősítsük az e-mail címét."
+
+#: views/ui.py:496
+msgid "Please log in to use this confirmation code"
+msgstr ""
+
+#: views/ui.py:519
+#, python-format
+msgid "The email address %s has been validated"
+msgstr "Az e-mail cím (%s) megerősítve"
+
+#: views/ui.py:623
+msgid "Forgotten your password?"
+msgstr "Elfelejtette a jelszavát?"
+
+#: views/ui.py:624
+#, python-format
+msgid ""
+"We&rsquo;ve just emailed %(email_to)s (from %(email_from)s) with "
+"instructions on resetting your password."
+msgstr ""
+"A jelszavának visszaállításához szükséges információkat elküldtük Önnek a "
+"következő címre: %(email_to)s (a levél feladója: %(email_from)s)."
+
+#: views/ui.py:630
+msgid "Check that you&rsquo;ve actually entered a subscribed email address."
+msgstr ""
+"Ellenőrizze, hogy olyan e-mail címet adott meg, amely a fiókjához tartozik."
+
+#: views/ui.py:679
+#, python-format
+msgid ""
+"Your account was reactivated, and the preferred email address was set to %s."
+msgstr "A fiókja újra lett aktiválva. Az elsődleges e-mail címe: %s."
+
+#: webservice/forms.py:46
+msgid "Wrong captcha solution."
+msgstr "Helytelen captcha megoldás."
+
+#~ msgid ""
+#~ "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\"><body><h1>403 "
+#~ "Forbidden</h1><p>Cross Site Request Forgery detected. Request "
+#~ "aborted.</p></body></html>"
+#~ msgstr ""
+#~ "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\"><body><h1>403 "
+#~ "Tiltott</h1><p>Cross Site Request Forgery (CSRF)-t észlelt a rendszer. A "
+#~ "kérés megszakítva.</p></body></html>"
+
+#~ msgid "Change your email settings"
+#~ msgstr "E-mail beállítások megváltoztatása"
+
+#~ msgid "Set as preferred contact address"
+#~ msgstr "Beállítás elsődleges címként"
+
+#~ msgid "Add"
+#~ msgstr "Hozzáadás"
+
+#~ msgid "Add another email"
+#~ msgstr "Új e-mail hozzáadása"
+
+#, python-format
+#~ msgid "Log in to %(sso_brand_name)s"
+#~ msgstr "Bejelentkezés ide: %(sso_brand_name)s"
+
+#, python-format
+#~ msgid "Complete your %(sso_brand_name)s registration"
+#~ msgstr "%(sso_brand_name)s regisztrációjának befejezése"
+
+#~ msgid "To continue, follow the link in that message."
+#~ msgstr "A folytatáshoz látogassa meg az üzenetben található hivatkozást."
+
+#, python-format
+#~ msgid "Reset your %(sso_brand_name)s password"
+#~ msgstr "%(sso_brand_name)s jelszavának visszaállítása"
+
+#~ msgid "Logged out"
+#~ msgstr "Kijelentkezett"
+
+#~ msgid "You have been logged out."
+#~ msgstr "Ön kijelentkezett a rendszerből."
+
+#, python-format
+#~ msgid "%(sso_brand_name)s"
+#~ msgstr "%(sso_brand_name)s"
+
+#~ msgid "You have successfully logged out"
+#~ msgstr "Sikeresen kijelentkezett"
+
+#~ msgid "Login Service: Warning"
+#~ msgstr "Bejelentkező szolgáltatás: figyelmeztetés"
+
+#~ msgid "Login Service"
+#~ msgstr "Bejelentkező szolgáltatás"
+
+#~ msgid "Didn't match"
+#~ msgstr "Hibás"
+
+#~ msgid "Set preferred email"
+#~ msgstr "Elsődleges e-mail cím beállítása"
+
+#~ msgid ""
+#~ "A Lauchpad Login Service account is free and gives you access to Ubuntu One, "
+#~ "the Ubuntu Shop and many more useful services."
+#~ msgstr ""
+#~ "Az ingyenes Launchpad bejelentkező szolgáltatáshoz tartozó fiók segítségével "
+#~ "hozzáférhet az Ubuntu One-hoz, az Ubuntu Shop-hoz, és még további hasznos "
+#~ "szolgáltatásokhoz."
+
+#~ msgid ""
+#~ "Enter your email address, and we will send you instructions on how to create "
+#~ "your account."
+#~ msgstr ""
+#~ "Adja meg e-mail címét, hogy elküldhessük a fiók létrehozásával kapcsolatos "
+#~ "információkat."
+
+#, python-format
+#~ msgid ""
+#~ "Problem installing fixture '%(fixture_name)s': %(format)s is not a known "
+#~ "serialization format."
+#~ msgstr ""
+#~ "Hiba történt az adatfájl (%(fixture_name)s) másolása közben: ismeretlen "
+#~ "formátum (%(format)s)."
+
+#~ msgid "fixture [fixture ...]"
+#~ msgstr "adatfájl [adatfájl ...]"
+
+#~ msgid "Installs the named fixture(s) in the database."
+#~ msgstr "Bemásolja a megnevezett adatfájlok tartalmát az adatbázisba."

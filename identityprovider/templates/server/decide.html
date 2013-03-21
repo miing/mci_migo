@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+    {% blocktrans %}Authenticate to {{ trust_root }}{% endblocktrans %}
+{% endblock %}
+
+{% block content_id %}auth{% endblock %}
+
+{% block content %}
+    <div id="trust-root">
+        <h2 class="main" data-qa-id="_qa_rp_login_title">
+            {% blocktrans %} You are logging in to <a data-qa-id="_qa_rp_backlink" href="{{ trust_root }}">{{ trust_root }}</a>{% endblocktrans %}
+        </h2>
+    </div>
+
+    <div class="info">
+        {% if rpconfig %}
+            <p>{% blocktrans with site_name=rpconfig.displayname %}{{ site_name }} has requested some personal information. Please choose what you would like to share:{% endblocktrans %}</p>
+        {% else %}
+        <p>{% blocktrans %} The site has requested some personal information. Please choose what you would like to share:{% endblocktrans %}</p>
+        {% endif %}
+    </div>
+
+    <div class="actions">
+        <form action="{{ action }}" method="POST" name="decideform">
+            {% csrf_token %}
+            <div class="info-items">
+                {% if sreg_form.should_display or teams_form.should_display %}
+                <ul class="list">
+                    {% for field in sreg_form %}
+                    <li>{{ field|safe }} {{ field.label_tag }}</li>
+                    {% endfor %}
+                    {% if teams_form.should_display %}
+                        {% ifequal teams_form.fields|length 1 %}
+                            {% for field in teams_form %}
+                    <li>{{ field|safe }} <label for="id_{{ field.html_name }}">{% trans "Team membership:"%}</label> {{ field.label_tag }}</li>
+                            {% endfor %}
+                        {% else %}
+                    <li id="teamslist_item">
+                        <span id="teamslist_label">{% trans "Team membership:"%}</span>
+                        <ul class="teams-list" id="teamslist">
+                            {% for field in teams_form %}
+                            <li>{{ field|safe }} {{ field.label_tag }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endifequal %}
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <p>
+                <input type="hidden" name="ok" />
+                <button type="submit" class="btn" name="yes" data-qa-id="_qa_rp_confirm_login"><span><span>{% trans "Yes, log me in" %}</span></span></button>
+                {% trans "or" %}
+                <a href="+cancel">{% trans "cancel" %}</a>
+            </p>
+        </form>
+    </div>
+    <script type="text/javascript">
+    document.decideform.yes.focus();
+
+    YUI().use('anim-base', function(Y) {
+        var anim = new Y.Anim({
+            node: '#teamslist',
+            duration: 0.15,
+            to: { height: 0 },
+        });
+
+        var onClick = function(e) {
+            e.preventDefault();
+            Y.one('#reveal_wrapper').remove();
+            node = Y.one('#teamslist');
+            node.setStyle('height', '0');
+            node.setStyle('display', 'block');
+            anim.setAttrs({ 'to': { height: teamslist_height } });
+            anim.run();
+        };
+
+        var setTeamStates = function(e) {
+            state = e.currentTarget.get('checked');
+            nl = Y.all('#teamslist li input').set('checked', state);
+        }
+
+        var refreshTeamStates = function(e) {
+            nl = Y.all('#teamslist li input');
+            checked = 0;
+            total = nl.size();
+            for (i = 0; i < nl.size(); i++) {
+                if (nl.item(i).get('checked')) {
+                    checked ++;
+                }
+            }
+            if (checked == 0) {
+                Y.one('#checkme').set('checked', false);
+            } else {
+                Y.one('#checkme').set('checked', true);
+            }
+        }
+
+        Y.on("domready", function() {
+            // don't error out because no teams matched
+            if (Y.one('#teamslist_item') == null) {
+                return;
+            }
+            Y.one('#teamslist_item').prepend('<input type="checkbox" id="checkme" /> ');
+            Y.one('#teamslist_label').wrap('<label for="checkme"></label>');
+            Y.one('#checkme').on('change', setTeamStates);
+            Y.all('#teamslist li').on('change', refreshTeamStates);
+            refreshTeamStates();
+
+            nl = Y.all('#teamslist li input');
+            checked = 0;
+            total = nl.size();
+            for (i = 0; i < nl.size(); i++) {
+                if (nl.item(i).get('checked')) {
+                    checked ++;
+                }
+            }
+            if (checked == total || checked == 0) {
+                node = Y.one('#teamslist');
+                teamslist_height = parseInt(node.getComputedStyle('height'));
+                node.setStyle('display', 'none');
+                buf = new Array();
+                c = node.get('children');
+                for (i = 0; i < c.size(); i++) {
+                    buf.push(c.item(i).get('text'));
+                }
+                node.insert('<span id="reveal_wrapper"><label for="checkme">' +
+                    buf.join(', ') + '</label> <small style="font-size: 80%;">' +
+                    '(<a href="#" id="reveal">details</a>)</small></span>', "before");
+                Y.one('#reveal').on('click', onClick);
+            }
+        });
+    });
+
+    </script>
+    <br style="clear: both" />
+{% endblock %}

@@ -1,0 +1,50 @@
+[
+    {"pk": 1, "model": "identityprovider.account", "fields": {
+        "status": 20,
+        "displayname": "Tester",
+        "twofactor_required": false,
+        "preferredlanguage": null,
+        "status_comment": null,
+        "old_openid_identifier": null,
+        "date_created": "2012-02-15 22:24:20",
+        "date_status_set": "2012-02-15 22:24:20",
+        "openid_identifier": "KxHA3MH",
+        "creation_rationale": 8}},
+    {"pk": 1, "model": "identityprovider.accountpassword", "fields": {
+        "account": 1,
+        "password": "U3cT14+MwecbLgngnKJz8cZ4lmueUM+lRULoZUOkwh7oQurjqdRefQ=="}},
+    {"pk": 1, "model": "identityprovider.emailaddress", "fields": {
+        "status": 4,
+        "date_created": "2012-02-15 22:24:20",
+        "account": 1,
+        "email": "isdtest@canonical.com",
+        "lp_person": null}},
+    {"pk": 1, "model": "identityprovider.authenticationdevice", "fields": {
+        "account": 1,
+        "counter": 1,
+        "name": "My device",
+        "key": "3132333435363738393031323334353637383930"}},
+    {"pk": 1, "model": "identityprovider.openidrpconfig", "fields": {
+        "displayname": "Test Consumer",
+        "description": "Test Consumer",
+        "can_query_any_team": false,
+        "trust_root": "http://localhost:8000/consumer/",
+        "logo": "",
+        "require_two_factor": false,
+        "auto_authorize": false,
+        "allowed_sreg": "",
+        "creation_rationale": 13}},
+    {"pk": 1, "model": "auth.user", "fields": {
+        "username": "KxHA3MH",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": false,
+        "is_staff": false,
+        "last_login": "2012-02-15 22:25:47",
+        "groups": [],
+        "user_permissions": [],
+        "password": "",
+        "email": "1",
+        "date_joined": "2012-02-15 22:24:20"}}
+    ]

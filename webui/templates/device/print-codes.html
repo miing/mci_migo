@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
+Affero General Public License version 3 (see the file LICENSE).
+{% endcomment %}
+
+
+{% block title %}
+  {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
+{% endblock %}
+
+
+{% block text_title %}
+<h1 class="main">{% trans "Printable backup codes" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<h3>{% trans "Print this list of backup codes and keep them safe." %}</h3>
+{% include 'device/code-list.html' %}
+
+<p>
+  <a class="btn" id="printbtn" onclick="window.print()"><span><span>{% trans "Print Codes" %}</span></span>
+  </a>
+  {% if generation_enabled %}
+  <a class="btn" href="{% url device-generate device_id %}">
+    <span><span>{% trans "Generate new codes" %}</span></span>
+  </a>
+  {% endif %}
+  {% trans "or" %} <a href="{% url device-list %}">{% trans "go back to device list" %}</a>
+</p>
+{% endblock %}

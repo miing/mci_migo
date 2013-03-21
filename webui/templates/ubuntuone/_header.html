@@ -1,0 +1,13 @@
+{% load i18n %}
+<header role="banner" class="public">
+    <div class="wrapper">
+        <h1 id="ubuntu-header">{% if not embedded %}<a href="/" id="u1-logo">{% blocktrans %}{{ brand_description }}{% endblocktrans %}</a>{% endif %}</h1>
+        {% block me-menu %}
+        <div id="ac-status">
+            {% include "widgets/ubuntu/login-button.html" %}
+        </div>
+        {% endblock %}
+        {% block navigation %}
+        {% endblock %}
+    </div>
+</header>

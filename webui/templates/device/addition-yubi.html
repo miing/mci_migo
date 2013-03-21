@@ -1,0 +1,44 @@
+{% extends "device/addition-generic.html" %}
+{% load i18n %}
+{% load static_url %}
+{% block device_instructions %}
+<p>
+  {% trans "Shared OATH/HOTP key:" %}<br>
+  <span class="key" id="formatted_key">
+    {{ formatted_key }}
+  </span>
+</p>
+<p>
+    {% blocktrans %}Programming a YubiKey requires you to{% endblocktrans %}
+    <a href="apt:yubikey-personalization">{% trans "install" %} yubikey-personalization</a>.
+</p>
+<p>
+    {% blocktrans %}To program the YubiKey as an authentication device, on
+    the short press of the YubiKey, execute the following command line:{% endblocktrans %}
+</p>
+<p>
+  <code id="short_press">
+  sudo ykpersonalize -1 -a {{ hex_key|lower }} -o oath-hotp -o append-cr
+  </code>
+</p>
+<p>
+    {% blocktrans %}To program the long press of the YubiKey,
+    execute the following command line:{% endblocktrans %}
+</p>
+<p>
+  <code id="long_press">
+  sudo ykpersonalize -2 -a {{ hex_key|lower }} -o oath-hotp -o append-cr
+  </code>
+</p>
+<p class="warning">
+  {% blocktrans with "yubikey_personalize"|static_url as yubikey_personalize_url %}
+  Warning: The YubiKey is shipped with a credential in the short-press slot;
+  normally a credential for the YubiCloud. yubikey-personalization allows you
+  to overwrite this credential. You cannot recover the credential once
+  overwritten. For a YubiCloud credential, this means any services you have
+  registered your YubiKey with will no longer recognise it. Please only
+  overwrite the short-press credential if you understand the implications.
+  See the <a href="{{ yubikey_personalize_url }}">Yubico website</a> for more
+  information.{% endblocktrans %}
+</p>
+{% endblock %}

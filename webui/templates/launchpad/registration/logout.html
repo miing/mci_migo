@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "You have been logged out" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "You have been logged out" %}</h1>
+{% endblock %}
+
+{% block content %}
+  <p>{% blocktrans %}You are now logged out of the {{ brand_description }} website. However, you have not been automatically logged out of every website that uses this service.{% endblocktrans %}</p>
+
+  <p class="returnto">
+    {% if return_to_url %}
+    {% blocktrans with return_to_url as url and return_to_site_name as site_name %}
+    <a href="{{ return_to_url }}">Return to {{ site_name }}</a>{% endblocktrans %}
+    {% else %}
+    <a href="/+login">{% blocktrans %}Log back in to {{ brand_description }}{% endblocktrans %}</a>
+    {% endif %}
+  </p>
+{% endblock %}
+

@@ -1,0 +1,189 @@
+[
+    {
+        "pk": 1,
+        "model": "identityprovider.account",
+        "fields": {
+            "status": 20,
+            "twofactor_attempts": 0,
+            "displayname": "ISD Test",
+            "twofactor_required": false,
+            "preferredlanguage": null,
+            "status_comment": null,
+            "warn_about_backup_device": true,
+            "old_openid_identifier": null,
+            "date_created": "2013-01-29 15:03:47",
+            "date_status_set": "2013-01-29 15:03:47",
+            "openid_identifier": "isdtest",
+            "creation_rationale": 8
+        }
+    },
+    {
+        "pk": 1,
+        "model": "identityprovider.accountpassword",
+        "fields": {
+            "account": 1,
+            "password": "eIaf0T5ser12L1VSxwDWi8hWeVGIgU3jAqwKfa+EyZvzdda+MgnEzg=="
+        }
+    },
+    {
+        "pk": "isdtest",
+        "model": "identityprovider.lpopenididentifier",
+        "fields": {
+            "date_created": "2013-01-29 00:00:00",
+            "lp_account": 1
+        }
+    },
+    {
+        "pk": 1,
+        "model": "identityprovider.person",
+        "fields": {
+            "mail_resumption_date": null,
+            "personal_standing_reason": null,
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "postcode": null,
+            "logo": null,
+            "registrant": null,
+            "city": null,
+            "lp_account": 1,
+            "teamdescription": null,
+            "subscriptionpolicy": 1,
+            "fti": null,
+            "teamowner": null,
+            "merged": null,
+            "creation_rationale": null,
+            "province": null,
+            "renewal_policy": 10,
+            "displayname": "ISD Test",
+            "hide_email_addresses": false,
+            "personal_standing": 0,
+            "phone": null,
+            "visibility": 1,
+            "creation_comment": null,
+            "mugshot": null,
+            "mailing_list_receive_duplicates": true,
+            "icon": null,
+            "verbose_bugnotifications": false,
+            "name": "user0",
+            "language": null,
+            "country": null,
+            "datecreated": "2013-01-29 15:03:54",
+            "addressline2": null,
+            "addressline1": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "organization": null,
+            "homepage_content": null
+        }
+    },
+    {
+        "pk": 2,
+        "model": "identityprovider.person",
+        "fields": {
+            "mail_resumption_date": null,
+            "personal_standing_reason": null,
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "postcode": null,
+            "logo": null,
+            "registrant": null,
+            "city": null,
+            "lp_account": null,
+            "teamdescription": null,
+            "subscriptionpolicy": 1,
+            "fti": null,
+            "teamowner": 1,
+            "merged": null,
+            "creation_rationale": null,
+            "province": null,
+            "renewal_policy": 10,
+            "displayname": "Team canonical-isd-hackers",
+            "hide_email_addresses": false,
+            "personal_standing": 0,
+            "phone": null,
+            "visibility": 1,
+            "creation_comment": null,
+            "mugshot": null,
+            "mailing_list_receive_duplicates": true,
+            "icon": null,
+            "verbose_bugnotifications": false,
+            "name": "canonical-isd-hackers",
+            "language": null,
+            "country": null,
+            "datecreated": "2013-01-29 15:03:54",
+            "addressline2": null,
+            "addressline1": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "organization": null,
+            "homepage_content": null
+        }
+    },
+    {
+        "pk": 3,
+        "model": "identityprovider.person",
+        "fields": {
+            "mail_resumption_date": null,
+            "personal_standing_reason": null,
+            "defaultmembershipperiod": null,
+            "defaultrenewalperiod": null,
+            "postcode": null,
+            "logo": null,
+            "registrant": null,
+            "city": null,
+            "lp_account": null,
+            "teamdescription": null,
+            "subscriptionpolicy": 1,
+            "fti": null,
+            "teamowner": 1,
+            "merged": null,
+            "creation_rationale": null,
+            "province": null,
+            "renewal_policy": 10,
+            "displayname": "Team canonical-payment-service-testers",
+            "hide_email_addresses": false,
+            "personal_standing": 0,
+            "phone": null,
+            "visibility": 1,
+            "creation_comment": null,
+            "mugshot": null,
+            "mailing_list_receive_duplicates": true,
+            "icon": null,
+            "verbose_bugnotifications": false,
+            "name": "canonical-payment-service-testers",
+            "language": null,
+            "country": null,
+            "datecreated": "2013-01-29 15:03:55",
+            "addressline2": null,
+            "addressline1": null,
+            "mailing_list_auto_subscribe_policy": 1,
+            "organization": null,
+            "homepage_content": null
+        }
+    },
+    {
+        "pk": 1,
+        "model": "identityprovider.emailaddress",
+        "fields": {
+            "status": 4,
+            "date_created": "2013-01-29 15:03:47",
+            "account": 1,
+            "email": "isdtest@canonical.com",
+            "lp_person": null
+        }
+    },
+    {
+        "pk": 1,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "person": 1,
+            "team": 2
+        }
+    },
+    {
+        "pk": 2,
+        "model": "identityprovider.teamparticipation",
+        "fields": {
+            "person": 1,
+            "team": 3
+        }
+    }
+]

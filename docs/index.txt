@@ -1,0 +1,16 @@
+.. # vim: ft=rst
+
+Welcome to Canonical Identity Provider's documentation!
+=======================================================
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   api
+   resources/index
+
+   registration
+   login
+   password_reset

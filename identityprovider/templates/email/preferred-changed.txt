@@ -1,0 +1,7 @@
+{% load i18n %}{% blocktrans %}Hello
+
+The preferred email address for your {{ brand_description }} account was just changed. The new preferred email address is:{% endblocktrans %}
+
+{{ new_preferred }}
+
+{% include "email/thank_you.txt" %}

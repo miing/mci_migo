@@ -1,0 +1,17 @@
+.. vim: ft=rst
+
+Registration
+============
+
+Registration is performed by creating an :ref:`Account <account>` resource.
+Refer to :ref:`"Create an account" <account-create>` for details.
+
+Examples
+--------
+
+::
+
+    curl -d '{"email": "foo@foo.com", "password": "thepassword", "displayname": "Foo Bar Baz"}' \
+         -H 'Content-Type: application/json' \
+         -X POST \
+         https://login.ubuntu.com/api/v2/accounts

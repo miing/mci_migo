@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Cookies required" %}{% endblock %}
+
+{% block text_title %}
+    <h1 class="main">{% trans "Cookies required" %}</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+    <p>
+    {% blocktrans %}Cookies are required to use this service. Please enable cookies in your browser.{% endblocktrans %}
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
+Affero General Public License version 3 (see the file LICENSE).
+{% endcomment %}
+
+
+{% block extra_header %}
+<style type="text/css">
+table#device-list td.command
+{
+  width: 0;
+}
+</style>
+{% endblock %}
+
+
+{% block title %}
+  {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
+{% endblock %}
+
+
+{% block text_title %}
+  <h1 class="main">{% trans "Your authentication devices" %}</h1>
+{% endblock %}
+
+{% block content %}
+
+{% include "common/missing_backup_device_warning.html" %}
+{% include "common/printed_codes_nearly_exhausted_warning.html" %}
+
+<div id="auth-devices">
+  {% if devices %}
+    <h2>{% trans "Authentication devices you've added" %}</h2>
+
+    <table id="device-list">
+      <thead>
+        <tr>
+          <th>{% trans "Name" %}</th>
+          <th>{# command buttons #}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for device in devices %}
+        <tr>
+          <td class="name">{{ device.name }}</td>
+          <td class="actions">
+              <a class="btn-sm" href="{% url device-rename device.id %}">
+              <span>{% trans "Rename" %}</span>
+            </a>
+            <a class="btn-sm" href="{% url device-removal device.id %}">
+              <span>{% trans "Delete" %}</span>
+            </a>
+            {% if device.device_type == 'paper' %}
+            <a class="btn-sm" href="{% url device-print device.id %}">
+              <span>{% trans "View Codes" %}</span>
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>{% trans "You don't have any authentication devices associated with this account." %}</p>
+  {% endif %}
+
+  <p><a href="{{ device_addition_path }}">
+    {% trans "Add a new authentication device" %}
+  </a></p>
+
+  <p><a href="{% url device-help %}">{% trans "Report a lost or stolen device" %}</a></p>
+
+  <p>{% blocktrans with "twofactor_faq"|static_url as 2FFAQ %}
+    <a href="{{ 2FFAQ }}">2-Factor Auth FAQ</a>
+  {% endblocktrans %}</p>
+</div>
+
+{% endblock %}

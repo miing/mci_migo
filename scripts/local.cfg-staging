@@ -1,0 +1,9 @@
+[__noschema__]
+basedir = .
+db_host =
+
+[__main__]
+includes =
+    config/devel.cfg
+    ../branches/project/config/acceptance.cfg
+

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Invalid identifier" %}{% endblock %}
+
+{% block content %}
+    <p>{% blocktrans with root_url="sso_root"|static_url %}
+        A site identifying as {{ trust_root }} has asked us for confirmation that {{ identifier }} is your identity URL.
+        However, that is not a valid OpenID identity URL for this site, such as <strong>{{ root_url }}~USER</strong>.
+    {% endblocktrans %}</p>
+
+    <form action="{{ continue_url }}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn" name="continue"><span><span>{% trans "Continue" %}</span></span></button>
+    </form>
+{% endblock %}
+

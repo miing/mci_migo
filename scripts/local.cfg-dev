@@ -1,0 +1,12 @@
+[__noschema__]
+basedir = .
+db_host =
+hostname = localhost:$PORT
+
+[__main__]
+includes =
+    config/devel.cfg
+    ../branches/project/config/acceptance-dev.cfg
+
+[django]
+debug = false

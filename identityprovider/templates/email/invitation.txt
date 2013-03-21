@@ -1,0 +1,14 @@
+{% load i18n %}{% blocktrans %}Hello
+
+You have requested a new password for the {{ brand_description }}
+using the following email address:{% endblocktrans %}
+
+{{ email }}
+
+{% blocktrans %}This email address is however not associated with any {{ brand_description }}
+accounts. If you want to create a new {{ brand_description }} account using
+this email address, please go to:{% endblocktrans %}
+
+{{ signup }}
+
+{% include "email/thank_you.txt" %}

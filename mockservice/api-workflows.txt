@@ -1,0 +1,268 @@
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file LICENSE).
+
+Ubuntu Single Sign On Server API
+================================
+
+
+.. contents::
+
+
+As Non Authenticated User
+=========================
+
+
+Register New SSO Account
+------------------------
+
+Only thing non authenticated customer/user is allowed to do it to
+register itself with SSO server. For that you need to fill all
+required information. Additionaly you need to send solution to captcha
+one gets before sending registration info.
+
+Step 1: Get ``lazr.restfulclient`` imported and connect it to API server:
+
+    >>> from lazr.restfulclient.resource import ServiceRoot
+    >>> api = ServiceRoot(None, "http://localhost:8000/api/1.0")
+
+First argument to ``ServiceRoot`` is place to hold ``authorizer`` object,
+which is thing which know how to pass credentials to API. Not required
+for this task.
+
+Step 2: Get captcha for verification that this account is created by
+the human being:
+
+    >>> captcha = api.captchas.new()
+    >>> captcha
+    {u'captcha_id': u'...', u'image_url': u'https://api-secure.recaptcha.net/image?c=...'}
+
+As you can see captcha is dictionary with two fields: ``captcha_id``
+which you need to pass to registration function and ``image_url`` which
+is url to image which you need to present to user in order to get
+solution for it.
+
+Step 3: Final step is to gather rest of required info from the user and send
+all of that to the API:
+
+    >>> api.registrations.register(
+    ...     captcha_solution='bla', password='blogdf3Daa',
+    ...     captcha_id='bli', email='blu@bli.com',
+	...     displayname='Blu Bli')
+    {u'status': u'ok', u'message': u'Email verification required.'}
+
+As you can see resulting message indicates that registration was
+successful and that next step for user is to validate email, which
+means to send validation code sent to provided email via different API
+call. But at this point user is able to log in to the service and act
+as _`Authenticated User`.
+
+If some of the information is missing call to the ``register()`` method
+will result with exception with message saying what was wrong:
+
+    >>> api.registrations.register(captcha_solution='bla', password='blo')
+    Traceback (most recent call last):
+        ...
+    ValueError: No value for required parameter 'captcha_id'
+
+Also if validation on the server will fail you'll get response
+indicating that fact:
+
+    >>> api.registrations.register(
+    ...     captcha_solution='bla', password='blo',
+    ...     captcha_id='bli', email='blu')
+    {u'status': u'error', u'errors': {u'password': [u'Password must be at least 8 characters long.'], u'email': [u'Enter a valid e-mail address.']}}
+
+
+Reset User Password
+-------------------
+
+To be able to set new password for an account you can request sending
+of password reset token to the email address.
+
+    >>> api.registrations.request_password_reset_token(email="blu@bli.com")
+    {u'status': u'ok', u'message': u'Password reset token sent.'}
+
+Then, when actually changing it you have to pass this token to the
+call (same restrictions regarding password have application here):
+
+    >>> api.registrations.set_new_password(
+    ...     email="blu@bli.com", token=token, new_password="blogdf")
+    {u'status': u'error', u'errors': [u'Password must be at least 8 characters long.']}
+
+When supplying password policy compilant password, it's accepted.
+
+    >>> api.registrations.set_new_password(
+    ...     email="blu@bli.com", token=token, new_password="blogdf3D")
+    {u'status': u'ok', u'message': u'Password changed'}
+
+
+As Authenticated User Using Basic Authentication
+================================================
+
+When you're using Basic Authentication only thing user is allowed to
+do is to get authentication token (OAuth) by calling
+``api.authentications.authenticate()`` method.
+
+For this you need to provide credentials (used for account
+registration), you do that by providing first argument to the ``ServiceRoot``:
+
+    >>> from lazr.restfulclient.resource import ServiceRoot
+    >>> from lazr.restfulclient.authorize import BasicHttpAuthorizer
+    >>> basic = BasicHttpAuthorizer('blu@bli.com', 'blogdf3D')
+    >>> api = ServiceRoot(basic, "http://localhost:8000/api/1.0")
+
+
+Create And Get Authentication (OAuth) Token From SSO
+----------------------------------------------------
+
+Before using SSO account with other services you need to obtain
+authentication token (OAuth) from SSO. For that there's
+``authentications.authenticate()`` method. It gets one argument,
+``token_name`` which is user readable (and hopefully user entered) name
+for this token. This name is displayed on the account page as part of
+token listing.
+
+    >>> token = api.authentications.authenticate(token_name="this-machine")
+    >>> token
+    {u'consumer_secret': u'...', u'token': u'...', u'consumer_key': u'...', u'name': u'this-machine', u'token_secret': u'...'}
+
+As you can see those are all bits required for creating correct OAuth request.
+
+
+
+As Authenticated User Using OAuth Authentication
+================================================
+
+OAuth Authentication is kind of authentication schema which should be
+used by default. Previous steps (registration and authentication) was
+required to get to this point.
+
+To authenticate to rest of the service you need to create proper OAuth
+request, thankfully all this work is handled by code which is already
+in ``lazr.restfulclient``. Setup for that:
+
+    >>> from oauth.oauth import OAuthToken
+    >>> from lazr.restfulclient.resource import ServiceRoot
+    >>> from lazr.restfulclient.authorize.oauth import OAuthAuthorizer
+
+    >>> oauth_token = OAuthToken(token['token'], token['token_secret'])
+    >>> authorizer = OAuthAuthorizer(token['consumer_key'],
+    ...    token['consumer_secret'], oauth_token)
+    >>> api = ServiceRoot(authorizer, 'http://localhost:8000/api/1.0')
+
+From now on methods on ``api.accounts`` are accessible.
+
+
+Getting Information About Account
+---------------------------------
+
+To get all exposed information just call ``api.accounts.me()`` method,
+in return you'll get dictionary:
+
+    >>> api.accounts.me()
+    {u'username': ..., u'preferred_email': None, u'displayname': u'Blu Bli', u'unverified_emails': [u'blu@bli.com'], u'verified_emails': [], u'openid_identifier': ...}
+
+
+Also you can ask weather given user is a member of list of teams:
+
+    >>> api.accounts.team_memberships(team_names=['ubuntu'])
+    []
+
+
+Validate User Email
+-------------------
+
+This call gives user chance to confirm that email address really
+belongs to him. It's done be sending email verification token as an
+argument to this method. Idea is for use to be able to copy this
+random string from received email and paste it to GUI application
+which in turn will call this method.
+
+    >>> api.accounts.validate_email(email_token="jJRkmngbHjmnJDEK")
+    {u'email': u'blu@bli.com'}
+
+In return you're getting email address to which this email token was
+sent. If supplied token is not correct you'll get different kind of
+response:
+
+    >>> api.accounts.validate_email(email_token="bad token")
+    {u'errors': {u'email_token': [u'Bad email token!']}}
+
+
+As Server Requiring Information About Users
+===========================================
+
+Writing server part of services requires getting some of the
+information from SSO and those calls are for that very purpose.
+
+Those kind of users are using Basic Authentication but credentials for
+that tare supplied by SSO administrators.
+
+Setting up ``lazr.restfulclient`` is very similar to things you need to
+do in _`As Authenticated User Using Basic Authentication`.
+
+    >>> from lazr.restfulclient.resource import ServiceRoot
+    >>> from lazr.restfulclient.authorize import BasicHttpAuthorizer
+    >>> authorizer = BasicHttpAuthorizer('MyUsername', 'password')
+    >>> api = ServiceRoot(authorizer, 'http://localhost:8000/api/1.0')
+
+
+Validate User Supplied Token
+----------------------------
+
+Most important call in that section is one which enables server to
+verify if request from the user is signed with valid OAuth token. For
+that there's ``api.authentications.validate_token()`` call. If supplied
+token is valid in response you'll get two bits of information required
+to do the check yourself: ``consumer_secret`` and ``token_secret``.
+
+    >>> r = api.authentications.validate_token(
+    ...     token=token['token'], consumer_key=token['consumer_key'])
+    >>> r['consumer_secret'] == token['consumer_secret']
+    True
+    >>> r['token_secret'] == token['token_secret']
+    True
+
+
+List User Tokens
+----------------
+
+You have also an ability to list all tokens belonging for given user
+by using ``api.authentications.list_tokens()`` call, only parameter here
+is ``consumer_key`` received from ``authentications.authenticate()`` method:
+
+    >>> api.authentications.list_tokens(consumer_key=token['consumer_key'])
+    [{u'token': u'...', u'name': u'this-machine'}]
+
+
+Invalidating User Token
+-----------------------
+
+There's also possibility to invalidate token by calling
+``authentications.invalidate_token()`` method and supplying same
+arguments as for ``authentications.validate_token()``:
+
+    >>> api.authentications.invalidate_token(
+    ...     token=token['token'], consumer_key=token['consumer_key'])
+
+At this point this token is not valid for using with any SSO based services:
+
+    >>> api.authentications.list_tokens(consumer_key=token['consumer_key'])
+    []
+
+
+Checking User Team Memberships
+------------------------------
+
+This method allows you to check the team memberships on of any user
+you know by his OpenID identifier. It also takes into account
+private teams memberships. It's basically the same method accessible for
+users themselves but here you have to pass an extra argument:
+
+    >>> api.authentications.team_memberships(
+    ...     team_names=['ubuntu-team', 'myteam', 'ubuntu-cyclists'],
+    ...     openid_identifier="cCGE3LA")
+    [u'ubuntu-team', u'myteam']
+
+In this example 'myteam' team is private memberships team and
+'ubuntu-team' is public.

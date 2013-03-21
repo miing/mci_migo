@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010-2013 Canonical Ltd.  This software is licensed under
+the GNU Affero General Public License version 3 (see the file
+LICENSE).
+{% endcomment %}
+
+{% block extra_header %}
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Pragma" content="no-cache" />
+{% endblock %}
+
+{% block content %}
+<div id="mainbar">
+  <div id="auth">
+    {% if rpconfig %}
+        {% include "widgets/trusted_rp.html" %}
+    {% else %}
+        <h2 class="main">{% blocktrans %}Log in to {{ brand_description }}{% endblocktrans %}</h2>
+    {% endif %}
+
+    <div id="auth-text">
+        {% if token and rpconfig %}
+        <p>
+          {% blocktrans with rpconfig.displayname as rpconfigname %}You are here because {{ rpconfigname }} uses the {{ brand_description }}.{% endblocktrans %}
+        </p>
+        {% endif %}
+    </div>
+    <form id="login-form" action="{{ login_path }}" method="post" name="loginform">
+        {% csrf_token %}
+        <p class="input-row{% if form.email.errors or form.non_field_errors %} haserrors{% endif %}">
+            <label class="formLabel" for="id_email">{% trans "Email address" %}</label><br />
+            {{ form.email }}
+            {% if form.email.errors %}
+              <span class="error">{{ form.email.errors|join:"" }}</span>
+            {% endif %}
+        </p>
+
+        <p class="input-row{% if form.password.errors or form.non_field_errors %} haserrors{% endif %}">
+            <label class="formLabel" for="id_password">{% trans "Password" %}</label><br />
+            {{ form.password }}
+            {% if form.password.errors %}
+                <span class="error">{{ form.password.errors|join:"" }}</span>
+            {% endif %}
+            {% if not form.oath_token and form.non_field_errors %}
+                <span class="error">{{ form.non_field_errors|join:"" }}</span>
+            {% endif %}
+
+            <br />
+            {% include "common/forgot_password_link.html" %}
+        </p>
+        {% if form.oath_token %}
+            <h3 class="main">{% blocktrans %}Two Factor Authentication{% endblocktrans %}</h3>
+            <p id="oathtoken" class="input-row{% if form.oath_token.errors or form.non_field_errors %} haserrors{% endif %}">
+                <label class="formLabel" for="id_oath_token">{% trans "Device Password" %}</label><br />
+                {{ form.oath_token }}
+                {% if form.oath_token.errors %}
+                    <span class="error">{{ form.oath_token.errors|join:"" }}</span>
+                {% endif %}
+                {% if form.non_field_errors %}
+                    <span class="error">{{ form.non_field_errors|join:"" }}</span>
+                {% endif %}
+            </p>
+        {% endif %}
+        <p style="clear: both">&nbsp;</p>
+
+{% if not readonly %}
+        <p>{% include "common/new_account_link.html" %}</p>
+{% endif %}
+        <div class="actions">
+            {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+            <button type="submit" class="btn" name="continue"><span><span>{% trans "Log in" %}</span></span></button>
+            {% if token %}{% trans "or" %}
+            {% include "common/cancel_link.html" %}{% endif %}
+        </div>
+        <div style="clear: both">&nbsp;</div>
+    </form>
+    <script type="text/javascript">
+        document.loginform.email.focus();
+    </script>
+  </div>
+</div>
+{% if not hide_sidebar %}
+<div id="sidebar">
+   <p>
+     {% blocktrans %}This is the {{ brand_description }} utilizing <a href="http://openid.net/">OpenID</a> technology. This site allows you to use <a href="https://launchpad.net/people/+me">your Launchpad account</a> to log into OpenID-enabled sites around the Internet.{% endblocktrans %}
+   </p>
+   <p>
+     {% blocktrans %}To learn more about using this service, please review the <a href="https://help.launchpad.net/OpenID">instructions</a>.{% endblocktrans %}
+   </p>
+   <p>
+     {% blocktrans %}If you want to change any of your account's details, you can do so by logging in using the form beside.{% endblocktrans %}
+   </p>
+</div>
+{% endif %}
+<div id="lpinfo">
+  <h2>{% trans "What is Launchpad and a Launchpad Account?" %}</h2>
+
+  <p>
+        {% blocktrans %}Launchpad is the central point where we gather all sorts of interactions around Ubuntu, Canonical and free software generally. You can use your Launchpad account to report bugs, to find or contribute translations, to find specs, to contribute code.{% endblocktrans %}
+  </p>
+</div>
+
+{% endblock %}

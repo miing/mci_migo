@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010-2013 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Email invalidated" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Email invalidated" %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>{% blocktrans %}
+The email {{ email }} was successfully invalidated in our system.
+{% endblocktrans %}</p>
+<p>{% blocktrans %}
+Thank you for helping us provide a better service!
+{% endblocktrans %}</p>
+{% endblock %}
