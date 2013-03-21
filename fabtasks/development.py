@@ -119,4 +119,4 @@ def _is_true(arg, name):
     elif arg.lower() in ('f', 'false', 'off', '0', 'no'):
         return False
     raise ArgumentError(
-        "Argument {!r} should be boolean, was {!r}".format(name, arg))
+        "Argument {0!r} should be boolean, was {1!r}".format(name, arg))
