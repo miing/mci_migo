@@ -8,7 +8,7 @@ Getting started
 1. Install the base dependencies
 ::
 
-    sudo apt-get install bzr fabric libpq-dev make memcached postgresql-plpython python-m2crypto python-dev python-setuptools python-virtualenv swig wget config-manager
+    sudo apt-get install git-core wget build-essential python libpq-dev postgresql-plpython python-dev python-setuptools swig fabric python-virtualenv memcached
 
     Optionally, you also need this package, from multiverse:
 
@@ -19,12 +19,13 @@ Getting started
 
 
 2. Get the code
+
+To download the source code hosted on github.com, all you need to do is 
+just type in the following instructions from your favorite terminal.
+
 ::
 
-.. note::
-    You need to install, configure and setup bzr and ssh keys. See BAZAAR below.
-
-    bzr branch lp:canonical-identity-provider
+    git clone git://github.com/miing/mci_migo.git migo
 
 3. Set up the environment
 
@@ -32,7 +33,7 @@ If you're bootstrapping your environment only once (the simplest case), you
 can just get the dependencies as you need them.
 ::
 
-    cd canonical-identity-provider
+    cd migo
     fab bootstrap
 
 To avoid having to redownload the dependencies every time you need to
@@ -40,9 +41,12 @@ bootstrap an environment, you can use a source "download cache" for pip to
 get the dependencies from.
 ::
 
-    bzr branch lp:~canonical-isd-hackers/+junk/download-cache
-    cd canonical-identity-provider
+    cd migo
     fab bootstrap:download_cache_path=../download-cache
+    
+.. note::
+	To keep these dependencies up to date, so far, we have already disabled
+	the method. So, now, don't try it.
 
 4. Set up the database
 ::
@@ -219,18 +223,6 @@ get the dependencies from.
     brand_description = Launchpad Single Sign On
 
 
-BAZAAR
-------
-You can install bzr like this:
-
-$ sudo apt-get install bzr
-$ bzr whoami "You Name <youremail@example.com"
-
-You will also need to setup SSH keys. If you already have them, you will need
-to copy them to the machine you wish to use. (Otherwise, Launchpad won't talk
-to you.) Although, this suggests you can have multiple keys:
-
-https://launchpad.net/~YOURUSERNAME/+editsshkeys
 
 Background Reading
 ------------------

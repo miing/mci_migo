@@ -28,6 +28,6 @@ zope.event==4.0.0
 zope.interface==4.0.1
 zope.schema==4.2.0
 zope.testbrowser==3.5.1
-bzr+http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/@362
-bzr+http://bazaar.launchpad.net/~canonical-isd-hackers/u1-test-utils/trunk@36
-bzr+ssh://bazaar.launchpad.net/~bloodearnest/+junk/test-email-server/
+packages/selenium-simple-test
+packages/u1-test-utils
+packages/test-email-server

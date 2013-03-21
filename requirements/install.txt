@@ -10,10 +10,16 @@ django-piston==0.2.3
 django-preflight==0.1.4
 django-secure==0.1.2
 django-statsd-mozilla==0.3.8
+django-oauth-backend==0.2.3
+django-model-utils==1.2.0
+django-modeldict==1.4.1
 lxml==3.0.1
 M2Crypto==0.21.1
 oath==1.0
 oauth==1.0.1
+oauthlib==0.3.8
+requests==1.1.0
+requests-oauthlib=0.3.0
 oops_amqp==0.0.7
 oops_datedir_repo==0.0.20
 oops_dictconfig==0.0.4
@@ -27,3 +33,5 @@ raven==1.4.6
 saml2idp==0.18
 South==0.7.6
 statsd==1.0.0
+packages/django-pgtools
+packages/ssoclient

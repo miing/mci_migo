@@ -1,5 +1,20 @@
-# Copyright 2011 Canonical Ltd.  This software is licensed under the
-# GNU Affero General Public License version 3 (see the file LICENSE).
+###################################################################
+#
+# Copyright (c) 2011 Canonical Ltd.
+# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
+# 
+# This software is licensed under the GNU Affero General Public 
+# License version 3 (AGPLv3), as published by the Free Software 
+# Foundation, and may be copied, distributed, and modified under 
+# those terms.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# file LICENSE for more details.
+#
+###################################################################
+
 import os
 import sys
 import tempfile
@@ -24,7 +39,6 @@ def bootstrap(download_cache_path=None):
     install_dependencies(download_cache_path)
     setup_configuration()
 
-
 def clean():
     """Clean up compiled and backup files."""
     with lcd('django_project'):
@@ -47,36 +61,7 @@ def setup_virtualenv():
 
 def install_dependencies(download_cache_path=None):
     """Install all dependencies into the virtualenv."""
-    install_config_manager_dependencies()
     install_pip_dependencies(download_cache_path)
-
-def get_patched_config_manager_config():
-    output = []
-    with open('requirements/config-manager.txt') as config:
-        for line in config.readlines():
-            line = line.strip()
-            if not line or line.startswith('#'):
-                # ignore empty lines and comments
-                continue
-
-            path, url = line.split(' ', 1)
-            url = url.replace('bazaar.isd', 'bazaar.launchpad.net')
-            path = path.replace('canonical-identity-provider', '.')
-            if path in ('.', './branches/translations'):
-                # ignore trunk branch (as we already are in the code branch)
-                # ignore translations branch (this will be removed completely
-                # soon enough)
-                continue
-            output.append("%s %s" % (path, url))
-    return '\n'.join(output)
-
-def install_config_manager_dependencies():
-    cm_path = '/usr/lib/config-manager/cm.py'
-    patched_config = get_patched_config_manager_config()
-    with tempfile.NamedTemporaryFile() as dev_config:
-        dev_config.write(patched_config)
-        dev_config.flush()
-        local("%s update %s" % (cm_path, dev_config.name))
 
 def install_pip_dependencies(download_cache_path=None):
     if download_cache_path:
@@ -103,10 +88,6 @@ def virtualenv_local(command, capture=True):
         prefix = ". %s/bin/activate && " % virtual_env
     command = prefix + command
     return local(command, capture=capture)
-
-
-# helpers
-# =======
 
 def _check_bootstrap_dependencies():
     """Check dependencies required for bootstrap."""
