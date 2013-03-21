@@ -1,8 +1,26 @@
+###################################################################
+#
+# Copyright (c) 2012 Canonical Ltd.
+# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
+# 
+# This software is licensed under the GNU Affero General Public 
+# License version 3 (AGPLv3), as published by the Free Software 
+# Foundation, and may be copied, distributed, and modified under 
+# those terms.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# file LICENSE for more details.
+#
+###################################################################
+
 """
 Tests for SAML2 Processors.
 
 A lot of this is borrowed directly from the saml2idp tests.
 """
+
 import base64
 import copy
 
@@ -75,7 +93,7 @@ class GoogleAppsAssertionTestCase(AuthenticatedTestCase):
     """
     ACS_URL = google_apps.GOOGLE_APPS_ACS
     REQUEST_DATA = google_apps.REQUEST_DATA
-    PROCESSOR = 'ubuntu_sso_saml.processors.GoogleAppsProcessor'
+    PROCESSOR = 'saml2sso.processors.GoogleAppsProcessor'
 
     def setUp(self, *args, **kwargs):
         super(GoogleAppsAssertionTestCase, self).setUp(*args, **kwargs)
@@ -297,13 +315,13 @@ class SalesForceAssertionTestCase(GoogleAppsAssertionTestCase):
     """
     ACS_URL = salesforce.SALESFORCE_ACS
     REQUEST_DATA = salesforce.REQUEST_DATA
-    PROCESSOR = 'ubuntu_sso_saml.processors.SalesForceProcessor'
+    PROCESSOR = 'saml2sso.processors.SalesForceProcessor'
 
 
 class SalesForcePortalAssertionTestCase(SalesForceAssertionTestCase):
     ACS_URL = salesforce.SALESFORCE_ACS
     REQUEST_DATA = salesforce.REQUEST_DATA
-    PROCESSOR = 'ubuntu_sso_saml.processors.SalesForceAttributeProcessor'
+    PROCESSOR = 'saml2sso.processors.SalesForceAttributeProcessor'
 
     def setUp(self, *args, **kwargs):
         super(SalesForcePortalAssertionTestCase, self).setUp(*args, **kwargs)
@@ -319,7 +337,7 @@ class SalesForcePortalAssertionTestCase(SalesForceAssertionTestCase):
         # Update the site's URLs to include the new pattern.
         original_patterns = identityprovider.urls.urlpatterns
         identityprovider.urls.urlpatterns += deeplink_url_patterns(
-            'ubuntu_sso_saml.views',
+            'saml2sso.views',
             r'^\+saml/init/%s$', 'saml_init'
         )
         self.addCleanup(setattr, identityprovider.urls, 'urlpatterns',
