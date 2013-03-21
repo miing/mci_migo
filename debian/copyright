@@ -1,7 +1,0 @@
-Format-Specification: http://wiki.debian.org/Proposals/CopyrightFormat
-Upstream-Name: CanonicalSSO
-Upstream-Maintainer: Canonical ISD Hackers <canonical-isd@lists.launchpad.net>
-
-Files: *
-Copyright: 2010, Canonical ISD Hackers <canonical-isd@lists.launchpad.net>
-License: AGPL-3
