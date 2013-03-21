@@ -1,0 +1,15 @@
+Getting started:
+================
+
+1. Get the code:
+
+    bzr branch lp:u1-test-utils
+
+2. Set up the environment:
+
+    cd u1-test-utils
+    fab bootstrap
+
+3. Run the tests:
+
+    fab test

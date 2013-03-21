@@ -1,0 +1,9 @@
+# Packages.
+django==1.4
+mock
+pep8
+pyflakes
+sst
+Twisted
+bzr+ssh://bazaar.launchpad.net/~bloodearnest/localmail/trunk
+bzr+http://bazaar.launchpad.net/~canonical-isd-hackers/canonical-identity-provider/ssoclient@3
