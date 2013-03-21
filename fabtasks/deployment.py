@@ -24,32 +24,32 @@ from fabric.contrib import files
 
 
 def deploy(config_branch, deploy_dir="/srv/localhost/staging",
-        config_file='', production=False):
+		config_file='', production=False):
 	"""Deploy target site to remote host"""
-    env.config_branch = config_branch
-    env.deploy_dir = deploy_dir
-    env.build_dir = tempfile.mkdtemp()
-    env.sourcedeps = _format("{build_dir}/cm/configmanager.conf")
-    env.revno = local("bzr revno").strip()
+	env.config_branch = config_branch
+	env.deploy_dir = deploy_dir
+	env.build_dir = tempfile.mkdtemp()
+	env.sourcedeps = _format("{build_dir}/cm/configmanager.conf")
+	env.revno = local("bzr revno").strip()
+	
+	put(env.sourcedeps, deploy_dir)
+	
+	with cd(deploy_dir): 
+		if files.exists("migo"): 
+			_sudo("chown -R jenkins: migo")
+			_run("{cm} update configmanager.conf") 
+		else: 
+			_run("{cm} build configmanager.conf")
 
-    put(env.sourcedeps, deploy_dir)
-
-    with cd(deploy_dir):
-        if files.exists("migo"):
-            _sudo("chown -R jenkins: migo")
-            _run("{cm} update configmanager.conf")
-        else:
-            _run("{cm} build configmanager.conf")
-
-        _run("rm configmanager.conf")
-
-    shutil.rmtree(env.build_dir, ignore_errors=True)
-
-    if config_file:
-        _check_and_copy_local_cfg(config_file)
-
-    _sudo("chown -R www-data: {deploy_dir}/migo")
-    apache_restart()
+        _run("rm configmanager.conf") 
+       
+	shutil.rmtree(env.build_dir, ignore_errors=True)
+	
+	if config_file: 
+		_check_and_copy_local_cfg(config_file) 
+	
+	_sudo("chown -R www-data: {deploy_dir}/migo")
+	apache_restart()
 
 def apache_restart():
 	"""Restart Apache on remote host"""
@@ -60,8 +60,7 @@ def apache_reload():
 	sudo('/etc/init.d/apache2 reload', shell=False)
 
 def _check_and_copy_local_cfg(filename):
-    configs_path = _format(
-        "{deploy_dir}/migo")
+    configs_path = _format("{deploy_dir}/migo")
     config_path = os.path.join(configs_path, filename)
     local_config_path = os.path.join(configs_path, 'local.cfg')
     if files.exists(config_path):
@@ -82,5 +81,5 @@ def _sudo(cmd):
     sudo(_format(cmd))
     
 def _format(s):
-    """Format string using substitutions from fabric's env."""
+    """Format string using substitutions from fabric's env"""
     return s.format(**env)

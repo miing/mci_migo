@@ -15,11 +15,11 @@
 #
 ###################################################################
 
-from .database import *
-from .deployment import *
-from .development import *
-from .django import *
 from .environment import *
+from .django import *
+from .database import *
+from .development import *
+from .deployment import *
 
 # make sure the virtualenv is automatically activated
 setup_virtualenv()

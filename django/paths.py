@@ -27,7 +27,6 @@ PATHS = [
     '.env/lib/python%d.%d/site-packages' % sys.version_info[:2],
 ]
 
-
 curdir = os.path.abspath(os.path.dirname(__file__))
 base = os.path.abspath(os.path.join(curdir, '..'))
 

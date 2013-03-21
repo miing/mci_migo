@@ -26,26 +26,26 @@ from .environment import bootstrap, virtualenv_local
 
 
 def run(*args, **kwargs):
-    """Run SSO using devserver."""
+    """Run SSO using devserver"""
     if not args:
         parsed = urlparse(get_django_settings('SSO_ROOT_URL')['SSO_ROOT_URL'])
         args = [parsed.netloc]
     manage('runserver', *args, **kwargs)
 
 def test(extra='', coverage=False):
-    """Run unit tests."""
+    """Run unit tests"""
     args = ['--noinput', extra]
     manage('test', args)
 
 def apitests():
-    """Run API tests only."""
+    """Run API tests only"""
     manage('test', '', 
     	'--testing_test_discover_root=./identityprovider/tests/api')
 
 def acceptance(headless='true', screenshot='false', report='', quiet='true',
         failfast='false', testcase='', flags=None, tests='', debug='false',
         extended='false'):
-    """Run acceptance tests only."""
+    """Run acceptance tests only"""
     extended = _is_true(extended, 'extended')
     headless = _is_true(headless, 'headless')
     quiet = _is_true(quiet, 'quiet')
@@ -79,7 +79,7 @@ def acceptance(headless='true', screenshot='false', report='', quiet='true',
     virtualenv_local(' '.join(cmd), capture=False)
 
 def gargoyle_flags(*args):
-    """Define and set the specified gargoyle flags.
+    """Define and set the specified gargoyle flags
 
     This allows setting up the server (via the database) in a specific
     configuration.  You probably want to call `resetdb` first to ensure you set
@@ -92,7 +92,7 @@ def gargoyle_flags(*args):
     manage('loaddata', *args)
 
 def jenkins():
-    """Run the tests for jenkins."""
+    """Run the tests for jenkins"""
     bootstrap()
     # use the system's database
     virtualenv_local("sed -i 's/db_host = .*/db_host =/g' django/local.cfg")
@@ -102,7 +102,7 @@ def jenkins():
     	'--testing_test_discover_root=')
 
 def resetdb():
-    """Drop and recreate then sync the database."""
+    """Drop and recreate then sync the database"""
     with settings(hide='warnings'):
         dropdb(warn_only=True)
     createdb()
@@ -110,8 +110,8 @@ def resetdb():
     setup_db_access()
 
 def docs():
-	""""Build docs"""
-    virtualenv_local('sphinx-build docs docs/html')
+	"""Build docs"""
+	virtualenv_local('sphinx-build docs docs/html')
     
 def _is_true(arg, name):
     if arg.lower() in ('t', 'true', 'on', '1', 'yes'):

@@ -17,6 +17,7 @@
 
 import platform
 
+
 PG_VERSION = '9.1'
 SYSTEM_NAME = platform.system()
 if SYSTEM_NAME == 'Linux':

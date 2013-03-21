@@ -26,36 +26,32 @@ from .environment import virtualenv_local
 
 
 def get_django_settings(*keys):
-	""""setup the correct django environment"""
-    sys.path.insert(0, os.path.abspath(os.curdir))
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'django.settings'
-    # get django settings
-    from django.conf import settings
-
-    result = dict.fromkeys(keys)
-    for key in keys:
-        result[key] = getattr(settings, key)
-
-    return result
+	"""Setup the correct django environment"""
+	sys.path.insert(0, os.path.abspath(os.curdir))
+	os.environ['DJANGO_SETTINGS_MODULE'] = 'django.settings'	
+	
+	from django.conf import settings	
+	result = dict.fromkeys(keys)	
+	for key in keys:
+		result[key] = getattr(settings, key)	
+	return result
 
 def brand(brand):
 	"""Setup brand names"""
-    s = get_django_settings('TEMPLATE_DIRS', 'BRAND')
-    template_dirs = s['TEMPLATE_DIRS']
-    current_brand = s['BRAND']
-
-    def update_dir(d):
-        path, _, dirname = d.rpartition('/')
+	s = get_django_settings('TEMPLATE_DIRS', 'BRAND')
+	template_dirs = s['TEMPLATE_DIRS']
+	current_brand = s['BRAND']
+	
+	def update_dir(d):
+		path, _, dirname = d.rpartition('/')
         if dirname == current_brand:
             return '/'.join([path, brand])
         return d
-
-    template_dirs = map(update_dir, template_dirs)
-
-    os.environ["CONFIGGLUE_DJANGO_TEMPLATE_DIRS"] = json.dumps(template_dirs)
-
-    os.environ["CONFIGGLUE_BRANDING_BRAND"] = brand
-    os.environ["CONFIGGLUE_BRANDING_BRAND_TEMPLATE_DIR"] = brand
+	
+	template_dirs = map(update_dir, template_dirs)
+	os.environ["CONFIGGLUE_DJANGO_TEMPLATE_DIRS"] = json.dumps(template_dirs)
+	os.environ["CONFIGGLUE_BRANDING_BRAND"] = brand
+	os.environ["CONFIGGLUE_BRANDING_BRAND_TEMPLATE_DIR"] = brand
 
 def manage(command, *args, **kwargs):
     """Run manage.py command"""
@@ -69,7 +65,7 @@ def manage(command, *args, **kwargs):
     virtualenv_local(" ".join(cmd), capture=False)
 
 def compilemessages(args=''):
-    """Compile .po translation files into binary (.mo)."""
+    """Compile .po translation files into binary (.mo)"""
     cmd = 'python ../django/manage.py compilemessages'
     if args:
         cmd += " %s" % args
@@ -78,7 +74,7 @@ def compilemessages(args=''):
             virtualenv_local(cmd, capture=False)
 
 def makemessages():
-    """Create/Update translation strings in .po files."""
+    """Create/Update translation strings in .po files"""
     django_settings = get_django_settings('SUPPORTED_LANGUAGES')
     supported_languages = django_settings['SUPPORTED_LANGUAGES']
     for app in APPS:
@@ -94,7 +90,7 @@ def makemessages():
                 virtualenv_local(cmd.format(locale_name), capture=False)
 
 def syncdb():
-    """Sync the database.
+    """Sync the database
 
     If south is listed in INSTALLED_APPS syncdb runs with --migrate.
     """

@@ -18,6 +18,7 @@
 import os
 import sys
 
+
 # before doing anything else, patch stdout to avoid breakage in production
 # see LP: #1099459 for details
 sys.stdout = sys.stderr

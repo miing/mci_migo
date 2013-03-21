@@ -26,7 +26,7 @@ from .django import get_django_settings, manage, syncdb
 
 
 def setup_postgresql_server():
-    """Setup the PostgreSQL server."""
+    """Setup the PostgreSQL server"""
     _set_postgres_environment()
     local("mkdir -p %(DATA)s" % env.postgres)
     local("%(ENV)s %(BIN)s/initdb -A trust -D %(DATA)s" % env.postgres)
@@ -41,27 +41,27 @@ def setup_postgresql_server():
     setup_database()
 
 def shutdown_postgresql_server():
-    """Shutdown the PostgreSQL server."""
+    """Shutdown the PostgreSQL server"""
     _set_postgres_environment()
     dropdb()
     stop_database()
     local("rm -rf %s" % env.postgres['HOST'])
 
 def start_database():
-    """Start the PostgreSQL server."""
+    """Start the PostgreSQL server"""
     _set_postgres_environment()
     cmd = ['%(ENV)s', '%(BIN)s/pg_ctl', 'start', '-w', '-l',
         '%(HOST)s/postgresql.log', '-o', '"-F -k %(HOST)s -h \'\'"']
     local(' '.join(cmd) % env.postgres)
 
 def stop_database():
-    """Stop the PostgreSQL server."""
+    """Stop the PostgreSQL server"""
     _set_postgres_environment()
     cmd = ['%(ENV)s', '%(BIN)s/pg_ctl', 'stop', '-w', '-m', 'fast']
     local(' '.join(cmd) % env.postgres)
 
 def setup_database():
-    """Setup the database."""
+    """Setup the database"""
     success = _check_database()
     if not success:
         _createrole()
@@ -70,12 +70,12 @@ def setup_database():
     setup_db_access()
 
 def createdb():
-    """Create the database."""
+    """Create the database"""
     _set_postgres_environment()
     local("%(ENV)s %(BIN)s/createdb -U postgres -O postgres %(DATABASE)s" % env.postgres)
 
 def dropdb(warn_only=False):
-    """Remove the database."""
+    """Remove the database"""
     _set_postgres_environment()
     if isinstance(warn_only, basestring):
         warn_only = warn_only.lower() == 'yes'
@@ -83,7 +83,7 @@ def dropdb(warn_only=False):
         local("%(ENV)s %(BIN)s/dropdb -U postgres %(DATABASE)s" % env.postgres)
 
 def setup_db_access():
-    """Grant access to the database."""
+    """Grant access to the database"""
     _set_postgres_environment()
     django_settings = get_django_settings('INSTALLED_APPS')
     if 'pgtools' in django_settings['INSTALLED_APPS']:
@@ -91,7 +91,7 @@ def setup_db_access():
                '--django_database_user=postgres')
 
 def _set_postgres_environment():
-    """Update the environment with the PostgreSQL settings."""
+    """Update the environment with the PostgreSQL settings"""
     if 'postgres' in env:
         # environment already set up
         return
@@ -119,7 +119,7 @@ def _set_postgres_environment():
     env.postgres['ENV'] = ' '.join(pg_env)
 
 def _set_database_environment():
-    """Update the environment with the database settings."""
+    """Update the environment with the database settings"""
     if 'database' in env:
         # environment already set up
         return
@@ -129,7 +129,7 @@ def _set_database_environment():
     env.database = db['default']
 
 def _check_database():
-    """Check the database is accessible."""
+    """Check the database is accessible"""
     with hide('aborts', 'running'):
         try:
             _set_postgres_environment()
@@ -143,7 +143,7 @@ def _check_database():
     return success
 
 def _createrole():
-    """Create required users/roles."""
+    """Create required users/roles"""
     _set_postgres_environment()
     local("%(ENV)s %(BIN)s/createuser --superuser --createdb postgres" % env.postgres)
     user = env.database['USER']
