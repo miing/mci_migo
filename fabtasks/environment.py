@@ -39,6 +39,8 @@ def bootstrap(download_cache_path=None):
     setup_virtualenv()
 
     install_dependencies(download_cache_path)
+    work_around()
+    
     setup_configuration()
 
 def clean():
@@ -69,6 +71,10 @@ def setup_virtualenv():
 def install_dependencies(download_cache_path=None):
     """Install all dependencies into the virtualenv"""
     _install_pip_dependencies(download_cache_path)
+
+def work_around():
+	"""Patch installed dependencies"""
+	_pypi_paste_no_init_file()
 
 def setup_configuration():
     """Setup the base local configuration file"""
@@ -141,6 +147,20 @@ def _install_pip_dependencies(download_cache_path=None):
 	else: 
 		virtualenv_local('pip install -r requirements.txt', capture=False)
 
+def _pypi_paste_no_init_file():
+	"""Fix 'No module named paste.request'
+	
+	For the sake of missing __init__.py under paste dir,
+	the issue still exists in recent version of Paste (1.7.5.1).
+	"""
+	dest_path='lib/python%d.%d/site-packages/paste' % sys.version_info[:2]
+	dest_file='__init__.py'
+	if not os.path.exists('%s/%s/%s' % (VIRTUALENV, dest_path, dest_file)):
+		virtualenv_local('pip install --download=. paste')
+		virtualenv_local('tar xzvf Paste*.tar.gz')
+		virtualenv_local('cp Paste*/paste/__init__.py %s/%s' % (VIRTUALENV, dest_path))
+		virtualenv_local('rm -rf Paste*')
+	
 def _create_local_cfg():
 	"""Create base local configuration file"""
 	config = textwrap.dedent("""
