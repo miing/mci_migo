@@ -22,9 +22,9 @@ import sys
 PATHS = [
     # base and django config
     '.',
-    'django',
+    'dj',
     # dependencies
-    '.env/lib/python%d.%d/site-packages' % sys.version_info[:2],
+    #'.env/lib/python%d.%d/site-packages' % sys.version_info[:2],
 ]
 
 curdir = os.path.abspath(os.path.dirname(__file__))
@@ -33,8 +33,8 @@ base = os.path.abspath(os.path.join(curdir, '..'))
 
 def setup_paths():
 	"""Setup necessary python paths"""
-    sys.path = list(_get_paths(PATHS)) + sys.path
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+	sys.path = list(_get_paths(PATHS)) + sys.path
+	os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 def _get_paths(paths):
     """Get a set of paths not duplicate"""

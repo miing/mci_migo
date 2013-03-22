@@ -40,8 +40,8 @@ else
 fi
 
 # Set up the correct Django configuration.
-rm django/local.cfg
-ln -s `pwd`/scripts/local.cfg-${TARGET} django/local.cfg
+rm dj/local.cfg
+ln -s `pwd`/scripts/local.cfg-${TARGET} dj/local.cfg
 
 # clean old results
 rm -rf results/*

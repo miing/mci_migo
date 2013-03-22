@@ -95,7 +95,7 @@ def jenkins():
     """Run the tests for jenkins"""
     bootstrap()
     # use the system's database
-    virtualenv_local("sed -i 's/db_host = .*/db_host =/g' django/local.cfg")
+    virtualenv_local("sed -i 's/db_host = .*/db_host =/g' dj/local.cfg")
     resetdb()
     manage('loaddata test')
     manage('jenkins', '', 

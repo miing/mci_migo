@@ -43,7 +43,7 @@ def bootstrap(download_cache_path=None):
 
 def clean():
     """Clean up compiled and backup files"""
-    with lcd('django'):
+    with lcd('dj'):
         local("rm -rf .coverage coverage.d coverage.xml")
     local("find . -name '*.~*' -delete")
     local("find . -name '*.pyc' -delete")
@@ -72,7 +72,7 @@ def install_dependencies(download_cache_path=None):
 
 def setup_configuration():
     """Setup the base local configuration file"""
-    if not os.path.exists('django/local.cfg'):
+    if not os.path.exists('dj/local.cfg'):
         _create_local_cfg()
 
 def virtualenv_local(command, capture=True):
@@ -153,5 +153,5 @@ def _create_local_cfg():
     """ % (os.path.abspath(os.curdir), env.virtualenv))
 	config += "test_dsn = host=%(db_host)s dbname=%(db_name)s user=%(db_user)s"
 	
-	with file('django/local.cfg', 'w') as local_cfg: 
+	with file('dj/local.cfg', 'w') as local_cfg: 
 		local_cfg.write(config)

@@ -100,7 +100,7 @@ def _set_postgres_environment():
 
     pg_env = []
     env.postgres = {
-        'BIN': PG_BIN_PATH,
+        'BIN': "%s" % PG_BIN_PATH,
         'DATABASE': env.database['NAME'],
     }
 

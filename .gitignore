@@ -5,7 +5,7 @@
 .env
 
 # config 
-django/local.cfg
+dj/local.cfg
 
 # tests
 .coverage*

@@ -23,7 +23,8 @@ from identityprovider.schema import schema
 
 
 # get location of local cfg files
-local_configs = os.environ.get('CONFIGGLUE_LOCAL_CONFIG', 'local.cfg')
+local_configs = os.environ.get('CONFIGGLUE_LOCAL_CONFIG',
+	'local.cfg').split(':')
 
 # get absolute path for config files
 current_dir = os.path.dirname(os.path.abspath(__file__))

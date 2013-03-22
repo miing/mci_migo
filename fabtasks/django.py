@@ -15,6 +15,7 @@
 #
 ###################################################################
 
+from __future__ import absolute_import
 import os
 import sys
 import json
@@ -28,9 +29,9 @@ from .environment import virtualenv_local
 def get_django_settings(*keys):
 	"""Setup the correct django environment"""
 	sys.path.insert(0, os.path.abspath(os.curdir))
-	os.environ['DJANGO_SETTINGS_MODULE'] = 'django.settings'	
+	os.environ['DJANGO_SETTINGS_MODULE'] = 'dj.settings'	
 	
-	from django.conf import settings	
+	from django.conf import settings
 	result = dict.fromkeys(keys)	
 	for key in keys:
 		result[key] = getattr(settings, key)	
@@ -56,7 +57,7 @@ def brand(brand):
 def manage(command, *args, **kwargs):
     """Run manage.py command"""
     cmd = [
-        "python django/manage.py",
+        "python dj/manage.py",
         command,
     ]
     args += tuple("%s=%s" % (k,v) for (k,v) in kwargs.items())
@@ -66,7 +67,7 @@ def manage(command, *args, **kwargs):
 
 def compilemessages(args=''):
     """Compile .po translation files into binary (.mo)"""
-    cmd = 'python ../django/manage.py compilemessages'
+    cmd = 'python dj/manage.py compilemessages'
     if args:
         cmd += " %s" % args
     for app in APPS:
@@ -80,7 +81,7 @@ def makemessages():
     for app in APPS:
         for lang in supported_languages:
             with lcd(app):
-                cmd = ("python ../django/manage.py makemessages "
+                cmd = ("python dj/manage.py makemessages "
                     "-l {0} -e .html,.txt")
                 if '-' in lang:
                     language, country = lang.split('-')
