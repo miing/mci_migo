@@ -24,7 +24,7 @@ PATHS = [
     '.',
     'dj',
     # dependencies
-    #'.env/lib/python%d.%d/site-packages' % sys.version_info[:2],
+    '.env/lib/python%d.%d/site-packages' % sys.version_info[:2],
 ]
 
 curdir = os.path.abspath(os.path.dirname(__file__))
