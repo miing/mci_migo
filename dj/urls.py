@@ -38,7 +38,7 @@ handler404 = 'webui.views.errors.page_not_found'
 urlpatterns = patterns('',
     #(r'^admin/', check_readonly(admin.site.urls)),
     (r'^preflight/', include('preflight.urls')),
-    (r'^admin/', include('nexus.site.urls')),
+    (r'^admin/', include(nexus.site.urls)),
     (r'', include('identityprovider.urls')),
     # Web UI
     (r'', include('webui.urls')),
