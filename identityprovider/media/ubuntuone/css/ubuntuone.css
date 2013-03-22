@@ -8,8 +8,6 @@
 /* reset */
 html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
 
-
-
 /* common html5 elements -------------------------------------------------------------- */
 article,aside,details,figcaption,figure,
 footer,header,hgroup,menu,nav,section {
@@ -81,26 +79,13 @@ body {
 }
 
 h1,h2,h3,h4,h5 {
-    clear: both;
+    font-size: 16px;
 }
 h1,h2,h3,h4 {
-    font-family: "Ubuntu Light", Ubuntu, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, sans-serif;
+    font-weight: 300;
 }
-h1 {
-    font-size: 45px;
-    margin-bottom: 10px;
-}
-h2 {
-    font-size: 32px;
-}
-h3 {
-    font-size: 23px;
-}
-h4 {
-    font-size: 32px;
-}
+
 h5 {
-    font-size: 16px;
     font-weight: bold;
 }
 h6 {
@@ -123,6 +108,22 @@ em {
     font-style: italic;
 }
 
+.page-title > h1 {
+    font-weight: bold;
+}
+
+::-webkit-input-placeholder {
+    color: #989898;
+}
+:-moz-placeholder { /* Firefox 18- */
+    color: #989898;
+}
+::-moz-placeholder {  /* Firefox 19+ */
+    color: #989898;
+}
+:-ms-input-placeholder {
+    color: #989898;
+}
 
 /* Table Styles -------------------------------------------------------------- */
 table {
@@ -169,7 +170,7 @@ html, body {
     background: #E6E3E1;
 }
 #cont {
-    max-width: 72.61538461em; /* 944px / 13px = 72.615384615em */
+    max-width: 59em; /* 944px / 16px = 59em */
     margin: 0 auto;
     background: #fff;
     position: relative;
@@ -185,12 +186,9 @@ header {
 
 /* required to make acceptance test: test_login_deleted pass */
 .onecol #content {
-    padding: 24px 160px 32px 160px;
+
 }
 
-#content {
-    padding: 0 10px;
-}
 .sidebar #content {
     padding: 0;
 }
@@ -211,9 +209,11 @@ header {
 .services #content header.leader {
     margin-bottom: 40px;
 }
-footer {
-    padding: 0;
+
+.page-title {
+    padding: 1em;
 }
+
 
 /* CTAs -------------------------------------------------------------- */
 .cta,
@@ -234,6 +234,10 @@ footer {
   font-size: 108%;
   line-height: 1.5em;
   border-radius: 3px;
+}
+
+button.cta {
+    cursor: pointer;
 }
 
 .cta:focus,
@@ -358,89 +362,231 @@ header .wrapper h1 {
 }
 
 /* Footer --------------------------------------------------------------------*/
+
 footer {
-    margin-top: 20px;
-    position: relative;
+    background: #F7F6F6;
+    padding: 1em;
+    text-align: center;
+    margin-top: 2em;
 }
-footer .pri,
-footer .sec {
-    overflow: hidden;
-    border-top: 1px dotted #ccc;
-    padding: 0 10px;
+
+footer .links li {
+    display: inline-block;
+    border-right: 1px solid #333;
+    margin-right: 0.5em;
+    padding-right: 0.5em;
+    line-height: 1em;
 }
-footer .pri {
-    background: #f7f6f5;
+footer .links li:last-child,
+footer .links li.support {
+    border-right: none;
+    margin-right: 0;
+    padding-right: 0;
 }
-footer .sec {
-    background: #efedec;
-    clear: left;
-}
-footer .sec section,
-footer .sec nav{
-    overflow: hidden;
-}
-footer li {
-    border-bottom: 1px dotted #ccc;
-    overflow: hidden;
-}
-footer li a,
-footer li a:link {
-    color: #333;
-    font-size: 11px;
-    padding: 6px 0;
+
+footer li.language {
     display: block;
-    text-decoration: none;
+    margin-top: 1em;
 }
-footer h3 {
-    margin: 0;
-    padding-left: 0;
-    border-bottom: 1px dotted #ccc;
-}
-footer h3 a:link,
-footer h3 a:visited {
-    display: block;
+
+footer .links a {
     color: #333;
-    font-size: 13px;
-    padding: 10px 0;
-    margin-right: 20px;
 }
-footer .copyright-privacy {
-    clear: left;
-    margin: 55px 10px 35px 10px;
-    overflow: hidden;
-    position: relative;
-}
-footer .copyright-privacy p {
-    font-size: 11px;
-    margin-bottom: 0;
-}
-footer .copyright-privacy a {
-    color: #333;
-    text-decoration: underline;
-}
-footer .u1-logo-sm {
-    float: right;
-    margin: 0 0 12px 12px;
-}
-/* ie7 doesn't support generated content
-* so we use bold text to differentiate the more
-* links*/
-.ie7 .more a,
-.ie7 .less a {
-    font-weight: bold;
-}
-footer .more a:after {
-    content: " ▼"
-}
-footer .less a:after {
-    content: " ▲"
+
+
+.copyright {
+    color: #999;
+    margin-top: 1em;
 }
 
 #footer-logo a {
-  display: block;
-  height: 33px;
-  width: 91px;
-  background: url(../img/u1-small.png);
+    display: block;
+    height: 33px;
+    width: 91px;
+    background: url(../img/u1-small.png);
+}
+
+
+@media all and (min-width:768px) {
+
+    footer {
+        text-align: left;
+        font-weight: 300;
+        font-size: 13px;
+        padding: 1em 2em;
+    }
+
+    footer h5 {
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    footer .links {
+        border-top: 1px dotted #D1D1D1;
+        border-bottom: 1px dotted #D1D1D1;
+        margin: 0.5em 0;
+        padding: 0.5em 0;
+    }
+    footer .links li {
+        display: block;
+        border: none;
+        margin: 0;
+        padding: 0;
+        line-height: 1.5;
+    }
+    footer .links a {
+        color: #676767;
+    }
+
+
+    .ubuntuone-links {
+        margin-right: 1em;
+    }
+    .ubuntuone-links .links li {
+        margin-bottom: .5em;
+    }
+
+    .other-links .links {
+        max-width: 23em;
+        border-bottom: none;
+    }
+
+    .other-links .links li {
+        display: inline-block;
+        margin-right: 2.5em;
+        text-align: center;
+        font-weight: 400;
+
+    }
+    .other-links .links li:last-child {
+        margin-right: 0;
+    }
+    .other-links .links a {
+        display: block;
+        width: 50px;
+        height: 20px;
+        background: url("../img/footer-icon-apps.png") no-repeat scroll 50% 0 transparent;
+        padding-top: 40px;
+    }
+    .other-links .link-photos a {
+        background-image: url("../img/footer-icon-photos.png");
+    }
+    .other-links .link-music a {
+        background-image: url("../img/footer-icon-music.png");
+    }
+    .other-links .link-cloud a {
+        background-image: url("../img/footer-icon-cloud.png");
+    }
+
+    .copyright {
+        font-size: 13px;
+        color: #676767;
+    }
+
+    .footer-logo {
+        float: right;
+    }
+
+}
+
+
+
+/* Form box -------------------------------------------------------------------*/
+.form-box {
+    background: #F7F7F7;
+    border-top: 1px solid #CDCDCD;
+    border-bottom: 1px solid #CDCDCD;
+    padding: 1em;
+}
+
+.form-box .title {
+    border-bottom: 1px dotted #D1D1D1;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+}
+
+.form-box .input-row {
+    margin-bottom: 1em;
+}
+
+.form-box input[type=text],
+.form-box input[type=email],
+.form-box input[type=password] {
+    border: 1px solid #AEA79F;
+    padding: 0.3em;
+    display: block;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.form-box .haserrors input[type=text],
+.form-box .haserrors input[type=email],
+.form-box .haserrors input[type=password] {
+  border: 1px solid #DD4814;
+}
+
+.form-box .error {
+    color: #c00;
+    font-weight: bold;
+    font-size: 14px;
+}
+.form-box label {
+    display: block;
+}
+
+.form-box .actions {
+    border-top: 1px dotted #D1D1D1;
+    padding-top: 1em;
+    margin-top: 1em;
+}
+
+
+
+
+@media all and (min-width:768px) {
+
+    .form-box {
+        border: 1px solid #CDCDCD;
+        border-radius: 5px;
+        margin: 1em;
+    }
+
+
+}
+
+/* Login -------------------------------------------------------------------*/
+
+.login .cta {
+    margin-right: 1em;
+}
+
+.login .new-user {
+    margin-bottom: 0.9em;
+}
+
+
+.login .forgot-password {
+    display: inline-block;
+    font-size: 14px;
+}
+
+.ubuntuone-information {
+    padding: 1em;
+}
+
+@media all and (min-width:768px) {
+
+    .login .form-box {
+        margin-right: 3em;
+    }
+
+    .ubuntuone-information {
+        margin-top: 1em;
+        padding: 0 0 0 1em;
+        border-left: 1px dotted #ccc;
+    }
 }
 
 @media all and (min-width:480px) {
@@ -451,7 +597,7 @@ footer .less a:after {
     }
 
 }
-@media all and (min-width:720px) {
+@media all and (min-width:768px) {
 
     #cont {
         border-width: 0 16px;
@@ -463,8 +609,30 @@ footer .less a:after {
         width: 167px;
     }
 
+    #content {
+        padding: 0 10px;
+    }
+
+    h1 {
+        font-size: 45px;
+        margin-bottom: 10px;
+    }
+    h2 {
+        font-size: 32px;
+    }
+    h3 {
+        font-size: 23px;
+    }
+    h4 {
+        font-size: 32px;
+    }
+
+    .page-title > h1 {
+        font-weight: 300;
+    }
+
 }
-@media all and (min-width:960px) {
+@media all and (min-width:980px) {
 
 
 }

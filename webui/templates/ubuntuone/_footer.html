@@ -1,38 +1,48 @@
 {% load i18n static_url %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+
 <footer>
-    <div class="pri">
-        <ul class="link-lists">
-           <li class="first">
-                <h5>Ubuntu one</h5>
-                <ul>
-                    <li><a href="#" class="file">File Sync</a></li>
-                    {% block language_footer %}
-                    {% if not embedded %}
-                    <li id="language_footer"><a href="#" class="file picker">{% trans "Choose your language" %} ({{ LANGUAGE_CODE }})</a></li>
-                    {% endif %}
-                    {% endblock %}
-                    <li><a href="{{ 'support_form'|static_url }}">{% trans "Login support" %}</a></li>
+    <div class="yui3-g-r">
+           <section class="yui3-u-1-5 ubuntuone-links">
+                <h5 class="yui3-hidden-phone">Ubuntu one</h5>
+                <ul class="links">
+                    <li class="terms">
+                        <a href="#" class="file">{% trans "Terms of use" %}</a>
+                    </li><li class="privacy">
+                        <a href="#" class="file">{% trans "Privacy" %}</a>
+                    </li><li class="support">
+                        <a href="{{ 'support_form'|static_url }}">{% trans "Login support" %}</a>
+                    </li>{% block language_footer %}{% if not embedded %}<li id="language_footer" class="language">
+                        <a href="#" class="file picker">{% trans "Choose your language" %} <!--({{ LANGUAGE_CODE }})--></a>
+                    </li>{% endif %}{% endblock %}
                 </ul>
-           </li>
-            <li class="last">
+           </section>
+           <section class="yui3-u-3-5 yui3-hidden-phone other-links">
                 <h5>One place to log in to everything on Ubuntu</h5>
-                <ul>
-                    <li><a href="#">Apps</a></li>
-                    <li><a href="#">Photos</a></li>
-                    <li><a href="#">Music</a></li>
-                    <li><a href="#">Cloud</a></li>
+                <ul class="links">
+                    <li class="link-app">
+                        <a href="{{ 'apps'|static_url }}">Apps</a>
+                    </li><li class="link-photos">
+                        <a href="{{ 'photos'|static_url }}">Photos</a>
+                    </li><li class="link-music">
+                        <a href="{{ 'music'|static_url }}">Music</a>
+                    </li><li class="link-cloud">
+                        <a href="{{ 'cloud'|static_url }}">Cloud</a>
+                    </li>
                 </ul>
-            </li>
+            </section>
         </ul>
+    </div>
 
-        <div id="footer-logo"><a href="{% if not embedded %}http://www.ubuntu.com{% endif %}"></a></div>
+    <p class="yui3-hidden-phone footer-logo" id="footer-logo"><a href="{% if not embedded %}http://www.ubuntu.com{% endif %}"></a></p>
 
-        <div class="copyright-privacy" id="copyright">
-            <p>{% blocktrans with current_date|date:"Y" as current_year %}&copy; 2009-{{ current_year }} Canonical Ltd.
-            <a href="https://launchpad.net/canonical-identity-provider">Source code for this service</a> is licensed under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL</a>.<br />
-            Ubuntu and Canonical are registered trademarks of Canonical Group Ltd.<br />
-            Please review our <a href="http://ubuntu.com/legal">Terms of Service</a> as well as our <a href="http://ubuntu.com/legal#privacy">Privacy Policy</a>.{% endblocktrans %}</p>
-        </div>
+    <p class="copyright yui3-hidden-phone" id="copyright">{% blocktrans with current_date|date:"Y" as current_year %}&copy; 2008-{{ current_year }} Canonical Ltd. <a href="https://one.ubuntu.com">Ubuntu One</a>, <a href="https://ubuntu.com">Ubuntu</a> and <a href="http://canonical.com">Canonical</a> are registered trademarks of Canonical Ltd.{% endblocktrans %}</p>
 
-    </div><!-- close .pri -->
+    <p class="yui3-hidden-tablet yui3-hidden-desktop copyright">{% blocktrans with current_date|date:"Y" as current_year %}&copy; {{ current_year }} Canonical Ltd{% endblocktrans %}</p>
+
 </footer> <!-- close #ft -->

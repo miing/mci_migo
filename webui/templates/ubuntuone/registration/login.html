@@ -1,5 +1,5 @@
-{% extends "twocols.html" %}
-{% load i18n %}
+{% extends "base.html" %}
+{% load i18n static_url %}
 
 {% comment %}
 Copyright 2010-2013 Canonical Ltd.  This software is licensed under
@@ -14,94 +14,121 @@ LICENSE).
 {% endblock %}
 
 {% block menu %}{% endblock %}
+
 {% block text_title %}
     {% if rpconfig and rpconfig.logo_url %}
-        <div id='rpconfig_logo'>
-            <img src='{{ rpconfig.logo_url }}'/>
-        </div>
+        <img id='rpconfig_logo' src='{{ rpconfig.logo_url }}'/>
+    {% else %}
+        {% trans "One account to log in to everything on Ubuntu" %}
     {% endif %}
 {% endblock %}
 
-{% block leftcol %}
-<div id="auth">
-    {% if rpconfig %}
-        {% include "widgets/trusted_rp.html" %}
-    {% else %}
-        <h2 class="main" data-qa-id="_qa_ubuntu_login_title">{% blocktrans %}Log in to {{ brand_description }}{% endblocktrans %}</h2>
-    {% endif %}
+{% block content %}
 
-    <div id="auth-text">
-        <p>
-        {% blocktrans %}Please note that if you have a Launchpad account you can use your existing Launchpad credentials to log in.{% endblocktrans %}
-        </p>
-    </div>
-    <form id="login-form" action="{{ login_path }}" method="post" name="loginform">
-        {% csrf_token %}
-        <p class="input-row{% if form.email.errors or form.non_field_errors %} haserrors{% endif %}">
-            <label class="formLabel" for="id_email">{% trans "Email address" %}</label><br />
-            {{ form.email }}
-            {% if form.email.errors %}
-              <span class="error">{{ form.email.errors|join:"" }}</span>
-            {% endif %}
-        </p>
+<div class="yui3-g-r">
 
-        <p class="input-row{% if form.password.errors or form.non_field_errors %} haserrors{% endif %}">
-            <label class="formLabel" for="id_password">{% trans "Password" %}</label><br />
-            {{ form.password }}
-            {% if form.password.errors %}
-                <span class="error">{{ form.password.errors|join:"" }}</span>
+    <div id="auth" class="yui3-u-1-2 login">
+
+        <div class="form-box">
+
+            <p class="title" data-qa-id="_qa_ubuntu_login_title">
+            {% if rpconfig %}
+                <span data-qa-id="_qa_trusted_rp_login">
+                    {% blocktrans %}Log in{% endblocktrans %}
+                </span>
+            {% else %}
+                <span>
+                    {% blocktrans %}Log in to {{ brand_description }}{% endblocktrans %}
+                </span>
             {% endif %}
-            {% if not form.oath_token and form.non_field_errors %}
-                <span class="error">{{ form.non_field_errors|join:"" }}</span>
-            {% endif %}
-        </p>
-        <p style="clear: both">
-        {% include "common/forgot_password_link.html" %}
-        </p>
-        {% if form.oath_token %}
-            <h3 class="main">{% blocktrans %}Two Factor Authentication{% endblocktrans %}</h3>
-            <p id="oathtoken" class="input-row{% if form.oath_token.errors or form.non_field_errors %} haserrors{% endif %}">
-                <label class="formLabel" for="id_oath_token">{% trans "Device Password" %}</label><br />
-                {{ form.oath_token }}
-                {% if form.oath_token.errors %}
-                    <span class="error">{{ form.oath_token.errors|join:"" }}</span>
-                {% endif %}
-                {% if form.non_field_errors %}
-                    <span class="error">{{ form.non_field_errors|join:"" }}</span>
-                {% endif %}
             </p>
-        {% endif %}
-        <p style="clear: both">&nbsp;</p>
 
-        <div class="actions">
-            {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
-            <button type="submit" class="btn" name="continue" data-qa-id="_qa_ubuntu_login_button"><span><span>{% trans "Log in" %}</span></span></button>
-            {% if token %}{% trans "or" %}
-            {% include "common/cancel_link.html" %}{% endif %}
+            <form id="login-form" action="{{ login_path }}" method="post" name="loginform">
+                {% csrf_token %}
+                <div class="input-row{% if form.email.errors or form.non_field_errors %} haserrors{% endif %}">
+                    <label for="id_email">{% trans "Please type your email" %}:</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                      <span class="error">{{ form.email.errors|join:"" }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-row">
+
+                    <label for="id_new_user" class="new-user" >
+                        <input type="radio" id="id_new_user" name="user-intentions">
+                        <span>{% trans "I am a new Ubuntu One user" %}</span>
+                    </label>
+
+                    <label for="id_returning_user" class="returning-user">
+                        <input type="radio" id="id_returning_user" checked="true" name="user-intentions">
+                        <span>{% trans "I am a returning Ubuntu One user and my password is:" %}</span>
+                    </label>
+
+                </div>
+
+                <div class="input-row{% if form.password.errors or form.non_field_errors %} haserrors{% endif %}">
+                    {% if form.password.errors %}
+                        <span class="error">{{ form.password.errors|join:"" }}</span>
+                    {% endif %}
+                    {% if not form.oath_token and form.non_field_errors %}
+                        <span class="error">{{ form.non_field_errors|join:"" }}</span>
+                    {% endif %}
+                    {{ form.password }}
+                </div>
+
+                {% if form.oath_token %}
+                <div class="input-row">
+                    <h3 class="main">{% blocktrans %}Two Factor Authentication{% endblocktrans %}</h3>
+                    <p id="oathtoken" class="input-row{% if form.oath_token.errors or form.non_field_errors %} haserrors{% endif %}">
+                        <label class="formLabel" for="id_oath_token">{% trans "Device Password" %}</label>
+                        {{ form.oath_token }}
+                        {% if form.oath_token.errors %}
+                            <span class="error">{{ form.oath_token.errors|join:"" }}</span>
+                        {% endif %}
+                        {% if form.non_field_errors %}
+                            <span class="error">{{ form.non_field_errors|join:"" }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+
+                <div class="actions">
+                    {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+                    <button type="submit" class="cta" name="continue" data-qa-id="_qa_ubuntu_login_button"><span>{% trans "Log in" %}</span></button>
+                    <p class="forgot-password">{% include "common/forgot_password_link.html" %}</p>
+
+                    {% comment %}
+                    {% if token %}{% trans "or" %}
+                    {% include "common/cancel_link.html" %}{% endif %}
+                    {% endcomment %}
+                </div>
+
+            </form>
         </div>
-        <div style="clear: both">&nbsp;</div>
-    </form>
-    <script type="text/javascript">
-        document.loginform.email.focus();
-    </script>
+    </div>
+
+    <div class="yui3-u-1-3">
+
+        <div class="ubuntuone-information">
+            <p>
+                {% blocktrans %}Ubuntu One is the single account you use to log in to all services and sites related to Ubuntu.{% endblocktrans %}
+            </p>
+
+            <p>
+                {% blocktrans %}If you have an existing Ubuntu Single Sign On account, this is now called your Ubuntu One account.{% endblocktrans %}
+                <a href="/+description">{% trans "Read More" %}</a>
+            </p>
+        </div>
+
+    </div>
+
 </div>
 
 {% endblock %}
 
-{% block rightcol %}
-    <h2 class="main">{% trans "Are you new?" %}</h2>
-    <p>
-      {% blocktrans %}This is a new service to provide a single, central login service for all Ubuntu-related sites.{% endblocktrans %}
-    </p>
-{%if not embedded %}
-    <p class="findoutmore">
-      <a href="/+description">{% trans "Find out more" %}</a>
-    </p>
-{% endif %}
-    <p class="last">
-    {% blocktrans %}An {{ brand_description }} account is free and gives you access to Ubuntu One, the Ubuntu Shop and many more useful services.{% endblocktrans %}
-    </p>
-{% if not readonly %}
-    <p>{% include "common/new_account_link.html" %}</p>
-{% endif %}
+{% block extra_js %}
+<script type="text/javascript">
+    document.loginform.email.focus();
+</script>
 {% endblock %}

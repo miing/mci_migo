@@ -21,8 +21,8 @@ class UbuntuLoginTemplateTestCase(TestCase):
 
         response = self.client.get('/+login')
         self.assertTemplateUsed(response, 'registration/login.html')
-        self.assertContains(response, "<div id='rpconfig_logo'>")
-        self.assertContains(response, "<img src='http://localhost/img.png'/>")
+        self.assertContains(response, "id='rpconfig_logo'")
+        self.assertContains(response, "src='http://localhost/img.png'")
 
     @patch('webui.views.ui.get_rpconfig_from_request')
     def test_rpconfig_without_logo_url(self, mock_get_rpconfig):
@@ -33,7 +33,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
 
         response = self.client.get('/+login')
         self.assertTemplateUsed(response, 'registration/login.html')
-        self.assertNotContains(response, "<div id='rpconfig_logo'>")
+        self.assertNotContains(response, "id='rpconfig_logo'")
 
 
 class NewAccountTemplateTestCase(SSOBaseUnittestTestCase):
@@ -47,8 +47,8 @@ class NewAccountTemplateTestCase(SSOBaseUnittestTestCase):
             'registration/new_account.html',
             {'rpconfig': rpconfig}
         )
-        self.assertIn('<div id="rpconfig_logo">', html)
-        self.assertIn('<img src="http://localhost/img.png"/>', html)
+        self.assertIn('id="rpconfig_logo"', html)
+        self.assertIn('src="http://localhost/img.png"', html)
 
     def test_without_logo_url(self):
         rpconfig = OpenIDRPConfig(
@@ -59,7 +59,7 @@ class NewAccountTemplateTestCase(SSOBaseUnittestTestCase):
             'registration/new_account.html',
             {'rpconfig': rpconfig}
         )
-        self.assertNotIn('<div id="rpconfig_logo">', html)
+        self.assertNotIn('id="rpconfig_logo"', html)
 
     def test_action_without_token(self):
         html = render_to_string('registration/new_account.html', {})

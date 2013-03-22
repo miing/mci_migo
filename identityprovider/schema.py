@@ -1,20 +1,3 @@
-###################################################################
-#
-# Copyright (c) 2012 Canonical Ltd.
-# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
-# 
-# This software is licensed under the GNU Affero General Public 
-# License version 3 (AGPLv3), as published by the Free Software 
-# Foundation, and may be copied, distributed, and modified under 
-# those terms.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# file LICENSE for more details.
-#
-###################################################################
-
 from adminaudit.schema import AdminAuditSchema
 from configglue.contrib import (
     DevServerSchema,
@@ -37,7 +20,7 @@ from configglue.schema import (
 from django_configglue.schema import schemas
 from oops_dictconfig.configglue_options import OopsOption
 
-from saml2sso.schema import Saml2IdpSchema
+from ubuntu_sso_saml.schema import Saml2IdpSchema
 
 
 DjangoSchema = schemas.get('1.3')
@@ -52,6 +35,7 @@ class UpperCaseDictOption(DictOption):
         for k, v in parsed.items():
             result[k.upper()] = v
         return result
+
 
 class SSOSchema(DjangoSchema):
     # default
@@ -225,6 +209,11 @@ class SSOSchema(DjangoSchema):
         twofactor_faq_url = StringOption()
         yubikey_personalize_url = StringOption()
 
+        apps_url = StringOption()
+        photos_url = StringOption()
+        music_url = StringOption()
+        cloud_url = StringOption()
+
     # settings for testing (acceptance, api)
     class testing(Section):
         test_account_email = StringOption()
@@ -297,6 +286,7 @@ class SSOSchema(DjangoSchema):
 
     class oopses(Section):
         oopses = OopsOption()
+
 
 # merge all contrib schemas into the base schema
 # order matters

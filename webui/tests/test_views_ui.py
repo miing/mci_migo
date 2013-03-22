@@ -1425,6 +1425,8 @@ class TwoFactorLoginTestCase(SSOBaseTestCase):
 
         self.assertContains(response, "_gaq.push(['_setAccount', '12345']);")
 
+    @skipUnless(settings.BRAND == 'ubuntu',
+                "A sidebar appears only in ubuntu brand.""")
     @patch('webui.views.ui.twofactor.user_requires_twofactor_auth')
     def test_two_factor_only_hides_sidebar_from_2f_page(self,
                                                         mock_user_requires_2f):
