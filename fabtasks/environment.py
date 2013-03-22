@@ -75,6 +75,7 @@ def install_dependencies(download_cache_path=None):
 def work_around():
 	"""Patch installed dependencies"""
 	_pypi_paste_no_init_file()
+	_pypi_django_piston_no_init_file()
 
 def setup_configuration():
     """Setup the base local configuration file"""
@@ -160,7 +161,21 @@ def _pypi_paste_no_init_file():
 		virtualenv_local('tar xzvf Paste*.tar.gz')
 		virtualenv_local('cp Paste*/paste/__init__.py %s/%s' % (VIRTUALENV, dest_path))
 		virtualenv_local('rm -rf Paste*')
+
+def _pypi_django_piston_no_init_file():
+	"""Fix 'No module named piston.authentication'
 	
+	For the sake of missing __init__.py under paste dir,
+	the issue still exists in recent version of django-piston (0.2.3).
+	"""
+	dest_path='lib/python%d.%d/site-packages/piston' % sys.version_info[:2]
+	dest_file='__init__.py'
+	if not os.path.exists('%s/%s/%s' % (VIRTUALENV, dest_path, dest_file)):
+		virtualenv_local('pip install --download=. django-piston')
+		virtualenv_local('tar xzvf django-piston*.tar.gz')
+		virtualenv_local('cp dj*-piston*/piston/__init__.py %s/%s' % (VIRTUALENV, dest_path))
+		virtualenv_local('rm -rf django-piston*')
+
 def _create_local_cfg():
 	"""Create base local configuration file"""
 	config = textwrap.dedent("""
