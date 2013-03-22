@@ -11,6 +11,7 @@ from urlparse import urlsplit
 
 from mock import patch, Mock
 from pyquery import PyQuery
+from unittest import skipUnless
 
 from django.conf import settings
 from django.contrib.sessions.models import Session
@@ -1038,6 +1039,8 @@ class CaptchaVerificationTestCase(BaseTestCase):
             self.assertContains(response, msg)
 
 
+@skipUnless(settings.BRAND == 'ubuntu',
+            "Language pngs are only used for the ubuntu brand.""")
 class LanguagesTestCase(BaseTestCase):
 
     def test_preffered_lang_is_preserved_after_logout(self):

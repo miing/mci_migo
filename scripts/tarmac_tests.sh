@@ -12,4 +12,4 @@ fab resetdb
 
 # run tests
 echo "Running canonical-identity-provider tests in tarmac"
-fab test
+fab test && fab brand:ubuntuone test:extra=webui
