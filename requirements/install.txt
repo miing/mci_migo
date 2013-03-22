@@ -19,7 +19,7 @@ oath==1.0
 oauth==1.0.1
 oauthlib==0.3.8
 requests==1.1.0
-requests-oauthlib=0.3.0
+requests-oauthlib==0.3.0
 oops_amqp==0.0.7
 oops_datedir_repo==0.0.20
 oops_dictconfig==0.0.4
@@ -28,6 +28,7 @@ psycopg2==2.4.1
 pystatsd==0.1.6
 python-memcached==1.44
 python-openid==2.2.4
+pytz==2013b
 pyxdg==0.25
 raven==1.4.6
 saml2idp==0.18
