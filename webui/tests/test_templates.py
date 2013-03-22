@@ -9,6 +9,7 @@ from gargoyle.testutils import switches
 from u1testutils.django import patch_settings
 
 from identityprovider.models.openidmodels import OpenIDRPConfig
+from identityprovider.tests.utils import patch_brand_settings
 
 
 class UbuntuLoginTemplateTestCase(TestCase):
@@ -19,7 +20,9 @@ class UbuntuLoginTemplateTestCase(TestCase):
             logo='http://localhost/img.png')
         mock_get_rpconfig.return_value = rpconfig
 
-        response = self.client.get('/+login')
+        with patch_brand_settings(BRAND='ubuntu'):
+            response = self.client.get('/+login')
+
         self.assertTemplateUsed(response, 'registration/login.html')
         self.assertContains(response, "id='rpconfig_logo'")
         self.assertContains(response, "src='http://localhost/img.png'")
@@ -31,9 +34,65 @@ class UbuntuLoginTemplateTestCase(TestCase):
             logo='')
         mock_get_rpconfig.return_value = rpconfig
 
-        response = self.client.get('/+login')
+        with patch_brand_settings(BRAND='ubuntu'):
+            response = self.client.get('/+login')
+
         self.assertTemplateUsed(response, 'registration/login.html')
         self.assertNotContains(response, "id='rpconfig_logo'")
+
+    def render_u1_login_with_rpconfig(self, rpconfig):
+        with patch_brand_settings(BRAND='ubuntuone'):
+            return render_to_string(
+                'registration/login.html',
+                dict(rpconfig=rpconfig, brand_description="Ubuntu One"))
+
+    def get_title_style_and_text(self, dom):
+        titles = dom.find('p[class=title]')
+        self.assertEqual(1, titles.length)
+        text = " ".join(titles[0].text_content().split())
+        style = dom.find('style[data-qa-id=_test_login_rp]')
+        if len(style) == 1:
+            style = " ".join(style.text().split())
+        else:
+            style = None
+
+        return style, text
+
+    def test_u1_login_rp_details(self):
+        rpconfig = OpenIDRPConfig(
+            trust_root='http://localhost/',
+            displayname='Landscape',
+            logo='http://localhost/img.png')
+
+        html = self.render_u1_login_with_rpconfig(rpconfig)
+
+        style, text = self.get_title_style_and_text(PyQuery(html))
+        self.assertIn("url('http://localhost/img.png')", style)
+        self.assertIn(u"Landscape \u2192 log in with Ubuntu One", text)
+
+    def test_u1_login_rp_no_logo(self):
+        """The rp displayname is still included."""
+        rpconfig = OpenIDRPConfig(
+            trust_root='http://localhost/',
+            displayname='Landscape')
+
+        html = self.render_u1_login_with_rpconfig(rpconfig)
+
+        style, text = self.get_title_style_and_text(PyQuery(html))
+        self.assertIsNone(style)
+        self.assertIn(u"Landscape \u2192 log in with Ubuntu One", text)
+
+    def test_u1_login_rp_no_displayname(self):
+        rpconfig = OpenIDRPConfig(
+            trust_root='http://localhost/',
+            displayname='Landscape',
+            logo='http://localhost/img.png')
+
+        html = self.render_u1_login_with_rpconfig(rpconfig)
+
+        style, text = self.get_title_style_and_text(PyQuery(html))
+        self.assertIn("url('http://localhost/img.png')", style)
+        self.assertIn(u"log in with Ubuntu One", text)
 
 
 class NewAccountTemplateTestCase(SSOBaseUnittestTestCase):
