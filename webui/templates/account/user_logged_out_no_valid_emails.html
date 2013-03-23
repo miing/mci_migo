@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2010-2013 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Your account does not have a valid email address" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "Your account does not have a valid email address" %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>{% blocktrans %}
+You have no valid email addresses linked to your account, so it was deactivated.
+To reactivate the account please contact our support team at:{% endblocktrans %}
+<a href="{{ 'support_form'|static_url }}">{{ 'support_form'|static_url }}</a>
+</p>
+
+{% endblock %}

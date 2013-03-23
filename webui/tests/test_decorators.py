@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
+
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
 from django.test import TestCase
 from gargoyle.testutils import switches
@@ -7,7 +9,10 @@ from gargoyle.testutils import switches
 from mock import ANY, Mock, patch, MagicMock
 
 from identityprovider.models import twofactor
-from identityprovider.tests.utils import patch_settings
+from identityprovider.tests.utils import (
+    patch_settings,
+    SSOBaseTestCase,
+)
 
 from webui.decorators import (
     ratelimit,
@@ -250,3 +255,62 @@ class SSOLoginRequiredTestCase(TestCase):
         twofactor.login(request)
         response = view(request)
         self.assertEqual(response, 'SUCCESS')
+
+
+class SSOLoginRequiredInvalidatedEmailsTestCase(SSOBaseTestCase):
+
+    def setUp(self):
+        super(SSOLoginRequiredInvalidatedEmailsTestCase, self).setUp()
+        self.calls = []
+
+        @sso_login_required
+        def view(request, *args, **kwargs):
+            self.calls.append((request, args, kwargs))
+            return "SUCCESS"
+
+        self.account = self.factory.make_account()
+        for email in self.account.emailaddress_set.all():
+            email.invalidate()
+
+        assert self.account.emailaddress_set.count() == 0
+        assert self.account.invalidatedemailaddress_set.count() > 0
+
+        self.request = Mock()
+        self.request.user = self.account
+        self.view = view
+
+    def test_correct_template(self):
+        response = self.view(self.request)
+        self.assertEqual(
+            response.template_name,
+            'account/user_logged_out_no_valid_emails.html')
+
+    def test_explanation_shown(self):
+        response = self.view(self.request)
+        response.render()
+        msgs = (
+            'You have no valid email addresses linked to your account',
+            'To reactivate the account please contact our support team',
+            settings.SUPPORT_FORM_URL,
+        )
+        for msg in msgs:
+            self.assertIn(msg, response.content)
+        self.assertNotIn(self.account.displayname, response.content)
+
+    def test_logged_out(self):
+        self.view(self.request)
+
+        # the decorated view was not called
+        self.assertEqual(self.calls, [])
+        # user was logged out
+        self.assertIsInstance(self.request.user, AnonymousUser)
+        self.assertFalse(self.request.user.is_authenticated())
+
+
+class SSOLoginRequiredNoEmailsTestCase(
+        SSOLoginRequiredInvalidatedEmailsTestCase):
+
+    def setUp(self):
+        super(SSOLoginRequiredNoEmailsTestCase, self).setUp()
+        self.account.emailaddress_set.all().delete()
+        self.account.invalidatedemailaddress_set.all().delete()

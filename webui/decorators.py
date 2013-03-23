@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 from hashlib import sha1
 
-from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth import REDIRECT_FIELD_NAME, logout
 from django.contrib.auth.decorators import (
     login_required as django_login_required,
 )
@@ -23,6 +23,7 @@ from django.http import (
 )
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
 from django.utils.decorators import available_attrs
 from django.utils.http import urlencode
 
@@ -52,6 +53,14 @@ def dont_cache(func):
     return _dont_cache_decorator
 
 
+def _has_only_invalidated_emails(request):
+    # user has *zero* usable email addresses, log him/her out
+    if request.user.emailaddress_set.count() == 0:
+        logout(request)
+        return TemplateResponse(
+            request, 'account/user_logged_out_no_valid_emails.html')
+
+
 def sso_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
                        login_url=None, require_twofactor=False,
                        require_twofactor_freshness=False):
@@ -61,6 +70,10 @@ def sso_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
 
         @wraps(view_func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
+            response = _has_only_invalidated_emails(request)
+            if response:
+                return response
+
             rpconfig = get_rpconfig_from_request(request, None)
             u = request.user
             required = (
