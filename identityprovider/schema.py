@@ -20,7 +20,7 @@ from configglue.schema import (
 from django_configglue.schema import schemas
 from oops_dictconfig.configglue_options import OopsOption
 
-from ubuntu_sso_saml.schema import Saml2IdpSchema
+from saml2sso.schema import Saml2IdpSchema
 
 
 DjangoSchema = schemas.get('1.3')

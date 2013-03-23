@@ -101,3 +101,25 @@ def syncdb():
     if 'south' in django_settings['INSTALLED_APPS']:
         args.append('--migrate')
     manage('syncdb', *args)
+    
+def createsuperuser():
+	"""Create admin accounts for target site"""
+	django_settings = get_django_settings('ADMINS')
+	admins = django_settings['ADMINS']
+	if admins:
+		for item in admins:
+			if not _username_present(item[0]):
+				args = ['--username=%s' % item[0], '--email=%s' % item[1]]
+				manage('createsuperuser', *args)
+			else:
+				sys.stdout.write("User '%s' exists already.\n" % item[0])
+	else:
+		manage('createsuperuser')
+		
+def _username_present(username):
+	"""Check if username exists"""
+	from django.contrib.auth.models import User
+	present = False
+	if User.objects.filter(username=username).count():
+		present = True
+	return present
