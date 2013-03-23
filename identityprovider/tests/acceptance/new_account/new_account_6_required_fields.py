@@ -9,8 +9,7 @@ from sst.actions import (
 from u1testutils import mail
 from u1testutils.sst import config
 
-import urls
-import helpers
+from identityprovider.tests.acceptance.shared import helpers, urls
 
 
 config.set_base_url_from_env()

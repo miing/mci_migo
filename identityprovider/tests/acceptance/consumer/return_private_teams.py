@@ -23,9 +23,8 @@ from sst.actions import (
 )
 from u1testutils.sst import config
 
-import urls
-
-from helpers import (
+from identityprovider.tests.acceptance.shared import urls
+from identityprovider.tests.acceptance.shared.helpers import (
     login_from_redirect,
     skip_production,
 )

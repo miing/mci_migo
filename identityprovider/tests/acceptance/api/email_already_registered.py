@@ -4,7 +4,7 @@ from sst.actions import (
 
 from ssoclient.v2 import AlreadyRegistered
 
-import helpers
+from identityprovider.tests.acceptance.shared import helpers
 from identityprovider.tests.acceptance.shared.apihelpers import (
     assert_api_error,
     get_api_client,

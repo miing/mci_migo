@@ -18,7 +18,7 @@ fab resetdb
 fab manage:loaddata,test
 fab manage:create_test_team
 # get gargoyle flags from their use in the code
-SST_FLAGS=`grep -rho --exclude 'test_*.py' "is_active([\"']\(.*\)[\"']" identityprovider/ webui/ | sed -E "s/is_active\(['\"](.*)['\"]/\1/" | awk '{print tolower($0)}' | sort | uniq | tr '\n' ';'`
+SST_FLAGS=${SST_FLAGS:-`grep -rho --exclude 'test_*.py' "is_active([\"']\(.*\)[\"']" identityprovider/ webui/ | sed -E "s/is_active\(['\"](.*)['\"]/\1/" | awk '{print tolower($0)}' | sort | uniq | tr '\n' ';'`}
 # fabric want ',' below and no trailing ',' either :-/
 GARGOYLE_FLAGS=${SST_FLAGS//;/,}
 fab gargoyle_flags:${GARGOYLE_FLAGS%,}

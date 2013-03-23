@@ -14,7 +14,7 @@ from sst.actions import (
 )
 from u1testutils.sst import config
 
-import urls
+from identityprovider.tests.acceptance.shared import urls
 
 
 config.set_base_url_from_env()

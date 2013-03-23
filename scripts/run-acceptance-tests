@@ -16,14 +16,14 @@ TARGET=$1
 CONFIG_BRANCH="lp:~canonical-isd-hackers/isd-configs/sso-config"
 
 if [ "$TARGET" = "production" ]; then
-    SST_BASE_URL=https://login.ubuntu.com
-    FLAGS="twofactor;preflight;saml2;paper_device;login_by_token;allow_unverified;captcha;login_by_phone;optional_captcha"
+    SST_BASE_URL="https://login.ubuntu.com"
+    SST_FLAGS="twofactor;preflight;saml2;can_view_support_phone;paper_device;allow_unvalidated"
 elif [ "$TARGET" = "staging" ]; then
-    SST_BASE_URL=https://login.staging.ubuntu.com
-    FLAGS="twofactor;preflight;saml2;paper_device;login_by_token;allow_unverified;captcha;login_by_phone;optional_captcha"
+    SST_BASE_URL="https://login.staging.ubuntu.com"
+    SST_FLAGS="twofactor;preflight;saml2;can_view_support_phone;paper_device;allow_unverified"
 else
-    SST_BASE_URL=""
-    FLAGS=""
+    SST_BASE_URL="https://localhost:$PORT"
+    SST_FLAGS="twofactor;preflight;saml2;can_view_support_phone;paper_device;allow_unverified;login_by_token"
 fi
 
 # Some Jenkins jobs copy workspace.tar.gz from successful build.
@@ -40,8 +40,8 @@ else
 fi
 
 # Set up the correct Django configuration.
-rm dj/local.cfg
-ln -s `pwd`/scripts/local.cfg-${TARGET} dj/local.cfg
+rm django_project/local.cfg
+ln -s `pwd`/scripts/local.cfg-${TARGET} django_project/local.cfg
 
 # clean old results
 rm -rf results/*
@@ -51,5 +51,5 @@ if [ ${TARGET} = "dev" ]; then
     # dev is special: we need to start it up.
     ./scripts/acceptance-dev.sh
 else
-    SST_BASE_URL=$SST_BASE_URL fab acceptance:screenshot=true,report=xml,extended=true,flags=$FLAGS
+    SST_BASE_URL="$SST_BASE_URL" fab acceptance:screenshot=true,report=xml,extended=true,flags="$SST_FLAGS"
 fi

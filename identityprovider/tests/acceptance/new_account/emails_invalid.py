@@ -9,8 +9,8 @@ from sst.actions import (
 )
 from u1testutils.sst import config
 
-import urls
-import helpers
+from identityprovider.tests.acceptance.shared import helpers, urls
+
 
 # Set to Production, Staging, VPS, Developer etc..
 config.set_base_url_from_env()

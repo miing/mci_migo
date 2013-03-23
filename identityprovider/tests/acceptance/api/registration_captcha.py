@@ -7,7 +7,7 @@ from u1testutils import mail
 
 from ssoclient.v2 import CaptchaRequired
 
-import helpers
+from identityprovider.tests.acceptance.shared import helpers
 from identityprovider.tests.acceptance.shared.apihelpers import get_api_client
 
 

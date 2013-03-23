@@ -15,8 +15,8 @@ from sst.actions import (
 from u1testutils import mail
 from u1testutils.sst import config
 
-import urls
-import helpers
+from identityprovider.tests.acceptance.shared import helpers, urls
+
 
 EMAIL = mail.make_unique_test_email_address()
 NAME = 'Some Name'
