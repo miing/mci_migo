@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "You have been logged out" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="main">{% trans "You have been logged out" %}</h1>
+{% endblock %}
+
+{% block content %}
+  <p>{% blocktrans %}You are now logged out of the {{ brand_description }} website. However, you have not been automatically logged out of every website that uses this service.{% endblocktrans %}</p>
+
+  {% if return_to_url %}
+  {% blocktrans with return_to_url as url and return_to_site_name as site_name %}
+  <p class="returnto highlight">
+    <a href="{{ return_to_url }}">Return to {{ site_name }}</a>
+  </p>{% endblocktrans %}
+  {% endif %}
+
+    {% if other_sites %}
+     <div>
+       <h2 class="main">{% trans "Sites you may still be logged into" %}</h2>
+       <table class="listing">
+        <thead>
+          <tr>
+            <th class="description">{% trans "Site" %}</th>
+            <th class="date">{% trans "Last authenticated" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+          {% for site in other_sites %}
+            <tr>
+              <td><a href="{{ site.trust_root }}">{{ site.trust_root }}</a></td>
+              <td>{{ site.date_last_used|date:"Y-m-d" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+{% endblock %}
+

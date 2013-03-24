@@ -1,0 +1,818 @@
+body {
+    font-family: UbuntuBeta, Ubuntu, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, sans-serif;
+    color: #333;
+    background: white url(/assets/identityprovider/ubuntu/body_bg.png);
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0;
+    padding: 0;
+}
+#container {
+    background: #f7f6f5;
+    margin: 0 auto 20px;
+    padding: 0;
+    width: 976px;
+}
+#container-inner {
+    background-color: #fff;
+    padding-bottom: 32px;
+}
+#header, #container-inner {
+    -moz-border-radius: 0 0 5px 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-box-shadow: #bbb 0 0 5px;
+    -webkit-box-shadow: #bbb 0 0 5px;
+}
+#header {
+    background: #dd4814 url(/assets/identityprovider/ubuntu/header_bg.png) top left repeat-x;
+    height: 64px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+#menu-search {
+    height: 40px;
+    margin: 0 16px;
+}
+#search-box {
+    margin-left: 720px;
+    -moz-border-radius: 0 0 4px 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-box-shadow: #bbb 0 0 2px;
+    -webkit-box-shadow: #bbb 0 0 2px;
+    background-color: #f2f2f2;
+    width: 224px;
+    height: 40px;
+}
+#search-box-input {
+    float: left;
+    width: 172px;
+    height: 20px;
+    border-color: #d1d1d1;
+    border-style: solid none none solid;
+    border-width: 1px medium medium 1px;
+    margin: 8px 0 0 8px;
+    padding: 1px;
+    font-size: 12px;
+}
+#title {
+    margin: 28px 16px;
+    height: 29px;
+}
+
+#footer-logo {
+    margin: 24px 8px 0 0;
+    background-image: url(/assets/identityprovider/ubuntu/footer_logo.png);
+    background-repeat: no-repeat;
+    float:right;
+}
+#footer-logo a {
+    display: block;
+    width: 118px;
+    height: 27px;
+}
+
+#copyright {
+    margin: 0 16px;
+    padding: 10px 0;
+    height: 48px;
+}
+#copyright p {
+    color: #aea79f;
+    font-size: 10px;
+    line-height: 16px;
+    margin: 2px 0;
+}
+#ubuntu-header {
+    background-image: url(/assets/identityprovider/ubuntu/header_logo.png);
+    background-repeat: no-repeat;
+    height: 37px;
+    left: 16px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 16px;
+    width: 324px;
+    overflow: hidden;
+    text-indent: -9999px;
+}
+#ubuntu-header a {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+#footer {
+    padding-top: 16px;
+}
+#footer * {
+    font-size: 10px;
+    line-height: 16px;
+}
+#footer p {
+    margin: 0;
+    padding-bottom: 3px;
+    border-bottom: 1px dotted #aea79f;
+}
+#footer p.footer-title {
+    font-weight: bold;
+}
+#footer .footer-div {
+    height: 152px;
+    width: 144px;
+    float: left;
+    margin-left: 16px;
+}
+#footer .last-div {
+    margin-right: 16px;
+}
+#footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#footer li {
+    margin: 0;
+    padding: 2px 0;
+    border-bottom: 1px dotted #aea79f;
+}
+
+#main-menu {
+    list-style: none;
+    margin: 0;
+    margin-left: 16px;
+    padding: 0;
+    height: 100%;
+    background: url(/assets/identityprovider/ubuntu/topnav_divider.png) no-repeat scroll left top transparent !important;
+}
+#main-menu li {
+    float: left;
+    margin: 0;
+    padding: 0;
+    height: 64px;
+    font-size: 14px;
+    line-height: 16px;
+    background: url(/assets/identityprovider/ubuntu/topnav_divider.png) no-repeat scroll right top transparent !important;
+}
+#main-menu a {
+    display: block;
+    float: left;
+    margin: 0;
+    padding: 24px 8px;
+    text-decoration: none;
+    color: #fff;
+    text-shadow: #000 0 1px;
+}
+#main-menu a:hover {
+    background: url(/assets/identityprovider/ubuntu/topnav_active_bg.png) no-repeat right top transparent !important;
+}
+
+h1, h2, h3, h4, h5 {
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+}
+h1 {
+    font-size: 36px;
+    line-height: 40px;
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 28px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+}
+h3 {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+}
+h3.link-other {
+    color: #333;
+}
+h3.link-services {
+    color: #fff;
+}
+h4 {
+    font-size: 12px;
+    line-height: 16px;
+}
+h4.link-news {
+    color: #ef5a29;
+}
+h4.link-ubuntu {
+    color: #dd4814;
+}
+h4.partners {
+    color: #333;
+    font-size: 16px;
+    line-height: 20px;
+}
+h5 {
+    color: #333;
+    font-size: 10px;
+    line-height: 14px;
+}
+p {
+    font-size: 12px;
+    line-height: 16px;
+    margin-bottom: 8px;
+}
+strong {
+    font-weight: bold;
+}
+
+a {
+    color: #dd4814;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+div.footer-div a {
+    color: #333;
+}
+
+ul {
+    margin-bottom: 16px;
+    list-style-image: url(/assets/identityprovider/ubuntu/bullet.png);
+}
+ul li {
+    margin-bottom: 8px;
+    line-height: 16px;
+}
+ul li:last-child {
+    margin-bottom: 0;
+}
+ul.teams-list {
+    list-style: none;
+    margin-left: 20px;
+    margin-top: 5px;
+}
+.required + label {
+    font-weight: bold;
+}
+p.call-to-action {
+    color: #333;
+}
+p.case-study {
+    color: #333;
+}
+p.highlight {
+    font-size: 16px;
+    line-height: 20px;
+}
+p.introduction {
+    color: #333;
+    font-size: 16px;
+    line-height: 20px;
+}
+p.returnto {
+    margin: 20px 0px;
+}
+p.services {
+    color: #fff;
+}
+p.small-text {
+    color: #333;
+    font-size: 10px;
+}
+code {
+    background: white;
+    border: 1px solid #C7C7C7;
+    display: block;
+    font-family: "Ubuntu mono" monospace;
+    font-weight: bold;
+    padding: 15px;
+}
+.larger {
+    font-size: 150%;
+    line-height: 120%;
+    margin-bottom: 12px;
+}
+
+.last {
+    margin-bottom: 2em;
+}
+
+.newsfeed {
+    background: url(/assets/identityprovider/ubuntu/news_feed_bg.png) no-repeat scroll right top transparent;
+    padding: 0 20px 0 0;
+}
+
+.findoutmore {
+    font-size: 120%;
+}
+
+#forgotpw-link {
+    font-size: 90%;
+    line-height: 2em;
+}
+
+#visited-sites, #auth-devices {
+    margin-top: 3em;
+}
+
+#codes.codelist {
+    background-color: #FFFFFF;
+    padding: 10px 20px;
+    font-size: larger;
+    margin-bottom: 10px;
+}
+
+/* Clearing floats without extra markup
+Based on How To Clear Floats Without Structural Markup by PiE
+[http://www.positioniseverything.net/easyclearing.html] */
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}  /* for IE/Mac */
+
+.clearboth {
+    clear: both;
+    padding-top: 8px;
+}
+
+/* Content columns */
+body.twocols #sidebar, body.twocols #mainbar {
+    float: left;
+    margin-left: 16px;
+    background-color: #f7f7f7;
+    -webkit-border-radius: 4px;
+    min-height: 300px;
+}
+
+body.twocols #mainbar {
+    clear: right;
+    margin-left: 8px;
+}
+
+body.onecol #content {
+    padding: 24px 160px 32px 160px;
+    margin: 0 16px 32px;
+    background-color: #f7f7f7;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+#end-content {
+    clear: both;
+}
+
+.box-944, .box-304, .box-464, .box-624 {
+    padding: 8px 16px 16px 8px;
+    background: #f7f7f7;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.box-944 {
+    width: 920px;
+}
+
+.box-304 {
+    width: 280px;
+}
+
+.box-464 {
+    width: 440px;
+}
+
+.box-624 {
+    width: 600px;
+}
+
+.content-box {
+    width: 912px;
+    padding: 16px;
+}
+
+/* Messages */
+
+div.message, span.error {
+    padding: 1px 0 1px 16px;
+}
+
+div.message p, span.error, div.error {
+    background-position: top left;
+    background-repeat: no-repeat;
+    min-height: 13px;
+    padding: 5px 30px;
+}
+
+div.notopbar  {
+    padding-top: 14px;
+}
+
+div.message.info p,
+div.message.success p,
+div.message.informational p {
+    background-image: url('/assets/identityprovider/tick-large.png');
+}
+
+div.message.error p, span.error {
+    background-image: url('/assets/identityprovider/ubuntu/error.png');
+}
+
+div.message.warning {
+    padding: 8px;
+    margin: 16px;
+    background: #ffa;
+}
+
+/* Tabular guidelines */
+#content table {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+h3.tableheader, #content th {
+    background: #aea79e;
+    color: white;
+    margin: 0;
+    padding: 8px;
+}
+
+#content th {
+    font-weight: bold;
+}
+
+#content td.subheader {
+    background: #dfdcd9;
+    color: black;
+    margin: 0;
+    padding: 8px;
+    border: 0;
+}
+
+#content td {
+    padding: 8px;
+    line-height: 16px;
+    border-bottom: 1px dotted #cccccc;
+}
+
+#content td.fixedtd {
+    width: 80px;
+}
+
+table.hover tbody tr:hover {
+    background-color: #e8e8e8;
+}
+
+td.actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+td.actions a::last-child {
+    margin-left: 1.5em;
+}
+
+/* End tabular guidelines */
+
+/* Internationalization stuff */
+#language_footer {
+    float: right;
+    padding: 0 16px;
+}
+#language_footer img,
+#language_footer a.picker {
+    float: left;
+}
+
+#language_footer a {
+    margin-left: 4px;
+}
+
+#language_select div {
+    margin: 4px;
+}
+
+#language_select input {
+    border: 0;
+    border-bottom: 1px solid transparent;
+    padding: 0 0 0 20px;
+    color: #dd4814;
+}
+
+#language_select input:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    border-bottom: 1px solid #dd4814;
+}
+/* end Internationalization stuff */
+
+/* Preferred email Tooltip */
+label.tooltip span.description {
+    display: inline-block;
+    position: relative;
+    top: 0px;
+    left: 0.45em;
+}
+
+label.tooltip span.tooltip-content {
+    -moz-box-shadow: 1px 1px 4px #ccc;
+    -webkit-box-shadow: 1px 1px 4px #ccc;
+    background: #9c9c9c;
+    border: 1px solid #e7e7e7;
+    color: white;
+    display: none;
+    padding: 3px 10px 5px;
+    position: absolute;
+    bottom: 28px;
+    left: -30px;
+    width: 300px;
+}
+
+label.tooltip span.tooltip-tail {
+    background: transparent url('/assets/identityprovider/ubuntu/tooltip-tail.gif') bottom left no-repeat;
+    display: none;
+    position: absolute;
+    bottom: 17px;
+    left: -6px;
+    height: 13px;
+    width: 26px;
+}
+
+label.tooltip:hover span.tooltip-content,
+label.tooltip:hover span.tooltip-tail {
+    display: block;
+}
+
+label.tooltip span.tooltip.sprite {
+    background: transparent url('/assets/identityprovider/icon-sprites.png') top left no-repeat;
+    display: inline-block;
+    height: 14px;
+    width: 14px;
+}
+label.tooltip span.tooltip.sprite.help {
+    background-position: 0px -7212px;
+}
+label.tooltip span.invisible-link {
+    display: none;
+}
+/* End preferred email Tooltip */
+
+/* Subheader styling */
+div#subheader {
+    margin: 0 16px 8px 0;
+    height: 40px;
+}
+
+div#subheader div {
+    float:right;
+    height: 40px;
+    background: #F2F2F2 url(bg-subheader.png) repeat-x;
+    font-size: 12px;
+    line-height: 16px;
+    color: #333333;
+    -moz-border-radius: 0 0 4px 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-box-shadow: #bbb 0 0 2px;
+    -webkit-box-shadow: #bbb 0 0 2px;
+}
+
+div.subheader-menu {
+    width: 944px;
+}
+
+div.subheader-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+div.subheader-menu li {
+    float: left;
+    background: transparent url('/assets/identityprovider/ubuntu/subnav_divider.png') no-repeat right top;
+}
+
+#subheader ul li a:hover, #subheader ul li span.active {
+    background: transparent url('/assets/identityprovider/ubuntu/subnav_active_bg.png') repeat-x;
+    text-decoration:none;
+}
+
+#subheader ul li a:hover {
+    color: #dd4814;
+}
+
+#subheader ul li a, #subheader ul li span, #subheader ul li input {
+    padding: 14px 8px 0;
+    display: block;
+    height: 28px;
+    text-decoration: none;
+    color: #333333;
+}
+
+#subheader p {
+    font-size: 12px;
+    line-height: 24px;
+    color: #333333;
+    margin: 8px 0 8px 8px;
+}
+/* End subheader styling */
+
+
+/* Fancy buttons */
+.btn {
+    background: #f7f7f7;
+    border: none;
+    color: white;
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+a.btn {
+    font-size: 14px;
+}
+a.btn:hover {
+    font-size: 14px;
+    text-decoration: none;
+}
+.btn:hover span, .btn.alt:hover span {
+    background: #b83a0f url('/assets/identityprovider/ubuntu/btn-hover.png') top left no-repeat;
+}
+.btn:active span, .btn.alt:active span {
+    background: #962d0c url('/assets/identityprovider/ubuntu/btn-active.png') top left no-repeat;
+}
+.btn span {
+    background: #dd4814 url('/assets/identityprovider/ubuntu/btn.png') top left no-repeat;
+    display: inline-block;
+    line-height: 32px;
+    margin: 0px;
+    padding: 0px;
+    min-height: 32px;
+}
+.btn:hover span span, .btn.alt:hover span span {
+    background: transparent url('/assets/identityprovider/ubuntu/btn-hover-cap.png') top right no-repeat;
+}
+.btn:active span span, .btn.alt:active span span {
+    background: transparent url('/assets/identityprovider/ubuntu/btn-active-cap.png') top right no-repeat;
+    color: #aea79f;
+}
+.btn span span {
+    background: transparent url('/assets/identityprovider/ubuntu/btn-cap.png') top right no-repeat;
+    color: white;
+    margin: 0px;
+    padding: 0px 25px;
+}
+.btn.alt span {
+    background: white url('/assets/identityprovider/ubuntu/btn-alt.png') top left no-repeat;
+    display: inline-block;
+    line-height: 32px;
+    margin: 0px;
+    padding: 0px;
+}
+.btn.alt span span {
+    background: transparent url('/assets/identityprovider/ubuntu/btn-alt-cap.png') top right no-repeat;
+    color: white;
+    margin: 0px;
+    padding: 0px 25px;
+}
+
+a.btn-sm span {
+    background: #dd4814;
+    background: -webkit-linear-gradient(top, #dd4814, #bd3e11);
+    background: -moz-linear-gradient(top, #dd4814, #bd3e11);
+    border: 1px solid #dd4814;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    color: white;
+    display: inline-block;
+    font-size: 85%;
+    line-height: 22px;
+    margin: 2px;
+    padding: 0px 10px 1px;
+}
+a.btn-sm:hover {
+    text-decoration: none;
+}
+a.btn-sm:hover span {
+    background: #b23910;
+    background: -webkit-linear-gradient(top, #b23910, #9d320e);
+    background: -moz-linear-gradient(top, #b23910, #9d320e);
+    border-color: #b63c14;
+}
+
+/* End fancy buttons */
+
+/* Read-only interface */
+.rofield {
+    padding: 2px;
+    background: white;
+    width: 200px;
+    display: block;
+    margin: 3px 8px 8px 0;
+    border: 1px solid #c7c7c7;
+}
+
+@media only screen and (max-device-width: 900px) {
+    body #container {
+        width: 98%;
+    }
+
+    #header {
+        width: 98%;
+        margin-left: 1%;
+    }
+
+    #container-inner {
+        width: 100%;;
+    }
+
+    .box-624 {
+        width: 94%;
+    }
+
+    body.onecol #content, body.twocols #mainbar, body.twocols #sidebar {
+        width: 94%;
+        padding: 2%;
+        margin-left: 1%;
+        margin-right: 1%;
+    }
+
+    body.twocols #sidebar {
+        margin-top: -4px;
+        padding-top: 4px;
+    }
+
+    #ubuntu-header {
+        left: 3%;
+    }
+
+    #container-inner #title {
+        height: 100%;
+        margin: 0px;
+    }
+
+    #mainbar form input[type="text"],
+    #mainbar form input[type="password"],
+    form textarea,
+    #content input[type="text"],
+    #content input[type="password"]
+    {
+        width: 96%;
+        padding: 2%;
+    }
+
+    form span.error {
+        float: none;
+        display: block;
+        margin-top: 40px;
+        width: 96%;
+        margin-left: 0;
+        height: 30px;
+    }
+
+    #footer-logo a {
+        display: none;
+    }
+
+    #copyright p {
+        display: block;
+    }
+
+    #copyright {
+        height: 100%;
+    }
+
+    div#subheader div {
+    float: none;
+    width: 100%;
+    margin-top: -4px;
+    margin-left: 7px;
+    }
+
+    #title h1 {
+        font-size: 24px;
+        line-height: 28px;
+        margin: 8px;
+    }
+
+    #language_select input {
+        width: 100px;
+        margin-left: 40%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+}
+#rpconfig_logo {
+    float: right;
+    padding: 10px;
+    margin-top: -25px;
+}
