@@ -185,6 +185,23 @@ def send_validation_email_request(account, email, redirection_url=None):
         context, email)
 
 
+def send_invalidation_email_notice(account, invalidated_email):
+    preferredemail = account.preferredemail
+    assert preferredemail is not None
+    email = preferredemail.email
+    context = dict(
+        display_name=account.displayname, invalidated_email=invalidated_email,
+        to_email=email,
+    )
+    if account.unverified_emails().count() > 0:
+        context['verify_emails_link'] = urljoin(settings.SSO_ROOT_URL,
+                                                reverse('account-emails'))
+    send_branded_email(
+        _("The email address {email} was removed from your account").format(
+            email=invalidated_email),
+        'email/email-invalidated.txt', context=context, email=email)
+
+
 def send_preferred_changed_notification(email, new_preferred):
     send_branded_email(
         _('E-mail change notification'), 'email/preferred-changed.txt',

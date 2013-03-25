@@ -24,6 +24,7 @@ from openid.yadis.constants import YADIS_HEADER_NAME, YADIS_CONTENT_TYPE
 
 from identityprovider.cookies import set_test_cookie, test_cookie_worked
 from identityprovider.emailutils import (
+    send_invalidation_email_notice,
     send_validation_email_request,
 )
 from identityprovider.forms import EditAccountForm, LoginForm, NewEmailForm
@@ -287,6 +288,10 @@ def invalidate_email(request, authtoken, email_address):
         logger.warning("Received a request to invalidate email %r, but the "
                        "email's account is None.", email_address)
         return response
+
+    # notify the account of the email invalidation, prioritize validated emails
+    if account.preferredemail is not None:
+        send_invalidation_email_notice(account, invalidated_email=email.email)
 
     user = get_object_or_none(User, username=account.openid_identifier)
     if user is not None:

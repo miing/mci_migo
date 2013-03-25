@@ -1,0 +1,15 @@
+{% load i18n %}{% load static_url %}{% blocktrans %}Hello {{ display_name }},
+
+We received a request to remove the email address {{ invalidated_email }} from your account. This email address was previously linked to your account but was never verified by you. You will no longer be able to login to your account using {{ invalidated_email }}.
+
+You can continue logging in to {{ brand_description }} using {{ to_email }} and any other email address you added to your account.{% endblocktrans %}
+{% if verify_emails_link %}
+{% blocktrans %}We strongly recommend you take the time to verify any unverified email address by visiting this link:{% endblocktrans %}
+
+{{ verify_emails_link }}
+{% endif %}
+{% blocktrans %}If you have any questions, please contact us at:{% endblocktrans %}
+
+{{ "support_form"|static_url }}
+
+{% include "email/thank_you.txt" %}

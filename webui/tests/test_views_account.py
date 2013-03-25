@@ -707,6 +707,12 @@ class InvalidateEmailTestCase(SSOBaseTestCase):
 
     def setUp(self):
         super(InvalidateEmailTestCase, self).setUp()
+
+        # email invalidation makes sense only when ALLOW_UNVERIFIED is enabled
+        switch = switches(ALLOW_UNVERIFIED=True)
+        switch.patch()
+        self.addCleanup(switch.unpatch)
+
         p = mock.patch('webui.views.account.logger')
         self.mock_logger = p.start()
         self.addCleanup(p.stop)
@@ -910,3 +916,40 @@ class InvalidateEmailTestCase(SSOBaseTestCase):
             # user is now logged in with an address that will be invalidated
             response = self.client.post(self.url)
             mock_logout.assert_called_once_with(response.context['request'])
+
+    def test_no_notification(self):
+        assert self.account.emailaddress_set.count() == 1
+
+        self.client.post(self.url)
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_other_email_is_notified(self, notified_email=None):
+        # create another NEW email for this account
+        email = self.factory.make_email_for_account(
+            account=self.account, status=EmailStatus.NEW)
+
+        if notified_email is None:
+            assert self.account.verified_emails().count() == 0
+            notified_email = email
+
+        self.client.post(self.url)
+        # reload account
+        self.account = Account.objects.get(id=self.account.id)
+
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.to, [notified_email.email])
+        for msg in (self.email, 'removed from your account'):
+            self.assertIn(msg, email.subject)
+        for msg in (
+                self.email,
+                'You will no longer be able to login to your account using',
+                notified_email.email):
+            self.assertIn(msg, email.body)
+
+    def test_new_email_is_not_notified_if_validated_email_available(self):
+        # create a VALIDATED EMAIL for this account
+        email = self.factory.make_email_for_account(
+            account=self.account, status=EmailStatus.VALIDATED)
+        self.test_other_email_is_notified(notified_email=email)

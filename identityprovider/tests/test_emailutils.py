@@ -16,6 +16,7 @@ from identityprovider.emailutils import (
     send_action_required_warning,
     send_branded_email,
     send_impersonation_email,
+    send_invalidation_email_notice,
     send_invitation_after_password_reset,
     send_new_user_email,
     send_password_reset_email,
@@ -398,6 +399,45 @@ class SendEmailTestCase(SSOBaseTestCase):
         self.assert_email_properly_formatted(
             'Validate your email address', 'email/validate-email.txt',
             token_type=TokenType.VALIDATEEMAIL)
+
+    def _assert_send_invalidation_email_notice(self):
+        invalidated_email = 'invalid@example.com'
+        send_invalidation_email_notice(self.account, invalidated_email)
+
+        verify_emails_link = urljoin(settings.SSO_ROOT_URL,
+                                     reverse('account-emails'))
+        context = dict(
+            brand_description=self.brand_desc,
+            display_name=self.account.displayname,
+            invalidated_email=invalidated_email,
+            to_email=self.account.preferredemail,
+        )
+        if self.account.unverified_emails().count() > 0:
+            context['verify_emails_link'] = verify_emails_link
+        subject = 'The email address {email} was removed from your account'
+        self.assert_email_properly_formatted(
+            subject.format(email=invalidated_email),
+            'email/email-invalidated.txt',
+            context=context)
+
+        content = mail.outbox[0].body
+        optionals = ('We strongly recommend you take the time to verify any '
+                     'unverified email address by visiting this link',
+                     verify_emails_link)
+        for optional in optionals:
+            if self.account.unverified_emails().count() == 0:
+                self.assertNotIn(optional, content)
+            else:
+                self.assertIn(optional, content)
+
+    def test_send_invalidation_email_notice_with_verify_email_link(self):
+        assert self.account.unverified_emails().count() > 0
+        self._assert_send_invalidation_email_notice()
+
+    def test_send_invalidation_email_notice_no_verify_email_link(self):
+        self.account.emailaddress_set.update(status=EmailStatus.VALIDATED)
+        assert self.account.unverified_emails().count() == 0
+        self._assert_send_invalidation_email_notice()
 
     def test_send_preferred_changed_notification(self):
         new_preferred = 'a@foo.com'
