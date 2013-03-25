@@ -20,6 +20,10 @@
     {% endblock %}
     {% block extra_css %}{% endblock %}
 
+    <script type="text/javascript">
+        document.documentElement.className += ' js';
+    </script>
+
 </head>
 <body {% block bodyclass %}class="onecol"{% endblock %} {% if embedded %}onload="blank_targets()"{% endif %}>
 <div id="cont" role="main">

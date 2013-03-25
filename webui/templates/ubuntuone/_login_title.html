@@ -1,0 +1,11 @@
+{% load i18n %}
+<p class="title" data-qa-id="_qa_ubuntu_login_title">
+    {% if rpconfig and rpconfig.displayname %}
+    <span class="trusted-rp-name" data-qa-id="_qa_trusted_rp_login">
+        {{ rpconfig.displayname }}
+    </span>
+    {% endif %}
+    <span>
+        {% blocktrans %}log in with {{ brand_description }}{% endblocktrans %}
+    </span>
+</p>

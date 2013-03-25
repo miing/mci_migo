@@ -34,9 +34,9 @@ Please correct this and try again. If the problem persists, please <a href="{{ s
 <script type="text/javascript" src="{{ CAPTCHA_API_URL_SECURE }}/challenge?k={{ CAPTCHA_PUBLIC_KEY }}{{ captcha_error }}">
 </script>
 <noscript>
-    <iframe src="{{ CAPTCHA_API_URL_SECURE }}/noscript?k={{ CAPTCHA_PUBLIC_KEY }}" height="300" width="500" frameborder="0">
+    <iframe src="{{ CAPTCHA_API_URL_SECURE }}/noscript?k={{ CAPTCHA_PUBLIC_KEY }}" height="300" width="500" frameborder="0" class="recaptcha-noscript">
     </iframe>
-    <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+    <textarea class="recaptcha-challenge-field" name="recaptcha_challenge_field" rows="3" cols="40">
     </textarea>
     <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
 </noscript>

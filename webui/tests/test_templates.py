@@ -1,10 +1,13 @@
 from django.test import TestCase
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from identityprovider.tests.utils import SSOBaseUnittestTestCase
 from mock import patch
 from pyquery import PyQuery
 from gargoyle.testutils import switches
+
+from unittest import skipUnless
 
 from u1testutils.django import patch_settings
 
@@ -24,8 +27,8 @@ class UbuntuLoginTemplateTestCase(TestCase):
             response = self.client.get('/+login')
 
         self.assertTemplateUsed(response, 'registration/login.html')
-        self.assertContains(response, "id='rpconfig_logo'")
-        self.assertContains(response, "src='http://localhost/img.png'")
+        self.assertContains(response, 'id="rpconfig_logo"')
+        self.assertContains(response, 'src="http://localhost/img.png"')
 
     @patch('webui.views.ui.get_rpconfig_from_request')
     def test_rpconfig_without_logo_url(self, mock_get_rpconfig):
@@ -38,7 +41,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
             response = self.client.get('/+login')
 
         self.assertTemplateUsed(response, 'registration/login.html')
-        self.assertNotContains(response, "id='rpconfig_logo'")
+        self.assertNotContains(response, 'id="rpconfig_logo"')
 
     def render_u1_login_with_rpconfig(self, rpconfig):
         with patch_brand_settings(BRAND='ubuntuone'):
@@ -68,7 +71,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
 
         style, text = self.get_title_style_and_text(PyQuery(html))
         self.assertIn("url('http://localhost/img.png')", style)
-        self.assertIn(u"Landscape \u2192 log in with Ubuntu One", text)
+        self.assertIn(u"Landscape log in with Ubuntu One", text)
 
     def test_u1_login_rp_no_logo(self):
         """The rp displayname is still included."""
@@ -80,7 +83,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
 
         style, text = self.get_title_style_and_text(PyQuery(html))
         self.assertIsNone(style)
-        self.assertIn(u"Landscape \u2192 log in with Ubuntu One", text)
+        self.assertIn(u"Landscape log in with Ubuntu One", text)
 
     def test_u1_login_rp_no_displayname(self):
         rpconfig = OpenIDRPConfig(
@@ -136,6 +139,8 @@ class NewAccountTemplateTestCase(SSOBaseUnittestTestCase):
             reverse('new_account', kwargs=ctx)
         )
 
+    @skipUnless(settings.BRAND == 'ubuntu',
+                "Text does not exist in other brands.""")
     @switches(ALLOW_UNVERIFIED=False)
     def test_allow_invalidated_switch_off(self):
         html = render_to_string('registration/new_account.html', {})
@@ -144,6 +149,8 @@ class NewAccountTemplateTestCase(SSOBaseUnittestTestCase):
             html
         )
 
+    @skipUnless(settings.BRAND == 'ubuntu',
+                "Text does not exist in other brands.""")
     @switches(ALLOW_UNVERIFIED=True)
     def test_allow_invalidated_switch_on(self):
         html = render_to_string('registration/new_account.html', {})

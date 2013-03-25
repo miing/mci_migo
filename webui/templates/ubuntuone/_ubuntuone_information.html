@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="ubuntuone-information">
+    <p>
+        {% blocktrans %}Ubuntu One is the single account you use to log in to all services and sites related to Ubuntu.{% endblocktrans %}
+    </p>
+
+    <p>
+        {% blocktrans %}If you have an existing Ubuntu Single Sign On account, this is now called your Ubuntu One account.{% endblocktrans %}
+        <a href="{% url description %}">{% trans "Read More" %}</a>
+    </p>
+</div>

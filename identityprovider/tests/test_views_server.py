@@ -220,7 +220,7 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
     def test_logo_for_rpconfig_on_decide_page(self):
         r = self.get_login_after_redirect_from_consumer()
         self.assertEqual(r.status_code, 200)
-        self.assertContains(r, "<img src='http://someserver/logo.png'/>")
+        self.assertContains(r, '<img src="http://someserver/logo.png"/>')
 
     def test_logo_for_rpconfig_on_new_account_page(self):
         r = self.get_new_account_after_redirect_to_login_from_consumer()

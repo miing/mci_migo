@@ -505,6 +505,11 @@ footer .links a {
     margin-bottom: 1em;
 }
 
+.trusted-rp-name:after {
+    content: " → ";
+    display: inline;
+}
+
 .form-box .input-row {
     margin-bottom: 1em;
 }
@@ -562,7 +567,7 @@ footer .links a {
     margin-right: 1em;
 }
 
-.login .new-user {
+.new-user {
     margin-bottom: 0.9em;
 }
 
@@ -589,6 +594,34 @@ footer .links a {
     }
 }
 
+
+/* Create account ------------------------------------------------------------*/
+
+.recaptcha-noscript {
+    width: 100%;
+}
+
+.recaptcha-challenge-field {
+   width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+@media all and (min-width:768px) {
+
+    .recaptcha-noscript {
+        height: 330px;
+    }
+
+   .create-account .form-box {
+        margin-right: 3em;
+    }
+
+}
+
+
+/* General -------------------------------------------------------------------*/
 @media all and (min-width:480px) {
 
     #cont {

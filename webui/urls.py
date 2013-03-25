@@ -68,7 +68,9 @@ urlpatterns = patterns(
         name='logout_to_confirm'),
     url(r'^\+deactivated$', 'deactivated', name='deactivated'),
     url(r'^\+suspended$', 'suspended', name='suspended'),
-    url(r'^\+(?P<page_name>description|faq)$', 'static_page'),
+    url(r'^\+description$', 'static_page', {'page_name': 'description'},
+        name='description'),
+    url(r'^\+faq$', 'static_page', {'page_name': 'faq'}, name='faq'),
 )
 
 urlpatterns += patterns(
