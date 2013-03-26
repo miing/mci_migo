@@ -45,7 +45,7 @@ helpers.register_account(email_address, password=account_password)
 wait_for(assert_title, "My Name's details")
 
 # Depending whether we're on Production or Staging different tests
-if get_base_url() == 'https://login.ubuntu.com/':   # Production
+if get_base_url() == 'https://login.ubuntu.com':   # Production
     # shop
     go_to('http://shop.canonical.com')
     wait_for(assert_title, 'Canonical Store')
