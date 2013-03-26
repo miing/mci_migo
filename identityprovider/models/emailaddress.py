@@ -2,9 +2,10 @@
 # the GNU Affero General Public License version 3 (see the file
 # LICENSE).
 
-import datetime
 import logging
 import re
+
+from datetime import datetime
 
 from django.core.validators import validate_email
 from django.db import models
@@ -56,7 +57,7 @@ class EmailAddress(models.Model):
         db_column='person', blank=True, null=True, editable=False)
     status = models.IntegerField(choices=EmailStatus._get_choices())
     date_created = models.DateTimeField(
-        default=datetime.datetime.utcnow, blank=True, editable=False)
+        default=datetime.utcnow, blank=True, editable=False)
     account = models.ForeignKey(
         Account, db_column='account', blank=True, null=True)
 
@@ -110,8 +111,11 @@ class EmailAddress(models.Model):
 class InvalidatedEmailAddress(models.Model):
     email = models.TextField(validators=[validate_email])
     date_created = models.DateTimeField(blank=True, editable=False)
+    date_invalidated = models.DateTimeField(
+        default=datetime.utcnow, null=True, blank=True)
     account = models.ForeignKey(
         Account, db_column='account', blank=True, null=True)
+    account_notified = models.BooleanField()
 
     class Meta:
         app_label = 'identityprovider'

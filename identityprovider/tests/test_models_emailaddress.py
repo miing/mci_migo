@@ -1,4 +1,10 @@
-from mock import patch
+# -*- coding: utf-8 -*-
+
+from datetime import datetime
+
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from mock import Mock, patch
 
 from identityprovider.models import (
     Account,
@@ -128,3 +134,54 @@ class EmailAddressTestCase(SSOBaseTestCase):
         # original is not available anymore
         emails = EmailAddress.objects.filter(email=email_address)
         self.assertFalse(emails.exists())
+
+
+class InvalidatedEmailAddressTestCase(SSOBaseTestCase):
+
+    def test_date_created_not_default(self):
+        self.assertRaises(
+            IntegrityError,
+            InvalidatedEmailAddress.objects.create, email='foo@foo.com')
+
+    def test_email_valid(self):
+        for valid in ('a@a.com', 'aaaa.bbbb@foo.com', 'a@foo.net'):
+            email = InvalidatedEmailAddress.objects.create(
+                email=valid, date_created=datetime.utcnow())
+            email.full_clean()  # no failure
+
+    def test_email_invalid(self):
+        for invalid in ('', '.', '@', '@foo', '@foo.x', 'a@foo.x', 'foo@bar',
+                        'a@@a.com'):
+            email = InvalidatedEmailAddress.objects.create(
+                email=invalid, date_created=datetime.utcnow())
+            self.assertRaises(
+                ValidationError, email.full_clean)
+
+    def test_unicode(self):
+        email = u'zaraza♥foo@example.com'
+        invalid = InvalidatedEmailAddress.objects.create(
+            email=email, date_created=datetime.utcnow())
+        self.assertEqual(email, unicode(invalid))
+
+    def test_date_invalidated(self):
+        some_date = datetime(2005, 05, 23)
+        invalid = InvalidatedEmailAddress.objects.create(
+            email='foo@example.com', date_created=datetime.utcnow(),
+            date_invalidated=some_date)
+
+        self.assertEqual(invalid.date_invalidated, some_date)
+
+    def test_date_invalidated_default(self):
+        mock_date = Mock()
+        mock_date.return_value = datetime.utcnow()
+        InvalidatedEmailAddress._meta.get_field_by_name(
+            'date_invalidated')[0].default = mock_date
+        invalid = InvalidatedEmailAddress.objects.create(
+            email='foo@example.com', date_created=datetime.utcnow())
+
+        self.assertEqual(invalid.date_invalidated, mock_date.return_value)
+
+    def test_account_notified(self):
+        invalid = InvalidatedEmailAddress.objects.create(
+            email='foo@example.com', date_created=datetime.utcnow())
+        self.assertFalse(invalid.account_notified)
