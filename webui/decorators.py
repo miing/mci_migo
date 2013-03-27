@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 from hashlib import sha1
 
+from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, logout
 from django.contrib.auth.decorators import (
     login_required as django_login_required,
@@ -26,10 +27,19 @@ from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.utils.decorators import available_attrs
 from django.utils.http import urlencode
+from django.utils.translation import ugettext as _
 
 from identityprovider.cookies import set_test_cookie, test_cookie_worked
 from identityprovider.models import twofactor
 from identityprovider.views.utils import get_rpconfig_from_request
+
+
+EMAIL_INVALIDATED = _(
+    'We received a request to remove the email address {email} from your '
+    'account. This email address was previously linked to your account but '
+    'was never verified by you. You will no longer be able to login to your '
+    'account using {email}.'
+)
 
 
 def guest_required(func):
@@ -61,6 +71,16 @@ def _has_only_invalidated_emails(request):
             request, 'account/user_logged_out_no_valid_emails.html')
 
 
+def _has_invalidated_emails_add_warning(request):
+    emails = request.user.invalidatedemailaddress_set.filter(
+        account_notified=False).order_by('date_invalidated')
+    if len(emails) > 0:
+        invalid = emails[0]
+        messages.warning(request, EMAIL_INVALIDATED.format(email=invalid))
+        invalid.account_notified = True
+        invalid.save()
+
+
 def sso_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
                        login_url=None, require_twofactor=False,
                        require_twofactor_freshness=False):
@@ -73,6 +93,8 @@ def sso_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
             response = _has_only_invalidated_emails(request)
             if response:
                 return response
+
+            _has_invalidated_emails_add_warning(request)
 
             rpconfig = get_rpconfig_from_request(request, None)
             u = request.user

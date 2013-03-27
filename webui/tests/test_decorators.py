@@ -8,13 +8,15 @@ from gargoyle.testutils import switches
 
 from mock import ANY, Mock, patch, MagicMock
 
-from identityprovider.models import twofactor
+from identityprovider.models import InvalidatedEmailAddress, twofactor
+from identityprovider.models.const import EmailStatus
 from identityprovider.tests.utils import (
     patch_settings,
     SSOBaseTestCase,
 )
 
 from webui.decorators import (
+    EMAIL_INVALIDATED,
     ratelimit,
     require_twofactor_enabled,
     requires_testing_enabled,
@@ -314,3 +316,90 @@ class SSOLoginRequiredNoEmailsTestCase(
         super(SSOLoginRequiredNoEmailsTestCase, self).setUp()
         self.account.emailaddress_set.all().delete()
         self.account.invalidatedemailaddress_set.all().delete()
+
+
+class SSOLoginRequiredInvalidatedEmailsWarningTestCase(SSOBaseTestCase):
+
+    def setUp(self):
+        super(SSOLoginRequiredInvalidatedEmailsWarningTestCase, self).setUp()
+        self.calls = []
+
+        @sso_login_required
+        def view(request, *args, **kwargs):
+            self.calls.append((request, args, kwargs))
+            return "SUCCESS"
+
+        self.account = self.factory.make_account()
+        self.invalid = self.factory.make_email_for_account(
+            self.account, status=EmailStatus.NEW).invalidate()
+        assert not self.invalid.account_notified
+
+        assert self.account.emailaddress_set.count() == 1
+        assert self.account.invalidatedemailaddress_set.count() == 1
+
+        self.request = Mock()
+        self.request.user = self.account
+        self.view = view
+
+        # patch messages framework to track messages
+        self.mock_messages = self._apply_patch('webui.decorators.messages')
+
+    def assert_view_called_once(self):
+        # the decorated view was called once
+        self.assertEqual(self.calls, [(self.request, (), {})])
+        self.calls = []  # reset
+
+    def assert_warning_shown_for_email(self, email):
+        self.assert_view_called_once()
+        # email is marked as notified
+        invalid = InvalidatedEmailAddress.objects.get(id=email.id)
+        self.assertTrue(invalid.account_notified)
+        # message was shown
+        self.mock_messages.warning.assert_called_with(
+            self.request, EMAIL_INVALIDATED.format(email=invalid))
+
+    def test_warning_shown(self):
+        self.view(self.request)
+        self.assert_warning_shown_for_email(email=self.invalid)
+
+    def test_two_invalidated_emails(self):
+        other = self.factory.make_email_for_account(
+            self.account, status=EmailStatus.NEW).invalidate()
+        assert self.account.invalidatedemailaddress_set.count() == 2
+
+        # call the view for the first time
+        self.view(self.request)
+
+        # view was called and warning was shown for the older email
+        self.assert_warning_shown_for_email(email=self.invalid)
+        # the other email was unchanged
+        unchanged = InvalidatedEmailAddress.objects.get(id=other.id)
+        self.assertFalse(unchanged.account_notified)
+        self.assertEqual(other, unchanged)
+
+        # call the view again
+        self.view(self.request)
+
+        # the 'other' email has to be processed as a warning
+        self.assert_warning_shown_for_email(email=other)
+
+    def test_no_warning_shown_when_no_email(self):
+        self.account.invalidatedemailaddress_set.all().delete()
+
+        self.view(self.request)
+
+        self.assert_view_called_once()
+        # message was not shown
+        self.assertFalse(self.mock_messages.warning.called)
+
+    def test_warning_shown_only_if_account_not_notified_before(self):
+        self.account.invalidatedemailaddress_set.update(account_notified=True)
+
+        self.view(self.request)
+
+        self.assert_view_called_once()
+        # email is unchanged
+        invalid = InvalidatedEmailAddress.objects.get(id=self.invalid.id)
+        self.assertEqual(invalid, self.invalid)
+        # message was not shown
+        self.assertFalse(self.mock_messages.warning.called)
