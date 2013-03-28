@@ -19,20 +19,41 @@ from identityprovider.tests.utils import SSOBaseTestCase, skipOnSqlite
 @skipOnSqlite
 class FailoverTestCase(SSOBaseTestCase):
 
+    @classmethod
+    def setUpClass(self):
+        """Get the current connection params for the non-test database."""
+        # Maintaining the behaviour of the previous TEST_DSN setting
+        # which was set in the local.cfg as:
+        # test_dsn = host=%(db_host)s dbname=%(db_name)s user=%(db_user)s
+        # (ie. the normal database connection).
+        # It would be nice if this was in a re-usable fn, but as it is,
+        # it's taken directly from django.db.backends.postgresql_psycopg2.
+        # base.DatabaseWrapper._cursor. We setup once for the test case
+        # because the settings_dict is updated during the tests.
+        settings_dict = connection.settings_dict
+        conn_params = {
+            'database': settings_dict['NAME'].replace('test_', ''),
+        }
+
+        conn_params.update(settings_dict['OPTIONS'])
+        if 'autocommit' in conn_params:
+            del conn_params['autocommit']
+        if settings_dict['USER']:
+            conn_params['user'] = settings_dict['USER']
+        if settings_dict['PASSWORD']:
+            conn_params['password'] = settings_dict['PASSWORD']
+        if settings_dict['HOST']:
+            conn_params['host'] = settings_dict['HOST']
+        if settings_dict['PORT']:
+            conn_params['port'] = settings_dict['PORT']
+        self.conn_params = conn_params
+
     def setUp(self):
         super(FailoverTestCase, self).setUp()
 
         self.original_db = postgresql_base.Database
         postgresql_base.Database = mockdb
-        try:
-            dsn = settings.TEST_DSN
-        except AttributeError:
-            print """*** To run the tests you need to provide a TEST_DSN
-            setting that will be used throughout the tests, instead
-            of your configured DB_CONNECTIONS.
-            """
-            raise
-        mockdb.fixate_connection(dsn)
+        mockdb.fixate_connection(self.conn_params)
 
         db = settings.DATABASES[DEFAULT_DB_ALIAS]
         self.test_db_connections = [
@@ -68,7 +89,9 @@ class FailoverTestCase(SSOBaseTestCase):
         """ Check that we attempt to connect N times """
         with patch.multiple(settings, DBFAILOVER_ATTEMPTS=3):
             mockdb.fail_next_N_connections(2)
-            self.client.get('/')
+            response = self.client.get('/')
+
+        self.assertEqual(200, response.status_code)
 
     def test_master_fail(self):
         """Check that we switch to readonly when the master fails."""

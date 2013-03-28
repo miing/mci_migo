@@ -186,7 +186,6 @@ def _create_local_cfg():
         [__main__]
         includes = config/devel.cfg
     """ % (os.path.abspath(os.curdir), env.virtualenv))
-	config += "test_dsn = host=%(db_host)s dbname=%(db_name)s user=%(db_user)s"
 	
 	with file('dj/local.cfg', 'w') as local_cfg: 
 		local_cfg.write(config)

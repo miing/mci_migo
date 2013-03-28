@@ -55,7 +55,6 @@ class SSOSchema(DjangoSchema):
                                  ' reports will be stored in')
     pgconnect_timeout = IntOption(default=10)
     serve_static_media = BoolOption()
-    test_dsn = StringOption()
     google_analytics_id = StringOption()
     support_phone = StringOption()
 
