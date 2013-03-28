@@ -128,7 +128,7 @@ def send_impersonation_email(email):
     """Send an email to user warning of attempted registration"""
     url = urljoin(settings.SSO_ROOT_URL, reverse('forgot_password'))
     context = {
-        'forgotten_password_url': url,
+        'forgotten_password_url': url, 'to_email': email,
     }
     send_branded_email(
         _("Warning"), 'email/impersonate-warning.txt', context, email)

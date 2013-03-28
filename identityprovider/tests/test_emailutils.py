@@ -280,9 +280,14 @@ class SendEmailTestCase(SSOBaseTestCase):
         context = {
             'forgotten_password_url': url,
             'brand_description': self.brand_desc,
+            'to_email': self.email,
         }
         self.assert_email_properly_formatted(
             'Warning', 'email/impersonate-warning.txt', context)
+        email = mail.outbox[0]
+        self.assertIn("If it wasn't you, no need to worry. Your account is "
+                      "safe and there is nothing you need to do.",
+                      email.body)
 
     def test_send_new_user_email_no_platform(self):
         send_new_user_email(
