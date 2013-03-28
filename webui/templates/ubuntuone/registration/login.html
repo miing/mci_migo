@@ -106,15 +106,18 @@ LICENSE).
 
 {% block extra_js %}
 <script type="text/javascript">
-    document.loginform.email.focus();
+    YUI().use('node', function(Y) {
+        var email = Y.one('#id_email');
 
+        // autofocus shiv
+        if (!("autofocus" in document.createElement("input"))) {
+            email.focus();
+        }
 
-    YUI().use("node", function(Y) {
-
+        // radio button behaviour
         Y.one('.new-user input').on('click', function () {
             Y.config.win.location.href = '{% url new_account %}';
         });
-
     });
 </script>
 {% endblock %}

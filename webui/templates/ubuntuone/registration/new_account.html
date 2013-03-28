@@ -131,14 +131,18 @@ To be replaced by u1 port
 {% endcomment %}
 
 <script type="text/javascript">
-    document.newaccountform.email.focus();
+    YUI().use('node', function(Y) {
+        var email = Y.one('#id_email');
 
-    YUI().use("node", function(Y) {
+        // autofocus shiv
+        if (!("autofocus" in document.createElement("input"))) {
+            email.focus();
+        }
 
+        // radio button behaviour
         Y.one('.returning-user input').on('click', function () {
             Y.config.win.location.href = '{% url login %}';
         });
-
     });
 </script>
 {% endblock %}

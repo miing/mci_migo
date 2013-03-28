@@ -4,6 +4,7 @@
 import logging
 
 from django import forms
+from django.conf import settings
 from django.forms import Form, fields, widgets
 from django.utils import translation
 from django.utils.translation import ugettext as _
@@ -53,19 +54,35 @@ email_errors = {
 
 
 class GenericEmailForm(forms.Form):
+    email_widget_conf = {'class': 'textType', 'size': '26'}
+
+    # add placeholder, autofocus and email type for the u1 brand
+    if settings.BRAND == 'ubuntuone':
+        email_widget_conf['placeholder'] = _('Ubuntu One email')
+        email_widget_conf['autofocus'] = 'autofocus'
+        email_widget = widgets.Input(attrs=email_widget_conf)
+        email_widget.input_type = 'email'
+    else:
+        email_widget = widgets.TextInput(attrs=email_widget_conf)
+
     email = fields.EmailField(
         error_messages=email_errors,
-        widget=widgets.TextInput(attrs={'class': 'textType', 'size': '26'}),
+        widget=email_widget,
     )
 
 
 class LoginForm(GenericEmailForm):
+    password_widget_conf = {
+        'class': 'textType',
+        'size': ' 26',
+    }
+
+    if settings.BRAND == 'ubuntuone':
+        password_widget_conf['placeholder'] = _('Password')
+
     password = fields.CharField(
         error_messages=default_errors,
-        widget=widgets.PasswordInput(attrs={
-            'class': 'textType',
-            'size': ' 26',
-        }),
+        widget=widgets.PasswordInput(attrs=password_widget_conf),
     )
 
 
@@ -80,21 +97,32 @@ class TwoFactorForm(forms.Form):
 
 
 class ResetPasswordForm(forms.Form):
+
+    password_widget_conf = {
+        'class': 'textType',
+        'size': '20',
+    }
+    passwordconfirm_widget_conf = {
+        'class': 'textType',
+        'size': '20',
+    }
+
+    if settings.BRAND == 'ubuntuone':
+        password_widget_conf['placeholder'] = _(
+            'Password with at least 8 characters'
+        )
+
+        passwordconfirm_widget_conf['placeholder'] = _('Retype password')
+
     password = fields.CharField(
         error_messages=default_errors,
         help_text=PASSWORD_POLICY_HELP_TEXT,
         validators=[validate_password_policy],
-        widget=widgets.PasswordInput(attrs={
-            'class': 'textType',
-            'size': '20',
-        }),
+        widget=widgets.PasswordInput(attrs=password_widget_conf),
     )
     passwordconfirm = fields.CharField(
         error_messages=default_errors,
-        widget=widgets.PasswordInput(attrs={
-            'class': 'textType',
-            'size': '20',
-        }),
+        widget=widgets.PasswordInput(attrs=passwordconfirm_widget_conf),
     )
 
     def clean(self):
@@ -112,9 +140,17 @@ class OldNewAccountForm(GenericEmailForm):
 
 
 class NewAccountForm(GenericEmailForm, ResetPasswordForm):
+    displayname_widget_conf = {
+        'class': 'textType',
+        'size': '20',
+    }
+
+    if settings.BRAND == 'ubuntuone':
+        displayname_widget_conf['placeholder'] = _('Your name')
+
     displayname = fields.CharField(
         error_messages=default_errors,
-        widget=widgets.TextInput(attrs={'class': 'textType', 'size': '20'}),
+        widget=widgets.TextInput(attrs=displayname_widget_conf),
     )
 
 
