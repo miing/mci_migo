@@ -3,6 +3,7 @@ from django.conf import settings
 from identityprovider.models.account import Account
 from identityprovider.models.const import TokenType
 from identityprovider.tests.helpers import OpenIDTestCase
+from identityprovider.utils import get_current_brand
 
 
 class SSOWorkflowCompleteTestCase(OpenIDTestCase):
@@ -101,7 +102,7 @@ class SSOWorkflowCompleteTestCase(OpenIDTestCase):
         response = self.client.get(link)
         title = self.get_from_response(response, 'h1.main').text()
         reset_pwd_expected = "Reset your {0} password".format(
-            settings.BRAND_DESCRIPTION)
+            settings.BRAND_DESCRIPTIONS.get(get_current_brand()))
         self.assertEqual(title, reset_pwd_expected)
 
         data = dict(email=self.new_email)

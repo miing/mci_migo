@@ -9,10 +9,8 @@ from gargoyle.testutils import switches
 
 from unittest import skipUnless
 
-from u1testutils.django import patch_settings
-
 from identityprovider.models.openidmodels import OpenIDRPConfig
-from identityprovider.tests.utils import patch_brand_settings
+from identityprovider.tests.utils import patch_settings
 
 
 class UbuntuLoginTemplateTestCase(TestCase):
@@ -23,7 +21,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
             logo='http://localhost/img.png')
         mock_get_rpconfig.return_value = rpconfig
 
-        with patch_brand_settings(BRAND='ubuntu'):
+        with patch_settings(BRAND='ubuntu'):
             response = self.client.get('/+login')
 
         self.assertTemplateUsed(response, 'registration/login.html')
@@ -37,14 +35,14 @@ class UbuntuLoginTemplateTestCase(TestCase):
             logo='')
         mock_get_rpconfig.return_value = rpconfig
 
-        with patch_brand_settings(BRAND='ubuntu'):
+        with patch_settings(BRAND='ubuntu'):
             response = self.client.get('/+login')
 
         self.assertTemplateUsed(response, 'registration/login.html')
         self.assertNotContains(response, 'id="rpconfig_logo"')
 
     def render_u1_login_with_rpconfig(self, rpconfig):
-        with patch_brand_settings(BRAND='ubuntuone'):
+        with switches(BRAND_UBUNTUONE=True):
             return render_to_string(
                 'registration/login.html',
                 dict(rpconfig=rpconfig, brand_description="Ubuntu One"))

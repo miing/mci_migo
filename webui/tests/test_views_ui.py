@@ -42,7 +42,6 @@ from identityprovider.tests.utils import (
     MockHandler,
     SSOBaseTestCase,
     patch_settings,
-    patch_brand_settings,
 )
 from identityprovider.utils import validate_launchpad_password
 from identityprovider.views import server
@@ -277,8 +276,7 @@ class LogoutTestCase(UIViewsBaseTestCase):
     def test_logout(self):
         self.authenticate()
         r = self.client.get(reverse('logout'))
-        self.assertTemplateUsed(r,
-                                settings.BRAND + '/registration/logout.html')
+        self.assertTemplateUsed(r, 'registration/logout.html')
 
     def test_logout_preserve_token(self):
         self.authenticate()
@@ -1473,7 +1471,7 @@ class TwoFactorLoginLPTestCase(TwoFactorLoginTestCase):
 
     def setUp(self):
         super(TwoFactorLoginLPTestCase, self).setUp()
-        brand_patch = patch_brand_settings(BRAND='launchpad')
+        brand_patch = patch_settings(BRAND='launchpad')
         brand_patch.start()
         self.addCleanup(brand_patch.stop)
 

@@ -7,6 +7,7 @@ from django.core import mail
 from identityprovider.models.authtoken import AuthToken
 
 from identityprovider.tests.utils import SSOBaseTestCase
+from identityprovider.utils import get_current_brand
 
 
 class LoginTest(SSOBaseTestCase):
@@ -39,7 +40,8 @@ class NewAccountTest(SSOBaseTestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].subject,
-            u"%s: Password reset request" % settings.BRAND_DESCRIPTION)
+            u"%s: Password reset request" % settings.BRAND_DESCRIPTIONS.get(
+                get_current_brand()))
         self.assertTrue('nobody@debian.org' in mail.outbox[0].body)
         self.assertTrue('+new_account' in mail.outbox[0].body)
 
@@ -61,7 +63,8 @@ class ForgottenPasswordTest(SSOBaseTestCase):
         self.assertIn("test@canonical.com", response.content)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject,
-                         u"%s: Warning" % settings.BRAND_DESCRIPTION)
+                         u"%s: Warning" % settings.BRAND_DESCRIPTIONS.get(
+                             get_current_brand()))
         mail.outbox = []
 
     def test_forgottenform_success(self):
@@ -75,7 +78,8 @@ class ForgottenPasswordTest(SSOBaseTestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].subject,
-            u"%s: Forgotten Password" % settings.BRAND_DESCRIPTION)
+            u"%s: Forgotten Password" % settings.BRAND_DESCRIPTIONS.get(
+                get_current_brand()))
         mail.outbox = []
 
         AuthToken.objects.all().delete()

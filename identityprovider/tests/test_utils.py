@@ -2,7 +2,10 @@
 # GNU Affero General Public License version 3 (see the file LICENSE).
 import urllib2
 
+from django.conf import settings
 from django.test import TestCase
+from gargoyle.testutils import switches
+from mock import patch
 
 from identityprovider.models.person import Person
 from identityprovider.utils import (
@@ -12,7 +15,11 @@ from identityprovider.utils import (
     polite_form_errors,
     validate_launchpad_password,
 )
-from identityprovider.tests.utils import SSOBaseTestCase
+from identityprovider.tests.utils import (
+    patch_settings,
+    SSOBaseTestCase,
+)
+from identityprovider.utils import get_current_brand
 
 
 class CanonicalUrlTestCase(SSOBaseTestCase):
@@ -100,3 +107,58 @@ class HttpRequestWithTimeoutTestCase(TestCase):
         data, headers = http_request_with_timeout("http://example.com",
                                                   {"i1": "v1", "i2": "v2"})
         self.assertTrue("&" in self.request.data)
+
+
+class GetCurrentBrandTestCase(TestCase):
+    def test_defaults_to_ubuntu_brand(self):
+        with patch_settings(BRAND=None):
+            brand = get_current_brand()
+
+        self.assertEqual('ubuntu', brand)
+
+    def test_no_switch_but_brand_setting_lp(self):
+        with patch_settings(BRAND='launchpad'):
+            brand = get_current_brand()
+
+        self.assertEqual('launchpad', brand)
+
+    @switches(BRAND_UBUNTUONE=True)
+    def test_feature_switch_for_u1(self):
+        brand = get_current_brand()
+
+        self.assertEqual('ubuntuone', brand)
+
+    @switches(BRAND_LAUNCHPAD=True)
+    def test_feature_switch_for_lp(self):
+        brand = get_current_brand()
+
+        self.assertEqual('launchpad', brand)
+
+    @switches(BRAND_UBUNTUONE=True)
+    def test_feature_switch_for_u1_ignored(self):
+        with patch_settings(BRAND='launchpad'):
+            brand = get_current_brand()
+
+        self.assertEqual('launchpad', brand)
+
+    @switches(BRAND_LAUNCHPAD=True)
+    def test_feature_switch_for_lp_ignored(self):
+        with patch_settings(BRAND='ubuntuone'):
+            brand = get_current_brand()
+
+        self.assertEqual('ubuntuone', brand)
+
+    def get_is_active_mock(self):
+        patcher = patch('gargoyle.gargoyle.is_active')
+        self.addCleanup(patcher.stop)
+        return patcher.start()
+
+    def test_default_on_error(self):
+        """Any exception during get_current_brand results in default."""
+        mock_is_active = self.get_is_active_mock()
+        mock_is_active.side_effect = Exception('bang')
+
+        with patch.multiple(settings, BRAND='ubuntu'):
+            brand = get_current_brand()
+
+        self.assertEqual('ubuntu', brand)

@@ -12,6 +12,7 @@ from mock import patch
 
 from identityprovider.tests import mockdb
 from identityprovider.readonly import ReadOnlyManager
+from identityprovider.utils import get_current_brand
 
 from identityprovider.tests.utils import SSOBaseTestCase, skipOnSqlite
 
@@ -116,7 +117,7 @@ class FailoverTestCase(SSOBaseTestCase):
             mockdb.fail_next_N_connections(6)
             response = self.client.get('/')
             apology = (u"Sorry, something just went wrong in %s." %
-                       settings.BRAND_DESCRIPTION)
+                       settings.BRAND_DESCRIPTIONS.get(get_current_brand()))
             self.assertContains(response, apology, status_code=500)
 
     def test_files_are_in_the_right_place(self):

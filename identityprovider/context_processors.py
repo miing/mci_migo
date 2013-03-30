@@ -17,6 +17,7 @@ from django.conf import settings
 from django.core import context_processors
 
 import identityprovider.signed as signed
+from identityprovider.utils import get_current_brand
 
 
 def readonly(request):
@@ -71,7 +72,8 @@ def debug(request):
 
 
 def branding(request=None):
+    brand = get_current_brand()
     return {
-        'brand': settings.BRAND,
-        'brand_description': settings.BRAND_DESCRIPTION,
+        'brand': brand,
+        'brand_description': settings.BRAND_DESCRIPTIONS.get(brand, ''),
     }

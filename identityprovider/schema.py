@@ -76,8 +76,11 @@ class SSOSchema(DjangoSchema):
     # branding
     class branding(Section):
         brand = StringOption()
-        brand_description = StringOption()
-        brand_template_dir = StringOption()
+        brand_descriptions = DictOption(item=StringOption(), spec={
+            'ubuntu': StringOption(default='Ubuntu Single Sign On'),
+            'launchpad': StringOption(default='Launchpad Login Service'),
+            'ubuntuone': StringOption(default='Ubuntu One'),
+        })
 
     # captcha
     class captcha(Section):

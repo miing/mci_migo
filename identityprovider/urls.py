@@ -43,7 +43,7 @@ if settings.DEBUG:
         '',
         (r'(favicon.ico)', 'django.views.static.serve',
             {'document_root': settings.SSO_MEDIA_ROOT +
-             settings.BRAND_TEMPLATE_DIR}),
+             settings.BRAND}),
         (r'^i18n/', include('django.conf.urls.i18n')),
     )
 

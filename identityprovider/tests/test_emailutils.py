@@ -28,10 +28,10 @@ from identityprovider.models import Account, AuthToken, EmailAddress
 from identityprovider.models.const import EmailStatus, TokenType
 from identityprovider.tests.utils import (
     patch_settings,
-    patch_brand_settings,
     SSOBaseTestCase,
     SSOBaseUnittestTestCase,
 )
+from identityprovider.utils import get_current_brand
 
 
 class FormatAddressTestCase(unittest.TestCase):
@@ -124,8 +124,7 @@ class SendBrandedEmailTestCase(SSOBaseUnittestTestCase):
 
         p = patch_settings(
             NOREPLY_FROM_ADDRESS=self.noreply,
-            BRAND_DESCRIPTION='BRAND',
-            BRAND_TEMPLATE_DIR='BRANDDIR',
+            BRAND_DESCRIPTIONS={get_current_brand(): 'BRAND'},
         )
         p.start()
         self.addCleanup(p.stop)
@@ -178,8 +177,8 @@ class SendEmailTestCase(SSOBaseTestCase):
         super(SendEmailTestCase, self).setUp()
         self.account = Account.objects.get_by_email('test@canonical.com')
 
-        p = patch_brand_settings(
-            BRAND_DESCRIPTION=self.brand_desc,
+        p = patch_settings(
+            BRAND_DESCRIPTIONS={self.brand: self.brand_desc},
             BRAND=self.brand,
             TEMPLATE_STRING_IF_INVALID=self.template_string_if_invalid,
             SSO_ROOT_URL=self.brand_url,
@@ -253,7 +252,7 @@ class SendEmailTestCase(SSOBaseTestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
         self.assertEqual(email.subject,
-                         settings.BRAND_DESCRIPTION + ': ' + subject)
+                         self.brand_desc + ': ' + subject)
         self.assertEqual(render_to_string(template, context), email.body)
         self.assertNotIn(self.template_string_if_invalid, email.body)
 

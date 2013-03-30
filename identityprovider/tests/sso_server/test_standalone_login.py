@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from identityprovider.models.account import Account
 from identityprovider.models.const import TokenType
 from identityprovider.tests.helpers import FunctionalTestCase
+from identityprovider.utils import get_current_brand
 
 
 class StandaloneLoginTestCase(FunctionalTestCase):
@@ -18,7 +19,8 @@ class StandaloneLoginTestCase(FunctionalTestCase):
         """
         response = self.client.get(self.base_url)
         content = self.get_from_response(response, '#content').text()
-        self.assertIn("Log in to " + settings.BRAND_DESCRIPTION, content)
+        self.assertIn("Log in to " + settings.BRAND_DESCRIPTIONS.get(
+            get_current_brand()), content)
         self.assertIn("_qa_create_account_link", response.content)
 
         response = self.login()
@@ -69,7 +71,7 @@ class StandaloneLoginTestCase(FunctionalTestCase):
 
         response = self.client.get('/+forgot_password', follow=True)
         reset_pwd_expected = "Reset your {0} password".format(
-            settings.BRAND_DESCRIPTION)
+            settings.BRAND_DESCRIPTIONS.get(get_current_brand()))
         self.assertContains(response, reset_pwd_expected)
 
         response = self.client.post(

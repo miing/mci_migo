@@ -14,6 +14,7 @@ from gargoyle import gargoyle
 
 from identityprovider.models import Account, AuthToken, EmailAddress
 from identityprovider.models.const import EmailStatus, TokenType
+from identityprovider.utils import get_current_brand
 
 
 def format_address(address, name=None):
@@ -75,12 +76,14 @@ def send_templated_email(subject, template, context, email, from_address=None):
 
 
 def send_branded_email(subject, template, context, email, from_address=None):
+    brand_description = settings.BRAND_DESCRIPTIONS.get(
+        get_current_brand(), '')
     if from_address is None:
         from_address = format_address(
             settings.NOREPLY_FROM_ADDRESS,
-            settings.BRAND_DESCRIPTION
+            brand_description
         )
-    subject = u"%s: %s" % (settings.BRAND_DESCRIPTION, subject)
+    subject = u"%s: %s" % (brand_description, subject)
     return send_templated_email(subject, template, context, email,
                                 from_address)
 

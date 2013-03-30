@@ -3,6 +3,7 @@ from django.conf import settings
 from identityprovider.models.account import Account
 from identityprovider.models.openidmodels import OpenIDRPSummary
 from identityprovider.tests.helpers import FunctionalTestCase
+from identityprovider.utils import get_current_brand
 
 
 class HomePageTestCase(FunctionalTestCase):
@@ -14,7 +15,8 @@ class HomePageTestCase(FunctionalTestCase):
         # user is presented with a login form:
 
         response = self.client.get(self.base_url)
-        expected = "Log in to " + settings.BRAND_DESCRIPTION
+        expected = "Log in to " + settings.BRAND_DESCRIPTIONS.get(
+            get_current_brand())
         self.assertContains(response, expected)
 
         # However, if the user is logged in, they are presented with some

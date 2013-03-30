@@ -173,23 +173,6 @@ class patch_settings(object):
             reload(sys.modules[urlconf])
 
 
-class patch_brand_settings(patch_settings):
-
-    def __init__(self, **kwargs):
-        super(patch_brand_settings, self).__init__(**kwargs)
-        if 'BRAND' in kwargs and 'TEMPLATE_DIRS' not in kwargs:
-            new_brand = kwargs['BRAND']
-            # fix the TEMPLATE_DIRS setting so templates from BRAND are used
-
-            def update_dir(d):
-                path, _, brand = d.rpartition('/')
-                if brand == settings.BRAND:
-                    return '/'.join([path, new_brand])
-                return d
-            template_dirs = map(update_dir, settings.TEMPLATE_DIRS)
-            self.kwargs['TEMPLATE_DIRS'] = template_dirs
-
-
 class SSOBaseTestCaseMixin(object):
     factory = SSOObjectFactory()
 

@@ -365,8 +365,7 @@ class LogoutView(object):
         twofactor.logout(request)
         self.set_orequest(request.session, token, raw_orequest)
 
-        template_file = ('%s/registration/logout.html' %
-                         settings.BRAND_TEMPLATE_DIR)
+        template_file = 'registration/logout.html'
         response = render_to_response(template_file,
                                       RequestContext(request, context))
 

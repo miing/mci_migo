@@ -39,20 +39,7 @@ def get_django_settings(*keys):
 
 def brand(brand):
 	"""Setup brand names"""
-	s = get_django_settings('TEMPLATE_DIRS', 'BRAND')
-	template_dirs = s['TEMPLATE_DIRS']
-	current_brand = s['BRAND']
-	
-	def update_dir(d):
-		path, _, dirname = d.rpartition('/')
-        if dirname == current_brand:
-            return '/'.join([path, brand])
-        return d
-	
-	template_dirs = map(update_dir, template_dirs)
-	os.environ["CONFIGGLUE_DJANGO_TEMPLATE_DIRS"] = json.dumps(template_dirs)
 	os.environ["CONFIGGLUE_BRANDING_BRAND"] = brand
-	os.environ["CONFIGGLUE_BRANDING_BRAND_TEMPLATE_DIR"] = brand
 
 def manage(command, *args, **kwargs):
     """Run manage.py command"""

@@ -48,6 +48,7 @@ from identityprovider.tests.utils import (
     authorization_header_from_token,
     patch_settings,
 )
+from identityprovider.utils import get_current_brand
 
 LOCALHOST = settings.SSO_ROOT_URL.rstrip('/')
 
@@ -262,7 +263,7 @@ class MultiLangOpenIDTestCase(TestCase):
     def test_no_lang_specified(self):
         response = self.client.get('/+openid')
         expected = "This is {0}, built on OpenID".format(
-            settings.BRAND_DESCRIPTION)
+            settings.BRAND_DESCRIPTIONS.get(get_current_brand()))
         self.assertContains(response, expected)
 
     def test_german(self):

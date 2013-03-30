@@ -45,7 +45,8 @@ class BrandingTestCase(TestCase):
         )
         with patch_settings(
                 BRAND=expected['brand'],
-                BRAND_DESCRIPTION=expected['brand_description']):
+                BRAND_DESCRIPTIONS=dict(
+                    zaraza=expected['brand_description'])):
             actual = context_processors.branding(request)
 
         self.assertEqual(actual, expected)
@@ -56,3 +57,11 @@ class BrandingTestCase(TestCase):
     def test_result_with_request(self):
         request = RequestFactory().get('')
         self.assert_result(request)
+
+    def test_no_description(self):
+        with patch_settings(
+                BRAND='zaraza', BRAND_DESCRIPTIONS={}):
+            result = context_processors.branding(None)
+
+        self.assertEqual('zaraza', result['brand'])
+        self.assertEqual('', result['brand_description'])

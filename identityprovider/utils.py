@@ -1,5 +1,6 @@
 # Copyright 2010 Canonical Ltd.  This software is licensed under the
 # GNU Affero General Public License version 3 (see the file LICENSE).
+from __future__ import absolute_import
 
 import binascii
 import hashlib
@@ -7,10 +8,11 @@ import random
 import urllib
 import urllib2
 import socket
+import gargoyle
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
-
 
 SALT_LENGTH = 20
 
@@ -160,3 +162,23 @@ def add_user_to_team(account, teamname, nickname=None, create_team=True):
                                   teamowner=p.id, name=teamname)
 
     TeamParticipation.objects.create(team=t, person=p)
+
+
+def get_current_brand():
+    brand = settings.BRAND or 'ubuntu'
+    # Branding can only be switched on and off it the configs are
+    # using the default 'ubuntu' brand. This is because the LP
+    # instance cannot run with a switch (as it uses the same DB).
+    if brand == 'ubuntu':
+        # As calling get_current_brand can hit the db for the
+        # switch, and the DB could raise an error, we want
+        # the error to be handled and displayed.
+        try:
+            if gargoyle.gargoyle.is_active('BRAND_LAUNCHPAD'):
+                brand = 'launchpad'
+            elif gargoyle.gargoyle.is_active('BRAND_UBUNTUONE'):
+                brand = 'ubuntuone'
+        except Exception:
+            # Go with the default from the setting above.
+            pass
+    return brand

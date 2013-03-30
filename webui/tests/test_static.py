@@ -2,7 +2,10 @@
 # GNU Affero General Public License version 3 (see the file LICENSE).
 
 from identityprovider.tests import DEFAULT_USER_PASSWORD
-from identityprovider.tests.utils import SSOBaseTestCase, patch_brand_settings
+from identityprovider.tests.utils import (
+    patch_settings,
+    SSOBaseTestCase,
+)
 
 
 class DummyRequest(object):
@@ -16,9 +19,9 @@ class UbuntuBrandingTestCase(SSOBaseTestCase):
 
     def setUp(self):
         super(UbuntuBrandingTestCase, self).setUp()
-        brand_patch = patch_brand_settings(
+        brand_patch = patch_settings(
             BRAND=self.brand,
-            BRAND_DESCRIPTION=self.brand_desc,
+            BRAND_DESCRIPTIONS={self.brand: self.brand_desc},
         )
         brand_patch.start()
         self.addCleanup(brand_patch.stop)
