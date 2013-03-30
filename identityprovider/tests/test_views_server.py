@@ -6,13 +6,13 @@ import datetime
 import urlparse
 
 from random import randint
+from urllib import quote, quote_plus
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
-from django.test import TestCase
 from gargoyle.testutils import switches
 from mock import Mock, patch
 from openid.extensions.sreg import SRegRequest
@@ -23,7 +23,7 @@ from openid.message import (
     Message,
 )
 from openid.yadis.constants import YADIS_HEADER_NAME
-from urllib import quote, quote_plus
+from pyquery import PyQuery
 
 import identityprovider.signed as signed
 from identityprovider.models import (
@@ -37,6 +37,7 @@ from identityprovider.models.account import LPOpenIdIdentifier
 from identityprovider.models.const import (
     AccountStatus,
     AccountCreationRationale,
+    EmailStatus,
 )
 from identityprovider.models.person import PersonLocation
 from identityprovider.models.authtoken import create_token
@@ -90,7 +91,7 @@ class HandleOpenIDErrorTestCase(SSOBaseTestCase):
 
     def test_handle_openid_error_with_encode_url(self):
         params = {'openid.return_to': 'http://localhost/'}
-        r = self.client.get('/+openid', params)
+        r = self.client.get(reverse('server-openid'), params)
         query = self.get_query(r)
         error_msg = 'No+mode+value+in+message+'
         self.assertEqual(r.status_code, 302)
@@ -99,7 +100,7 @@ class HandleOpenIDErrorTestCase(SSOBaseTestCase):
 
     def test_handle_openid_error_other(self):
         params = {'openid.mode': 'checkid_setup'}
-        r = self.client.get('/+openid', params)
+        r = self.client.get(reverse('server-openid'), params)
         error_mode = "mode:error"
         error_msg = "error:Missing required field 'return_to'"
         self.assertEqual(r.status_code, 200)
@@ -112,34 +113,39 @@ class ProcessOpenIDRequestTestCase(SSOBaseTestCase):
     # tests for the _process_openid_request method
 
     def test_process_openid_request_no_orequest(self):
-        r = self.client.get('/+openid')
+        r = self.client.get(reverse('server-openid'))
         self.assertEqual(r.status_code, 200)
         self.assertTemplateUsed(r, 'server/server_info.html')
 
 
 class HandleUserResponseTestCase(SSOBaseTestCase):
-    fixtures = ['test']
+
+    email = 'mark@example.com'
+    openid_identifier = 'mark_oid'
+    openid_url = settings.SSO_ROOT_URL + '+id/mark_oid'
+    url = reverse('server-openid')
 
     def setUp(self):
         super(HandleUserResponseTestCase, self).setUp()
-
         # create a trusted rpconfig
-        self.rpconfig = OpenIDRPConfig(trust_root='http://localhost/')
-        self.rpconfig.save()
-
+        self.rpconfig = OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/')
         self.params = {'openid.trust_root': 'http://localhost/',
                        'openid.return_to': 'http://localhost/',
                        'openid.identity': IDENTIFIER_SELECT,
                        'openid.claimed_id': 'http://localhost/~userid',
                        'openid.ns': OPENID2_NS,
                        'openid.mode': 'checkid_setup'}
+        self.account = self.factory.make_account(
+            email=self.email, password=DEFAULT_USER_PASSWORD,
+            openid_identifier=self.openid_identifier)
 
     # tests for the _handle_user_response method
 
     def test_handle_user_response_checkid_immediate(self):
         self.params['openid.mode'] = 'checkid_immediate'
 
-        r = self.client.get('/+openid', self.params)
+        r = self.client.get(self.url, self.params)
         query = self.get_query(r)
         self.assertEqual(r.status_code, 302)
         self.assertEqual(query['openid.mode'], 'setup_needed')
@@ -147,7 +153,7 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
     def test_handle_user_response_no_valid_openid(self):
         self.params.update({'openid.identity': 'bogus',
                             'openid.claimed_id': 'bogus'})
-        r = self.client.get('/+openid', self.params)
+        r = self.client.get(self.url, self.params)
         self.assertEqual(r.status_code, 200)
         self.assertTemplateUsed(r, 'server/invalid_identifier.html')
 
@@ -156,25 +162,21 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
         self.rpconfig.auto_authorize = True
         self.rpconfig.save()
 
-        account = Account.objects.get_by_email('mark@example.com')
-        self.client.login(username='mark@example.com',
-                          password=DEFAULT_USER_PASSWORD)
-        r = self.client.get('/+openid', self.params)
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+        r = self.client.get(self.url, self.params)
         query = self.get_query(r)
         self.assertEqual(r.status_code, 302)
         self.assertEqual(query['openid.mode'], 'id_res')
         self.assertEqual(query['openid.identity'],
-                         quote_plus(account.openid_identity_url))
+                         quote_plus(self.account.openid_identity_url))
 
     def test_handle_user_response_openid_is_authorized_other_id(self):
         self.rpconfig.auto_authorize = True
         self.rpconfig.save()
 
-        self.params['openid.identity'] = \
-            settings.SSO_ROOT_URL + '+id/mark_oid'
-        self.client.login(username='mark@example.com',
-                          password=DEFAULT_USER_PASSWORD)
-        r = self.client.get('/+openid', self.params)
+        self.params['openid.identity'] = self.openid_url
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+        r = self.client.get(self.url, self.params)
         query = self.get_query(r)
         self.assertEqual(r.status_code, 302)
         self.assertEqual(query['openid.mode'], 'id_res')
@@ -182,23 +184,22 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
                          quote_plus(self.params['openid.identity']))
 
     def test_handle_user_response_user_is_authenticated(self):
-        self.params['openid.identity'] = \
-            settings.SSO_ROOT_URL + '+id/other_oid'
-        self.client.login(username='mark@example.com',
-                          password=DEFAULT_USER_PASSWORD)
-        r = self.client.get('/+openid', self.params)
+        self.params['openid.identity'] = (settings.SSO_ROOT_URL +
+                                          '+id/other_oid')
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+        r = self.client.get(self.url, self.params)
         query = self.get_query(r)
         self.assertEqual(r.status_code, 302)
         self.assertEqual(query['openid.mode'], 'cancel')
 
     def test_handle_user_response_decide(self):
-        r = self.client.get('/+openid', self.params)
+        r = self.client.get(self.url, self.params)
         self.assertEqual(r.status_code, 302)
         self.assertTrue(r['Location'].endswith('+decide'))
 
     def test_handle_user_response_with_referer(self):
         META = {'HTTP_REFERER': 'http://localhost/'}
-        r = self.client.get('/+openid', self.params, **META)
+        r = self.client.get(self.url, self.params, **META)
         openid_referer = self.client.cookies.get('openid_referer')
         self.assertEqual(r.status_code, 302)
         self.assertTrue(r['Location'].endswith('+decide'))
@@ -207,16 +208,14 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
     def get_login_after_redirect_from_consumer(self):
         self.rpconfig.logo = 'http://someserver/logo.png'
         self.rpconfig.save()
-        r = self.client.get('/+openid', self.params, follow=True)
-        return r
+        return self.client.get(self.url, self.params, follow=True)
 
     def get_new_account_after_redirect_to_login_from_consumer(self):
         r = self.get_login_after_redirect_from_consumer()
         path_parts = r.request['PATH_INFO'].split('/')
         token = path_parts[1]
         new_account_url = '/%s/+new_account' % token
-        r = self.client.get(new_account_url)
-        return r
+        return self.client.get(new_account_url)
 
     def test_logo_for_rpconfig_on_decide_page(self):
         r = self.get_login_after_redirect_from_consumer()
@@ -245,7 +244,7 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
         self.assertEqual(r.context['rpconfig'], self.rpconfig)
 
 
-class MultiLangOpenIDTestCase(TestCase):
+class MultiLangOpenIDTestCase(SSOBaseTestCase):
 
     def setUp(self):
         super(MultiLangOpenIDTestCase, self).setUp()
@@ -261,33 +260,37 @@ class MultiLangOpenIDTestCase(TestCase):
         return tag % (lang, lang)
 
     def test_no_lang_specified(self):
-        response = self.client.get('/+openid')
+        response = self.client.get(reverse('server-openid'))
         expected = "This is {0}, built on OpenID".format(
             settings.BRAND_DESCRIPTIONS.get(get_current_brand()))
         self.assertContains(response, expected)
+        self.assertEqual('en', self.client.session['django_language'])
 
     def test_german(self):
-        response = self.client.get('/de/+openid')
+        response = self.client.get(reverse('server-openid',
+                                           kwargs=dict(lang='de')))
         self.assertContains(response, self.flag_icon('de'))
         self.assertEqual('de', self.client.session['django_language'])
 
     def test_german_with_country_code(self):
         # This should default back to 'de'.
-        response = self.client.get('/de_CH/+openid')
+        response = self.client.get(reverse('server-openid',
+                                           kwargs=dict(lang='de_CH')))
         self.assertContains(response, self.flag_icon('de'))
         self.assertEqual('de', self.client.session['django_language'])
 
     def test_unsupported_language(self):
-        response = self.client.get('/sw/+openid')
+        response = self.client.get(reverse('server-openid',
+                                           kwargs=dict(lang='sw')))
         self.assertContains(response, self.flag_icon('en'))
         self.assertEqual('en', self.client.session['django_language'])
 
     def test_language_persists_in_session(self):
-        self.client.get('/de/+openid')
+        self.client.get(reverse('server-openid', kwargs=dict(lang='de')))
         self.assertEqual('de', self.client.session['django_language'])
         # Requesting a second time will still bring back German
         # if no other setting takes precedence (like the user's preference)
-        self.client.get('/+openid')
+        self.client.get(reverse('server-openid'))
         self.assertEqual('de', self.client.session['django_language'])
 
 
@@ -351,7 +354,16 @@ class ValidOpenIDTestCase(SSOBaseTestCase):
         self.assertFalse(valid)
 
 
-class DecideTestCase(AuthenticatedTestCase):
+class DecideBaseTestCase(AuthenticatedTestCase):
+
+    def setUp(self):
+        super(DecideBaseTestCase, self).setUp(disableCSRF=True)
+        self._apply_patch('webui.decorators.disable_cookie_check')
+        self._prepare_openid_token()
+
+    @property
+    def url(self):
+        return reverse('server-decide', kwargs=dict(token=self.token))
 
     def _prepare_openid_token(self, param_overrides=None):
         request = {'openid.mode': 'checkid_setup',
@@ -367,19 +379,17 @@ class DecideTestCase(AuthenticatedTestCase):
         session[self.token] = signed.dumps(self.orequest, settings.SECRET_KEY)
         session.save()
 
-    def setUp(self):
-        super(DecideTestCase, self).setUp(disableCSRF=True)
-        self._apply_patch('webui.decorators.disable_cookie_check')
-        self._prepare_openid_token()
+
+class DecideTestCase(DecideBaseTestCase):
 
     def test_decide_invalid(self):
-        token = 'a' * 16
-        r = self.client.get("/%s/+decide" % token)
+        self.token = 'a' * 16
+        r = self.client.get(self.url)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.content, 'Invalid OpenID transaction')
 
     def test_decide_authenticated(self):
-        r = self.client.post("/%s/+decide" % self.token, {'ok': 'ok'})
+        r = self.client.post(self.url, {'ok': 'ok'})
         query = self.get_query(r)
         self.assertEqual(r.status_code, 302)
         self.assertEqual(query['openid.mode'], 'id_res')
@@ -393,7 +403,7 @@ class DecideTestCase(AuthenticatedTestCase):
             'openid.return_to': return_to,
             'openid.ns': OPENID2_NS,
             'openid.claimed_id': 'http://localhost/~userid'})
-        r = self.client.post("/%s/+decide" % self.token, {'ok': ''})
+        r = self.client.post(self.url, {'ok': ''})
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r['Content-Type'], 'text/html')
         self.assertContains(r, '<form ')
@@ -401,17 +411,15 @@ class DecideTestCase(AuthenticatedTestCase):
 
     def test_decide_auto_authorize(self):
         # make sure rpconfig is set to auto authorize
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/',
-                                  auto_authorize=True)
-        rpconfig.save()
-
-        r = self.client.post("/%s/+decide" % self.token)
+        OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/', auto_authorize=True)
+        r = self.client.post(self.url)
         query = self.get_query(r)
         self.assertEqual(r.status_code, 302)
         self.assertEqual(query['openid.mode'], 'id_res')
 
     def test_decide_process(self):
-        r = self.client.post("/%s/+decide" % self.token)
+        r = self.client.post(self.url)
         self.assertEqual(r.status_code, 200)
         self.assertTemplateUsed(r, 'server/decide.html')
 
@@ -419,7 +427,7 @@ class DecideTestCase(AuthenticatedTestCase):
         OpenIDRPConfig.objects.create(
             trust_root='http://localhost/',
             ga_snippet='[["_setAccount", "12345"]]')
-        r = self.client.get("/%s/+decide" % self.token)
+        r = self.client.get(self.url)
 
         self.assertContains(r, "_gaq.push(['_setAccount', '12345']);")
 
@@ -427,8 +435,7 @@ class DecideTestCase(AuthenticatedTestCase):
         self.client.logout()
 
         # create a trusted rpconfig
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/')
-        rpconfig.save()
+        OpenIDRPConfig.objects.create(trust_root='http://localhost/')
 
         # start openid request
         params = {'openid.trust_root': 'http://localhost/',
@@ -437,7 +444,7 @@ class DecideTestCase(AuthenticatedTestCase):
                   'openid.claimed_id': 'http://localhost/~userid',
                   'openid.ns': OPENID2_NS,
                   'openid.mode': 'checkid_setup'}
-        r = self.client.get('/+openid', params)
+        r = self.client.get(reverse('server-openid'), params)
         # follow redirect
         path = r['Location'].split('http://testserver')[1]
         self.assertTrue(path.endswith('+decide'))
@@ -457,7 +464,7 @@ class DecideTestCase(AuthenticatedTestCase):
             account=self.account, trust_root=trust_root,
             openid_identifier='http://otherhost/~openid1')
 
-        r = self.client.post("/%s/+decide" % self.token)
+        r = self.client.post(self.url)
         self.assertEqual(r.status_code, 200)
         self.assertTemplateUsed(r, 'server/decide.html')
 
@@ -467,22 +474,21 @@ class DecideTestCase(AuthenticatedTestCase):
         team = self.factory.make_team(name=team_name)
         self.factory.add_account_to_team(self.account, team)
 
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/',
-                                  auto_authorize=True)
-        rpconfig.save()
+        OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/', auto_authorize=True)
 
         param_overrides = {
             'openid.lp.query_membership': team_name,
         }
         self._prepare_openid_token(param_overrides=param_overrides)
-        r = self.client.post("/%s/+decide" % self.token)
+        r = self.client.post(self.url)
         query = self.get_query(r)
         self.assertEqual(r.status_code, 302)
         self.assertEqual(query['openid.mode'], 'id_res')
         self.assertEqual(query['openid.lp.is_member'], team_name)
 
     def test_yui_js_url(self):
-        r = self.client.get("/%s/+decide" % self.token)
+        r = self.client.get(self.url)
         self.assertContains(
             r, '{0}lazr-js/yui/yui-min.js'.format(settings.STATIC_URL))
 
@@ -509,19 +515,18 @@ class DecideTestCase(AuthenticatedTestCase):
         self.factory.add_account_to_team(self.account, team)
 
         # create a trusted rpconfig
-        rpconfig = OpenIDRPConfig(
+        OpenIDRPConfig.objects.create(
             trust_root='http://localhost/',
             allowed_sreg='fullname,email,language',
             can_query_any_team=True,
             description="Some description",
         )
-        rpconfig.save()
         param_overrides = {
             'openid.sreg.required': 'nickname,email,fullname,language',
             'openid.lp.query_membership': team_name,
         }
         self._prepare_openid_token(param_overrides=param_overrides)
-        response = self.client.get('/%s/+decide' % self.token)
+        response = self.client.get(self.url)
         self.assertContains(response, "Team membership")
         self.assertContains(response, "Full name")
         self.assertContains(response, "Email address")
@@ -534,20 +539,19 @@ class DecideTestCase(AuthenticatedTestCase):
             self.factory.add_account_to_team(self.account, team)
 
         # create a trusted rpconfig
-        rpconfig = OpenIDRPConfig(
+        OpenIDRPConfig.objects.create(
             trust_root='http://localhost/',
             allowed_sreg='nickname,email,language',
             can_query_any_team=True,
             description="Some description",
         )
-        rpconfig.save()
         param_overrides = {
             'openid.sreg.required': 'nickname,email,fullname',
             'openid.sreg.optional': 'language',
             'openid.lp.query_membership': ','.join(teams),
         }
         self._prepare_openid_token(param_overrides=param_overrides)
-        response = self.client.get('/%s/+decide' % self.token)
+        response = self.client.get(self.url)
         # checkbox checked and disabled for required fields and label is bold
         nickname = self.account.person.name
         username_html = ('<li><input checked="checked" name="nickname" '
@@ -586,23 +590,18 @@ class DecideTestCase(AuthenticatedTestCase):
         self.factory.add_account_to_team(self.account, team)
 
         # create a trusted rpconfig
-        trust_root = 'http://untrusted/'
-        rpconfig = OpenIDRPConfig(
-            trust_root=trust_root,
+        OpenIDRPConfig.objects.create(
+            trust_root='http://untrusted/',
             can_query_any_team=True,
             description="Some description",
         )
-
-        delete_rpconfig_cache_entry("http://localhost/")
-
-        rpconfig.save()
         param_overrides = {
             'openid.sreg.required': 'nickname,email,fullname',
             'openid.sreg.optional': 'language',
             'openid.lp.query_membership': 'ubuntu-team',
         }
         self._prepare_openid_token(param_overrides=param_overrides)
-        response = self.client.get('/%s/+decide' % self.token)
+        response = self.client.get(self.url)
         nickname = self.account.person.name
         # checkbox checked and *enabled* for required fields and label is bold
         username_html = ('<li><input checked="checked" name="nickname" '
@@ -627,6 +626,57 @@ class DecideTestCase(AuthenticatedTestCase):
         self.assertContains(response, email_html)
         self.assertContains(response, language_html)
         self.assertContains(response, team_html)
+
+
+class DecideUserUnverifiedTestCase(DecideBaseTestCase):
+
+    def setUp(self):
+        super(DecideUserUnverifiedTestCase, self).setUp()
+        self.account.emailaddress_set.update(status=EmailStatus.NEW)
+        assert not self.account.is_verified
+
+    def assert_redirected_with_warning(self, response, rp):
+        self.assertIn(reverse('account-emails'), response.redirect_chain[0][0])
+        msgs = list(response.context['messages'])
+        self.assertEqual(len(msgs), 1)
+        msg = server.SITE_REQUIRES_VERIFIED.format(rp_name=rp.displayname)
+        self.assertEqual(msgs[0].message, msg)
+        self.assertEqual(msgs[0].level, server.messages.WARNING)
+
+    def assert_decide_page_shown(self, response):
+        tree = PyQuery(response.content)
+        trust_root = tree.find('div#trust-root')
+        self.assertEqual(len(trust_root), 1)
+        trust_root = trust_root[0]
+        self.assertEqual(trust_root[0].text.strip(), 'You are logging in to')
+
+        link = trust_root.getchildren()[0].find('a')
+        self.assertEqual(link.get('href'), 'http://localhost/')
+
+        button = tree.find('button[type="submit"][name="yes"]')
+        self.assertEqual(len(button), 1)
+        button = button[0]
+        self.assertEqual(button.text_content(), 'Yes, log me in')
+
+    def test_user_unverified_no_rpconfig(self):
+        assert OpenIDRPConfig.objects.count() == 0
+        response = self.client.get(self.url, follow=True)
+        self.assert_decide_page_shown(response)
+
+    def test_user_unverified_rpconfig_allow_unverified(self):
+        OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/', allow_unverified=True)
+        self._prepare_openid_token()
+        response = self.client.get(self.url, follow=True)
+        self.assert_decide_page_shown(response)
+
+    def test_user_unverified_rpconfig_does_not_allow_unverified(self):
+        rpconfig = OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/', allow_unverified=False,
+            displayname='Foo Bar baz')
+        self._prepare_openid_token()
+        response = self.client.get(self.url, follow=True)
+        self.assert_redirected_with_warning(response, rpconfig)
 
 
 # The particular flows in these test cases are not particularly
@@ -669,7 +719,7 @@ class Decide2FTestCase(SSOBaseTestCase):
             'openid.identity': LOCALHOST + '/+id/KxHA3MH',
             'openid.return_to': LOCALHOST + '/consumer'
         }
-        r = self.client.get('/+openid', data)
+        r = self.client.get(reverse('server-openid'), data)
         rp_token = r['Location'].split('/')[3]
         decide_path = '/' + '/'.join(r['Location'].split('/')[3:])
         return rp_token, decide_path
@@ -874,6 +924,8 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
         p.start()
         self.addCleanup(p.stop)
 
+        OpenIDRPConfig.objects.create(trust_root='http://localhost/')
+
     def test_pre_authorize_get(self):
         r = self.client.get('/+pre-authorize-rp')
         self.assertEqual(r.status_code, 400)
@@ -889,9 +941,6 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
         p.start()
         self.addCleanup(p.stop)
 
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/')
-        rpconfig.save()
-
         extra = {'HTTP_REFERER': 'http://localhost/'}
         r = self.client.post('/+pre-authorize-rp',
                              {'trust_root': 'http://localhost/',
@@ -900,9 +949,6 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
         self.assertEqual(r.status_code, 400)
 
     def test_pre_authorize_authenticated(self):
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/')
-        rpconfig.save()
-
         extra = {'HTTP_REFERER': 'http://localhost/'}
         r = self.client.post('/+pre-authorize-rp',
                              {'trust_root': 'http://localhost/',
@@ -911,9 +957,6 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
         self.assertRedirects(r, 'http://localhost/')
 
     def test_pre_authorize_not_authenticated(self):
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/')
-        rpconfig.save()
-
         self.client.logout()
         extra = {'HTTP_REFERER': 'http://localhost/'}
         r = self.client.post('/+pre-authorize-rp',
@@ -924,9 +967,6 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
         self.assertRedirects(r, next_url)
 
     def test_pre_authorize_after_login(self):
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/')
-        rpconfig.save()
-
         # make sure we are logged out
         self.client.logout()
 
@@ -962,8 +1002,6 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
         ])
         p.start()
         self.addCleanup(p.stop)
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost/')
-        rpconfig.save()
 
         # make sure we are logged out
         self.client.logout()
@@ -990,6 +1028,7 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
 
 
 class CancelTestCase(AuthenticatedTestCase):
+
     def setUp(self):
         super(CancelTestCase, self).setUp(disableCSRF=True)
 
@@ -1004,8 +1043,7 @@ class CancelTestCase(AuthenticatedTestCase):
         session[self.token] = signed.dumps(self.orequest, settings.SECRET_KEY)
         session.save()
 
-        rpconfig = OpenIDRPConfig(trust_root='http://localhost')
-        rpconfig.save()
+        OpenIDRPConfig.objects.create(trust_root='http://localhost')
 
     def test_cancel_invalid_openid_transaction(self):
         token = 'a' * 16
@@ -1027,7 +1065,7 @@ class CancelTestCase(AuthenticatedTestCase):
         # logout
         self.client.logout()
         # request something so we get a real session in the client
-        self.client.get('/+openid', self.params)
+        self.client.get(reverse('server-openid'), self.params)
 
         # manipulate session
         session = self.client.session
@@ -1122,11 +1160,11 @@ class OpenIDAuthorizedTestCase(AuthenticatedTestCase):
         # this test covers a bug in a very specific condition
         # user is logged in, but not 2f-authenticated
         # site requires 2f and is set to auto_authorize
-        rpconfig, _ = OpenIDRPConfig.objects.get_or_create(
-            trust_root=self.orequest.trust_root)
-        rpconfig.require_two_factor = True
-        rpconfig.auto_authorize = True
-        rpconfig.save()
+        OpenIDRPConfig.objects.create(
+            trust_root=self.orequest.trust_root,
+            require_two_factor=True,
+            auto_authorize=True,
+        )
         r = server._openid_is_authorized(self.request, self.orequest)
         self.assertFalse(r)
 
@@ -1135,11 +1173,11 @@ class OpenIDAuthorizedTestCase(AuthenticatedTestCase):
         # this test covers a bug in a very specific condition
         # user is logged in, but not 2f-authenticated
         # site requires 2f and is set to auto_authorize
-        rpconfig, _ = OpenIDRPConfig.objects.get_or_create(
-            trust_root=self.orequest.trust_root)
-        rpconfig.require_two_factor = True
-        rpconfig.auto_authorize = True
-        rpconfig.save()
+        OpenIDRPConfig.objects.create(
+            trust_root=self.orequest.trust_root,
+            require_two_factor=True,
+            auto_authorize=True,
+        )
         r = server._openid_is_authorized(self.request, self.orequest)
         self.assertTrue(r)
 
@@ -1151,9 +1189,8 @@ class OpenIDAuthorizedTestCase(AuthenticatedTestCase):
         self.assertFalse(r)
 
     def test_openid_is_authorized_rpconfig(self):
-        rpconfig = OpenIDRPConfig(trust_root=self.orequest.trust_root)
-        rpconfig.auto_authorize = True
-        rpconfig.save()
+        OpenIDRPConfig.objects.create(
+            trust_root=self.orequest.trust_root, auto_authorize=True)
 
         r = server._openid_is_authorized(self.request, self.orequest)
         self.assertTrue(r)
@@ -1223,12 +1260,14 @@ class ShouldReauthenticateTestCase(SSOBaseTestCase):
         self.assertFalse(r)
 
 
-class UntrustedRPTest(SSOBaseTestCase):
-    fixtures = ['test']
+class UntrustedRPTestCase(SSOBaseTestCase):
+
+    email = 'mark@example.com'
 
     def setUp(self):
-        super(UntrustedRPTest, self).setUp()
-
+        super(UntrustedRPTestCase, self).setUp()
+        self.factory.make_account(email=self.email,
+                                  password=DEFAULT_USER_PASSWORD)
         # Ensure that we're restricting RPs for these tests
         p = patch_settings(SSO_RESTRICT_RP=True)
         p.start()
@@ -1251,7 +1290,7 @@ class UntrustedRPTest(SSOBaseTestCase):
         token = create_token(16)
 
         # call up a session-modifying view to get a real session object
-        r = self.client.login(username='mark@example.com',
+        r = self.client.login(username=self.email,
                               password=DEFAULT_USER_PASSWORD)
         self.assertTrue(r)
 
@@ -1267,47 +1306,36 @@ class UntrustedRPTest(SSOBaseTestCase):
 
 class TestSregFields(SSOBaseTestCase):
 
-    fixtures = ["test"]
-
     def setUp(self):
         super(TestSregFields, self).setUp()
 
-        self.account = Account(
+        self.account = Account.objects.create(
             creation_rationale=AccountCreationRationale.USER_CREATED,
             status=AccountStatus.ACTIVE,
             displayname='User')
-        self.account.save()
 
         lp_account = randint(1, 9999)
         LPOpenIdIdentifier.objects.create(
             identifier=self.account.openid_identifier,
             lp_account=lp_account)
-        person = Person(lp_account=lp_account)
-        person.save()
+        person = Person.objects.create(lp_account=lp_account)
         now = datetime.datetime.utcnow()
-        personlocation = PersonLocation(date_created=now,
-                                        person=person, time_zone='UTC',
-                                        last_modified_by=person,
-                                        date_last_modified=now)
-        personlocation.save()
+        PersonLocation.objects.create(
+            date_created=now, person=person, time_zone='UTC',
+            last_modified_by=person, date_last_modified=now)
         self.sreg_request = SRegRequest()
         self.rpconfig = OpenIDRPConfig()
         self.request = DummyRequest()
         self.request.user = self.account
 
 
-class MarkupTestCase(SSOBaseTestCase):
-
-    fixtures = ["test"]
+class MarkupTestCase(AuthenticatedTestCase):
 
     def test_untrusted_rp_properly_shows_markup(self):
-        self.client.login(username='mark@example.com',
-                          password=DEFAULT_USER_PASSWORD)
-        self.rpconfig = OpenIDRPConfig(
+        self.rpconfig = OpenIDRPConfig.objects.create(
             trust_root='http://localhost/',
             displayname="MYSITE"
         )
-        self.rpconfig.save()
 
         params = {
             'openid.trust_root': 'http://localhost/',
@@ -1318,12 +1346,12 @@ class MarkupTestCase(SSOBaseTestCase):
             'openid.mode': 'checkid_setup'
         }
 
-        response = self.client.get('/+openid', params, follow=True)
+        response = self.client.get(
+            reverse('server-openid'), params, follow=True)
         self.assertContains(response, 'MYSITE')
 
 
-class ApprovedDataTest(SSOBaseTestCase):
-    fixtures = ['test']
+class ApprovedDataTestCase(SSOBaseTestCase):
 
     def _get_openid_request(self, with_sreg=True, with_teams=True):
         request = {
@@ -1340,18 +1368,20 @@ class ApprovedDataTest(SSOBaseTestCase):
 
     def _get_request_with_post_args(self, args={}):
         request = HttpRequest()
-        request.user = Account.objects.get(pk=1)
+        request.user = self.account
         request.POST = args
         request.META = {'REQUEST_METHOD': 'POST'}
         return request
 
     def setUp(self):
-        super(ApprovedDataTest, self).setUp()
+        super(ApprovedDataTestCase, self).setUp()
 
         # Ensure that we're restricting RPs for these tests
-        old_restrict = getattr(settings, 'SSO_RESTRICT_RP', True)
-        settings.SSO_RESTRICT_RP = False
-        self.addCleanup(setattr, settings, 'SSO_RESTRICT_RP', old_restrict)
+        p = patch_settings(SSO_RESTRICT_RP=False)
+        p.start()
+        self.addCleanup(p.stop)
+
+        self.account = self.factory.make_account(teams=['ubuntu-team'])
 
     def test_approved_data_returns_none_for_no_request(self):
         result = server._get_approved_data(HttpRequest(), None)

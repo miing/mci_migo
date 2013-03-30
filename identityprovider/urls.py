@@ -12,14 +12,17 @@ repls = {
 
 urlpatterns = patterns(
     'identityprovider.views.server',
-    (r'^((?P<lang>[A-Za-z_]+)/)?\+openid$', 'openid_provider'),
-    (r'^\+xrds$', 'xrds'),
-    (r'^\+id/(?P<identifier>[A-Za-z0-9\-_]+)$', 'identity_page'),
-    (r'^\+id/(?P<identifier>[A-Za-z0-9\-_]+)/\+xrds$', 'xrds_identity_page'),
+    url(r'^\+openid$', 'openid_provider', name='server-openid'),
+    url(r'^(?P<lang>[A-Za-z_]+)/\+openid$', 'openid_provider',
+        name='server-openid'),
+    url(r'^\+xrds$', 'xrds'),
+    url(r'^\+id/(?P<identifier>[A-Za-z0-9\-_]+)$', 'identity_page'),
+    url(r'^\+id/(?P<identifier>[A-Za-z0-9\-_]+)/\+xrds$',
+        'xrds_identity_page'),
     url(r'^%(token)s\+decide$' % repls, 'decide', name='server-decide'),
     url(r'^%(token)s\+cancel$' % repls, 'cancel', name='cancel'),
-    (r'^%(token)s\+untrusted$' % repls, 'untrusted'),
-    (r'\+pre-authorize-rp$', 'pre_authorize'),
+    url(r'^%(token)s\+untrusted$' % repls, 'untrusted'),
+    url(r'\+pre-authorize-rp$', 'pre_authorize'),
     url(r'^login_by_token$', 'login_by_token', name='login_by_token'),
 )
 

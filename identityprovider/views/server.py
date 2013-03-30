@@ -81,6 +81,9 @@ from identityprovider.models.twofactor import is_twofactor_enabled
 from identityprovider.teams import TeamsRequest
 from identityprovider.views import utils
 
+SITE_REQUIRES_VERIFIED = _(
+    'The site {rp_name} requires that you verify your email address before '
+    'accessing its contents.')
 
 accept_xrds = decorator_from_middleware(XRDSMiddleware)
 registerNamespaceAlias(LAUNCHPAD_TEAMS_NS, 'lp')
@@ -100,7 +103,7 @@ def set_language_info(request, response, lang):
 
 @csrf_exempt
 @accept_xrds
-def openid_provider(request, lang='en'):
+def openid_provider(request, lang=None):
     if lang not in settings.SUPPORTED_LANGUAGES:
         # Next we check for a primary language.
         if lang is not None:
@@ -252,6 +255,14 @@ def decide(request, token):
         # XXX: need to remove this circular dep to the webui app
         from webui.views import ui
         return ui.LoginView.as_view()(request, token, rpconfig=rpconfig)
+
+    if (not request.user.is_verified and
+            rpconfig is not None and not rpconfig.allow_unverified):
+        messages.warning(
+            request,
+            SITE_REQUIRES_VERIFIED.format(rp_name=rpconfig.displayname),
+        )
+        return HttpResponseRedirect(reverse('account-emails'))
 
     site_requires_twofactor = twofactor.site_requires_twofactor_auth(
         request, token, rpconfig)

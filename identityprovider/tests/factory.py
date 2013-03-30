@@ -49,7 +49,8 @@ class SSOObjectFactory(object):
                      password=DEFAULT_USER_PASSWORD,
                      creation_rationale=None, salt=None,
                      password_encrypted=False, email_validated=True,
-                     openid_identifier=None, status=None, date_created=None):
+                     openid_identifier=None, status=None, date_created=None,
+                     teams=None):
         if displayname is None:
             displayname = self.get_unique_string(prefix='Test Account ')
         if email is None:
@@ -68,6 +69,16 @@ class SSOObjectFactory(object):
             account.date_created = date_created
 
         account.save()
+
+        if teams:
+            for t in teams:
+                team = Person.objects.filter(name=t)
+                if len(team) > 0:
+                    team = team[0]
+                else:
+                    team = self.make_team(t)
+                self.add_account_to_team(account, team)
+
         return account
 
     def make_account_token(self, account, email=None):

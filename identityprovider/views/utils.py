@@ -1,26 +1,13 @@
-###################################################################
-#
-# Copyright (c) 2012 Canonical Ltd.
-# Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
-# 
-# This software is licensed under the GNU Affero General Public 
-# License version 3 (AGPLv3), as published by the Free Software 
-# Foundation, and may be copied, distributed, and modified under 
-# those terms.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# file LICENSE for more details.
-#
-###################################################################
+# Copyright 2010, 2012 Canonical Ltd.  This software is licensed under
+# the GNU Affero General Public License version 3 (see the file
+# LICENSE).
 
 from django.conf import settings
 from django.core import urlresolvers
 
 from identityprovider import signed
 from identityprovider.models import OpenIDRPConfig
-from saml2sso import utils as saml_utils
+from ubuntu_sso_saml import utils as saml_utils
 
 
 def is_safe_redirect_url(url):
@@ -36,6 +23,7 @@ def is_safe_redirect_url(url):
     view, args, kwargs = response
     return True
 
+
 def get_rpconfig(trust_root):
     alternatives = [trust_root]
 
@@ -45,7 +33,9 @@ def get_rpconfig(trust_root):
         alternatives.append(trust_root + '/')
 
     rpconfig = OpenIDRPConfig.objects.filter(trust_root__in=alternatives)
-    return rpconfig and rpconfig[0] or None
+    if len(rpconfig):
+        return rpconfig[0]
+
 
 def get_rpconfig_from_request(request, token):
     rpconfig = None
