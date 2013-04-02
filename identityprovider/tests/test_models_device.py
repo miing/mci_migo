@@ -11,8 +11,6 @@ from identityprovider.tests.utils import SSOBaseTestCase
 
 class DeviceTestCase(SSOBaseTestCase):
 
-    fixtures = ["test"]
-
     def setUp(self):
         super(DeviceTestCase, self).setUp()
         self.account = self.factory.make_account()

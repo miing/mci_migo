@@ -5,13 +5,6 @@ from identityprovider.tests import DEFAULT_USER_PASSWORD
 
 class SetLanguageTestCase(SSOBaseTestCase):
 
-    fixtures = ["test"]
-
-    def setUp(self):
-        super(SetLanguageTestCase, self).setUp()
-        self.disable_csrf()
-        self.addCleanup(self.reset_csrf)
-
     def test_when_supplying_non_local_next_url_redirects_to_main(self):
         r = self.client.post('/set_language',
                              {'language': 'es', 'next': 'http://example.com'})
@@ -41,10 +34,11 @@ class SetLanguageTestCase(SSOBaseTestCase):
         self.assertTemplateUsed(r, 'select_language.html')
 
     def test_setting_language_for_authenticated_users_updates_db(self):
-        self.client.login(username='mark@example.com',
+        account = self.factory.make_account()
+        self.client.login(username=account.preferredemail.email,
                           password=DEFAULT_USER_PASSWORD)
         self.client.post('/set_language', {'language': 'es', 'next': '/'})
 
-        account = Account.objects.get_by_email('mark@example.com')
+        account = Account.objects.get(id=account.id)
 
         self.assertEqual(account.preferredlanguage, 'es')

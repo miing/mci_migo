@@ -357,7 +357,7 @@ class ValidOpenIDTestCase(SSOBaseTestCase):
 class DecideBaseTestCase(AuthenticatedTestCase):
 
     def setUp(self):
-        super(DecideBaseTestCase, self).setUp(disableCSRF=True)
+        super(DecideBaseTestCase, self).setUp()
         self._apply_patch('webui.decorators.disable_cookie_check')
         self._prepare_openid_token()
 
@@ -916,7 +916,7 @@ class Decide2FTestCase(SSOBaseTestCase):
 class PreAuthorizeTestCase(AuthenticatedTestCase):
 
     def setUp(self):
-        super(PreAuthorizeTestCase, self).setUp(disableCSRF=True)
+        super(PreAuthorizeTestCase, self).setUp()
         self._apply_patch('webui.decorators.disable_cookie_check')
         p = patch_settings(OPENID_PREAUTHORIZATION_ACL=[
             ('http://localhost/', 'http://localhost/')
@@ -1030,7 +1030,7 @@ class PreAuthorizeTestCase(AuthenticatedTestCase):
 class CancelTestCase(AuthenticatedTestCase):
 
     def setUp(self):
-        super(CancelTestCase, self).setUp(disableCSRF=True)
+        super(CancelTestCase, self).setUp()
 
         self.params = request = {'openid.mode': 'checkid_setup',
                                  'openid.trust_root': 'http://localhost/',

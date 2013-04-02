@@ -22,16 +22,14 @@ from identityprovider.admin import (
     InvalidatedEmailAddressAdmin,
 )
 from identityprovider.models import (
+    Account,
+    AccountPassword,
     APIUser,
     AuthenticationDevice,
     EmailAddress,
+    LPOpenIdIdentifier,
     OpenIDRPConfig,
     Person,
-)
-from identityprovider.models.account import (
-    Account,
-    AccountPassword,
-    LPOpenIdIdentifier,
 )
 from identityprovider.models.const import EmailStatus
 from identityprovider.utils import validate_launchpad_password
@@ -44,12 +42,8 @@ class AdminTestCase(SSOBaseTestCase):
 
     def setUp(self):
         super(AdminTestCase, self).setUp()
-
-        self.disable_csrf()
         self.client.login(username="admin", password="admin007")
-
-    def tearDown(self):
-        self.reset_csrf()
+        self.account = Account.objects.get(pk=1)
 
     def test_registered_models(self):
         for model in (Account, OpenIDRPConfig, APIUser, EmailAddress):
@@ -79,8 +73,7 @@ class AdminTestCase(SSOBaseTestCase):
                 'allowed_sreg': 'fullname',
                 'creation_rationale': '13',
                 }
-        rpconfig = OpenIDRPConfig(**data)
-        rpconfig.save()
+        rpconfig = OpenIDRPConfig.objects.create(**data)
         change_view = reverse(
             'admin:identityprovider_openidrpconfig_change',
             args=(rpconfig.id,))
@@ -96,19 +89,18 @@ class AdminTestCase(SSOBaseTestCase):
     def test_account_overview(self):
         changelist_view = reverse('admin:identityprovider_account_changelist')
         r = self.client.get(changelist_view)
-        self.assertContains(r, 'mark@example.com')
+        self.assertContains(r, self.account.preferredemail)
 
     def post_account_change(self, success=True, **kwargs):
-        account_id = 1
-        account = Account.objects.get(pk=account_id)
-        email = account.preferredemail
+        account_id = self.account.id
+        email = self.account.preferredemail
         change_view = reverse(
             'admin:identityprovider_account_change', args=(account_id,))
         parameters = {
-            'creation_rationale': str(account.creation_rationale),
-            'status': str(account.status),
-            'displayname': account.displayname,
-            'openid_identifier': account.openid_identifier,
+            'creation_rationale': str(self.account.creation_rationale),
+            'status': str(self.account.status),
+            'displayname': self.account.displayname,
+            'openid_identifier': self.account.openid_identifier,
             'accountpassword-TOTAL_FORMS': '1',
             'accountpassword-INITIAL_FORMS': '1',
             'accountpassword-0-id': str(account_id),
@@ -116,7 +108,7 @@ class AdminTestCase(SSOBaseTestCase):
             'emailaddress_set-TOTAL_FORMS': '1',
             'emailaddress_set-INITIAL_FORMS': '1',
             'emailaddress_set-0-id': str(email.id),
-            'emailaddress_set-0-account': str(account.id),
+            'emailaddress_set-0-account': str(account_id),
             'emailaddress_set-0-email': email,
             'emailaddress_set-0-status': str(email.status),
             'devices-TOTAL_FORMS': '0',
@@ -140,16 +132,14 @@ class AdminTestCase(SSOBaseTestCase):
         }
         self.post_account_change(**parameters)
 
-        account = Account.objects.get(pk=1)
+        account = Account.objects.get(id=self.account.id)
         self.assertEqual(account.preferredemail.email, new_email)
         self.assertTrue(validate_launchpad_password(
             new_password, account.accountpassword.password))
 
     def test_device_change(self):
-        account = Account.objects.get(pk=1)
-
         device = AuthenticationDevice.objects.create(
-            account=account,
+            account=self.account,
             key='some key',
             name='Some device',
             counter=124,
@@ -171,10 +161,8 @@ class AdminTestCase(SSOBaseTestCase):
         self.assertEqual(device.device_type, 'paper')
 
     def get_device_inlineform(self, device_type):
-        account = Account.objects.get(pk=1)
-
         device = AuthenticationDevice.objects.create(
-            account=account,
+            account=self.account,
             key='some key',
             name='Some device',
             counter=124,
@@ -212,13 +200,12 @@ class AdminTestCase(SSOBaseTestCase):
         self.assertEqual(form.is_valid(), True)
 
     def test_multiple_preferred_emails(self):
-        account = Account.objects.get(pk=1)
-        email = account.preferredemail
+        email = self.account.preferredemail
         parameters = {
             'emailaddress_set-TOTAL_FORMS': '2',
-            'emailaddress_set-1-account': '1',
+            'emailaddress_set-1-account': str(self.account.id),
             'emailaddress_set-1-email': 'failure@example.com',
-            'emailaddress_set-1-status': str(email.status),
+            'emailaddress_set-1-status': str(EmailStatus.PREFERRED),
         }
         r = self.post_account_change(success=False, **parameters)
 
@@ -230,7 +217,7 @@ class AdminTestCase(SSOBaseTestCase):
 
     def test_inline_forms(self):
         change_view = reverse('admin:identityprovider_account_change',
-                              args=(1,))
+                              args=(self.account.id,))
         r = self.client.get(change_view)
         self.assertEqual(r.status_code, 200)
         self.assertContains(r, '<input type="password" '
@@ -294,7 +281,7 @@ class RPAdminTestCase(SSOBaseTestCase):
 
 
 class EmailAddressAdminTestCase(SSOBaseTestCase):
-    fixtures = ["admin", "test"]
+    fixtures = ["test"]
     model = EmailAddress
     modeladmin = EmailAddressAdmin
 
@@ -315,5 +302,6 @@ class EmailAddressAdminTestCase(SSOBaseTestCase):
 
 
 class InvalidatedEmailAddressAdminTestCase(EmailAddressAdminTestCase):
+
     model = InvalidatedEmailAddress
     modeladmin = InvalidatedEmailAddressAdmin

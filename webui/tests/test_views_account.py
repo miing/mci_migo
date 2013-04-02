@@ -230,7 +230,7 @@ class AccountEditTestCase(AuthenticatedTestCase):
     paper_device_exhausted = 0
 
     def setUp(self):
-        super(AccountEditTestCase, self).setUp(disableCSRF=True)
+        super(AccountEditTestCase, self).setUp()
         if self.twofactor_enabled is not None:
             self.switch = switches(TWOFACTOR=self.twofactor_enabled)
             self.switch.patch()
@@ -594,7 +594,7 @@ class AccountDeletionViewTestCase(AuthenticatedTestCase):
 class AccountDeactivationViewTestCase(AuthenticatedTestCase):
 
     def setUp(self):
-        super(AccountDeactivationViewTestCase, self).setUp(disableCSRF=True)
+        super(AccountDeactivationViewTestCase, self).setUp()
         self._refresh_account()
 
         # make sure to enable the views
@@ -650,16 +650,7 @@ class AccountDeactivationViewTestCase(AuthenticatedTestCase):
 
 @skipUnless(settings.BRAND == 'ubuntu',
             "Applications only for ubuntu brand.""")
-class ApplicationsTestCase(SSOBaseTestCase):
-
-    fixtures = ["test"]
-
-    def setUp(self):
-        super(ApplicationsTestCase, self).setUp()
-        self.client.login(username="mark@example.com",
-                          password=DEFAULT_USER_PASSWORD)
-        self.disable_csrf()
-        self.addCleanup(self.reset_csrf)
+class ApplicationsTestCase(AuthenticatedTestCase):
 
     def test_applications_page_is_rendered_using_right_template(self):
         r = self.client.get(reverse('applications'))
@@ -670,9 +661,8 @@ class ApplicationsTestCase(SSOBaseTestCase):
         self.assertNotContains(r, '<table')
 
     def test_revoking_token_removes_it_from_being_displayed(self):
-        account = Account.objects.get_by_email("mark@example.com")
-        token_1 = account.create_oauth_token("Token-1")
-        token_2 = account.create_oauth_token("Token-2")
+        token_1 = self.account.create_oauth_token("Token-1")
+        token_2 = self.account.create_oauth_token("Token-2")
 
         r = self.client.get(reverse('applications'))
 
@@ -688,7 +678,7 @@ class ApplicationsTestCase(SSOBaseTestCase):
         token_1.delete()
 
     def test_revoking_token_which_does_not_belogs_to_an_account(self):
-        account = Account.objects.get_by_email("test@canonical.com")
+        account = self.factory.make_account(email="foo@x.com")
         token = account.create_oauth_token("Token")
 
         r = self.client.post(reverse('applications'),

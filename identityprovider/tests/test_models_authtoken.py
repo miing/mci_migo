@@ -11,7 +11,6 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from mock import patch
 
-from identityprovider.models.account import Account
 from identityprovider.models import (
     AuthToken,
     EmailAddress,
@@ -73,13 +72,12 @@ class AuthTokenManagerTestCase(SSOBaseTestCase):
 
 class AuthTokenTestCase(SSOBaseTestCase):
 
-    fixtures = ["test"]
     email = 'test@canonical.com'
     new_email = 'email@domain.com'
 
     def setUp(self):
         super(AuthTokenTestCase, self).setUp()
-        self.account = Account.objects.get_by_email(self.email)
+        self.account = self.factory.make_account(email=self.email)
 
         assert EmailAddress.objects.filter(email=self.new_email).count() == 0
 

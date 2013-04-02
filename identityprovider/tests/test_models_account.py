@@ -205,11 +205,6 @@ class AccountManagerTestCase(SSOBaseTestCase):
 
 class AccountTestCase(SSOBaseTestCase):
 
-    fixtures = ["test"]
-
-    def get_existing_account(self):
-        return Account.objects.get_by_email('test@canonical.com')
-
     def prepare_perms(self, has_perm):
         account = self.factory.make_account()
 
@@ -225,7 +220,7 @@ class AccountTestCase(SSOBaseTestCase):
         self.assertTrue(account.last_login is not None)
 
     def test_last_login_when_user_exists(self):
-        account = self.get_existing_account()
+        account = self.factory.make_account()
         User.objects.get_or_create(username=account.openid_identifier)
 
         self.assertTrue(account.last_login is not None)
@@ -241,22 +236,19 @@ class AccountTestCase(SSOBaseTestCase):
 
     def test_set_last_login_when_readonly(self):
         readonly_manager = ReadOnlyManager()
-        account = self.get_existing_account()
+        account = self.factory.make_account()
         account.last_login = last_login = datetime(2010, 01, 01)
         self.assertEqual(account.last_login, last_login)
 
-        self.assertFalse(settings.READ_ONLY_MODE)
+        assert not settings.READ_ONLY_MODE
         readonly_manager.set_readonly()
+        self.addCleanup(readonly_manager.clear_readonly)
 
-        try:
-            # we use now() here because last_login maps to django's auth model
-            # which uses localtime.
-            account.last_login = now = datetime.now()
-            self.assertEqual(account.last_login, last_login)
-            self.assertNotEqual(account.last_login, now)
-        finally:
-            readonly_manager.clear_readonly()
-            self.assertFalse(settings.READ_ONLY_MODE)
+        # we use now() here because last_login maps to django's auth model
+        # which uses localtime.
+        account.last_login = now = datetime.now()
+        self.assertEqual(account.last_login, last_login)
+        self.assertNotEqual(account.last_login, now)
 
     def test_set_last_login_when_no_preferredemail(self):
         account = self.factory.make_account()
@@ -304,15 +296,15 @@ class AccountTestCase(SSOBaseTestCase):
         self.assertTrue(account.is_verified)
 
     def test_first_name(self):
-        account = self.get_existing_account()
+        account = self.factory.make_account(displayname='Sample Person')
         self.assertEqual(account.first_name, "Sample")
 
     def test_full_name(self):
-        account = self.get_existing_account()
+        account = self.factory.make_account(displayname='Sample Person')
         self.assertEqual(account.get_full_name(), "Sample Person")
 
     def test_twofactor_attempts_default(self):
-        account = self.get_existing_account()
+        account = self.factory.make_account()
         self.assertEqual(account.twofactor_attempts, 0)
 
     def test_has_module_perms_when_not_active(self):
@@ -396,7 +388,9 @@ class AccountTestCase(SSOBaseTestCase):
         self.assertEqual(email_address.status, EmailStatus.PREFERRED)
 
     def test_verified_emails_has_preferred_first(self):
-        account = Account.objects.get_by_email('test@canonical.com')
+        account = self.factory.make_account()
+        self.factory.make_email_for_account(account,
+                                            status=EmailStatus.VALIDATED)
         emails = account.verified_emails()
         self.assertTrue(len(emails) > 1)
         self.assertEqual(emails[0].status, EmailStatus.PREFERRED)
@@ -411,26 +405,20 @@ class AccountTestCase(SSOBaseTestCase):
 
     def test_save_when_readonly(self):
         readonly_manager = ReadOnlyManager()
-        account = self.get_existing_account()
-        status = account.status
-        self.assertNotEqual(status, AccountStatus.SUSPENDED)
+        account = self.factory.make_account()
+        assert account.status == AccountStatus.ACTIVE
 
-        self.assertFalse(settings.READ_ONLY_MODE)
+        assert not settings.READ_ONLY_MODE
         readonly_manager.set_readonly()
+        self.addCleanup(readonly_manager.clear_readonly)
 
-        try:
-            account.status = AccountStatus.SUSPENDED
-            account.save()
-
-            # refresh account from db
-            account = self.get_existing_account()
-            self.assertEqual(account.status, status)
-        finally:
-            readonly_manager.clear_readonly()
-            self.assertFalse(settings.READ_ONLY_MODE)
+        account.suspend()
+        # refresh account from db
+        account = Account.objects.get(id=account.id)
+        self.assertEqual(account.status, AccountStatus.ACTIVE)
 
     def test_save_when_no_password(self):
-        account = self.get_existing_account()
+        account = self.factory.make_account()
         # remove all passwords
         AccountPassword.objects.filter(account=account).delete()
 

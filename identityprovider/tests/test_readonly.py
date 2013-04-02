@@ -484,8 +484,6 @@ class ReadOnlyViewsTestCase(ReadOnlyBaseTestCase):
 
     def test_readonly_confirm_post(self):
         self.patch_urlopen()
-        self.disable_csrf()
-        self.addCleanup(self.reset_csrf)
         self.login_with_staff()
 
         r = self.client.post('/readonly/localhost/set')

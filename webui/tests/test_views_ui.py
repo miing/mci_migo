@@ -144,8 +144,6 @@ class UIViewsBaseTestCase(BaseTestCase):
 
     def setUp(self):
         super(UIViewsBaseTestCase, self).setUp()
-        self.disable_csrf()
-        self.addCleanup(self.reset_csrf)
         self.mock_send_email = self._apply_patch(
             'identityprovider.emailutils.send_branded_email'
         )
@@ -1054,9 +1052,6 @@ class LanguagesTestCase(BaseTestCase):
         self.assertContains(r, 'es.png')
 
     def test_language_selected_before_login_is_preserved(self):
-        self.disable_csrf()
-        self.addCleanup(self.reset_csrf)
-
         self.assertNotContains(self.client.get(reverse('account-index')),
                                'es.png')
         self.client.post(reverse('set_language'), {'language': 'es'})

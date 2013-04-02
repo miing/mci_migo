@@ -208,14 +208,6 @@ class SSOBaseTestCase(SSOBaseTestCaseMixin, TestCase):
         query = dict(query_items)
         return query
 
-    def reset_csrf(self):
-        settings.MIDDLEWARE_CLASSES = self._MIDDLEWARE_CLASSES
-
-    def disable_csrf(self):
-        self._MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES
-        settings.MIDDLEWARE_CLASSES = (x for x in self._MIDDLEWARE_CLASSES
-                                       if not 'csrf' in x.lower())
-
     def _assign_token_to_rpconfig(self, rpconfig, token=None):
         if token is None:
             token = create_token(16)
@@ -275,18 +267,8 @@ class AuthenticatedTestCase(SSOBaseTestCase):
     login_email = "test@canonical.com"
     login_password = DEFAULT_USER_PASSWORD
 
-    def setUp(self, disableCSRF=False):
+    def setUp(self):
         super(AuthenticatedTestCase, self).setUp()
-        # We allow classes that inherit this one to disable CSRF when needed,
-        # as CSRF breaks Django's test client:
-        # http://code.djangoproject.com/ticket/9172
-        if disableCSRF:
-            old_middlewares = settings.MIDDLEWARE_CLASSES
-            settings.MIDDLEWARE_CLASSES = tuple(x for x in old_middlewares
-                                                if not 'csrf' in x.lower())
-            self.addCleanup(setattr, settings, 'MIDDLEWARE_CLASSES',
-                            old_middlewares)
-
         self.account = self.factory.make_account(email=self.login_email,
                                                  password=self.login_password)
         self.client.login(username=self.login_email,
