@@ -32,17 +32,16 @@ class SSOAutoAuthorizeTestCase(OpenIDTestCase):
         # without requesting for authorization as the trust root has automatic
         # authorization enabled.
         response = self.login(response)
-        claimed_id = self.base_url + '/+id/name12_oid'
-        info = self.complete_from_response(response, claimed_id)
+        info = self.complete_from_response(response, self.claimed_id)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)
 
         # If the user is already logged in, he will be directed back to the
         # relying party immediately.
 
         response = self.do_openid_dance()
-        info = self.complete_from_response(response, claimed_id)
+        info = self.complete_from_response(response, self.claimed_id)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)

@@ -37,13 +37,6 @@ urlpatterns += patterns(
 
 if settings.DEBUG:
     urlpatterns += patterns(
-        'identityprovider.views.testing',
-        url(r'^\+openid-consumer', 'openid_consumer', name='openid_consumer'),
-        url(r'^~(?P<username>[A-Za-z0-9\-_]+)(/(?P<version>[1|2]))?$',
-            'delegate_profile'),
-        url(r'^error$', 'error'),
-    )
-    urlpatterns += patterns(
         '',
         (r'(favicon.ico)', 'django.views.static.serve',
             {'document_root': settings.SSO_MEDIA_ROOT +
@@ -51,8 +44,14 @@ if settings.DEBUG:
         (r'^i18n/', include('django.conf.urls.i18n')),
     )
 
-if getattr(settings, 'TESTING', False):
-    urlpatterns += patterns(
-        'identityprovider.views.testing',
-        (r'^dummy$', 'dummy'),
-    )
+# if settings.TESTING is not set, these will raise 404
+urlpatterns += patterns(
+    'identityprovider.views.testing',
+    url(r'^\+openid-consumer', 'openid_consumer',
+        name='testing-openid-consumer'),
+    url(r'^~(?P<username>[A-Za-z0-9\-_]+)$',
+        'delegate_profile', name='testing-delegate-profile'),
+    url(r'^~(?P<username>[A-Za-z0-9\-_]+)/(?P<version>[1|2])$',
+        'delegate_profile', name='testing-delegate-profile'),
+    url(r'^error$', 'error', name='testing-error'),
+)

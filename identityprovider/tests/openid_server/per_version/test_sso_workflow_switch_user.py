@@ -16,7 +16,7 @@ class SSOWorkflowSwitchUserTestCase(OpenIDTestCase):
 
         # We will first authenticate as Mark Shuttleworth:
         response = self.do_openid_dance()
-        self.yes_to_decide(self.login(response, email='mark@example.com'))
+        self.yes_to_decide(self.login(response))
 
         # Now lets imagine that test@canonical.com starts using the computer
         # and wishes to log into a Launchpad-SSO web site. They will be asked
@@ -25,7 +25,7 @@ class SSOWorkflowSwitchUserTestCase(OpenIDTestCase):
         response = self.do_openid_dance()
         title = self.title_from_response(response)
         self.assertEqual(title, 'Authenticate to ' + self.consumer_url)
-        self.assertContains(response, 'Mark Shuttleworth')
+        self.assertContains(response, self.account.displayname)
 
         # At this point, the user says that they are not Mark Shuttleworth,
         # which presents them with a login page:
@@ -40,8 +40,7 @@ class SSOWorkflowSwitchUserTestCase(OpenIDTestCase):
         # Then we run the test
         response = self.do_openid_dance()
         response = self.yes_to_decide(self.login(response))
-        claimed_id = self.base_url + '/+id/name12_oid'
-        info = self.complete_from_response(response, claimed_id)
+        info = self.complete_from_response(response, self.claimed_id)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)

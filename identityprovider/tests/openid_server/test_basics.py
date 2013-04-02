@@ -2,7 +2,7 @@ import re
 
 from datetime import datetime, timedelta
 
-from identityprovider.models import account, openidmodels
+from identityprovider.models import openidmodels
 from identityprovider.tests.helpers import OpenIDTestCase
 
 
@@ -91,8 +91,7 @@ class BasicsTestCase(OpenIDTestCase):
             self.consumer_url + '/\+openid-consumer?.+')
         self.assertContains(response, "Consumer received GET")
         self.assertContains(response, "openid.assoc_handle:")
-        self.assertContains(
-            response, "openid.identity:" + self.base_url + "/+id/name12_oid")
+        self.assertContains(response, "openid.identity:" + self.claimed_id)
         self.assertContains(response, "openid.mode:id_res")
         self.assertContains(
             response, "openid.op_endpoint:" + self.base_openid_url)
@@ -151,8 +150,7 @@ class BasicsTestCase(OpenIDTestCase):
     def test_checkid_setup(self):
         self.test_check_authentication()
         openidmodels.OpenIDAuthorization.objects.authorize(
-            account.Account.objects.get(openid_identifier='name12_oid'),
-            self.consumer_url,
+            self.account, self.consumer_url,
             client_id=self.client.session.session_key,
             expires=datetime.utcnow() + timedelta(hours=1)
         )
@@ -164,8 +162,7 @@ class BasicsTestCase(OpenIDTestCase):
 
         self.assertContains(response, "Consumer received GET")
         self.assertContains(response, "openid.assoc_handle:")
-        self.assertContains(
-            response, "openid.identity:" + self.base_url + "/+id/name12_oid")
+        self.assertContains(response, "openid.identity:" + self.claimed_id)
         self.assertContains(response, "openid.mode:id_res")
         self.assertContains(
             response, "openid.op_endpoint:" + self.base_openid_url)

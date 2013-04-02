@@ -18,10 +18,17 @@ class OpenIDTeamsAutoAuthorizeTestCase(OpenIDTestCase):
         #  * one that does not exist
         #  * one that does exist but the user is not a member of
 
-        claimed_id = self.base_url + '/+id/cCGE3LA'
+        t = self.factory.make_team(name='ubuntu-team')
+        self.factory.add_account_to_team(self.account, t)
+
+        t = self.factory.make_team(name='myteam', private=True)
+        self.factory.add_account_to_team(self.account, t)
+
+        self.factory.make_team('launchpad-beta-testers')
+
         teams = 'ubuntu-team,no-such-team,launchpad-beta-testers,myteam'
-        response = self.do_openid_dance(claimed_id, teams=teams)
-        response = self.login(response, email='member@canonical.com')
+        response = self.do_openid_dance(self.claimed_id, teams=teams)
+        response = self.login(response)
         info = self.complete_from_response(response)
 
         self.assertEqual(info.status, 'success')

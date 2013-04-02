@@ -26,19 +26,21 @@ from identityprovider.tests.utils import SSOBaseTestCase
 
 class LaunchpadBackendTestCase(SSOBaseTestCase):
 
-    fixtures = ["test"]
+    email = 'mark@example.com'
 
     def setUp(self):
         super(LaunchpadBackendTestCase, self).setUp()
+        self.account = self.factory.make_account(
+            email=self.email, password=DEFAULT_USER_PASSWORD)
         self.backend = LaunchpadBackend()
 
     def test_authenticate_with_email_status_not_in_expected_one(self):
         email_address = EmailAddress.objects.get(
-            email__iexact="mark@example.com")
+            email__iexact=self.email)
         email_address.status = 9999
         email_address.save()
 
-        result = self.backend.authenticate('mark@example.com',
+        result = self.backend.authenticate(self.email,
                                            DEFAULT_USER_PASSWORD)
 
         self.assertTrue(result is None)
@@ -49,7 +51,7 @@ class LaunchpadBackendTestCase(SSOBaseTestCase):
 
     def test_authenticate_with_email_case_insensitive(self):
         # Make sure authentication works as expected
-        account1 = self.backend.authenticate('mark@example.com',
+        account1 = self.backend.authenticate(self.email,
                                              DEFAULT_USER_PASSWORD)
         self.assertTrue(account1 is not None)
 
@@ -62,11 +64,11 @@ class LaunchpadBackendTestCase(SSOBaseTestCase):
         self.assertEqual(account1, account2)
 
     def test_authenticate_account_active(self):
-        account = Account.objects.get_by_email('mark@example.com')
+        account = Account.objects.get_by_email(self.email)
         # make sure account is active
         self.assertEqual(account.status, AccountStatus.ACTIVE)
         # make sure authentication succeeds
-        response = self.backend.authenticate('mark@example.com',
+        response = self.backend.authenticate(self.email,
                                              DEFAULT_USER_PASSWORD)
         self.assertEqual(response, account)
 
@@ -79,7 +81,7 @@ class LaunchpadBackendTestCase(SSOBaseTestCase):
         self.assertIsNone(self.backend.authenticate(token=token))
 
     def test_authenticate_account_inactive(self):
-        account = Account.objects.get_by_email('mark@example.com')
+        account = Account.objects.get_by_email(self.email)
         _status = account.status
 
         for status, _ in AccountStatus._get_choices():
@@ -91,7 +93,7 @@ class LaunchpadBackendTestCase(SSOBaseTestCase):
             account.save()
 
             # make sure authentication fails
-            response = self.backend.authenticate('mark@example.com',
+            response = self.backend.authenticate(self.email,
                                                  DEFAULT_USER_PASSWORD)
             self.assertEqual(response, None)
 
@@ -100,18 +102,18 @@ class LaunchpadBackendTestCase(SSOBaseTestCase):
         account.save()
 
     def test_authenticate_account_no_password(self):
-        account = Account.objects.get_by_email('mark@example.com')
+        account = Account.objects.get_by_email(self.email)
         account.accountpassword.delete()
 
-        response = self.backend.authenticate('mark@example.com',
+        response = self.backend.authenticate(self.email,
                                              DEFAULT_USER_PASSWORD)
 
         self.assertTrue(response is None)
-        account = Account.objects.get_by_email('mark@example.com')
+        account = Account.objects.get_by_email(self.email)
         self.assertTrue(account is not None)
 
     def test_oauth_authenticate_account_active(self):
-        account = Account.objects.get_by_email('mark@example.com')
+        account = Account.objects.get_by_email(self.email)
         user, _ = User.objects.get_or_create(
             username=account.openid_identifier)
         consumer, created = Consumer.objects.get_or_create(user=user)
@@ -126,7 +128,7 @@ class LaunchpadBackendTestCase(SSOBaseTestCase):
         self.assertEqual(response, account)
 
     def test_oauth_authenticate_account_inactive(self):
-        account = Account.objects.get_by_email('mark@example.com')
+        account = Account.objects.get_by_email(self.email)
         _status = account.status
         user, _ = User.objects.get_or_create(
             username=account.openid_identifier)
@@ -155,11 +157,11 @@ class LaunchpadBackendTestCase(SSOBaseTestCase):
             consumer.delete()
 
     def test_oauth_authenticate_stolen_token(self):
-        victim_account = Account.objects.get_by_email('mark@example.com')
+        victim_account = Account.objects.get_by_email(self.email)
         token = victim_account.create_oauth_token('new-token')
         oauth_token = token.oauth_token()
 
-        malicious_account = Account.objects.get_by_email('test@canonical.com')
+        malicious_account = self.factory.make_account()
         malicious_user, _ = User.objects.get_or_create(
             username=malicious_account.openid_identifier)
         consumer, created = Consumer.objects.get_or_create(user=malicious_user)

@@ -10,16 +10,12 @@ from mock import ANY, Mock, patch, MagicMock
 
 from identityprovider.models import InvalidatedEmailAddress, twofactor
 from identityprovider.models.const import EmailStatus
-from identityprovider.tests.utils import (
-    patch_settings,
-    SSOBaseTestCase,
-)
+from identityprovider.tests.utils import SSOBaseTestCase
 
 from webui.decorators import (
     EMAIL_INVALIDATED,
     ratelimit,
     require_twofactor_enabled,
-    requires_testing_enabled,
     sso_login_required,
 )
 
@@ -54,26 +50,6 @@ class RequireTwofactorEnabledTestCase(TestCase):
             mock_enabled.return_value = False
             with self.assertRaises(Http404):
                 self.view(request)
-
-
-class RequiresTestingEnabledTestCase(TestCase):
-    @staticmethod
-    def view(request):
-        return 'SUCCESS'
-
-    def test_decorator_with_testing_enabled(self):
-        request = Mock()
-        with patch_settings(TESTING=True):
-            decorated = requires_testing_enabled(self.view)
-            response = decorated(request)
-            self.assertEqual(response, 'SUCCESS')
-
-    def test_decorator_with_testing_disabled(self):
-        request = Mock()
-        with patch_settings(TESTING=False):
-            decorated = requires_testing_enabled(self.view)
-            with self.assertRaises(Http404):
-                decorated(request)
 
 
 class RatelimitTestCase(TestCase):

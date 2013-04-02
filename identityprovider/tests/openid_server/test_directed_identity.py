@@ -31,7 +31,7 @@ class DirectedIdentityTestCase(OpenIDTestCase):
 
         self.assertContains(response, 'Consumer received GET')
         self.assertContains(
-            response, 'openid.identity:' + self.base_url + '/+id/name12_oid')
+            response, 'openid.identity:' + self.claimed_id)
         self.assertContains(response, 'openid.mode:id_res')
         self.assertContains(response, 'openid.return_to:' + self.consumer_url)
 
@@ -46,7 +46,7 @@ class DirectedIdentityTestCase(OpenIDTestCase):
         response = self.yes_to_decide(response)
         self.assertContains(response, 'Consumer received GET')
         self.assertContains(
-            response, 'openid.identity:' + self.base_url + '/+id/name12_oid')
+            response, 'openid.identity:' + self.claimed_id)
         self.assertContains(response, 'openid.mode:id_res')
         self.assertContains(
             response, 'openid.return_to:' + self.consumer_openid_url)

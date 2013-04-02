@@ -5,6 +5,7 @@ import re
 
 from urlparse import parse_qs
 
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import client
 from openid import fetchers
@@ -21,16 +22,12 @@ from openid.consumer.discover import (
 from openid.message import IDENTIFIER_SELECT
 from openid.store.memstore import MemoryStore
 from pyquery import PyQuery
-from u1testutils.django import switch_settings
-
-import identityprovider.urls  # need to reload after patching the settings
 
 from identityprovider.const import LAUNCHPAD_TEAMS_NS
-from identityprovider.models import AuthToken
+from identityprovider.models import AuthToken, OpenIDRPConfig
 from identityprovider.models.const import TokenType
-from identityprovider.models.openidmodels import OpenIDRPConfig
 from identityprovider.tests import DEFAULT_USER_PASSWORD
-from identityprovider.tests.utils import SSOBaseTestCase
+from identityprovider.tests.utils import SSOBaseTestCase, patch_settings
 from webui.views.consumer import fetchers as webui_fetchers
 
 
@@ -64,7 +61,7 @@ class DummyFetcher(fetchers.HTTPFetcher):
 
 
 class FunctionalTestCase(SSOBaseTestCase):
-    fixtures = ['admin', 'test']
+
     base_url = 'http://testserver'
     base_openid_url = base_url + '/+openid'
     consumer_url = 'http://launchpad.dev'
@@ -77,20 +74,30 @@ class FunctionalTestCase(SSOBaseTestCase):
     def setUp(self):
         super(FunctionalTestCase, self).setUp()
 
-        self.old_settings = switch_settings(
+        p = patch_settings(
             DEBUG=True,
+            TESTING=True,
             SSO_ROOT_URL=self.base_url,
             SSO_PROVIDER_URL=self.base_openid_url,
             OPENID_PREAUTHORIZATION_ACL=(
                 (self.consumer_url, self.consumer_url),
                 (self.base_url, self.base_url),
             ),
-            SSO_RESTRICT_RP = False,
+            SSO_RESTRICT_RP=False,
         )
-        # reload urls to avoid supurius 404
-        reload(identityprovider.urls)
+        p.start()
+        self.addCleanup(p.stop)
 
-        self.addCleanup(switch_settings, **self.old_settings)
+        # Create an admin user
+        User.objects.create_superuser(
+            username='admin', password='Admin007', email='a@a.com')
+        # Create a regular user
+        self.account = self.factory.make_account(
+            email=self.default_email, password=self.default_password)
+        self.factory.make_email_for_account(
+            email='testing@canonical.com', account=self.account)
+        self.claimed_id = (self.base_url + '/+id/' +
+                           self.account.openid_identifier)
 
     def reset_client(self):
         self.client = client.Client()
@@ -188,6 +195,10 @@ class FunctionalTestCase(SSOBaseTestCase):
             msg = "Regular expression '%s' does not match '%s'"
             self.fail(msg % (regexp, string))
 
+    def assert_home_page(self, response):
+        title = self.title_from_response(response)
+        self.assertEqual(title, "%s's details" % self.account.displayname)
+
     def create_openid_rp_config(self, **extra):
         kwargs = {
             'trust_root': self.consumer_url,
@@ -221,14 +232,15 @@ class FunctionalTestCase(SSOBaseTestCase):
         [assoc_handle] = re.findall('assoc_handle:(.*)', response.content)
         return assoc_handle
 
-    def do_request(self, mode, oid='name12_oid',
+    def do_request(self, mode, oid=None,
                    with_assoc_handle=True, with_return_to=True, **extra):
 
         data = {'openid.mode': mode, 'openid.trust_root': self.consumer_url}
-        if oid is not None:
-            if not oid.startswith('http'):
-                oid = self.base_url + '/+id/' + oid
-            data['openid.identity'] = oid
+        if oid is None:
+            oid = self.claimed_id
+        elif not oid.startswith('http'):
+            oid = self.base_url + '/+id/' + oid
+        data['openid.identity'] = oid
 
         if with_return_to:
             data['openid.return_to'] = self.consumer_openid_url

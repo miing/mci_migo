@@ -11,7 +11,6 @@ from mock import patch
 from openid.association import Association
 from openid.store.nonce import SKEW
 
-from identityprovider.models.account import Account
 from identityprovider.models.openidmodels import (
     DjangoOpenIDStore,
     OpenIDAssociation,
@@ -209,11 +208,9 @@ class OpenIDAssociationTestCase(SSOBaseTestCase):
 
 class OpenIDAuthorizationTestCase(SSOBaseTestCase):
 
-    fixtures = ["test"]
-
     def setUp(self):
         super(OpenIDAuthorizationTestCase, self).setUp()
-        self.account = Account.objects.get_by_email('test@canonical.com')
+        self.account = self.factory.make_account()
         self.trust_root = 'http://foo.bar.baz'
         self.expires = datetime.utcnow() + timedelta(1)
 
@@ -286,15 +283,13 @@ class OpenIDAuthorizationTestCase(SSOBaseTestCase):
 
 class OpenIDRPSummaryTestCase(SSOBaseTestCase):
 
-    fixtures = ["test"]
-
     approved_data = {
         'test1': {'one': [1, 2], 'two': [2, 3]},
         'test2': {'three': [3, 4], 'four': [4, 5]}}
 
     def setUp(self):
         super(OpenIDRPSummaryTestCase, self).setUp()
-        self.account = Account.objects.get_by_email('test@canonical.com')
+        self.account = self.factory.make_account()
         self.trust_root = 'http://foo.bar.baz'
 
     def create_summary(self):

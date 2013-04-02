@@ -26,7 +26,7 @@ from openid.server.trustroot import RP_RETURN_TO_URL_TYPE
 from openid.store.memstore import MemoryStore
 
 from identityprovider import teams
-from webui.decorators import requires_testing_enabled
+from identityprovider.views.utils import require_testing_enabled
 
 TEAMS_REQUESTED = ['canonical-partner-dev', 'hwdb-team', 'otherteam']
 SREG_DONT_REQUEST = 0
@@ -136,7 +136,7 @@ def render_index_page(request, **template_args):
     return response
 
 
-@requires_testing_enabled
+@require_testing_enabled
 @csrf_exempt
 def start_open_id(request):
     """Start the OpenID authentication process.
@@ -230,7 +230,7 @@ def teams_request_from_string(teams_str):
     return teams.TeamsRequest(req_teams)
 
 
-@requires_testing_enabled
+@require_testing_enabled
 @csrf_exempt
 def finish_open_id(request):
     """Finish the OpenID authentication process.
@@ -297,7 +297,7 @@ def finish_open_id(request):
     return render_index_page(request, **result)
 
 
-@requires_testing_enabled
+@require_testing_enabled
 def rpXRDS(request):
     """Return a relying party verification XRDS document."""
     args = {

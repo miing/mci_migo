@@ -26,9 +26,8 @@ class SSOWorkflowAuthorizeTestCase(OpenIDTestCase):
 
         # Each OpenID authentication is recorded as an OpenIDRPSummary. This
         # user has not ever used Launchpad to authenticate with a relying party
-        claimed_id = self.base_url + '/+id/name12_oid'
         summaries = OpenIDRPSummary.objects.filter(
-            openid_identifier=claimed_id)
+            openid_identifier=self.claimed_id)
 
         self.assertEqual(summaries.count(), 0)
 
@@ -41,21 +40,21 @@ class SSOWorkflowAuthorizeTestCase(OpenIDTestCase):
         # party with their identity URL:
 
         response = self.yes_to_decide(response)
-        info = self.complete_from_response(response, claimed_id)
+        info = self.complete_from_response(response, self.claimed_id)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)
 
         # The authentication was recorded. There is a summary showing that the
         # user has used the replying part once.
 
         summaries = OpenIDRPSummary.objects.filter(
-            openid_identifier=claimed_id)
+            openid_identifier=self.claimed_id)
 
         self.assertEqual(summaries.count(), 1)
         summary = summaries[0]
 
-        self.assertEqual(summary.openid_identifier, claimed_id)
+        self.assertEqual(summary.openid_identifier, self.claimed_id)
         self.assertEqual(summary.trust_root, 'http://localhost')
         self.assertEqual(summary.total_logins, 1)
 
@@ -73,7 +72,6 @@ class SSOWorkflowAuthorizeTestCase(OpenIDTestCase):
         response = self.client.get(reverse('cancel', kwargs=dict(token=token)),
                                    follow=True)
 
-        claimed_id = self.base_url + '/+id/name12_oid'
-        info = self.complete_from_response(response, claimed_id)
+        info = self.complete_from_response(response, self.claimed_id)
 
         self.assertEqual(info.status, 'cancel')

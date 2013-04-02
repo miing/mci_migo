@@ -2,7 +2,7 @@
 # GNU Affero General Public License version 3 (see the file LICENSE).
 
 import datetime
-import logging as log
+import logging
 
 from django.conf import settings
 
@@ -20,7 +20,7 @@ class TimeMiddleware(object):
         limit = datetime.timedelta(
             milliseconds=settings.HANDLER_TIMEOUT_MILLIS)
         if time_taken > limit:
-            log.warning('Took too long: %s' % time_taken)
+            logging.warning('Took too long: %s' % time_taken)
             log_request(request)
 
         return response

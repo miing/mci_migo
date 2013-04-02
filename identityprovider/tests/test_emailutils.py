@@ -164,7 +164,6 @@ class SendBrandedEmailTestCase(SSOBaseUnittestTestCase):
 
 class SendEmailTestCase(SSOBaseTestCase):
 
-    fixtures = ['test']
     email = 'testing@canonical.com'
     status = EmailStatus.VALIDATED  # the EmailStatus of the target email
     redirection_url = 'http://foo.example.com'
@@ -175,7 +174,16 @@ class SendEmailTestCase(SSOBaseTestCase):
 
     def setUp(self):
         super(SendEmailTestCase, self).setUp()
-        self.account = Account.objects.get_by_email('test@canonical.com')
+        self.account = self.factory.make_account(email='test@canonical.com')
+        self.factory.make_email_for_account(
+            email='testing@canonical.com', status=EmailStatus.VALIDATED,
+            account=self.account)
+        self.factory.make_email_for_account(
+            email='testtest@canonical.com', status=EmailStatus.NEW,
+            account=self.account)
+        self.factory.make_email_for_account(
+            email='testtesttest@canonical.com',
+            account=self.account).invalidate()
 
         p = patch_settings(
             BRAND_DESCRIPTIONS={self.brand: self.brand_desc},

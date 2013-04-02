@@ -25,18 +25,17 @@ class LogoutDuringLoginTestCase(OpenIDTestCase):
 
         # To test this, we will first authenticate to the Launchpad OpenID
         # provider:
-        claimed_id = self.base_url + '/+id/name12_oid'
-        response = self.do_openid_dance(claimed_id)
+        response = self.do_openid_dance(self.claimed_id)
 
         response = self.yes_to_decide(self.login(response))
         info = self.complete_from_response(response)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)
 
         # Now lets begin another OpenID authentication request, which will
         # present a different form asking if we want to authenticate:
-        response = self.do_openid_dance(claimed_id)
+        response = self.do_openid_dance(self.claimed_id)
 
         title = self.title_from_response(response)
         self.assertEqual(title, 'Authenticate to ' + self.consumer_url)
@@ -61,4 +60,4 @@ class LogoutDuringLoginTestCase(OpenIDTestCase):
         info = self.complete_from_response(response)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)

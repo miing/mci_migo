@@ -172,15 +172,6 @@ def require_twofactor_enabled(func):
     return wrapped
 
 
-def requires_testing_enabled(func):
-    @wraps(func)
-    def wrapped(*args, **kwargs):
-        if not getattr(settings, 'TESTING', False):
-            raise Http404()
-        return func(*args, **kwargs)
-    return wrapped
-
-
 class ratelimit(object):
     """ A rate-limiting decorator.
         Strongly based on Simon Willison's code,

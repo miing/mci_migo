@@ -5,9 +5,11 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from identityprovider.models.person import Person
+from identityprovider.models import Person
+from identityprovider.views.utils import require_testing_enabled
 
 
+@require_testing_enabled
 def openid_consumer(request):
     msg = ['Consumer received %s' % request.method]
     args = getattr(request, request.method)
@@ -18,6 +20,7 @@ def openid_consumer(request):
     return HttpResponse('\n'.join(msg))
 
 
+@require_testing_enabled
 def delegate_profile(request, username, version=0):
     person = get_object_or_404(Person, name=username)
     try:
@@ -59,16 +62,7 @@ def delegate_profile(request, username, version=0):
 </html>""" % {'name': person.name, 'headers': headers})
 
 
+@require_testing_enabled
 def error(request):
     """ Raise an internal server error """
     raise FloatingPointError("This error is a test.  Please ignore.")
-
-
-# This gives mock & patch a nice easy location to patch a wait into
-# the handler.
-def dummy_hook():
-    return HttpResponse('DONE')
-
-
-def dummy(request):
-    return dummy_hook()

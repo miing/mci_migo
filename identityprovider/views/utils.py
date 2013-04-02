@@ -2,8 +2,11 @@
 # the GNU Affero General Public License version 3 (see the file
 # LICENSE).
 
+from functools import wraps
+
 from django.conf import settings
 from django.core import urlresolvers
+from django.http import Http404
 
 from identityprovider import signed
 from identityprovider.models import OpenIDRPConfig
@@ -51,3 +54,12 @@ def get_rpconfig_from_request(request, token):
         rpconfig = saml_utils.get_rpconfig_from_request(request)
 
     return rpconfig
+
+
+def require_testing_enabled(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        if not getattr(settings, 'TESTING', False):
+            raise Http404()
+        return func(*args, **kwargs)
+    return wrapped

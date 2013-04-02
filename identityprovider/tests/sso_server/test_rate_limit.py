@@ -32,5 +32,4 @@ class RateLimitTestCase(FunctionalTestCase):
         # This shouldn't prevent us from logging in as a different user:
 
         response = self.login()
-        title = self.title_from_response(response)
-        self.assertEqual(title, "Sample Person's details")
+        self.assert_home_page(response)

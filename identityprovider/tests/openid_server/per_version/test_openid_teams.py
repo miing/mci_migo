@@ -18,10 +18,15 @@ class OpenIDTeamsTestCase(OpenIDTestCase):
         #  * one that does exist but the user is not a member of
         #  * one that is actually the user's name
 
-        claimed_id = self.base_url + '/+id/mark_oid'
-        teams = 'ubuntu-team,no-such-team,launchpad-beta-testers,mark'
-        response = self.do_openid_dance(claimed_id, teams=teams)
-        response = self.login(response, email='mark@example.com')
+        t = self.factory.make_team('ubuntu-team')
+        self.factory.add_account_to_team(self.account, t)
+
+        self.factory.make_team('launchpad-beta-testers')
+
+        teams = ('ubuntu-team,no-such-team,launchpad-beta-testers,%s' %
+                 self.account.person.name)
+        response = self.do_openid_dance(self.claimed_id, teams=teams)
+        response = self.login(response)
         # authorize sending team membership
         response = self.yes_to_decide(response, teams=('ubuntu-team',))
         info = self.complete_from_response(response)

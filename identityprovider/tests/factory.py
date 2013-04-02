@@ -115,7 +115,7 @@ class SSOObjectFactory(object):
             owner = self.make_person()
         if name is None:
             name = self.get_unique_string(prefix='team-')
-        displayname = self.get_unique_string(prefix='Team ')
+        displayname = 'Team ' + name
         team = self.make_person(name, displayname=displayname)
         team.visibility = visibility
         team.teamowner = owner

@@ -378,9 +378,7 @@ class SRegRequestFormTest(SSOBaseTestCase):
         self.assertTrue(form.check_test('email'))
 
 
-class TeamsRequestFormTest(SSOBaseTestCase):
-
-    fixtures = ["test"]
+class TeamsRequestFormTestCase(SSOBaseTestCase):
 
     def _get_request_with_post_args(self, args={}):
         request = HttpRequest()
@@ -390,8 +388,8 @@ class TeamsRequestFormTest(SSOBaseTestCase):
         return request
 
     def setUp(self):
-        super(TeamsRequestFormTest, self).setUp()
-        self.account = Account.objects.get(pk=1)
+        super(TeamsRequestFormTestCase, self).setUp()
+        self.account = self.factory.make_account(teams=['ubuntu-team'])
         self.rpconfig = OpenIDRPConfig.objects.create(
             trust_root='http://localhost/', description="Some description",
             can_query_any_team=True)

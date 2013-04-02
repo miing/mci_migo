@@ -18,7 +18,7 @@ class MaxAuthAgeTestCase(OpenIDTestCase):
         # is problematic.
 
         response = self.login()
-        self.assertContains(response, "Sample Person")
+        self.assert_home_page(response)
 
         # Normally, if a relaying party asks to authenticates this user, the
         # user will be able to click the 'Sign In' button to complete the
@@ -38,7 +38,7 @@ class MaxAuthAgeTestCase(OpenIDTestCase):
         self.assertRegexpMatches(response.redirect_chain[-1][0],
                                  self.base_url + '/.*?/\+decide')
 
-        self.assertNotContains(response, "Sample Person")
+        self.assertNotContains(response, self.account.displayname)
 
         # Since we know who the user is, the email field is pre-filled for
         # their convenience:
@@ -46,11 +46,10 @@ class MaxAuthAgeTestCase(OpenIDTestCase):
         response = self.login(response)
         response = self.yes_to_decide(response)
 
-        claimed_id = self.base_url + '/+id/name12_oid'
-        info = self.complete_from_response(response, claimed_id)
+        info = self.complete_from_response(response, self.claimed_id)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)
 
         # The auth_age parameter contains the time of the last login.
         pape_response = pape.Response.fromSuccessResponse(info)

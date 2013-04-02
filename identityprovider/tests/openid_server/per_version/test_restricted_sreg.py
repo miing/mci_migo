@@ -8,9 +8,11 @@ class RestrictedSregTestCase(OpenIDTestCase):
     def setUp(self):
         super(RestrictedSregTestCase, self).setUp()
 
+        t = self.factory.make_team('ubuntu-team')
+        self.factory.add_account_to_team(self.account, t)
+
         # We will perform an OpenID authentication request asking for a few
         # user details:
-        self.claimed_id = self.base_url + '/+id/mark_oid'
         self.required = ['email', 'country']
         self.optional = ['fullname', 'nickname']
 
@@ -19,7 +21,7 @@ class RestrictedSregTestCase(OpenIDTestCase):
         response = self.do_openid_dance(self.claimed_id, extension=extension)
 
         if with_login:  # log in
-            response = self.login(response, email='mark@example.com')
+            response = self.login(response)
 
         return response
 
@@ -116,8 +118,8 @@ class RestrictedSregTestCase(OpenIDTestCase):
         # But now we have some user details.
         sreg_response = SRegResponse.fromSuccessResponse(info)
         self.assertEqual(list(sorted(sreg_response.items())),
-                         [('email', 'mark@example.com'),
-                          ('nickname', 'mark')])
+                         [('email', self.account.preferredemail.email),
+                          ('nickname', self.account.person.name)])
 
     def test_known_trust_roots_with_auto_authorize(self):
         # == Behaviour for known trust roots with auto_authorize ==
@@ -142,5 +144,5 @@ class RestrictedSregTestCase(OpenIDTestCase):
         sreg_response = SRegResponse.fromSuccessResponse(info)
 
         self.assertEqual(list(sorted(sreg_response.items())),
-                         [('email', 'mark@example.com'),
-                          ('fullname', 'Mark Shuttleworth')])
+                         [('email', self.account.preferredemail.email),
+                          ('fullname', self.account.displayname)])

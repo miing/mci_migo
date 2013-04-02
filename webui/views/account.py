@@ -41,11 +41,13 @@ from identityprovider.models.twofactor import is_twofactor_enabled
 from identityprovider.signals import account_email_added
 from identityprovider.utils import get_object_or_none
 from identityprovider.views.server import xrds
-from identityprovider.views.utils import get_rpconfig_from_request
+from identityprovider.views.utils import (
+    get_rpconfig_from_request,
+    require_testing_enabled,
+)
 
 from webui.decorators import (
     check_readonly,
-    requires_testing_enabled,
     sso_login_required,
 )
 from webui.views.const import (
@@ -170,7 +172,7 @@ def account_emails(request):
     return render_to_response('account/emails.html', context)
 
 
-@requires_testing_enabled
+@require_testing_enabled
 @sso_login_required
 def account_deactivate(request, token=None):
     account = request.user

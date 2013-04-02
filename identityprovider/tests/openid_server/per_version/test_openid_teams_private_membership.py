@@ -6,6 +6,11 @@ from identityprovider.tests.helpers import OpenIDTestCase
 
 class OpenIDTeamsPrivateMembershipTestCase(OpenIDTestCase):
 
+    def setUp(self):
+        super(OpenIDTeamsPrivateMembershipTestCase, self).setUp()
+        t = self.factory.make_team(name='myteam', private=True)
+        self.factory.add_account_to_team(self.account, t)
+
     def test_untrusted_rps(self):
         # = Launchpad OpenID Teams Extension Restrictions on Private Teams =
 
@@ -26,12 +31,11 @@ class OpenIDTeamsPrivateMembershipTestCase(OpenIDTestCase):
         # Now perform the authentication request, using the teams extension to
         # query membership of "myteam":
 
-        claimed_id = self.base_url + '/+id/cCGE3LA'
+        auth = 'Basic %s:%s' % (self.default_email, self.default_password)
         response = self.do_openid_dance(
-            claimed_id, teams='myteam',
-            HTTP_AUTHORIZATION='Basic member@canonical.com:test')
+            self.claimed_id, teams='myteam', HTTP_AUTHORIZATION=auth)
 
-        response = self.login(response, email='member@canonical.com')
+        response = self.login(response)
         # make sure the user doesn't have the option to authorize the
         # team, as it's private
         myteam = self.get_from_response(
@@ -64,10 +68,9 @@ class OpenIDTeamsPrivateMembershipTestCase(OpenIDTestCase):
 
         # Now perform a second authentication request:
 
-        claimed_id = self.base_url + '/+id/cCGE3LA'
-        response = self.do_openid_dance(claimed_id, teams='myteam')
+        response = self.do_openid_dance(self.claimed_id, teams='myteam')
 
-        response = self.login(response, email='member@canonical.com')
+        response = self.login(response)
         # make sure the user doesn't have the option to authorize the
         # team, as it's private
         myteam = self.get_from_response(
@@ -93,7 +96,7 @@ class OpenIDTeamsPrivateMembershipTestCase(OpenIDTestCase):
         # Now if we authenticate again, Launchpad will informed us that
         # "member" is a member of "myteam":
 
-        response = self.do_openid_dance(claimed_id, teams='myteam')
+        response = self.do_openid_dance(self.claimed_id, teams='myteam')
         myteam = self.get_from_response(
             response, 'input[type="checkbox"][value="myteam"]')
         self.assertEqual(len(myteam), 1)

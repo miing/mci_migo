@@ -1,5 +1,10 @@
 from openid.yadis.discover import DiscoveryFailure
 
+from identityprovider.models import LPOpenIdIdentifier
+from identityprovider.models.const import (
+    AccountCreationRationale,
+    AccountStatus,
+)
 from identityprovider.tests.helpers import OpenIDTestCase
 
 
@@ -14,20 +19,21 @@ class DiscoveryTestCase(OpenIDTestCase):
 
         # == Persistent User Identity URLs ==
         # SSO assigns a persistent identifier to each user:
-        endpoints = self.get_endpoints('/+id/mark_oid')
+        endpoints = self.get_endpoints(
+            '/+id/' + self.account.openid_identifier)
 
         self.assertEqual(endpoints, {
-            'claimed_id': self.base_url + '/+id/mark_oid',
+            'claimed_id': self.claimed_id,
             'endpoints': [{
-                'local_id': self.base_url + '/+id/mark_oid',
+                'local_id': self.claimed_id,
                 'server_url': self.base_openid_url,
                 'supports': ['http://specs.openid.net/auth/2.0/signon']
             }, {
-                'local_id': self.base_url + '/+id/mark_oid',
+                'local_id': self.claimed_id,
                 'server_url': self.base_openid_url,
                 'supports': ['http://openid.net/signon/1.1']
             }, {
-                'local_id': self.base_url + '/+id/mark_oid',
+                'local_id': self.claimed_id,
                 'server_url': self.base_openid_url,
                 'supports': ['http://openid.net/signon/1.0']
             }]
@@ -70,9 +76,21 @@ class DiscoveryTestCase(OpenIDTestCase):
         #
         # People who are not valid Launchpad users do not have OpenID
         # Identifiers:
-        endpoints = self.get_endpoints('/~matsubara')
+        person_name = 'foo'
+        account = self.factory.make_account(
+            creation_rationale=AccountCreationRationale.POFILEIMPORT,
+            status=AccountStatus.NOACCOUNT,
+        )
+        person = self.factory.make_person(name=person_name, account=account)
+        LPOpenIdIdentifier.objects.filter(
+            identifier=account.openid_identifier,
+            lp_account=account.id).delete()
+
+        assert account.person is None
+        assert person.account is None
+        endpoints = self.get_endpoints('/~' + person_name)
 
         self.assertEqual(endpoints, {
-            'claimed_id': self.base_url + '/~matsubara',
+            'claimed_id': self.base_url + '/~' + person_name,
             'endpoints': []
         })

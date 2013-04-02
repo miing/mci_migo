@@ -3,25 +3,24 @@
 
 import re
 import sys
-from time import sleep
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
 from django.test import TestCase
 from django.contrib.auth.models import User, AnonymousUser
 
-from mock import patch
 from openid.message import IDENTIFIER_SELECT, OPENID1_URL_LIMIT, OPENID2_NS
-from u1testutils.django import patch_settings
 
 from identityprovider.middleware import exception, util as middleware_util
 from identityprovider.middleware.useraccount import (
     UserAccountConversionMiddleware)
-from identityprovider.models import Account, EmailAddress, OpenIDRPConfig
+from identityprovider.models import Account, OpenIDRPConfig
 from identityprovider.tests import DEFAULT_USER_PASSWORD
-from identityprovider.tests.utils import MockRequest, SSOBaseTestCase
-from identityprovider.views import testing as test_views
+from identityprovider.tests.utils import (
+    MockRequest,
+    SSOBaseTestCase,
+    patch_settings,
+)
 
 
 def _extract_csrf_token(response):
@@ -33,13 +32,10 @@ def _extract_csrf_token(response):
 
 class UserAccountConversionMiddlewareTestCase(SSOBaseTestCase):
 
-    fixtures = ['test']
-
     def setUp(self):
         super(UserAccountConversionMiddlewareTestCase, self).setUp()
 
-        email = EmailAddress.objects.get(email__iexact='test@canonical.com')
-        self.account = email.account
+        self.account = self.factory.make_account()
         self.middleware = UserAccountConversionMiddleware()
         self.user, _ = User.objects.get_or_create(
             username=self.account.openid_identifier)
@@ -166,31 +162,38 @@ class ExceptionMiddlewareTestCase(TestCase):
         self.assertTrue('public_variable' in html)
 
 
-class TimeMiddlewareTestCase(TestCase):
+class TimeMiddlewareTestCase(SSOBaseTestCase):
 
-    @patch('identityprovider.middleware.time.log_request')
-    @patch.object(test_views, 'dummy_hook')
-    def _check(self, timeout_millis, sleep_secs, calls, hook, log):
-        hook.return_value = HttpResponse('DONE')
-        hook.side_effect = sleep(sleep_secs)
-        path = reverse(test_views.dummy)
+    def setUp(self):
+        super(TimeMiddlewareTestCase, self).setUp()
+        self.mock_log_request = self._apply_patch(
+            'identityprovider.middleware.time.log_request')
+        self.mock_logging = self._apply_patch(
+            'identityprovider.middleware.time.logging')
+
+    def _check(self, timeout_millis, calls):
         with patch_settings(HANDLER_TIMEOUT_MILLIS=timeout_millis):
-            self.client.get(path)
-        self.assertEqual(hook.call_count, 1)
-        self.assertEqual(log.call_count, calls)
+            self.client.get(reverse('account-index'))
+
+        self.assertEqual(self.mock_log_request.call_count, calls)
+        self.assertEqual(self.mock_logging.warning.call_count, calls)
 
     def test_under_time(self):
-        self._check(5000, 0, 0)
+        self._check(5000, 0)
 
     def test_over_time(self):
-        self._check(1, 0.1, 1)
+        self._check(0, 1)
 
 
 # The CSRF middleware requires a session cookie in order to activate.
 # The tests perform a login in order to acquire this session cookie.
 class CSRFMiddlewareTestCase(SSOBaseTestCase):
 
-    fixtures = ['test']
+    email = 'mark@example.com'
+
+    def setUp(self):
+        super(CSRFMiddlewareTestCase, self).setUp()
+        self.factory.make_account(email=self.email)
 
     def _land(self, client=None):
         client = client or self.client
@@ -201,7 +204,7 @@ class CSRFMiddlewareTestCase(SSOBaseTestCase):
     def _login(self, client=None, csrf_token=None):
         client = client or self.client
         client.handler.enforce_csrf_checks = True
-        form = {'email': 'mark@example.com', 'password': DEFAULT_USER_PASSWORD}
+        form = {'email': self.email, 'password': DEFAULT_USER_PASSWORD}
         if not csrf_token:
             # get the token from the login page
             r, csrf_token = self._land()
@@ -343,7 +346,7 @@ class CSRFMiddlewareTestCase(SSOBaseTestCase):
         # 3. User logs in to SSO, but is allowed to decide whether to
         # continue back to RP.
         data = {
-            'email': 'mark@example.com',
+            'email': self.email,
             'password': DEFAULT_USER_PASSWORD
         }
         r = self.client.post('/%s/+login' % oid_token, data, follow=True)

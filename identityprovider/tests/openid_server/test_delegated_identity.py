@@ -20,10 +20,11 @@ class DelegatedIdentityTestCase(OpenIDTestCase):
         # delegation.
         # The profile page delegates to the underlying Single Sign On
         # identifier:
-        data = self.get_endpoints('/~name12')
-        self.assertEqual(data['claimed_id'], self.base_url + "/~name12")
-        self.assertEndpointData(
-            data, self.base_url + "/+id/name12_oid", self.base_openid_url)
+        self.factory.make_person(account=self.account)
+        account_id = '/~' + self.account.person.name
+        data = self.get_endpoints(account_id)
+        self.assertEqual(data['claimed_id'], self.base_url + account_id)
+        self.assertEndpointData(data, self.claimed_id, self.base_openid_url)
         self.assertSupports(data, [
             ["http://specs.openid.net/auth/2.0/signon"],
             ["http://openid.net/signon/1.1"],
@@ -33,21 +34,19 @@ class DelegatedIdentityTestCase(OpenIDTestCase):
         # In case the client doesn't support YADIS discovery, the profile page
         # also includes <link> discovery:
 
-        data = self.get_endpoints('/~name12', yadis=False)
+        data = self.get_endpoints(account_id, yadis=False)
 
-        self.assertEqual(data['claimed_id'], self.base_url + "/~name12")
-        self.assertEndpointData(
-            data, self.base_url + "/+id/name12_oid", self.base_openid_url)
+        self.assertEqual(data['claimed_id'], self.base_url + account_id)
+        self.assertEndpointData(data, self.claimed_id, self.base_openid_url)
         self.assertSupports(data, [["http://specs.openid.net/auth/2.0/signon"],
                                    ["http://openid.net/signon/1.1"]])
 
     def test_login(self):
         # == Logging in ==
-        claimed_id = self.base_url + '/~name12'
-        response = self.do_openid_dance(claimed_id, with_discovery=True)
+        response = self.do_openid_dance(self.claimed_id, with_discovery=True)
         response = self.login(response)
         response = self.yes_to_decide(response)
         info = self.complete_from_response(response)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)

@@ -56,8 +56,7 @@ class SSOWorkflowLoginTestCase(OpenIDTestCase):
 
         response = self.yes_to_decide(response)
 
-        claimed_id = self.base_url + '/+id/name12_oid'
-        info = self.complete_from_response(response, claimed_id)
+        info = self.complete_from_response(response, self.claimed_id)
 
         self.assertEqual(info.status, 'success')
-        self.assertEqual(info.endpoint.claimed_id, claimed_id)
+        self.assertEqual(info.endpoint.claimed_id, self.claimed_id)
