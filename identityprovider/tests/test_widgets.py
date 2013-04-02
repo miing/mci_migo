@@ -5,8 +5,6 @@ from datetime import datetime
 from django.conf import settings
 from django.test import TestCase
 
-from identityprovider.models import Account
-from identityprovider.models.account import LPOpenIdIdentifier
 from identityprovider.tests.utils import SSOBaseTestCase, patch_settings
 from identityprovider.widgets import (
     CommaSeparatedWidget,
@@ -150,16 +148,21 @@ class ReadOnlyDateTimeWidgetTestCase(TestCase):
 
 class LPUsernameWidgetTestCase(SSOBaseTestCase):
 
-    fixtures = ['test']
-
     def setUp(self):
         super(LPUsernameWidgetTestCase, self).setUp()
         self.widget = LPUsernameWidget()
-        self.widget.account = Account.objects.get_by_email('mark@example.com')
+        self.account = self.factory.make_account()
+        assert self.account.person is None
+        self.widget.account = self.account
 
-    def test_render_account(self):
+    def test_render_account_with_person(self):
+        self.factory.make_person(account=self.account)
+        assert self.account.person is not None
+
         r = self.widget.render('test', None)
-        self.assertEqual(r, '<a href="https://launchpad.net/~mark">mark</a>')
+        widget = '<a href="https://launchpad.net/~{name}">{name}</a>'.format(
+            name=self.widget.account.person.name)
+        self.assertEqual(r, widget)
 
     def test_render_no_account(self):
         # unlink account
@@ -168,8 +171,5 @@ class LPUsernameWidgetTestCase(SSOBaseTestCase):
         self.assertEqual(r, '')
 
     def test_render_account_no_person(self):
-        # unlink person
-        LPOpenIdIdentifier.objects.filter(
-            identifier=self.widget.account.openid_identifier).delete()
         r = self.widget.render('test', None)
         self.assertEqual(r, '')

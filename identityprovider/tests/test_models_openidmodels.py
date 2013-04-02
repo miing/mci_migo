@@ -187,7 +187,15 @@ class OpenIDRPConfigTestCase(SSOBaseTestCase):
 
 
 class OpenIDAssociationTestCase(SSOBaseTestCase):
-    fixtures = ['multiple_associations']
+
+    def setUp(self):
+        super(OpenIDAssociationTestCase, self).setUp()
+        for i in xrange(5):
+            OpenIDAssociation.objects.create(
+                server_url='http://test.com',
+                handle='handle%s' % i,
+                secret=('secret%s' % i).encode('base64'),
+                issued=time(), lifetime=1000, assoc_type='HMAC-SHA1')
 
     def test_create_association(self):
         # If this creation doesn't fail then our primary key is right,

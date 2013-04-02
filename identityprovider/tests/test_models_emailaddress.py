@@ -7,7 +7,6 @@ from django.db import IntegrityError
 from mock import Mock, patch
 
 from identityprovider.models import (
-    Account,
     EmailAddress,
     InvalidatedEmailAddress,
 )
@@ -32,10 +31,9 @@ class EmailAddressQuerySetTestCase(SSOBaseTestCase):
 
 
 class EmailAddressManagerTestCase(SSOBaseTestCase):
-    fixtures = ['test']
 
     def test_create_from_phone_id(self):
-        account = Account.objects.get_by_email('test@canonical.com')
+        account = self.factory.make_account()
         new_email = EmailAddress.objects.create_from_phone_id('tel:+123',
                                                               account)
         self.assertEqual(new_email.status, EmailStatus.NEW)
@@ -43,7 +41,7 @@ class EmailAddressManagerTestCase(SSOBaseTestCase):
         self.assertEqual(new_email.email, 'tel#+123@%s' % PHONE_EMAIL_DOMAIN)
 
     def test_get_from_phone_id(self):
-        account = Account.objects.get_by_email('test@canonical.com')
+        account = self.factory.make_account()
         new_email = EmailAddress.objects.create_from_phone_id('tel:+123',
                                                               account)
         email = EmailAddress.objects.get_from_phone_id('tel:+123')
@@ -55,28 +53,49 @@ class EmailAddressManagerTestCase(SSOBaseTestCase):
             EmailAddress.objects.get_from_phone_id, 'tel:+123')
 
     def test_verified(self):
+        account = self.factory.make_account()  # this gives a validated address
+        for i in xrange(5):
+            EmailAddress.objects.create(email='%s@foo.com' % i,
+                                        status=EmailStatus.NEW,
+                                        account=account)
+        for i in xrange(3):
+            EmailAddress.objects.create(email='%s@example.com' % i,
+                                        status=EmailStatus.VALIDATED,
+                                        account=account)
+        for i in xrange(3):
+            EmailAddress.objects.create(email='%s@bar.com' % i,
+                                        status=EmailStatus.PREFERRED,
+                                        account=account)
+
+        assert EmailAddress.objects.all().count() == 12
+
         emails = EmailAddress.objects.verified()
+        self.assertEqual(len(emails), 7)
         for email in emails:
             self.assertTrue(email.is_verified)
 
 
 class EmailAddressTestCase(SSOBaseTestCase):
-    fixtures = ['test']
+
+    email = 'test@canonical.com'
+
+    def setUp(self):
+        super(EmailAddressTestCase, self).setUp()
+        self.account = self.factory.make_account(email=self.email)
 
     def test_emailaddress_with_account(self):
-        account = Account.objects.get_by_email('test@canonical.com')
-        email = EmailAddress.objects.get(email='test@canonical.com')
-        self.assertEqual(account, email.account)
+        email = EmailAddress.objects.get(email=self.email)
+        self.assertEqual(self.account, email.account)
 
     def test_emailaddress_is_verifiable(self):
-        email = EmailAddress.objects.get(email='test@canonical.com')
+        email = EmailAddress.objects.get(email=self.email)
         self.assertTrue(email.is_verifiable)
         unverifiable_email = 'test@%s' % PHONE_EMAIL_DOMAIN
         email = EmailAddress(email=unverifiable_email)
         self.assertFalse(email.is_verifiable)
 
     def test_emailaddress_is_verified(self):
-        email = EmailAddress.objects.get(email='test@canonical.com')
+        email = EmailAddress.objects.get(email=self.email)
         assert email.status == EmailStatus.PREFERRED
         self.assertTrue(email.is_verified)
         email.status = EmailStatus.VALIDATED
@@ -85,14 +104,14 @@ class EmailAddressTestCase(SSOBaseTestCase):
         self.assertFalse(email.is_verified)
 
     def test_emailaddress_invalidate(self):
-        email = EmailAddress.objects.get(email='test@canonical.com')
+        email = EmailAddress.objects.get(email=self.email)
         invalidated = email.invalidate()
         self.assertTrue(isinstance(invalidated, InvalidatedEmailAddress))
         self.assertEqual(email.email, invalidated.email)
         self.assertEqual(email.account, invalidated.account)
         self.assertEqual(email.date_created, invalidated.date_created)
         # is not available anymore
-        emails = EmailAddress.objects.filter(email='test@canonical.com')
+        emails = EmailAddress.objects.filter(email=self.email)
         self.assertFalse(emails.exists())
 
     def test_emailaddress_invalidate_with_person(self):

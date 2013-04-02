@@ -6,12 +6,10 @@ from identityprovider.const import (
     PERSON_VISIBILITY_PRIVATE_MEMBERSHIP,
 )
 from identityprovider.models import (
-    Account,
     Person,
     TeamParticipation,
     get_team_memberships_for_user,
 )
-from identityprovider.tests import DEFAULT_USER_PASSWORD
 from identityprovider.tests.utils import SSOBaseTestCase
 
 
@@ -26,8 +24,6 @@ class TeamParticipationTestCase(SSOBaseTestCase):
 
 class TeamMembershipTest(SSOBaseTestCase):
 
-    fixtures = ["test"]
-
     def _set_team_to_private_membership(self, team_name):
         self._set_team_privacy(team_name, PERSON_VISIBILITY_PRIVATE_MEMBERSHIP)
 
@@ -41,11 +37,12 @@ class TeamMembershipTest(SSOBaseTestCase):
 
     def setUp(self):
         super(TeamMembershipTest, self).setUp()
-        self.account = Account.objects.get(pk=1)
+        self.account = self.factory.make_account(teams=['ubuntu-team'])
+        assert self.account.person is not None
 
     def test_get_team_memberships_on_personless_account(self):
-        account = Account.objects.create_account('test', 'x@example.com',
-                                                 DEFAULT_USER_PASSWORD)
+        account = self.factory.make_account()
+        assert account.person is None
         memberships = get_team_memberships_for_user(
             ['ubuntu-team'], account, False)
         self.assertEqual(memberships, [])

@@ -26,7 +26,11 @@ from identityprovider.readonly import (
     get_server_atts,
     update_server,
 )
-from identityprovider.tests.utils import SSOBaseTestCase, skipOnSqlite
+from identityprovider.tests.utils import (
+    SSOBaseTestCase,
+    patch_settings,
+    skipOnSqlite,
+)
 
 
 class ReadOnlyBaseTestCase(SSOBaseTestCase):
@@ -34,6 +38,12 @@ class ReadOnlyBaseTestCase(SSOBaseTestCase):
 
     def setUp(self):
         super(ReadOnlyBaseTestCase, self).setUp()
+        # XXX, 2013-03-29, nessita: Do not remove this patching since the
+        # READ_ONLY_MODE is tweak in tests, and it should be guaranteed the
+        # readonlymode stays False
+        p = patch_settings(READ_ONLY_MODE=False)
+        p.start()
+        self.addCleanup(p.stop)
 
         mock_readonly_secret = 'testsecret'
         db = settings.DATABASES[DEFAULT_DB_ALIAS]
@@ -71,17 +81,18 @@ class ReadOnlyBaseTestCase(SSOBaseTestCase):
         self.rm = ReadOnlyManager()
 
 
-class InReadOnlyTestCase(ReadOnlyBaseTestCase):
+class ReadOnlyEnabledTestCase(ReadOnlyBaseTestCase):
 
     def setUp(self):
-        super(InReadOnlyTestCase, self).setUp()
+        super(ReadOnlyEnabledTestCase, self).setUp()
+        self.person = self.factory.make_person()
 
         self.rm.set_readonly()
         self.addCleanup(self.rm.clear_readonly)
 
-
-class ReadOnlyTest(InReadOnlyTestCase):
-    fixtures = ["test"]
+        db = settings.DATABASES[DEFAULT_DB_ALIAS].copy()
+        # queue cleanup task so DATABASES settings are properly restored
+        self.addCleanup(settings.DATABASES.__setitem__, DEFAULT_DB_ALIAS, db)
 
     @skipOnSqlite
     def test_invalid_insert(self):
@@ -97,29 +108,28 @@ class ReadOnlyTest(InReadOnlyTestCase):
 
     @skipOnSqlite
     def test_invalid_update(self):
-        p = models.Person.objects.get(pk=1)
-        p.displayname = 'Something Different'
-        self.assertRaises(DatabaseError, p.save)
+        self.person.displayname = 'Something Different'
+        self.assertRaises(DatabaseError, self.person.save)
 
     def test_current_dbid_with_settings(self):
-        db = settings.DATABASES[DEFAULT_DB_ALIAS].copy()
         settings.DATABASES[DEFAULT_DB_ALIAS]['ID'] = 'mydb'
 
         self.assertEqual(self.rm.current_dbid(), 'mydb')
 
-        settings.DATABASES[DEFAULT_DB_ALIAS] = db
-
     def test_current_dbid_without_settings(self):
-        if 'ID' in settings.DATABASES[DEFAULT_DB_ALIAS]:
-            del settings.DATABASES[DEFAULT_DB_ALIAS]['ID']
+        settings.DATABASES[DEFAULT_DB_ALIAS].pop('ID', None)
 
         self.assertTrue(len(self.rm.connections) > 0)
-
         self.assertEqual(self.rm.current_dbid(),
                          self.rm.connections[0]['ID'])
 
+    def test_new_account_is_rendered_using_read_only_template(self):
+        with patch_settings(READ_ONLY_MODE=True):
+            r = self.client.get(reverse('new_account'))
+            self.assertTemplateUsed(r, 'readonly.html')
 
-class RemoteRequestTest(SSOBaseTestCase):
+
+class RemoteRequestTestCase(SSOBaseTestCase):
     msg = 'hello'
     host = 'myhost'
     scheme = 'https'
@@ -177,6 +187,7 @@ class RemoteRequestTest(SSOBaseTestCase):
 
 
 class ReadOnlyManagerTestCase(ReadOnlyBaseTestCase):
+
     def test_set_db(self):
         db = {
             'ID': 'foo',
@@ -195,27 +206,24 @@ class ReadOnlyManagerTestCase(ReadOnlyBaseTestCase):
 
 
 class ReadOnlyRecoveryTestCase(ReadOnlyBaseTestCase):
+
     def setUp(self):
         super(ReadOnlyRecoveryTestCase, self).setUp()
 
         self.rm.set_readonly(automatic=True)
         self.addCleanup(self.rm.clear_readonly)
 
-        self.old_dbrecover_interval = settings.DBRECOVER_INTERVAL
-        self.old_dbrecover_attempts = settings.DBRECOVER_ATTEMPTS
-        self.old_dbrecover_multiplier = settings.DBRECOVER_MULTIPLIER
-        settings.DBRECOVER_ATTEMPTS = 5
-        settings.DBRECOVER_INTERVAL = 0  # Recover immediately
-        settings.DBRECOVER_MULTIPLIER = 2
+        p = patch_settings(
+            DBRECOVER_ATTEMPTS=5,
+            DBRECOVER_INTERVAL=0,  # Recover immediately
+            DBRECOVER_MULTIPLIER=2,
+        )
+        p.start()
+        self.addCleanup(p.stop)
 
     def tearDown(self):
         if self.rm.is_failed(self.rm.current_dbid()):
             self.rm.clear_failed(self.rm.current_dbid())
-
-        settings.DBRECOVER_INTERVAL = self.old_dbrecover_interval
-        settings.DBRECOVER_ATTEMPTS = self.old_dbrecover_attempts
-        settings.DBRECOVER_MULTIPLIER = self.old_dbrecover_multiplier
-
         super(ReadOnlyRecoveryTestCase, self).tearDown()
 
     def test_readonly_is_automatic(self):
@@ -289,7 +297,8 @@ class ReadOnlyRecoveryTestCase(ReadOnlyBaseTestCase):
         return False
 
 
-class ReadOnlyFlagFilesTest(ReadOnlyBaseTestCase):
+class ReadOnlyFlagFilesTestCase(ReadOnlyBaseTestCase):
+
     def test_flag_files_in_right_directory(self):
         self.rm.set_readonly()
         flags = os.listdir(settings.DBFAILOVER_FLAG_DIR)
@@ -309,7 +318,8 @@ class ReadOnlyFlagFilesTest(ReadOnlyBaseTestCase):
         self.assertTrue(mode & stat.S_IWGRP)
 
 
-class ReadOnlyDataTest(ReadOnlyBaseTestCase):
+class ReadOnlyDataTestCase(ReadOnlyBaseTestCase):
+
     def test_readonly_returns_404_for_get(self):
         response = self.client.get('/readonlydata')
         self.assertEqual(404, response.status_code)
@@ -529,11 +539,3 @@ class ReadOnlyViewsTestCase(ReadOnlyBaseTestCase):
         self.assertEqual(data, [
             "action=set&conn=master&secret=%s" % settings.READONLY_SECRET,
         ])
-
-
-class ReadOnlyViews(InReadOnlyTestCase):
-
-    def test_new_account_is_rendered_using_read_only_template(self):
-        with patch.multiple(settings, READ_ONLY_MODE=True):
-            r = self.client.get(reverse('new_account'))
-            self.assertTemplateUsed(r, 'readonly.html')
