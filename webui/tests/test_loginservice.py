@@ -9,6 +9,8 @@ from identityprovider.models.authtoken import AuthToken
 from identityprovider.tests.utils import SSOBaseTestCase
 from identityprovider.utils import get_current_brand
 
+from unittest import skipUnless
+
 
 class LoginTest(SSOBaseTestCase):
 
@@ -25,6 +27,18 @@ class LoginTest(SSOBaseTestCase):
         r = self.client.post('/+login', {'email': "mark@example.com",
                                          'passwrd': ""})
         self.assertFormError(r, 'form', 'password', "Required field.")
+
+
+@skipUnless(settings.BRAND == 'ubuntuone',
+            "Hybrid login/create account page only applies to u1 brand""")
+class HybridLoginNewAccountTest(SSOBaseTestCase):
+
+    def test_create_account_form_required_field(self):
+        r = self.client.get('/+login')
+        self.assertIn("_login_create_account_radio", r.content)
+
+        self.assertIn("_login_form", r.content)
+        self.assertIn("_create_account_form", r.content)
 
 
 class NewAccountTest(SSOBaseTestCase):

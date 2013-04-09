@@ -41,56 +41,24 @@ LICENSE).
 
             {% include "ubuntuone/_login_title.html" %}
 
-            <form id="login-form" action="{{ login_path }}" method="post" name="loginform">
-                {% csrf_token %}
-                <div class="input-row{% if form.email.errors or form.non_field_errors %} haserrors{% endif %}">
-                    <label for="id_email">{% trans "Please type your email" %}:</label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                      <span class="error">{{ form.email.errors|join:"" }}</span>
-                    {% endif %}
+            {% include "ubuntuone/_login_create_radio.html" with page="login" %}
+
+            <div class="dual-forms">
+
+                <div class="login-form">
+                    {% include "ubuntuone/registration/_login_form.html" %}
                 </div>
 
-                {% include "ubuntuone/_login_create_radio.html" with page="login" %}
+                <noscript>
+                    <p class="no-js-create-account">{% trans "Or create a new account:" %}</p>
+                </noscript>
 
-                <div class="input-row{% if form.password.errors or form.non_field_errors %} haserrors{% endif %}">
-                    {% if form.password.errors %}
-                        <span class="error">{{ form.password.errors|join:"" }}</span>
-                    {% endif %}
-                    {% if not form.oath_token and form.non_field_errors %}
-                        <span class="error">{{ form.non_field_errors|join:"" }}</span>
-                    {% endif %}
-                    {{ form.password }}
+                <div class="create-form show-no-js">
+                    {% include "ubuntuone/registration/_create_account_form.html" with create_form=create_account_form csrf_token=csrf_token %}
                 </div>
 
-                {% if form.oath_token %}
-                <div class="input-row">
-                    <h3 class="main">{% blocktrans %}Two Factor Authentication{% endblocktrans %}</h3>
-                    <p id="oathtoken" class="input-row{% if form.oath_token.errors or form.non_field_errors %} haserrors{% endif %}">
-                        <label class="formLabel" for="id_oath_token">{% trans "Device Password" %}</label>
-                        {{ form.oath_token }}
-                        {% if form.oath_token.errors %}
-                            <span class="error">{{ form.oath_token.errors|join:"" }}</span>
-                        {% endif %}
-                        {% if form.non_field_errors %}
-                            <span class="error">{{ form.non_field_errors|join:"" }}</span>
-                        {% endif %}
-                    </p>
-                </div>
-                {% endif %}
+            </div>
 
-                <div class="actions">
-                    {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
-                    <button type="submit" class="cta" name="continue" data-qa-id="_qa_ubuntu_login_button"><span>{% trans "Log in" %}</span></button>
-                    <p class="forgot-password">{% include "common/forgot_password_link.html" %}</p>
-
-                    {% comment %}
-                    {% if token %}{% trans "or" %}
-                    {% include "common/cancel_link.html" %}{% endif %}
-                    {% endcomment %}
-                </div>
-
-            </form>
         </div>
     </div>
 
@@ -106,18 +74,47 @@ LICENSE).
 
 {% block extra_js %}
 <script type="text/javascript">
-    YUI().use('node', function(Y) {
-        var email = Y.one('#id_email');
+
+    YUI().use('node', 'transition', function(Y) {
+
+        var createForm = Y.one('.create-form'),
+            loginForm = Y.one('.login-form'),
+            email = Y.one('#id_email'),
+            radios = Y.one('.user-intention'),
+            userIntentionChange = function (e) {
+
+                if(e.target.get('value') === 'create') {
+                    radios.removeClass('selected-login');
+                    radios.addClass('selected-create');
+                    createForm.one('#id_email').set('value', loginForm.one('#id_email').get('value'));
+
+                    loginForm.hide();
+                    createForm.show();
+                    createForm.setStyle('position', 'relative');
+
+                } else {
+                    radios.addClass('selected-login');
+                    radios.removeClass('selected-create');
+                    loginForm.one('#id_email').set('value', createForm.one('#id_email').get('value'));
+                    createForm.hide();
+                    createForm.setStyle('position', 'absolute')
+                    loginForm.show();
+                }
+            };
+
+        Y.all('.user-intention input[type=radio]').each(function (input) {
+            input.on('change', userIntentionChange);
+        });
 
         // autofocus shiv
         if (!("autofocus" in document.createElement("input"))) {
             email.focus();
         }
 
-        // radio button behaviour
-        Y.one('.new-user input').on('click', function () {
-            Y.config.win.location.href = '{% url new_account %}';
-        });
+        // remove class that hid and rely on inline style
+        Y.one('.create-form').setStyle('display', 'none').removeClass('show-no-js');
+
     });
+
 </script>
 {% endblock %}

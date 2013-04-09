@@ -122,29 +122,40 @@ class LoginBaseView(TemplateResponseMixin, View):
             rpconfig = get_rpconfig_from_request(request, token)
         return rpconfig
 
-    def render(self, request, token, rpconfig, form):
+    def render(self, request, token, rpconfig, form, create_account_form=None):
         if token is None:
             login_path = reverse('login')
         else:
             login_path = reverse('login', args=[token])
-        context = RequestContext(request, {
+
+        context_conf = {
             'form': form,
             'hide_sidebar': self.hide_sidebar,
             'login_path': login_path,
             'next': request.GET.get('next'),
             'rpconfig': rpconfig,
             'token': token,
-        })
+        }
+
+        # if u1 brand, add captcha and account creation form
+        if settings.BRAND == 'ubuntuone':
+            context_conf['captcha_required'] = True
+            context_conf = add_captcha_settings(context_conf)
+            context_conf['create_account_form'] = create_account_form
+
+        context = RequestContext(request, context_conf)
+
         return self.render_to_response(context)
 
-    def display_errors(self, request, token, rpconfig, form, error=None):
+    def display_errors(self, request, token, rpconfig, form, error=None,
+                       create_account_form=None):
         """track and display nice errors, including extra ones"""
         # track login form errors
         stats.increment('flows.login', key='error', rpconfig=rpconfig)
         polite_form_errors(form._errors)
         if error:
             _add_non_field_error(form, error)
-        return self.render(request, token, rpconfig, form)
+        return self.render(request, token, rpconfig, form, create_account_form)
 
 
 class LoginView(LoginBaseView):
@@ -155,12 +166,27 @@ class LoginView(LoginBaseView):
                                                           rpconfig)
         return required, TwoFactorLoginForm if required else LoginForm
 
+    def get_create_account_form(self, request):
+        """return new account form if u1 brand"""
+        if settings.BRAND == 'ubuntuone':
+            old = 'old' in request.REQUEST
+            form = OldNewAccountForm if old else NewAccountForm
+            form = form()
+        else:
+            form = None
+
+        return form
+
     def get(self, request, token=None, rpconfig=None):
         rpconfig = self.setup(request, token, rpconfig)
         required2f, form_cls = self.get_login_type(request, token, rpconfig)
         # track login attempts
         stats.increment('flows.login', key='requested', rpconfig=rpconfig)
-        return self.render(request, token, rpconfig, form_cls())
+
+        create_account_form = self.get_create_account_form(request)
+
+        return self.render(request, token, rpconfig, form_cls(),
+                           create_account_form)
 
     def post(self, request, token=None, rpconfig=None):
         rpconfig = self.setup(request, token, rpconfig)
@@ -168,8 +194,10 @@ class LoginView(LoginBaseView):
         site_twofactor, form_cls = result
 
         form = form_cls(request.POST)
+        create_account_form = self.get_create_account_form(request)
         if not form.is_valid():
-            return self.display_errors(request, token, rpconfig, form)
+            return self.display_errors(request, token, rpconfig, form, None,
+                                       create_account_form)
 
         # attempt user login
         email = form.cleaned_data['email']
@@ -178,7 +206,8 @@ class LoginView(LoginBaseView):
             account = authenticate_user(email, password, rpconfig)
             auth.login(request, account)
         except AuthenticationError as e:
-            return self.display_errors(request, token, rpconfig, form, e)
+            return self.display_errors(request, token, rpconfig, form, e,
+                                       create_account_form)
 
         next_url = request.POST.get('next')
 
@@ -199,7 +228,8 @@ class LoginView(LoginBaseView):
                 authenticate_device(account, oath_token)
                 twofactor.login(request)
             except AuthenticationError as e:
-                return self.display_errors(request, token, rpconfig, form, e)
+                return self.display_errors(request, token, rpconfig, form, e,
+                                           create_account_form)
 
         # track successful logins
         stats.increment('flows.login', key='success', rpconfig=rpconfig)

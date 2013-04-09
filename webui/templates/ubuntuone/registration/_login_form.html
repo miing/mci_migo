@@ -1,0 +1,50 @@
+{% load i18n %}
+
+<form id="login-form" action="{{ login_path }}" method="post" name="loginform" data-qa-id="_login_form">
+    {% csrf_token %}
+    <div class="input-row{% if form.email.errors or form.non_field_errors %} haserrors{% endif %} email-input">
+        <label for="id_email">{% trans "Please type your email:" %}</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <span class="error">{{ form.email.errors|join:"" }}</span>
+        {% endif %}
+    </div>
+
+    <div class="input-row{% if form.password.errors or form.non_field_errors %} haserrors{% endif %} password-input">
+        {% if form.password.errors %}
+            <span class="error">{{ form.password.errors|join:"" }}</span>
+        {% endif %}
+        {% if not form.oath_token and form.non_field_errors %}
+            <span class="error">{{ form.non_field_errors|join:"" }}</span>
+        {% endif %}
+        {{ form.password }}
+    </div>
+
+    {% if form.oath_token %}
+    <div class="input-row twofactor-input">
+        <h3 class="main">{% blocktrans %}Two Factor Authentication{% endblocktrans %}</h3>
+        <p id="oathtoken" class="input-row{% if form.oath_token.errors or form.non_field_errors %} haserrors{% endif %}">
+            <label class="formLabel" for="id_oath_token">{% trans "Device Password" %}</label>
+            {{ form.oath_token }}
+            {% if form.oath_token.errors %}
+                <span class="error">{{ form.oath_token.errors|join:"" }}</span>
+            {% endif %}
+            {% if form.non_field_errors %}
+                <span class="error">{{ form.non_field_errors|join:"" }}</span>
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    <div class="actions">
+        {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+        <button type="submit" class="cta" name="continue" data-qa-id="_qa_ubuntu_login_button"><span>{% trans "Log in" %}</span></button>
+        <p class="forgot-password">{% include "common/forgot_password_link.html" %}</p>
+
+        {% comment %}
+        {% if token %}{% trans "or" %}
+        {% include "common/cancel_link.html" %}{% endif %}
+        {% endcomment %}
+    </div>
+
+</form>

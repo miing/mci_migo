@@ -1,0 +1,76 @@
+{% load i18n %}
+
+{% if token %}{% url new_account token as new_account_url %}
+{% else %}{% url new_account as new_account_url %}{% endif %}
+<form action="{{ new_account_url }}" method="post" name="newaccountform" data-qa-id="_create_account_form">
+
+    {% csrf_token %}
+
+    <div class="input-row{% if create_form.email.errors %} haserrors{% endif %} email-input">
+        <label for="id_email">{% trans "Please type your email:" %}</label>
+
+        {% if create_form.email.errors %}
+            <span class="error">{{ create_form.email.errors|first }}</span>
+        {% endif %}
+
+        {{ create_form.email }}
+    </div>
+
+    <p>{% trans "Please tell us your name and choose a password:" %}</p>
+
+    <div class="input-row{% if create_form.displayname.errors %} haserrors{% endif %} name-input">
+
+        {% if create_form.displayname.errors %}
+            <span class="error">
+                {{ create_form.displayname.errors|first }}
+            </span>
+        {% endif %}
+
+        {{ create_form.displayname }}
+    </div>
+
+    <div class="input-row{% if create_form.password.errors or create_form.non_field_errors %} haserrors{% endif %} password-input">
+
+        {% if create_form.password.errors %}
+            <span class="error">{{ create_form.password.errors|first }}</span>
+        {% endif %}
+
+        {{ create_form.password }}
+
+    </div>
+
+    <div class="input-row{% if create_form.passwordconfirm.errors or create_form.non_field_errors %} haserrors{% endif %} passwordconfirm-input">
+
+        {% if create_form.passwordconfirm.errors %}
+            <span class="error">
+                {{ create_form.passwordconfirm.errors|first }}
+            </span>
+        {% endif %}
+        {% if create_form.non_field_errors %}
+            <span class="error">{{ create_form.non_field_errors|first }}</span>
+        {% endif %}
+
+        {{ create_form.passwordconfirm }}
+
+    </div>
+
+    {% if captcha_required %}
+    <div class="captcha">
+        <span id="captcha">
+            {% include "widgets/recaptcha.html" %}
+        </span>
+    </div>
+    {% endif %}
+
+    <div class="actions">
+        {# {{workflow}} #}
+        {% if old %}
+        <input type="hidden" name="old" value="old">
+        {% endif %}
+
+        <button type="submit" class="cta" name="continue"><span>{% trans "Create account" %}</span></button>
+        {% trans "or" %}
+        {% include "common/cancel_link.html" %}
+    </div>
+</create_form>
+

@@ -581,6 +581,79 @@ footer .links a {
     padding: 1em;
 }
 
+.js .create-form.show-no-js {
+    display: none;
+}
+
+.dual-forms {
+    position: relative;
+}
+
+.js .create-form {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+
+.js .user-intention i {
+    font-style: normal;
+    visibility: hidden;
+}
+
+.js .selected-login i {
+    visibility: visible;
+}
+
+.no-js-create-account {
+    border-top: 1px dotted #ccc;
+    border-bottom: 1px dotted #ccc;
+    padding: 1em 0;
+    margin: 3em 0;
+    text-align: center;
+    color: #666;
+    text-shadow: 1px 1px #fff;
+    font-size: 13px;
+}
+
+.user-intention span {
+    cursor: pointer;
+}
+
+.user-intention input {
+    vertical-align: top;
+    position: relative;
+    top: 5px;
+}
+
+@media all and (min-width:330px) {
+
+    .js .login .email-input {
+        position: relative;
+        top: -105px;
+    }
+
+    .js .login .user-intention {
+        position: relative;
+        top: 70px;
+        z-index: 2;
+    }
+
+    .js .login .returning-user span {
+        display: inline-block;
+        width: 70%;
+    }
+
+}
+
+@media all and (min-width:480px) {
+
+    .js .login .returning-user span {
+        width: 53%;
+    }
+
+}
+
 @media all and (min-width:768px) {
 
     .login .form-box {
@@ -592,6 +665,11 @@ footer .links a {
         padding: 0 0 0 1em;
         border-left: 1px dotted #ccc;
     }
+
+    .js .login .returning-user span {
+        display: inline;
+    }
+
 }
 
 
