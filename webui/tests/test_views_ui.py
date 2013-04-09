@@ -1449,7 +1449,7 @@ class TwoFactorLoginTestCase(SSOBaseTestCase):
 
         tree = PyQuery(response.content)
         logout_link = tree.find(self.logout_link)
-        self.assertEqual(len(logout_link), 1)
+        self.assertTrue(len(logout_link) > 0)
 
     def test_show_user_details(self):
         self.client.login(username=self.email, password=self.password)

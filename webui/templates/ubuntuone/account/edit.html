@@ -7,59 +7,10 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 {% endcomment %}
 
 {% block title %}
-    {% blocktrans %}{{ account_displayname }}'s details{% endblocktrans %}
+    {% blocktrans %}Personal details{% endblocktrans %}
 {% endblock %}
 
-{% block extra_header_top %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssreset/reset-min.css"></link>
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssfonts/fonts-min.css"></link>
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lazr-js/cssbase/base-min.css"></link>
-{% endblock %}
-
-{% block extra_header %}
-{% include "widgets/passwords_head_content.html" %}
-<script language="JavaScript" type="text/javascript">
-    function addLoadEvent(func) {
-        // add func to the onload event
-        var oldonload = window.onload;
-        if (typeof window.onload != "function") {
-            window.onload = func;
-        } else {
-            window.onload = function() {
-                if (oldonload) {
-                    oldonload();
-                }
-                func();
-            }
-        }
-    }
-
-    function disable_autocomplete() {
-        // disable autocomplete without invalidating html markup
-        if (document.getElementsByTagName) {
-            var inputElements = document.getElementsByTagName("input");
-            for (i=0; inputElements[i]; i++) {
-                if (inputElements[i].className && (inputElements[i].className.indexOf("disableAutoComplete") != -1)) {
-                    // disable autocomplete
-                    inputElements[i].setAttribute("autocomplete", "off");
-                    // remove any already autocompleted value
-                    inputElements[i].value = "";
-                    // remove any styling already applied by the previos
-                    // autocomplete
-                    inputElements[i].focus();
-                    inputElements[i].blur();
-                }//if current input element has the disableAutoComplete class set.
-            }//loop thru input elements
-        }//basic DOM-happiness-check
-    }
-
-    addLoadEvent(disable_autocomplete);
-</script>
-{% endblock %}
-
-{% block text_title %}
-  <h1 class="main">{% trans "Your account" %}</h1>
-{% endblock %}
+{% block text_title %}{% trans "Personal details" %}{% endblock %}
 
 {% block content %}
 

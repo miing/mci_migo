@@ -1,0 +1,13 @@
+{% load i18n %}
+<ul>
+{% if user.is_authenticated %}
+    <li>
+        {{user.displayname}} <a href="{% url account-index %}">{% trans "My account" %}</a> <span class="sep">|</span>
+        <a href="{% url logout %}">{% trans "Log out" %}</a>
+    </li>
+{% else %}
+    <li>
+        <a href="{% url login %}">{% trans "Login" %}</a> {% trans "or" %} <a href="{% url new_account %}">{% trans "create new account" %}</a>
+    </li>
+{% endif %}
+</ul>

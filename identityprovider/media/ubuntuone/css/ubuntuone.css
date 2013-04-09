@@ -387,6 +387,46 @@ footer .links a {
 }
 
 
+/* Menu -------------------------------------------------------------------*/
+
+.menu li a,
+.menu li span {
+    display: block;
+    border-bottom: 1px dotted #ccc;
+    line-height: 2.5em;
+    padding: 0 1em;
+    color: #333;
+}
+
+.menu li .active {
+    background-color: #F7F6F5;
+}
+
+.menu li .active:after {
+    content: '▶';
+    font-size: 10px;
+    float: right
+}
+
+@media all and (min-width:768px) {
+
+    .menu {
+        width: 15em;
+        float: left;
+    }
+
+    .with-menu #content {
+        border-left: 1px dotted #ccc;
+        padding-bottom: 2em;
+    }
+
+    .with-menu footer {
+        margin-top: 0;
+    }
+}
+
+
+
 /* Information ---------------------------------------------------------------*/
 
 .account-information {

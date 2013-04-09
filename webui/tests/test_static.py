@@ -54,7 +54,7 @@ class UbuntuBrandingTestCase(SSOBaseTestCase):
     def test_logout(self):
         self.client.login(username='test@canonical.com',
                           password=DEFAULT_USER_PASSWORD)
-        self.assertAvailable('/', 'Your account')
+        self.assertAvailable('/', '_qa_edit_account')
 
         # Then we log out
         response = self.client.get('/+logout')
