@@ -1,0 +1,336 @@
+/*
+ * Copyright (c) 2010, Yahoo! Inc. All rights reserved.
+ * Code licensed under the BSD License:
+ * http://developer.yahoo.com/yui/license.html
+ * version: 3.3.0
+ * build: 3167
+ * */
+/* reset */
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
+
+/* common html5 elements -------------------------------------------------------------- */
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section {
+    display:block; /* fixes unknown elements which default to display:inline */
+}
+
+html, body {
+    background: #fff;
+}
+
+strong {
+    font-weight: bold;
+}
+iframe {
+    border: 0;
+    background: #EFEDEC;
+}
+.breadcrumb li {
+    float: left;
+    margin-right: 0.5em;
+    font-size: 16px;
+}
+.breadcrumb li:after {
+    content: " >";
+}
+.breadcrumb li.last:after {
+    content: "";
+}
+.show-nojs {
+    display: block;
+}
+.show-ib-nojs {
+    display: inline-block;
+}
+.show-i-nojs {
+    display: inline;
+}
+.js .show-nojs,
+.js .show-ib-nojs,
+.js .show-i-nojs,
+.hide-nojs,
+.hide-ib-nojs,
+.hide-i-nojs {
+    display: none;
+}
+.js .hide-nojs {
+    display: block;
+}
+.js .hide-ib-nojs {
+    display: inline-block;
+}
+.js .hide-i-nojs {
+    display: inline;
+}
+.ie7 .js .hide-ib-nojs {
+    display: inline;
+}
+
+/* Typography ---------------------------------------------------------------- */
+
+select,
+input,
+button,
+textarea,
+body {
+    font-family: Ubuntu, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, sans-serif;
+    color: #333;
+    line-height: 1.5;
+}
+
+h1,h2,h3,h4,h5 {
+    font-size: 16px;
+}
+h1,h2,h3,h4 {
+    font-weight: 300;
+}
+
+h5 {
+    font-weight: bold;
+}
+h6 {
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 0.75em;
+}
+
+a,
+a:link {
+    color: #dd4814;
+    text-decoration: none;
+}
+em {
+    font-style: italic;
+}
+
+.page-title > h1 {
+    font-weight: bold;
+}
+
+::-webkit-input-placeholder {
+    color: #989898;
+}
+:-moz-placeholder { /* Firefox 18- */
+    color: #989898;
+}
+::-moz-placeholder {  /* Firefox 19+ */
+    color: #989898;
+}
+:-ms-input-placeholder {
+    color: #989898;
+}
+
+/* Table Styles -------------------------------------------------------------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 0;
+}
+.ie7 table {
+    border-collapse: collapse;
+}
+td, th {
+    padding: 0.5em;
+    border: 1px dotted #ccc;
+}
+th {
+    background: #EFEEEC;
+}
+table tr.divided {
+    background: #fff;
+}
+table .divided td {
+    border: 0;
+}
+
+table.gen-listing {
+    table-layout: fixed;
+}
+.gen-listing th {
+    background-color: #fff;
+    border-top: none;
+    border-bottom-style: solid;
+}
+.gen-listing td,
+.gen-listing th {
+    border-width: 1px 0;
+}
+.gen-listing tr:last-child td,
+.gen-listing tr:last-child th {
+    border-bottom-style: solid;
+}
+
+/* Layout -------------------------------------------------------------- */
+html, body {
+    background: #E6E3E1;
+}
+#cont {
+    max-width: 59em; /* 944px / 16px = 59em */
+    margin: 0 auto;
+    background: #fff;
+    position: relative;
+}
+header, #content, footer {
+    overflow: hidden;
+}
+header {
+    position: relative;
+    border-bottom: 3px solid #DD4814;
+    padding: 20px 20px 15px 20px;
+}
+
+/* required to make acceptance test: test_login_deleted pass */
+.onecol #content {
+
+}
+
+.sidebar #content {
+    padding: 0;
+}
+.sidebar #content header{
+    padding: 0;
+}
+#content header {
+    padding: 5px 0 20px 0;
+    border: none;
+}
+#content header.leader {
+    margin: 20px -10px 20px -10px;
+}
+.services #content header.leader,
+.home #content header.leader {
+    margin-top: 0;
+}
+.services #content header.leader {
+    margin-bottom: 40px;
+}
+
+.page-title {
+    padding: 1em;
+}
+
+
+/* CTAs -------------------------------------------------------------- */
+.cta,
+.cta:link,
+.cta:visited {
+  color: #fff;
+  padding: 0.1em 0.75em 0.1em 0.75em;
+  background: #dd4814;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f39455), color-stop(5%, #ef5e1f), color-stop(100%, #dd4814));
+  background: -webkit-linear-gradient(#f39455 0%, #ef5e1f 5%, #dd4814 100%);
+  background: -moz-linear-gradient(#f39455 0%, #ef5e1f 5%, #dd4814 100%);
+  background: -o-linear-gradient(#f39455 0%, #ef5e1f 5%, #dd4814 100%);
+  background: -ms-linear-gradient(#f39455 0%, #ef5e1f 5%, #dd4814 100%);
+  background: linear-gradient(#f39455 0%, #ef5e1f 5%, #dd4814 100%);
+  border: 1px solid #ad2e03;
+  display: inline-block;
+  text-decoration: none;
+  font-size: 108%;
+  line-height: 1.5em;
+  border-radius: 3px;
+}
+
+button.cta {
+    cursor: pointer;
+}
+
+.cta:focus,
+.cta.secondary:focus {
+  border-color: #333;
+  -moz-box-shadow: #f7f6f5 0 0 0 1px;
+  -webkit-box-shadow: #f7f6f5 0 0 0 1px;
+  -o-box-shadow: #f7f6f5 0 0 0 1px;
+  box-shadow: #f7f6f5 0 0 0 1px;
+}
+
+.cta:hover {
+  background: #f28a45;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f39455), color-stop(5%, #f28a45), color-stop(100%, #dd4814));
+  background: -webkit-linear-gradient(#f39455 0%, #f28a45 5%, #dd4814 100%);
+  background: -moz-linear-gradient(#f39455 0%, #f28a45 5%, #dd4814 100%);
+  background: -o-linear-gradient(#f39455 0%, #f28a45 5%, #dd4814 100%);
+  background: -ms-linear-gradient(#f39455 0%, #f28a45 5%, #dd4814 100%);
+  background: linear-gradient(#f39455 0%, #f28a45 5%, #dd4814 100%);
+}
+
+.cta:focus,
+.cta:active {
+  color: #fff;
+  background: #dd4814;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dd4814), color-stop(90%, #bf3b0d), color-stop(100%, #f39455));
+  background: -webkit-linear-gradient(#dd4814 0%, #bf3b0d 90%, #f39455 100%);
+  background: -moz-linear-gradient(#dd4814 0%, #bf3b0d 90%, #f39455 100%);
+  background: -o-linear-gradient(#dd4814 0%, #bf3b0d 90%, #f39455 100%);
+  background: -ms-linear-gradient(#dd4814 0%, #bf3b0d 90%, #f39455 100%);
+  background: linear-gradient(#dd4814 0%, #bf3b0d 90%, #f39455 100%);
+  border-color: #333;
+}
+
+.cta:disabled,
+.cta.disabled {
+  color: #f9dbd0;
+  color: rgba(255, 255, 255, 0.6);
+  border-color: #deab9a;
+  background: #f8bd9d;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f8bd9d), color-stop(5%, #f6ad8e), color-stop(100%, #eea489));
+  background: -webkit-linear-gradient(#f8bd9d 0%, #f6ad8e 5%, #eea489 100%);
+  background: -moz-linear-gradient(#f8bd9d 0%, #f6ad8e 5%, #eea489 100%);
+  background: -o-linear-gradient(#f8bd9d 0%, #f6ad8e 5%, #eea489 100%);
+  background: -ms-linear-gradient(#f8bd9d 0%, #f6ad8e 5%, #eea489 100%);
+  background: linear-gradient(#f8bd9d 0%, #f6ad8e 5%, #eea489 100%);
+}
+
+.cta.secondary {
+  color: #333;
+  border-color: #aea79f;
+  background: #e6e6e6;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(5%, #f7f7f7), color-stop(100%, #e6e6e6));
+  background: -webkit-linear-gradient(#ffffff 0%, #f7f7f7 5%, #e6e6e6 100%);
+  background: -moz-linear-gradient(#ffffff 0%, #f7f7f7 5%, #e6e6e6 100%);
+  background: -o-linear-gradient(#ffffff 0%, #f7f7f7 5%, #e6e6e6 100%);
+  background: -ms-linear-gradient(#ffffff 0%, #f7f7f7 5%, #e6e6e6 100%);
+  background: linear-gradient(#ffffff 0%, #f7f7f7 5%, #e6e6e6 100%);
+}
+
+.cta.secondary:hover {
+  background: #f7f7f7;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(5%, #ffffff), color-stop(100%, #e6e6e6));
+  background: -webkit-linear-gradient(#ffffff 0%, #ffffff 5%, #e6e6e6 100%);
+  background: -moz-linear-gradient(#ffffff 0%, #ffffff 5%, #e6e6e6 100%);
+  background: -o-linear-gradient(#ffffff 0%, #ffffff 5%, #e6e6e6 100%);
+  background: -ms-linear-gradient(#ffffff 0%, #ffffff 5%, #e6e6e6 100%);
+  background: linear-gradient(#ffffff 0%, #ffffff 5%, #e6e6e6 100%);
+}
+
+.cta.secondary:focus,
+.cta.secondary:active {
+  color: #333;
+  background: #e6e6e6;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e6e6e6), color-stop(90%, #cdcdcd), color-stop(100%, #ffffff));
+  background: -webkit-linear-gradient(#e6e6e6 0%, #cdcdcd 90%, #ffffff 100%);
+  background: -moz-linear-gradient(#e6e6e6 0%, #cdcdcd 90%, #ffffff 100%);
+  background: -o-linear-gradient(#e6e6e6 0%, #cdcdcd 90%, #ffffff 100%);
+  background: -ms-linear-gradient(#e6e6e6 0%, #cdcdcd 90%, #ffffff 100%);
+  background: linear-gradient(#e6e6e6 0%, #cdcdcd 90%, #ffffff 100%);
+}
+
+.cta.secondary.disabled:active,
+.cta.secondary:disabled {
+  padding: 0 10px;
+  color: #b8b8b8;
+  color: rgba(51, 51, 51, 0.3);
+  border-color: #cac6c1;
+  background: #ffffff;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(5%, #f9f9f9), color-stop(100%, #efefef));
+  background: -webkit-linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
+  background: -moz-linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
+  background: -o-linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
+  background: -ms-linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
+  background: linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
+}

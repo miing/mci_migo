@@ -37,7 +37,7 @@
     {% endif %}
 
     <div class="actions">
-        {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
         <button type="submit" class="cta" name="continue" data-qa-id="_qa_ubuntu_login_button"><span>{% trans "Log in" %}</span></button>
         <p class="forgot-password">{% include "common/forgot_password_link.html" %}</p>
 

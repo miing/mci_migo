@@ -55,10 +55,8 @@
     </div>
 
     {% if captcha_required %}
-    <div class="captcha">
-        <span id="captcha">
-            {% include "widgets/recaptcha.html" %}
-        </span>
+    <div class="captcha" id="captcha">
+        {% include "widgets/recaptcha.html" %}
     </div>
     {% endif %}
 
@@ -72,5 +70,5 @@
         {% trans "or" %}
         {% include "common/cancel_link.html" %}
     </div>
-</create_form>
+</form>
 
