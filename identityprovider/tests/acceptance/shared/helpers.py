@@ -317,7 +317,7 @@ def assert_backup_device_warning():
 def get_password_reset_link(email_address):
     msg = mail.get_latest_email_sent_to(email_address).as_string()
     reset_link_re = (
-        r'(http(?:s)?://[a-zA-Z_\-\.]*(?::[0-9]+)?/'
+        r'(http(?:s)?://[a-zA-Z0-9_\-\.]*(?::[0-9]+)?/'
         r'token/(?:.*)/\+resetpassword/.*)'
     )
     this_line = ''
