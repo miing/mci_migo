@@ -345,9 +345,7 @@ class AuthenticationHandler(LazrRestfulHandler):
             return False
 
         if max_age is not None:
-            # we use datetime.now() here (instead of utcnow, because the token
-            # stores it's updated_at timestamp in localtime)
-            age = datetime.now() - token.updated_at
+            age = datetime.utcnow() - token.updated_at
             if age > timedelta(seconds=max_age):
                 # token is too old
                 return False

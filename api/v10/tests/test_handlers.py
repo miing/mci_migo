@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 from django.utils import simplejson as json
 from datetime import datetime, timedelta
 
@@ -395,23 +394,28 @@ class AuthenticationTestCase(SSOBaseTestCase):
         response = self.validate_token(token['token'], openid)
         self.assertEqual(response, token)
 
-    def test_validate_old_token(self):
-        openid = self.account.openid_identifier
-        token = self.authenticate(token_name='foo')
-
-        response = self.validate_token(token['token'], openid, max_age=0)
-        self.assertFalse(response)
-
     def test_validate_fresh_token(self):
         openid = self.account.openid_identifier
         token = self.authenticate(token_name='foo')
 
-        with patch('api.v10.handlers.datetime') as mock_date:
-            updated = datetime.strptime(token['updated'],
-                                        '%Y-%m-%d %H:%M:%S.%f')
-            # 5 seconds have passed since we created the token
-            mock_date.now.return_value = updated + timedelta(seconds=5)
-            response = self.validate_token(token['token'], openid, max_age=1)
+        response = self.validate_token(token['token'], openid, max_age=900)
+        self.assertEqual(response, token)
+
+    def test_validate_stale_token(self):
+        openid = self.account.openid_identifier
+        token = self.authenticate(token_name='foo')
+
+        updated = datetime.strptime(token['updated'], '%Y-%m-%d %H:%M:%S.%f')
+        # 5 seconds have passed since we created the token
+        time_at_call = updated + timedelta(seconds=5)
+
+        class FakeDatetime(datetime):
+            @staticmethod
+            def utcnow():
+                return time_at_call
+
+        with patch('api.v10.handlers.datetime', FakeDatetime):
+            response = self.validate_token(token['token'], openid, max_age=4)
         self.assertFalse(response)
 
 

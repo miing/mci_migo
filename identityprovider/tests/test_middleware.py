@@ -162,14 +162,14 @@ class ExceptionMiddlewareTestCase(TestCase):
         self.assertTrue('public_variable' in html)
 
 
-class TimeMiddlewareTestCase(SSOBaseTestCase):
+class TimerMiddlewareTestCase(SSOBaseTestCase):
 
     def setUp(self):
-        super(TimeMiddlewareTestCase, self).setUp()
+        super(TimerMiddlewareTestCase, self).setUp()
         self.mock_log_request = self._apply_patch(
-            'identityprovider.middleware.time.log_request')
+            'identityprovider.middleware.timer.log_request')
         self.mock_logging = self._apply_patch(
-            'identityprovider.middleware.time.logging')
+            'identityprovider.middleware.timer.logging')
 
     def _check(self, timeout_millis, calls):
         with patch_settings(HANDLER_TIMEOUT_MILLIS=timeout_millis):

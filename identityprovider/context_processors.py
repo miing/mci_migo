@@ -59,7 +59,7 @@ def google_analytics_id(request):
 
 
 def current_date(request):
-    return {'current_date': datetime.datetime.now()}
+    return {'current_date': datetime.datetime.utcnow()}
 
 
 def debug(request):
