@@ -54,6 +54,12 @@ email_errors = {
     'invalid': _(u'Invalid email.'),
 }
 
+tos_error = {
+    'required': _(
+        u'Check the box to indicate that you agree with our terms of use:'
+    ),
+}
+
 
 class GenericEmailForm(forms.Form):
     email_widget_conf = {'class': 'textType', 'size': '26'}
@@ -149,6 +155,12 @@ class NewAccountForm(GenericEmailForm, ResetPasswordForm):
 
     if get_current_brand() == 'ubuntuone':
         displayname_widget_conf['placeholder'] = _('Your name')
+
+        accept_tos = fields.BooleanField(
+            error_messages=tos_error,
+            required=True,
+            widget=widgets.CheckboxInput(attrs={'required': 'required'}),
+        )
 
     displayname = fields.CharField(
         error_messages=default_errors,

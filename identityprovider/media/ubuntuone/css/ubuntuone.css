@@ -269,8 +269,17 @@ label {
     margin-top: 1em;
 }
 
+.accept-tos-input {
+    margin-top: 2em;
+}
 
+.accept-tos-input label {
+    display: inline;
+}
 
+.accept-tos-input .error {
+    display: block;
+}
 
 @media all and (min-width:768px) {
 

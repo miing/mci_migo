@@ -59,6 +59,21 @@ class NewAccountTest(SSOBaseTestCase):
         self.assertTrue('nobody@debian.org' in mail.outbox[0].body)
         self.assertTrue('+new_account' in mail.outbox[0].body)
 
+    @skipUnless(settings.BRAND == 'ubuntuone',
+                "TOS testing only apply to ubuntuone brand""")
+    def test_newaccount_no_tos_accept(self):
+        r = self.client.post('/+new_account', {
+            'email': "mark@example.com",
+            'password': "foofoofoo",
+            'passwordconfirm': "foofoofoo",
+            'displayname': 'bar'
+        })
+
+        s = ("Check the box to indicate that "
+             "you agree with our terms of use:")
+
+        self.assertFormError(r, 'form', 'accept_tos', s)
+
 
 class ForgottenPasswordTest(SSOBaseTestCase):
 
@@ -69,7 +84,8 @@ class ForgottenPasswordTest(SSOBaseTestCase):
             'displayname': 'Tester',
             'email': 'test@canonical.com',
             'password': 'Testing123',
-            'passwordconfirm': 'Testing123'
+            'passwordconfirm': 'Testing123',
+            'accept_tos': True
         }
         response = self.client.post('/+new_account', query)
         self.assertEqual(response.status_code, 200)

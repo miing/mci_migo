@@ -91,7 +91,9 @@ class BaseTestCase(SSOBaseTestCase):
             'email': email,
             'password': 'Testing123',
             'passwordconfirm': 'Testing123',
+            'accept_tos': True
         }
+
         return self.client.post(url, data, follow=follow)
 
     def _token_url(self):
@@ -432,7 +434,8 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         # claim token
         r = self.client.post(self._token_url(),
                              {'displayname': 'Person', 'password': 'P4ssw0rd',
-                              'passwordconfirm': 'P4ssw0rd'})
+                              'passwordconfirm': 'P4ssw0rd',
+                              'accept_tos': True})
         self.assertRedirects(
             r, reverse('server-decide', kwargs=dict(token=token1)))
 
@@ -445,7 +448,8 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         # claim token
         r = self.client.post(self._token_url(),
                              {'displayname': 'Person', 'password': 'P4ssw0rd',
-                              'passwordconfirm': 'P4ssw0rd'})
+                              'passwordconfirm': 'P4ssw0rd',
+                              'accept_tos': True})
         self.assertRedirects(
             r, reverse('server-decide', kwargs=dict(token=token1)))
 
@@ -461,7 +465,8 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         # claim token
         r = self.client.post(self._token_url(),
                              {'displayname': 'Person', 'password': 'P4ssw0rd',
-                              'passwordconfirm': 'P4ssw0rd'})
+                              'passwordconfirm': 'P4ssw0rd',
+                              'accept_tos': True})
         self.assertRedirects(
             r, reverse('server-decide', kwargs=dict(token=token)))
 

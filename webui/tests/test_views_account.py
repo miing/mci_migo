@@ -117,6 +117,7 @@ class AccountViewStandAloneTestCase(AuthenticatedTestCase):
             'preferred_email': self.account.preferredemail.id,
             'password': 'new-Password',
             'passwordconfirm': 'new-Password',
+            'accept_tos': True
         }
         r = self.client.post(self.url, data)
         account = Account.objects.get(displayname='New Display Name')

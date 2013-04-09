@@ -29,7 +29,8 @@ TESTDATA = {
     'email': 'test@test.com',
     'password': DEFAULT_USER_PASSWORD,
     'passwordconfirm': DEFAULT_USER_PASSWORD,
-    'displayname': 'Foo bar'
+    'displayname': 'Foo bar',
+    'accept_tos': True
 }
 
 

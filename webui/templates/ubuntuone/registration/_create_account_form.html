@@ -37,6 +37,20 @@
     </div>
     {% endif %}
 
+    <div class="input-row{% if create_form.accept_tos.errors %} haserrors{% endif %} accept-tos-input">
+
+        {% if create_form.accept_tos.errors %}
+            <span class="error">
+                {{ create_form.accept_tos.errors|first }}
+            </span>
+        {% endif %}
+
+        {{ create_form.accept_tos }}
+
+        <label for="id_accept_tos">{% trans "I have read and accept the <a href='#'>Ubuntu One terms of use</a>" %}</label>
+
+    </div>
+
     <div class="actions">
         {# {{workflow}} #}
         {% if old %}
