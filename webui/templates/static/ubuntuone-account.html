@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static_url %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% blocktrans %}Your Ubuntu One account{% endblocktrans %}{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block text_title %}
+  <h1>{% trans "Your Ubuntu One account" %}</h1>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="yui3-g-r">
+
+    <div class="yui3-u-1-2 account-information">
+
+        <h3>{% trans "One account to log in to everything on Ubuntu" %}</h3>
+
+        <p>
+        {% blocktrans %}Ubuntu One is the single account you use to log in to all services and sites related to Ubuntu.
+        You decide which services you need, and you can manage all payment and subscriptions with your Ubuntu One account.{% endblocktrans %}
+        </p>
+
+        <ul class="benefits">
+            <li class="apps">Get <strong>new</strong> apps from the Software Center</li>
+            <li class="music">Listen to <strong>your music collection</strong> and buy tracks</li>
+            <li class="photos">Access <strong>files and photos</strong> from all your devices</li>
+            <li class="cloud">Store files in your <strong>personal cloud</strong></li>
+        </ul>
+
+        <h3>{% trans "Already have an SSO account?" %}</h3>
+
+        <p>
+        {% blocktrans %}You can use your existing Ubuntu Single Sign On or Launchpad credentials to log in. Your Ubuntu Single Sign On account is now called your Ubuntu One account.{% endblocktrans %}
+        </p>
+    </div>
+
+    <div class="yui3-u-1-3 account-faq">
+
+        <div class="box">
+            <div class="title">
+                <h3>Account FAQ</h3>
+            </div>
+
+            <div class="body">
+                <ul class="questions">
+                    <li><a href="">What is an Ubuntu One account?</a></li>
+                    <li><a href="">How can I update my e-mail address?</a></li>
+                    <li><a href="">How do I downgrade or cancel my Ubuntu One account?</a></li>
+                    <li><a href="">How do I recover or change my password?</a></li>
+                    <li><a href="">How do I update the credit card on my account?</a></li>
+                </ul>
+
+                <p class="more-help"><a href="{% url faq %}">View all FAQs</a> or <a href="{{ 'support_form'|static_url }}">contact support</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

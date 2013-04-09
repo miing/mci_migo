@@ -71,6 +71,9 @@ urlpatterns = patterns(
     url(r'^\+description$', 'static_page', {'page_name': 'description'},
         name='description'),
     url(r'^\+faq$', 'static_page', {'page_name': 'faq'}, name='faq'),
+    url(r'^\+ubuntuone-account$', 'static_page',
+        {'page_name': 'ubuntuone-account'}, name='ubuntuone-account'),
+
 )
 
 urlpatterns += patterns(
