@@ -13,6 +13,7 @@
 set -e
 
 TARGET=$1
+SKIP_CONFIG=$2
 CONFIG_BRANCH="lp:~canonical-isd-hackers/isd-configs/sso-config"
 
 if [ "$TARGET" = "production" ]; then
@@ -21,9 +22,6 @@ if [ "$TARGET" = "production" ]; then
 elif [ "$TARGET" = "staging" ]; then
     SST_BASE_URL="https://login.staging.ubuntu.com"
     SST_FLAGS="twofactor;preflight;saml2;can_view_support_phone;paper_device;allow_unverified"
-else
-    SST_BASE_URL="https://localhost:$PORT"
-    SST_FLAGS="twofactor;preflight;saml2;can_view_support_phone;paper_device;allow_unverified;login_by_token"
 fi
 
 # Some Jenkins jobs copy workspace.tar.gz from successful build.
@@ -40,8 +38,10 @@ else
 fi
 
 # Set up the correct Django configuration.
-rm django_project/local.cfg
-ln -s `pwd`/scripts/local.cfg-${TARGET} django_project/local.cfg
+if [ "$SKIP_CONFIG" != "skip" ]; then
+    rm django_project/local.cfg
+    ln -s `pwd`/scripts/local.cfg-${TARGET} django_project/local.cfg
+fi
 
 # clean old results
 rm -rf results/*

@@ -48,6 +48,7 @@ class Command(BaseCommand):
                 'displayname': 'test',
                 'auto_authorize': False,
                 'allowed_sreg': allowed_sreg,
+                'allow_unverified': True,
             }
         )
         Switch.objects.get_or_create(

@@ -18,7 +18,7 @@ fab resetdb
 fab manage:loaddata,test
 fab manage:create_test_team
 # get gargoyle flags from their use in the code
-SST_FLAGS=${SST_FLAGS:-`grep -rho --exclude 'test_*.py' "is_active([\"']\(.*\)[\"']" identityprovider/ webui/ | sed -E "s/is_active\(['\"](.*)['\"]/\1/" | awk '{print tolower($0)}' | sort | uniq | tr '\n' ';'`}
+SST_FLAGS="allow_unverified;can_view_support_phone;captcha;login_by_phone;login_by_token;optional_captcha;paper_device;preflight;saml2;twofactor"
 # fabric want ',' below and no trailing ',' either :-/
 GARGOYLE_FLAGS=${SST_FLAGS//;/,}
 fab gargoyle_flags:${GARGOYLE_FLAGS%,}
@@ -31,7 +31,7 @@ screen -dmS emailserver .env/bin/python -c 'import localmail; localmail.run()'
 sleep 10 # Time for the sso to start
 
 # run tests
-SST_BASE_URL=http://localhost:$PORT fab acceptance:screenshot=true,report=xml,extended=true,flags=$SST_FLAGS
+SST_BASE_URL="http://localhost:$PORT" fab acceptance:screenshot=true,report=xml,extended=true,flags="$SST_FLAGS"
 
 # terminate sso server
 screen -X -S sso quit
