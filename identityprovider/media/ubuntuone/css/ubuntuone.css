@@ -39,6 +39,39 @@ header .wrapper h1 {
     z-index: 1;
 }
 
+/* Messages -------------------------------------------------------------------*/
+.message {
+    border-radius: 6px;
+    padding: 1em;
+    margin-bottom: 1em;
+}
+
+.message p:last-child {
+    margin: 0;
+}
+
+.warning {
+    background: #ffa;
+}
+
+.error {
+    background: #c00;
+    color: white;
+}
+
+.error a {
+    color: white;
+    text-decoration: underline;
+}
+
+.success,
+.informational,
+.info {
+    background: url("../../tick-large.png") no-repeat scroll 0 1.2em transparent;
+    padding-left: 2em;
+}
+
+
 /* Footer --------------------------------------------------------------------*/
 
 footer {
@@ -188,13 +221,13 @@ footer .links a {
     display: inline;
 }
 
-.form-box .input-row {
+.input-row {
     margin-bottom: 1em;
 }
 
-.form-box input[type=text],
-.form-box input[type=email],
-.form-box input[type=password] {
+input[type=text],
+input[type=email],
+input[type=password] {
     border: 1px solid #AEA79F;
     padding: 0.3em;
     display: block;
@@ -205,27 +238,28 @@ footer .links a {
 }
 
 
-.ie8 .form-box input[type=text],
-.ie8 .form-box input[type=email],
-.ie8 .form-box input[type=password] {
+.ie8 input[type=text],
+.ie8 input[type=email],
+.ie8 input[type=password] {
     line-height: 1;
 }
-.ie8 .form-box input[type=password] {
+.ie8 input[type=password] {
     font-family: Arial, sans-serif;
 }
 
-.form-box .haserrors input[type=text],
-.form-box .haserrors input[type=email],
-.form-box .haserrors input[type=password] {
+.haserrors input[type=text],
+.haserrors input[type=email],
+.haserrors input[type=password] {
   border: 1px solid #DD4814;
 }
 
-.form-box .error {
+form .error {
     color: #c00;
     font-weight: bold;
     font-size: 14px;
+    background: transparent;
 }
-.form-box label {
+label {
     display: block;
 }
 
@@ -387,6 +421,65 @@ footer .links a {
 }
 
 
+
+/* Edit account -----------------------------------------------------------*/
+
+.backupdevice-warn-input label {
+    display: inline;
+}
+
+.edit-account-details {
+    margin-bottom: 2em;
+}
+
+.site-date {
+    text-align: right;
+}
+.last-authenticated-sites .subtitle {
+    float: right;
+    position: relative;
+    top: 1em;
+}
+
+
+@media all and (min-width:768px) {
+
+    .edit-account-details input,
+    .edit-account-details select {
+        max-width: 50%;
+    }
+
+
+    .last-authenticated-sites {
+        max-width: 70%;
+    }
+
+}
+
+
+.manage-email-adresses {
+    padding-bottom: 2em;
+    margin-bottom: 2em;
+    border-bottom: 1px dotted #ccc;
+}
+
+.preferred-email-input select {
+    width: 100%;
+}
+
+
+/* Applications -----------------------------------------------------------*/
+
+.used-applications .subtitle {
+    float: right;
+    position: relative;
+    top: 1em;
+}
+.application-date {
+    text-align: right;
+}
+
+
 /* Menu -------------------------------------------------------------------*/
 
 .menu li a,
@@ -424,7 +517,6 @@ footer .links a {
         margin-top: 0;
     }
 }
-
 
 
 /* Information ---------------------------------------------------------------*/

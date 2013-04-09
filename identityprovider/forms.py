@@ -4,7 +4,6 @@
 import logging
 
 from django import forms
-from django.conf import settings
 from django.forms import Form, fields, widgets
 from django.utils import translation
 from django.utils.translation import ugettext as _
@@ -24,6 +23,7 @@ from identityprovider.models import (
 from identityprovider.models.const import EmailStatus
 from identityprovider.utils import (
     encrypt_launchpad_password,
+    get_current_brand,
 )
 from identityprovider.validators import (
     PASSWORD_POLICY_HELP_TEXT,
@@ -59,7 +59,7 @@ class GenericEmailForm(forms.Form):
     email_widget_conf = {'class': 'textType', 'size': '26'}
 
     # add placeholder, autofocus and email type for the u1 brand
-    if settings.BRAND == 'ubuntuone':
+    if get_current_brand() == 'ubuntuone':
         email_widget_conf['placeholder'] = _('Ubuntu One email')
         email_widget_conf['autofocus'] = 'autofocus'
         email_widget = widgets.Input(attrs=email_widget_conf)
@@ -79,7 +79,7 @@ class LoginForm(GenericEmailForm):
         'size': ' 26',
     }
 
-    if settings.BRAND == 'ubuntuone':
+    if get_current_brand() == 'ubuntuone':
         password_widget_conf['placeholder'] = _('Password')
 
     password = fields.CharField(
@@ -109,7 +109,7 @@ class ResetPasswordForm(forms.Form):
         'size': '20',
     }
 
-    if settings.BRAND == 'ubuntuone':
+    if get_current_brand() == 'ubuntuone':
         password_widget_conf['placeholder'] = _(
             'Password with at least 8 characters'
         )
@@ -147,7 +147,7 @@ class NewAccountForm(GenericEmailForm, ResetPasswordForm):
         'size': '20',
     }
 
-    if settings.BRAND == 'ubuntuone':
+    if get_current_brand() == 'ubuntuone':
         displayname_widget_conf['placeholder'] = _('Your name')
 
     displayname = fields.CharField(
@@ -189,17 +189,24 @@ class PreferredEmailField(forms.ModelChoiceField):
 
 
 class EditAccountForm(forms.ModelForm):
+
     displayname = fields.CharField(
         error_messages=default_errors,
         widget=ROAwareTextInput(attrs={'class': 'textType', 'size': '20'}))
+
+    password_widget_conf = {
+        'class': 'disableAutoComplete textType',
+        'size': '20',
+    }
+
+    if get_current_brand() == 'ubuntuone':
+        password_widget_conf['placeholder'] = _('8 characters minimum')
+
     password = fields.CharField(
         required=False,
         help_text=PASSWORD_POLICY_HELP_TEXT,
         validators=[validate_password_policy],
-        widget=widgets.PasswordInput(attrs={
-            'class': 'disableAutoComplete textType',
-            'size': '20',
-        }),
+        widget=widgets.PasswordInput(attrs=password_widget_conf),
     )
     passwordconfirm = fields.CharField(
         required=False,

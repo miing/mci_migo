@@ -12,32 +12,53 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
 {% block text_title %}{% trans "Personal details" %}{% endblock %}
 
+{% block extra_css %}
+
+    {% if last_authenticated_sites %}
+    <style type="text/css">
+        {% for site in last_authenticated_sites %}
+        {% if rpconfig.logo_url %}
+        a[href='{{site.trust_root}}'] {
+            background-image: url('{{ rpconfig.logo_url }}');
+            background-repeat: no-repeat;
+            background-position: 0 20%;
+            padding-left: 24px;
+        }
+        {% endif %}
+        {% endfor %}
+    </style>
+    {% endif %}
+
+{% endblock %}
+
 {% block content %}
 
 {% include "common/unverified_email_warning.html" %}
 {% include "common/missing_backup_device_warning.html" %}
 {% include "common/printed_codes_nearly_exhausted_warning.html" %}
 
-<form action="" method="post" class="shortfields">
+<form action="" method="post" class="edit-account-details" data-qa-id="_qa_edit_fieldsets">
     {% csrf_token %}
-    <fieldset class="undecorated{% if enable_device_prefs %} boxed{% endif %}">
-        {% if enable_device_prefs %}
-        <legend>{% trans "Personal Details" %}</legend>
-        {% endif %}
-        <p {% if form.displayname.errors %}class="haserrors"{% endif %}>
-            <label class="formLabel" for="id_displayname">{% trans "Full name" %}</label>
-            <br />
+    <fieldset class="">
+
+        <div data-qa-id="_qa_personal_details"></div>
+
+        <div class="{% if form.displayname.errors %}haserrors {% endif %}name-input input-row">
+            <label class="formLabel" for="id_displayname">{% trans "Your name:" %}</label>
             {{ form.displayname }}
             {% if form.displayname.errors %}
                 <span class="error">
                     {{ form.displayname.errors|first }}
                 </span>
             {% endif %}
-        </p>
-        <p style="margin-bottom:6px"
-            {% if form.preferred_email.errors %} class="haserrors"{% endif %}>
+        </div>
+
+        <div class="{% if form.preferred_email.errors %}haserrors {% endif %}preferred-email-input input-row">
             <label class="formLabel tooltip" for="id_preferred_email">
-              {% trans "Preferred email" %}
+              {% trans "Preferred email address:" %}
+
+              {% comment %}
+              <!-- Will be re-implemented when u1 js is available to us -->
               <span class="description tooltip sprite help">
                 <span class="invisible-link">?</span>
                 <span class="tooltip-content">
@@ -45,42 +66,44 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
                 </span>
                 <span class="tooltip-tail">&nbsp;</span>
               </span>
+              <span class="formHelp">{{ form.preferred_email.help_text }}</span>
+              {% endcomment %}
             </label>
-            <br />
+
             {% if form.preferred_email %}
                 {% if form.preferred_email.errors %}
                     <span class="error">
                         {{ form.preferred_email.errors|first }}
                     </span>
-                    <br />
                 {% endif %}
                 {{ form.preferred_email }}
-                <span class="formHelp">{{ form.preferred_email.help_text }}</span>
             {% else %}
                 {# Manually added, it will be ignored by the django form #}
                 <input type="text" value="{{ unverified_email|default_if_none:'' }}" disabled="true" />
             {% endif %}
-        </p>
+
+        </div>
+
         {% if not embedded %}
-        <p><a href="/+emails" data-qa-id="_qa_manage_email_addresses_link">{% trans "Manage email addresses" %}</a></p>
+        <p class="manage-email-adresses"><a href="/+emails" data-qa-id="_qa_manage_email_addresses_link">{% trans "Manage email addresses" %}</a></p>
         {% endif %}
 
         {% if not readonly %}
-        {% include "widgets/passwords.html" %}
+        {% include "widgets/ubuntuone/passwords.html" with edit_account_labels=1 fields=form %}
         {% endif %}
 
     </fieldset>
 
     {% if enable_device_prefs %}
     <fieldset class="undecorated boxed">
-        <legend>{% trans "Authentication Devices" %}</legend>
-        <p {% if form.twofactor_required.errors %}class="haserrors"{% endif %}>
+        <legend data-qa-id="_qa_authentication_devices">{% trans "Authentication Devices" %}</legend>
+        <div class="{% if form.twofactor_required.errors %}haserrors {% endif %}twofactor-input input-row">
             {{ form.twofactor_required }}
             {% if form.twofactor_required.errors %}
             <span class="error">{{ form.twofactor_required.errors|first }}</span>
             {% endif %}
-        </p>
-        <p {% if form.warn_about_backup_device.errors %}class="haserrors"{% endif %}>
+        </div>
+        <div class="{% if form.warn_about_backup_device.errors %}haserrors {% endif %}backupdevice-warn-input input-row">
             {{ form.warn_about_backup_device }}
             <label class="formLabel" for="id_warn_about_backup_device">
             {{ form.warn_about_backup_device.label }}
@@ -88,13 +111,13 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
             {% if form.warn_about_backup_device.errors %}
             <span class="error">{{ form.warn_about_backup_device.errors|first }}</span>
             {% endif %}
-        </p>
+        </div>
     </fieldset>
     {% endif %}
 
     <p class="actions">
     {% if not readonly %}
-        <button type="submit" class="btn" name="update"><span><span>{% trans "Update" %}</span></span></button>
+        <button type="submit" class="cta" name="update"><span>{% trans "Save changes" %}</span></button>
     {% endif %}
     {% if token %}
         {% trans "or" %}
@@ -103,7 +126,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
     </p>
 </form>
 
-{% include "widgets/last_auth_sites.html" %}
+{% include "widgets/ubuntuone/last_auth_sites.html" %}
 
 <div data-qa-id="_qa_edit_account"></div>
 {% endblock %}

@@ -112,6 +112,10 @@ em {
     font-weight: bold;
 }
 
+.subtitle {
+    font-size: 13px;
+}
+
 ::-webkit-input-placeholder {
     color: #989898;
 }
@@ -134,6 +138,7 @@ table {
 .ie7 table {
     border-collapse: collapse;
 }
+/*
 td, th {
     padding: 0.5em;
     border: 1px dotted #ccc;
@@ -147,7 +152,7 @@ table tr.divided {
 table .divided td {
     border: 0;
 }
-
+*/
 table.gen-listing {
     table-layout: fixed;
 }
@@ -333,4 +338,20 @@ button.cta {
   background: -o-linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
   background: -ms-linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
   background: linear-gradient(#ffffff 0%, #f9f9f9 5%, #efefef 100%);
+}
+
+
+/* sections -------------------------------------------------------------- */
+section table {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+section table tr {
+    border-top: 1px dotted #D1D1D1;
+}
+section table td {
+    padding: 0.5em 0;
+}
+section table td:first-child {
+    border-top: none;
 }

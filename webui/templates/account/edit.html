@@ -67,11 +67,11 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 {% include "common/missing_backup_device_warning.html" %}
 {% include "common/printed_codes_nearly_exhausted_warning.html" %}
 
-<form action="" method="post" class="shortfields">
+<form action="" method="post" class="shortfields" data-qa-id="_qa_edit_fieldsets">
     {% csrf_token %}
     <fieldset class="undecorated{% if enable_device_prefs %} boxed{% endif %}">
         {% if enable_device_prefs %}
-        <legend>{% trans "Personal Details" %}</legend>
+        <legend data-qa-id="_qa_personal_details">{% trans "Personal Details" %}</legend>
         {% endif %}
         <p {% if form.displayname.errors %}class="haserrors"{% endif %}>
             <label class="formLabel" for="id_displayname">{% trans "Full name" %}</label>
@@ -122,7 +122,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
     {% if enable_device_prefs %}
     <fieldset class="undecorated boxed">
-        <legend>{% trans "Authentication Devices" %}</legend>
+        <legend data-qa-id="_qa_authentication_devices">{% trans "Authentication Devices" %}</legend>
         <p {% if form.twofactor_required.errors %}class="haserrors"{% endif %}>
             {{ form.twofactor_required }}
             {% if form.twofactor_required.errors %}

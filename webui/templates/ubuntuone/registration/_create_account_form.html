@@ -29,30 +29,7 @@
         {{ create_form.displayname }}
     </div>
 
-    <div class="input-row{% if create_form.password.errors or create_form.non_field_errors %} haserrors{% endif %} password-input">
-
-        {% if create_form.password.errors %}
-            <span class="error">{{ create_form.password.errors|first }}</span>
-        {% endif %}
-
-        {{ create_form.password }}
-
-    </div>
-
-    <div class="input-row{% if create_form.passwordconfirm.errors or create_form.non_field_errors %} haserrors{% endif %} passwordconfirm-input">
-
-        {% if create_form.passwordconfirm.errors %}
-            <span class="error">
-                {{ create_form.passwordconfirm.errors|first }}
-            </span>
-        {% endif %}
-        {% if create_form.non_field_errors %}
-            <span class="error">{{ create_form.non_field_errors|first }}</span>
-        {% endif %}
-
-        {{ create_form.passwordconfirm }}
-
-    </div>
+    {% include "widgets/ubuntuone/passwords.html" with fields=create_form %}
 
     {% if captcha_required %}
     <div class="captcha" id="captcha">

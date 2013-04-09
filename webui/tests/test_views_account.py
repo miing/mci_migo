@@ -255,12 +255,12 @@ class AccountEditTestCase(AuthenticatedTestCase):
 
     def test_authentication_device_section(self):
         response = self.client.get(self.url)
-        device_legend = '<legend>Authentication Devices</legend>'
+        device_identifier = '_qa_authentication_devices'
         if self.twofactor_enabled is False or self.devices_count == 0:
             # Since the user has no devices, do not show the Devices section
-            self.assertNotContains(response, device_legend)
+            self.assertNotContains(response, device_identifier)
         else:
-            self.assertContains(response, device_legend)
+            self.assertContains(response, device_identifier)
 
     def test_backup_device_warning(self):
         response = self.client.get(self.url)
@@ -466,15 +466,18 @@ class AccountTemplateTestCase(
         self.assertEqual(response.status_code, 200)
 
         tree = PyQuery(response.content)
-        return tree.find('fieldset[class="undecorated boxed"]')
+        return tree.find('[data-qa-id="_qa_edit_fieldsets"] fieldset')
 
     def test_with_flag_for_user(self):
         fieldset = self.get_devices_fieldset()
         self.assertEqual(len(fieldset), 2)
 
-        personal, devices = fieldset
-        self.assertEqual(personal.find('legend').text, 'Personal Details')
-        self.assertEqual(devices.find('legend').text, 'Authentication Devices')
+        self.assertIsNotNone(fieldset.find(
+            '[data-qa-id="_qa_personal_details"]'
+        ))
+        self.assertIsNotNone(fieldset.find(
+            '[data-qa-id="_qa_authentication_devices"]'
+        ))
 
     def test_without_flag_for_user(self):
         person = self.factory.make_person()
