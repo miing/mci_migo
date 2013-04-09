@@ -53,18 +53,33 @@ class AdminTestCase(SSOBaseTestCase):
             self.assertRaises(NotRegistered, admin.site.unregister, model)
 
     def test_openidrpconfig_allowed_sreg_checkboxes_postable(self):
-        data = {'trust_root': 'http://localhost/bla/',
-                'displayname': 'My Test RP',
-                'description': 'Bla',
-                'allowed_sreg': ['fullname', 'email'],
-                'creation_rationale': '13',
+        trust_root = 'http://localhost/bla/'
+        displayname = 'My Test RP'
+        description = 'Bla'
+        allowed_sreg = ['fullname', 'email']
+        creation_rationale = 13
+
+        data = {'trust_root': trust_root,
+                'displayname': displayname,
+                'description': description,
+                'allowed_sreg': allowed_sreg,
+                'creation_rationale': creation_rationale,
                 }
         add_view = reverse('admin:identityprovider_openidrpconfig_add')
         response = self.client.get(add_view)
         response = self.client.post(add_view, data)
         self.assertEqual(302, response.status_code)
-        # We don't get the ID back, so continue on to the next test to
-        # verify that the checkbox appears on the model's screen.
+        # We don't get the ID back, so ensure we only have one entity and
+        # assume it's the correct one.  This is racy, but the alternative is
+        # another request to the list screen to scrape the ID from there.
+        self.assertEqual(OpenIDRPConfig.objects.count(), 1)
+        rpconfig = OpenIDRPConfig.objects.get()
+        self.assertEqual(rpconfig.trust_root, trust_root)
+        self.assertEqual(rpconfig.displayname, displayname)
+        self.assertEqual(rpconfig.description, description)
+        self.assertEqual(sorted(rpconfig.allowed_sreg.split(',')),
+                         sorted(allowed_sreg))
+        self.assertEqual(rpconfig.creation_rationale, creation_rationale)
 
     def test_openidrpconfig_allowed_sreg_checkboxes_getable(self):
         data = {'trust_root': 'http://localhost/bla/',
@@ -78,7 +93,57 @@ class AdminTestCase(SSOBaseTestCase):
             'admin:identityprovider_openidrpconfig_change',
             args=(rpconfig.id,))
         response = self.client.get(change_view)
-        self.assertContains(response, 'checked')
+        dom = PyQuery(response.content)
+        checked = dom.find('input[checked=checked]')
+        self.assertEqual(len(checked), 1)
+        self.assertEqual(checked[0].value, 'fullname')
+
+    def test_openidrpconfig_allowed_ax_checkboxes_postable(self):
+        trust_root = 'http://localhost/bla/'
+        displayname = 'My Test RP'
+        description = 'Bla'
+        allowed_ax = ['fullname', 'email']
+        creation_rationale = 13
+
+        data = {'trust_root': trust_root,
+                'displayname': displayname,
+                'description': description,
+                'allowed_ax': allowed_ax,
+                'creation_rationale': creation_rationale,
+                }
+        add_view = reverse('admin:identityprovider_openidrpconfig_add')
+        response = self.client.get(add_view)
+        response = self.client.post(add_view, data)
+        self.assertEqual(302, response.status_code)
+        # We don't get the ID back, so ensure we only have one entity and
+        # assume it's the correct one.  This is racy, but the alternative is
+        # another request to the list screen to scrape the ID from there.
+        self.assertEqual(OpenIDRPConfig.objects.count(), 1)
+        rpconfig = OpenIDRPConfig.objects.get()
+        self.assertEqual(rpconfig.trust_root, trust_root)
+        self.assertEqual(rpconfig.displayname, displayname)
+        self.assertEqual(rpconfig.description, description)
+        self.assertEqual(sorted(rpconfig.allowed_ax.split(',')),
+                         sorted(allowed_ax))
+        self.assertEqual(rpconfig.creation_rationale, creation_rationale)
+
+    def test_openidrpconfig_allowed_ax_checkboxes_getable(self):
+        data = {'trust_root': 'http://localhost/bla/',
+                'displayname': 'My Test RP',
+                'description': 'Bla',
+                'allowed_ax': 'email',
+                'creation_rationale': '13',
+                }
+        rpconfig = OpenIDRPConfig(**data)
+        rpconfig.save()
+        change_view = reverse(
+            'admin:identityprovider_openidrpconfig_change',
+            args=(rpconfig.id,))
+        response = self.client.get(change_view)
+        dom = PyQuery(response.content)
+        checked = dom.find('input[checked=checked]')
+        self.assertEqual(len(checked), 1)
+        self.assertEqual(checked[0].value, 'email')
 
     def test_inline_models(self):
         expected_inlines = [AccountPasswordInline, EmailAddressInline,

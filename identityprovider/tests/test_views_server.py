@@ -15,6 +15,10 @@ from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from gargoyle.testutils import switches
 from mock import Mock, patch
+from openid.extensions.ax import (
+    AXMessage,
+    FetchRequest,
+)
 from openid.extensions.sreg import SRegRequest
 from openid.message import (
     IDENTIFIER_SELECT,
@@ -26,6 +30,12 @@ from openid.yadis.constants import YADIS_HEADER_NAME
 from pyquery import PyQuery
 
 import identityprovider.signed as signed
+from identityprovider.const import (
+    AX_URI_ACCOUNT_VERIFIED,
+    AX_URI_EMAIL,
+    AX_URI_FULL_NAME,
+    AX_URI_LANGUAGE,
+)
 from identityprovider.models import (
     Account,
     OpenIDAuthorization,
@@ -509,7 +519,40 @@ class DecideTestCase(DecideBaseTestCase):
         # no extra check is needed
         server._check_team_membership(request, self.orequest, oresponse)
 
-    def test_list_of_details_is_complete(self):
+    def test_only_ax_or_sreg_form_is_displayed(self):
+        """Even if both SReg and AX requests are present, only display the AX
+        form."""
+        team_name = 'ubuntu-team'
+        team = self.factory.make_team(name=team_name)
+        self.factory.add_account_to_team(self.account, team)
+
+        # create a trusted rpconfig
+        rpconfig = OpenIDRPConfig(
+            trust_root='http://localhost/',
+            allowed_sreg='fullname,email',
+            allowed_ax='fullname,email,account_verified',
+            can_query_any_team=True,
+            description="Some description",
+        )
+        rpconfig.save()
+        param_overrides = {
+            'openid.sreg.required': 'nickname,email,fullname,language',
+            'openid.ns.ax': AXMessage.ns_uri,
+            'openid.ax.mode': FetchRequest.mode,
+            'openid.ax.type.fullname': AX_URI_FULL_NAME,
+            'openid.ax.type.email': AX_URI_EMAIL,
+            'openid.ax.type.account_verified': AX_URI_ACCOUNT_VERIFIED,
+            'openid.ax.type.language': AX_URI_LANGUAGE,
+            'openid.ax.required': 'fullname,email,account_verified,language',
+            'openid.lp.query_membership': team_name,
+        }
+        self._prepare_openid_token(param_overrides=param_overrides)
+        response = self.client.get('/%s/+decide' % self.token)
+        dom = PyQuery(response.content)
+        self.assertEqual(len(dom.find('li.ax')), 3)
+        self.assertEqual(len(dom.find('li.sreg')), 0)
+
+    def test_list_of_details_is_complete_with_sreg(self):
         team_name = 'ubuntu-team'
         team = self.factory.make_team(name=team_name)
         self.factory.add_account_to_team(self.account, team)
@@ -532,7 +575,91 @@ class DecideTestCase(DecideBaseTestCase):
         self.assertContains(response, "Email address")
         self.assertContains(response, "Preferred language")
 
-    def test_state_of_checkboxes_and_data_formats_trusted(self):
+    def test_list_of_details_is_complete_with_ax(self):
+        team_name = 'ubuntu-team'
+        team = self.factory.make_team(name=team_name)
+        self.factory.add_account_to_team(self.account, team)
+
+        # create a trusted rpconfig
+        rpconfig = OpenIDRPConfig(
+            trust_root='http://localhost/',
+            allowed_ax='fullname,email,account_verified',
+            can_query_any_team=True,
+            description="Some description",
+        )
+        rpconfig.save()
+        param_overrides = {
+            'openid.ns.ax': AXMessage.ns_uri,
+            'openid.ax.mode': FetchRequest.mode,
+            'openid.ax.type.fullname': AX_URI_FULL_NAME,
+            'openid.ax.type.email': AX_URI_EMAIL,
+            'openid.ax.type.account_verified': AX_URI_ACCOUNT_VERIFIED,
+            'openid.ax.type.language': AX_URI_LANGUAGE,
+            'openid.ax.required': 'fullname,email,account_verified,language',
+            'openid.lp.query_membership': team_name,
+        }
+        self._prepare_openid_token(param_overrides=param_overrides)
+        response = self.client.get('/%s/+decide' % self.token)
+        self.assertContains(response, "Team membership")
+        self.assertContains(response, "Full name")
+        self.assertContains(response, "Email address")
+        self.assertContains(response, "Account verified")
+
+    def _test_state_of_checkboxes_and_data_formats(
+            self, dom, field, label=None, value=None, required=False,
+            disabled=False, checked=False):
+        elem = dom.find('#id_%s' % field)
+        self.assertEqual(len(elem), 1)
+        self.assertEqual(elem[0].get('type'), 'checkbox')
+        if required:
+            self.assertEqual(elem[0].get('class'), 'required')
+        else:
+            self.assertIsNone(elem[0].get('class'))
+        if checked:
+            self.assertEqual(elem[0].get('checked'), 'checked')
+        else:
+            self.assertIsNone(elem[0].get('checked'))
+        if disabled:
+            self.assertEqual(elem[0].get('disabled'), 'disabled')
+        else:
+            self.assertIsNone(elem[0].get('disabled'))
+        self.assertEqual(elem[0].get('value'), value)
+        elem = dom.find('label[for=id_%s]' % field)
+        self.assertEqual(len(elem), 1)
+        self.assertEqual(
+            elem[0].text, '%s: %s' % (label, value) if label else value)
+
+    def _test_required_trusted_field(self, dom, field, label=None, value=None):
+        """Required fields for trusted RPs *should* be checked, *should* be
+        disabled and *should* be required."""
+        self._test_state_of_checkboxes_and_data_formats(
+            dom, field=field, label=label, value=value,
+            required=True, disabled=True, checked=True)
+
+    def _test_optional_trusted_field(self, dom, field, label=None, value=None):
+        """Optional fields for trusted RPs *should* be checked, *should not* be
+        disabled and *should not* be required."""
+        self._test_state_of_checkboxes_and_data_formats(
+            dom, field=field, label=label, value=value, checked=True,
+            disabled=False, required=False)
+
+    def _test_required_untrusted_field(self, dom, field, label=None,
+                                       value=None):
+        """Required fields for untrusted RPs *should* be checked, *should not*
+        be disabled and *should* be required."""
+        self._test_state_of_checkboxes_and_data_formats(
+            dom, field=field, label=label, value=value, checked=True,
+            disabled=False, required=True)
+
+    def _test_optional_untrusted_field(self, dom, field, label=None,
+                                       value=None):
+        """Optional fields for untrusted RPs *should not* be checked,
+        *should not* be disabled and *should not* be required."""
+        self._test_state_of_checkboxes_and_data_formats(
+            dom, field=field, label=label, value=value, required=False,
+            checked=False, disabled=False)
+
+    def test_state_of_checkboxes_and_data_formats_trusted_sreg(self):
         teams = ('ubuntu-team', 'launchpad-team', 'isd-team')
         for team_name in teams:
             team = self.factory.make_team(name=team_name)
@@ -552,39 +679,68 @@ class DecideTestCase(DecideBaseTestCase):
         }
         self._prepare_openid_token(param_overrides=param_overrides)
         response = self.client.get(self.url)
-        # checkbox checked and disabled for required fields and label is bold
+        dom = PyQuery(response.content)
+        self.assertEqual(len(dom.find('li.sreg')), 3)
+
         nickname = self.account.person.name
-        username_html = ('<li><input checked="checked" name="nickname" '
-                         'value="%s" class="required" disabled="disabled" '
-                         'type="checkbox" id="id_nickname" /> <label '
-                         'for="id_nickname">Username: %s</label></li>' %
-                         (nickname, nickname))
-        email_html = ('<li><input checked="checked" name="email" '
-                      'value="%s" class="required" '
-                      'disabled="disabled" type="checkbox" id="id_email" /> '
-                      '<label for="id_email">Email address: %s</label></li>' %
-                      (self.login_email, self.login_email))
-        # checkbox checked and enabled for optional fields and label is plain
-        language_html = ('<li><input checked="checked" type="checkbox" '
-                         'name="language" value="en" id="id_language" /> '
-                         '<label for="id_language">Preferred language: en'
-                         '</label></li>')
-        # team data is enabled and checked, the label is plain
-        team_html_1 = ('<li><input checked="checked" type="checkbox" '
-                       'name="ubuntu-team" value="ubuntu-team" id="id_'
-                       'ubuntu-team" /> <label for="id_ubuntu-team">'
-                       'ubuntu-team</label></li>')
-        team_html_2 = ('<li><input checked="checked" type="checkbox" '
-                       'name="isd-team" value="isd-team" id="id_isd-team" /> '
-                       '<label for="id_isd-team">isd-team</label></li>')
+        self._test_required_trusted_field(dom, field='nickname',
+                                          label='Username', value=nickname)
+        self._test_required_trusted_field(dom, field='email',
+                                          label='Email address',
+                                          value=self.login_email)
 
-        self.assertContains(response, username_html)
-        self.assertContains(response, email_html)
-        self.assertContains(response, language_html)
-        self.assertContains(response, team_html_1)
-        self.assertContains(response, team_html_2)
+        self._test_optional_trusted_field(dom, field='language',
+                                          label='Preferred language',
+                                          value='en')
 
-    def test_state_of_checkboxes_and_data_formats_untrusted(self):
+        for team in teams:
+            self._test_optional_trusted_field(dom, field=team, value=team)
+
+    def test_state_of_checkboxes_and_data_formats_trusted_ax(self):
+        teams = ('ubuntu-team', 'launchpad-team', 'isd-team')
+        for team_name in teams:
+            team = self.factory.make_team(name=team_name)
+            self.factory.add_account_to_team(self.account, team)
+
+        # create a trusted rpconfig
+        rpconfig = OpenIDRPConfig(
+            trust_root='http://localhost/',
+            allowed_ax='nickname,email,language,account_verified',
+            can_query_any_team=True,
+            description="Some description",
+        )
+        rpconfig.save()
+        param_overrides = {
+            'openid.ns.ax': AXMessage.ns_uri,
+            'openid.ax.mode': FetchRequest.mode,
+            'openid.ax.type.fullname': AX_URI_FULL_NAME,
+            'openid.ax.type.email': AX_URI_EMAIL,
+            'openid.ax.type.account_verified': AX_URI_ACCOUNT_VERIFIED,
+            'openid.ax.type.language': AX_URI_LANGUAGE,
+            'openid.ax.required': 'fullname,email,account_verified',
+            'openid.ax.if_available': 'language',
+            'openid.lp.query_membership': ','.join(teams),
+        }
+        self._prepare_openid_token(param_overrides=param_overrides)
+        response = self.client.get('/%s/+decide' % self.token)
+        dom = PyQuery(response.content)
+        self.assertEqual(len(dom.find('li.ax')), 3)
+
+        self._test_required_trusted_field(dom, field='email',
+                                          label='Email address',
+                                          value=self.login_email)
+        self._test_required_trusted_field(dom, field='account_verified',
+                                          label='Account verified',
+                                          value='token_via_email')
+
+        self._test_optional_trusted_field(dom, field='language',
+                                          label='Preferred language',
+                                          value='en')
+
+        for team in teams:
+            self._test_optional_trusted_field(dom, field=team, value=team)
+
+    def test_state_of_checkboxes_and_data_formats_untrusted_sreg(self):
         team_name = 'ubuntu-team'
         team = self.factory.make_team(name=team_name)
         self.factory.add_account_to_team(self.account, team)
@@ -602,30 +758,71 @@ class DecideTestCase(DecideBaseTestCase):
         }
         self._prepare_openid_token(param_overrides=param_overrides)
         response = self.client.get(self.url)
+        dom = PyQuery(response.content)
+        self.assertEqual(len(dom.find('li.sreg')), 4)
+
         nickname = self.account.person.name
-        # checkbox checked and *enabled* for required fields and label is bold
-        username_html = ('<li><input checked="checked" name="nickname" '
-                         'value="%s" class="required" type="checkbox" '
-                         'id="id_nickname" /> <label for="id_nickname">'
-                         'Username: %s</label></li>' % (nickname, nickname))
-        email_html = ('<li><input checked="checked" name="email" '
-                      'value="%s" class="required" type='
-                      '"checkbox" id="id_email" /> <label for="id_email">'
-                      'Email address: %s</label></li>' %
-                      (self.login_email, self.login_email))
-        # checkbox *not checked* and enabled for optional fields & plain label
-        language_html = ('<li><input type="checkbox" name="language" value="'
-                         'en" id="id_language" /> <label for="id_language">'
-                         'Preferred language: en</label></li>')
-        # team data is enabled and *not checked*, the label is plain
-        team_html = ('<li><input type="checkbox" name="ubuntu-team" '
-                     'value="ubuntu-team" id="id_ubuntu-team" /> '
-                     '<label for="id_ubuntu-team">Team membership:</label> '
-                     '<label for="id_ubuntu-team">ubuntu-team</label></li>')
-        self.assertContains(response, username_html)
-        self.assertContains(response, email_html)
-        self.assertContains(response, language_html)
-        self.assertContains(response, team_html)
+        self._test_required_untrusted_field(dom, field='nickname',
+                                            label='Username', value=nickname)
+        self._test_required_untrusted_field(dom, field='email',
+                                            label='Email address',
+                                            value=self.login_email)
+
+        self._test_optional_untrusted_field(dom, field='language',
+                                            label='Preferred language',
+                                            value='en')
+
+        self._test_optional_untrusted_field(dom, field=team_name,
+                                            label='Team membership',
+                                            value=team_name)
+
+    def test_state_of_checkboxes_and_data_formats_untrusted_ax(self):
+        team_name = 'ubuntu-team'
+        team = self.factory.make_team(name=team_name)
+        self.factory.add_account_to_team(self.account, team)
+
+        # create a trusted rpconfig
+        trust_root = 'http://untrusted/'
+        rpconfig = OpenIDRPConfig(
+            trust_root=trust_root,
+            can_query_any_team=True,
+            description="Some description",
+        )
+
+        delete_rpconfig_cache_entry("http://localhost/")
+
+        rpconfig.save()
+        param_overrides = {
+            'openid.ns.ax': AXMessage.ns_uri,
+            'openid.ax.mode': FetchRequest.mode,
+            'openid.ax.type.fullname': AX_URI_FULL_NAME,
+            'openid.ax.type.email': AX_URI_EMAIL,
+            'openid.ax.type.account_verified': AX_URI_ACCOUNT_VERIFIED,
+            'openid.ax.type.language': AX_URI_LANGUAGE,
+            'openid.ax.required': 'fullname,email,account_verified',
+            'openid.ax.if_available': 'language',
+            'openid.lp.query_membership': 'ubuntu-team',
+        }
+        self._prepare_openid_token(param_overrides=param_overrides)
+        response = self.client.get('/%s/+decide' % self.token)
+        dom = PyQuery(response.content)
+        self.assertEqual(len(dom.find('li.ax')), 4)
+
+        fullname = self.account.get_full_name()
+        self._test_required_untrusted_field(dom, field='fullname',
+                                            label='Full name',
+                                            value=fullname)
+        self._test_required_untrusted_field(dom, field='email',
+                                            label='Email address',
+                                            value=self.login_email)
+
+        self._test_optional_untrusted_field(dom, field='language',
+                                            label='Preferred language',
+                                            value='en')
+
+        self._test_optional_untrusted_field(dom, field=team_name,
+                                            label='Team membership',
+                                            value=team_name)
 
 
 class DecideUserUnverifiedTestCase(DecideBaseTestCase):
@@ -1353,7 +1550,8 @@ class MarkupTestCase(AuthenticatedTestCase):
 
 class ApprovedDataTestCase(SSOBaseTestCase):
 
-    def _get_openid_request(self, with_sreg=True, with_teams=True):
+    def _get_openid_request(
+            self, with_sreg=True, with_ax=True, with_teams=True):
         request = {
             'openid.mode': 'checkid_setup',
             'openid.trust_root': 'http://localhost/',
@@ -1361,6 +1559,12 @@ class ApprovedDataTestCase(SSOBaseTestCase):
             'openid.identity': IDENTIFIER_SELECT}
         if with_sreg:
             request['openid.sreg.required'] = 'email,fullname'
+        if with_ax:
+            request['openid.ns.ax'] = AXMessage.ns_uri
+            request['openid.ax.mode'] = FetchRequest.mode
+            request['openid.ax.type.fullname'] = AX_URI_FULL_NAME
+            request['openid.ax.type.email'] = AX_URI_EMAIL
+            request['openid.ax.required'] = 'email,fullname'
         if with_teams:
             request['openid.lp.query_membership'] = 'ubuntu-team'
         openid_server = server._get_openid_server()
@@ -1391,31 +1595,62 @@ class ApprovedDataTestCase(SSOBaseTestCase):
         post_args = {'email': 'email', 'ubuntu-team': 'ubuntu-team'}
         result = server._get_approved_data(
             self._get_request_with_post_args(post_args),
-            self._get_openid_request(True, False))
+            self._get_openid_request(with_sreg=True, with_ax=False,
+                                     with_teams=False))
         self.assertEqual(sorted(result['sreg']['requested']),
                          ['email', 'fullname'])
         self.assertEqual(result['sreg']['approved'], ['email'])
+        self.assertNotIn('teams', result)
+        self.assertNotIn('ax', result)
+
+    def test_approved_data_for_ax_only(self):
+        post_args = {'email': 'email', 'ubuntu-team': 'ubuntu-team'}
+        result = server._get_approved_data(
+            self._get_request_with_post_args(post_args),
+            self._get_openid_request(with_sreg=False, with_ax=True,
+                                     with_teams=False))
+        self.assertEqual(sorted(result['ax']['requested']),
+                         ['email', 'fullname'])
+        self.assertEqual(result['ax']['approved'], ['email'])
+        self.assertNotIn('sreg', result)
         self.assertNotIn('teams', result)
 
     def test_approved_data_for_teams_only(self):
         post_args = {'ubuntu-team': 'ubuntu-team'}
         result = server._get_approved_data(
             self._get_request_with_post_args(post_args),
-            self._get_openid_request(False, True))
+            self._get_openid_request(with_sreg=False, with_ax=False,
+                                     with_teams=True))
         self.assertEqual(result['teams']['requested'], ['ubuntu-team'])
         self.assertEqual(result['teams']['approved'], ['ubuntu-team'])
+        self.assertNotIn('ax', result)
         self.assertNotIn('sreg', result)
 
     def test_approved_data_for_sreg_and_teams(self):
         post_args = {'email': 'email', 'ubuntu-team': 'ubuntu-team'}
         result = server._get_approved_data(
             self._get_request_with_post_args(post_args),
-            self._get_openid_request())
+            self._get_openid_request(with_sreg=True, with_ax=False,
+                                     with_teams=True))
         self.assertEqual(sorted(result['sreg']['requested']),
                          ['email', 'fullname'])
         self.assertEqual(result['sreg']['approved'], ['email'])
         self.assertEqual(result['teams']['requested'], ['ubuntu-team'])
         self.assertEqual(result['teams']['approved'], ['ubuntu-team'])
+        self.assertNotIn('ax', result)
+
+    def test_approved_data_for_ax_and_teams(self):
+        post_args = {'email': 'email', 'ubuntu-team': 'ubuntu-team'}
+        result = server._get_approved_data(
+            self._get_request_with_post_args(post_args),
+            self._get_openid_request(with_sreg=False, with_ax=True,
+                                     with_teams=True))
+        self.assertEqual(sorted(result['ax']['requested']),
+                         ['email', 'fullname'])
+        self.assertEqual(result['ax']['approved'], ['email'])
+        self.assertEqual(result['teams']['requested'], ['ubuntu-team'])
+        self.assertEqual(result['teams']['approved'], ['ubuntu-team'])
+        self.assertNotIn('sreg', result)
 
 
 class TokenLoginTestCase(SSOBaseTestCase):

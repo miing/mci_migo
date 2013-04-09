@@ -31,15 +31,23 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
         <form action="{{ action }}" method="POST" name="decideform">
             {% csrf_token %}
             <div class="info-items">
-                {% if sreg_form.should_display or teams_form.should_display %}
+                {% if sreg_form.has_data or teams_form.has_data or ax_form.has_data %}
                 <ul class="list">
-                    {% for field in sreg_form %}
-                    <li>{{ field|safe }} {{ field.label_tag }}</li>
-                    {% endfor %}
-                    {% if teams_form.should_display %}
+                    {% if ax_form.has_data %}
+                        {% for field in ax_form %}
+                    <li class="ax">{{ field|safe }} {{ field.label_tag }}</li>
+                        {% endfor %}
+                    {% else %}
+                        {% if sreg_form.has_data %}
+                            {% for field in sreg_form %}
+                    <li class="sreg">{{ field|safe }} {{ field.label_tag }}</li>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                    {% if teams_form.has_data %}
                         {% ifequal teams_form.fields|length 1 %}
                             {% for field in teams_form %}
-                    <li>{{ field|safe }} <label for="id_{{ field.html_name }}">{% trans "Team membership:"%}</label> {{ field.label_tag }}</li>
+                    <li>{{ field|safe }} {{ field.label_tag }}</li>
                             {% endfor %}
                         {% else %}
                     <li id="teamslist_item">

@@ -6,11 +6,20 @@
 from django.http import HttpRequest
 from django_openid_auth.teams import TeamsRequest
 from mock import patch
+from openid.extensions.ax import (
+    AttrInfo,
+    FetchRequest,
+)
 from openid.extensions.sreg import SRegRequest
 
 from identityprovider.models.account import Account
 from identityprovider.models.const import EmailStatus
+from identityprovider.const import (
+    AX_URI_FULL_NAME,
+    AX_URI_EMAIL,
+)
 from identityprovider.forms import (
+    AXFetchRequestForm,
     DeviceRenameForm,
     EditAccountForm,
     LoginForm,
@@ -280,8 +289,8 @@ class SRegRequestFormTest(SSOBaseTestCase):
             self._get_request_with_post_args(),
             SRegRequest(required=['fullname'], optional=['email']),
             self.rpconfig)
-        self.assertTrue('fullname' in form.data_approved_for_request)
-        self.assertFalse('email' in form.data_approved_for_request)
+        self.assertIn('fullname', form.data_approved_for_request)
+        self.assertNotIn('email', form.data_approved_for_request)
 
     def test_optional_fields_for_trusted_site(self):
         """The server should return values for optional fields to trusted
@@ -376,6 +385,194 @@ class SRegRequestFormTest(SSOBaseTestCase):
             None, approved_data=approved_data)
         self.assertFalse(form.check_test('fullname'))
         self.assertTrue(form.check_test('email'))
+
+
+class AXFetchRequestFormTestCase(SSOBaseTestCase):
+    """AX Fetch Request form tests.
+
+    This is all functionally very similar to Simple Registration, except that
+    the extensibility of AX adds an extra layer of complexity.
+    """
+
+    def _get_request_with_post_args(self, args={}):
+        request = HttpRequest()
+        request.user = self.test_user
+        request.POST = args
+        request.META = {'REQUEST_METHOD': 'POST'}
+        return request
+
+    def setUp(self):
+        super(AXFetchRequestFormTestCase, self).setUp()
+        self.test_user = Account.objects.create_account(
+            'My name', 'me@test.com', DEFAULT_USER_PASSWORD)
+        self.rpconfig = OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/', description="Some description")
+
+    def test_no_approved_fields_without_post_request(self):
+        """The server should not generate a list of approved fields when the
+        request is not a POST request.
+        """
+        request = self._get_request_with_post_args()
+        request.META['REQUEST_METHOD'] = 'GET'
+        fetch_request = FetchRequest()
+        for (attr, alias) in [
+                (AX_URI_FULL_NAME, 'fullname'),
+                (AX_URI_EMAIL, 'email')]:
+            fetch_request.add(AttrInfo(attr, alias=alias, required=True))
+        form = AXFetchRequestForm(request, fetch_request, self.rpconfig)
+        self.assertEqual(len(form.data_approved_for_request), 0)
+
+    def test_required_fields_for_trusted_site(self):
+        """The server should always return values for required fields to
+        trusted sites, regardless of the state of the checkbox in the UI.
+        Optional fields should not be returned if the user has unchecked them.
+        """
+        self.rpconfig.allowed_ax = 'fullname,email'
+        fetch_request = FetchRequest()
+        fetch_request.add(
+            AttrInfo(AX_URI_FULL_NAME, alias='fullname', required=True))
+        fetch_request.add(
+            AttrInfo(AX_URI_EMAIL, alias='email', required=False))
+        form = AXFetchRequestForm(self._get_request_with_post_args(),
+                                  fetch_request, self.rpconfig)
+        self.assertTrue('fullname' in form.data_approved_for_request)
+        self.assertFalse('email' in form.data_approved_for_request)
+
+    def test_optional_fields_for_trusted_site(self):
+        """The server should return values for optional fields to trusted
+        sites only when the user checks the checkbox in the UI.
+        """
+        self.rpconfig.allowed_ax = 'fullname,email'
+        post_args = {'email': 'email'}
+        fetch_request = FetchRequest()
+        for (attr, alias) in [
+                (AX_URI_FULL_NAME, 'fullname'),
+                (AX_URI_EMAIL, 'email')]:
+            fetch_request.add(AttrInfo(attr, alias=alias, required=False))
+        form = AXFetchRequestForm(self._get_request_with_post_args(post_args),
+                                  fetch_request, self.rpconfig)
+        self.assertFalse('fullname' in form.data_approved_for_request)
+        self.assertTrue('email' in form.data_approved_for_request)
+
+    def test_required_fields_for_untrusted_site(self):
+        """The server should return values for required fields to untrusted
+        sites only when the user checks the checkbox in the UI.
+        """
+        post_args = {'email': 'email'}
+        fetch_request = FetchRequest()
+        for (attr, alias) in [
+                (AX_URI_FULL_NAME, 'fullname'),
+                (AX_URI_EMAIL, 'email')]:
+            fetch_request.add(AttrInfo(attr, alias=alias, required=True))
+        form = AXFetchRequestForm(self._get_request_with_post_args(post_args),
+                                  fetch_request, None)
+        self.assertFalse('fullname' in form.data_approved_for_request)
+        self.assertTrue('email' in form.data_approved_for_request)
+
+    def test_optional_fields_for_untrusted_site(self):
+        """The server should return values for optional fields to untrusted
+        sites only when the user checks the checkbox in the UI.
+        """
+        post_args = {'fullname': 'fullname'}
+        fetch_request = FetchRequest()
+        for (attr, alias) in [
+                (AX_URI_FULL_NAME, 'fullname'),
+                (AX_URI_EMAIL, 'email')]:
+            fetch_request.add(AttrInfo(attr, alias=alias, required=False))
+        form = AXFetchRequestForm(self._get_request_with_post_args(post_args),
+                                  fetch_request, None)
+        self.assertTrue('fullname' in form.data_approved_for_request)
+        self.assertFalse('email' in form.data_approved_for_request)
+
+    def test_checkbox_status_for_trusted_site(self):
+        """Checkboxes are always checked if the site is trusted"""
+        fetch_request = FetchRequest()
+        fetch_request.add(
+            AttrInfo(AX_URI_FULL_NAME, alias='fullname', required=True))
+        fetch_request.add(
+            AttrInfo(AX_URI_EMAIL, alias='email', required=False))
+        form = AXFetchRequestForm(self._get_request_with_post_args(),
+                                  fetch_request, self.rpconfig)
+        # True because fullname required
+        self.assertTrue(form.check_test('fullname'))
+        # True because trusted site and no previous disapproval
+        self.assertTrue(form.check_test('email'))
+        # Throw in an unrequested field for good measure
+        self.assertFalse(form.check_test('language'))
+
+    def test_checkbox_status_for_trusted_site_with_approved_data(self):
+        """If the user has previously approved sending data to a trusted site
+        the same checkbox settings should be returned on the next request
+        unless those conflict with the required fields.
+        """
+        approved_data = {
+            'requested': ['fullname', 'email'],
+            'approved': ['email', 'language']}
+        fetch_request = FetchRequest()
+        fetch_request.add(
+            AttrInfo(AX_URI_FULL_NAME, alias='fullname', required=True))
+        fetch_request.add(
+            AttrInfo(AX_URI_EMAIL, alias='email', required=False))
+        form1 = AXFetchRequestForm(self._get_request_with_post_args(),
+                                   fetch_request, self.rpconfig,
+                                   approved_data=approved_data)
+        # True because fullname required
+        self.assertTrue(form1.check_test('fullname'))
+        # True because email previously approved
+        self.assertTrue(form1.check_test('email'))
+        # Throw in an unrequested, previously-approved field for good measure
+        self.assertFalse(form1.check_test('language'))
+
+        approved_data['approved'] = []
+        form2 = AXFetchRequestForm(self._get_request_with_post_args(),
+                                   fetch_request, self.rpconfig,
+                                   approved_data=approved_data)
+        # True because fullname required
+        self.assertTrue(form1.check_test('fullname'))
+        # False because email previously disapproved
+        self.assertFalse(form2.check_test('email'))
+        # Throw in an unrequested field for good measure
+        self.assertFalse(form2.check_test('language'))
+
+    def test_checkbox_status_for_untrusted_site(self):
+        """Checkboxes are only checked on untrusted site requests if the field
+        is required
+        """
+        fetch_request = FetchRequest()
+        fetch_request.add(
+            AttrInfo(AX_URI_FULL_NAME, alias='fullname', required=True))
+        fetch_request.add(
+            AttrInfo(AX_URI_EMAIL, alias='email', required=False))
+        form = AXFetchRequestForm(self._get_request_with_post_args(),
+                                  fetch_request, None)
+        # True because fullname required
+        self.assertTrue(form.check_test('fullname'))
+        # False because untrusted site and no previous approval
+        self.assertFalse(form.check_test('email'))
+        # Throw in an unrequested field for good measure
+        self.assertFalse(form.check_test('language'))
+
+    def test_checkbox_status_for_untrusted_site_with_approved_data(self):
+        """If the user has previously approved sending data to an untrusted
+        site the same checkbox settings should be returned on the next request.
+        """
+        approved_data = {
+            'requested': ['fullname', 'email'],
+            'approved': ['email', 'language']}
+        fetch_request = FetchRequest()
+        fetch_request.add(
+            AttrInfo(AX_URI_FULL_NAME, alias='fullname', required=True))
+        fetch_request.add(
+            AttrInfo(AX_URI_EMAIL, alias='email', required=False))
+        form = AXFetchRequestForm(self._get_request_with_post_args(),
+                                  fetch_request, None,
+                                  approved_data=approved_data)
+        # False because untrusted site and previously disapproved
+        self.assertFalse(form.check_test('fullname'))
+        # True because previously approved
+        self.assertTrue(form.check_test('email'))
+        # Throw in an unrequested, previously-approved field for good measure
+        self.assertFalse(form.check_test('language'))
 
 
 class TeamsRequestFormTestCase(SSOBaseTestCase):

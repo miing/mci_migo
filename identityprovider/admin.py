@@ -6,7 +6,10 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import force_escape
 
-from identityprovider.const import SREG_LABELS
+from identityprovider.const import (
+    AX_DATA_LABELS,
+    SREG_LABELS,
+)
 from identityprovider.fields import CommaSeparatedField
 from identityprovider.models import (
     Account,
@@ -42,6 +45,11 @@ class OpenIDRPConfigForm(forms.ModelForm):
     displayname = forms.CharField(label="Display name")
     trust_root = forms.URLField(verify_exists=False)
     logo = forms.CharField(required=False)
+    allowed_ax = CommaSeparatedField(
+        choices=AX_DATA_LABELS.items(),
+        required=False,
+        widget=CommaSeparatedWidget,
+    )
     allowed_sreg = CommaSeparatedField(
         choices=SREG_LABELS.items(),
         required=False,

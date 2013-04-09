@@ -154,6 +154,7 @@ class OpenIDRPConfig(models.Model):
     displayname = models.TextField()
     description = models.TextField()
     logo = models.TextField(blank=True, null=True)
+    allowed_ax = models.TextField(blank=True, null=True)
     allowed_sreg = models.TextField(blank=True, null=True)
     creation_rationale = models.IntegerField(
         default=13, choices=AccountCreationRationale._get_choices())

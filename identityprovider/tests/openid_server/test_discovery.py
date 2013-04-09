@@ -54,6 +54,7 @@ class DiscoveryTestCase(OpenIDTestCase):
                 'server_url': self.base_openid_url,
                 'supports': [
                     'http://specs.openid.net/auth/2.0/server',
+                    'http://openid.net/srv/ax/1.0',
                     'http://openid.net/extensions/sreg/1.1',
                     'http://ns.launchpad.net/2007/openid-teams',
                 ],

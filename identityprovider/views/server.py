@@ -12,7 +12,10 @@ from datetime import (
     timedelta,
 )
 
-from openid.extensions import pape
+from openid.extensions import (
+    ax,
+    pape,
+)
 from openid.extensions.sreg import (
     SRegRequest,
     SRegResponse,
@@ -59,8 +62,12 @@ from oauth_backend.models import Token
 
 import identityprovider.signed as signed
 
-from identityprovider.const import LAUNCHPAD_TEAMS_NS
+from identityprovider.const import (
+    AX_DATA_FIELDS,
+    LAUNCHPAD_TEAMS_NS,
+)
 from identityprovider.forms import (
+    AXFetchRequestForm,
     PreAuthorizeForm,
     SRegRequestForm,
     TeamsRequestForm,
@@ -278,6 +285,7 @@ def decide(request, token):
         return _process_decide(request, orequest, decision=True)
 
     sreg_request = SRegRequest.fromOpenIDRequest(orequest)
+    ax_request = ax.FetchRequest.fromOpenIDRequest(orequest)
     teams_request = TeamsRequest.fromOpenIDRequest(orequest)
     try:
         summary = OpenIDRPSummary.objects.get(
@@ -287,6 +295,9 @@ def decide(request, token):
     except OpenIDRPSummary.DoesNotExist:
         approved_data = {}
 
+    ax_form = (AXFetchRequestForm(
+        request, ax_request, rpconfig, approved_data=approved_data.get('ax'))
+        if ax_request else None)
     sreg_form = SRegRequestForm(request, sreg_request, rpconfig,
                                 approved_data=approved_data.get('sreg'))
     teams_form = TeamsRequestForm(request, teams_request, rpconfig,
@@ -295,6 +306,7 @@ def decide(request, token):
         'account': request.user,
         'trust_root': orequest.trust_root,
         'rpconfig': rpconfig,
+        'ax_form': ax_form,
         'sreg_form': sreg_form,
         'teams_form': teams_form,
         'token': token,
@@ -541,14 +553,22 @@ def _get_approved_data(request, orequest):
         return None
 
     approved_data = {}
+    rpconfig = utils.get_rpconfig(orequest.trust_root)
 
     sreg_request = SRegRequest.fromOpenIDRequest(orequest)
-    rpconfig = utils.get_rpconfig(orequest.trust_root)
     sreg_form = SRegRequestForm(request, sreg_request, rpconfig)
-    if len(sreg_form.data.keys()) > 0:
+    if sreg_form.has_data:
         approved_data['sreg'] = {
             'requested': sreg_form.data.keys(),
             'approved': sreg_form.data_approved_for_request.keys()}
+
+    ax_request = ax.FetchRequest.fromOpenIDRequest(orequest)
+    if ax_request:
+        ax_form = AXFetchRequestForm(request, ax_request, rpconfig)
+        if ax_form.has_data:
+            approved_data['ax'] = {
+                'requested': ax_form.data.keys(),
+                'approved': ax_form.data_approved_for_request.keys()}
 
     args = orequest.message.getArgs(LAUNCHPAD_TEAMS_NS)
     team_names = args.get('query_membership')
@@ -586,6 +606,18 @@ def _add_sreg(request, openid_request, openid_response):
         openid_response.addExtension(sreg_response)
 
 
+def _add_ax(request, openid_request, openid_response):
+    ax_request = ax.FetchRequest.fromOpenIDRequest(openid_request)
+    if ax_request:
+        rpconfig = utils.get_rpconfig(openid_request.trust_root)
+        form = AXFetchRequestForm(request, ax_request, rpconfig)
+        if form.data_approved_for_request:
+            ax_response = ax.FetchResponse(ax_request)
+            for k, v in form.data_approved_for_request.iteritems():
+                ax_response.addValue(AX_DATA_FIELDS.getNamespaceURI(k), v)
+            openid_response.addExtension(ax_response)
+
+
 def _process_decide(request, orequest, decision):
     oresponse = orequest.answer(
         decision, identity=request.user.openid_identity_url)
@@ -603,6 +635,7 @@ def _process_decide(request, orequest, decision):
             orequest.trust_root,
             client_id=request.session.session_key)
         _add_sreg(request, orequest, oresponse)
+        _add_ax(request, orequest, oresponse)
         # if there's no submitted POST data, this is an auto-authorized
         # (immediate) request
         immediate = not request.POST
