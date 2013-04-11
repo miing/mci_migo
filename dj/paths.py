@@ -27,8 +27,8 @@ PATHS = [
     '.env/lib/python%d.%d/site-packages' % sys.version_info[:2],
 ]
 
-curdir = os.path.abspath(os.path.dirname(__file__))
-base = os.path.abspath(os.path.join(curdir, '..'))
+curdir = os.path.dirname(os.path.realpath(__file__))
+base = os.path.realpath(os.path.join(curdir, '..'))
 
 
 def setup_paths():
