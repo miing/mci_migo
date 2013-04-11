@@ -86,6 +86,10 @@ class Command(BaseCommand):
     def clean_testdata(self, email_pattern, date_created, limit, verbosity=0):
         kwargs = {'email__iregex': email_pattern,
                   'date_created__lt': date_created}
+
+        if verbosity >= 1:
+            self.stdout.write("\nCleaning accounts...\n")
+
         while True:
             email_ids = EmailAddress.objects.filter(**kwargs).values_list(
                 'pk')[:limit]
@@ -93,6 +97,9 @@ class Command(BaseCommand):
             if not accounts:
                 break
 
+            if verbosity >= 2:
+                self.stdout.write("\tDeleting %d accounts..." % (
+                    accounts.count(),))
             accounts.delete()
             if verbosity >= 2:
-                self.stdout.write('.')
+                self.stdout.write('\t [OK]\n')

@@ -142,7 +142,8 @@ class CleanupCommandTestCase(TestCase, SSOBaseTestCaseMixin):
         call_command('cleanup', testdata=True, limit=5, verbosity=2,
                      stdout=mock_stdout)
 
-        self.assertEqual(mock_stdout.write.call_count, 4)
+        # 2 stdout writes per batch + 1 write for all accounts
+        self.assertEqual(mock_stdout.write.call_count, 9)
 
     def test_clean_testdata_silent_progress(self):
         self.make_test_accounts(count=10)
@@ -151,7 +152,8 @@ class CleanupCommandTestCase(TestCase, SSOBaseTestCaseMixin):
         call_command('cleanup', testdata=True, limit=5, verbosity=1,
                      stdout=mock_stdout)
 
-        self.assertEqual(mock_stdout.write.call_count, 0)
+        # 1 stdout write for all accounts
+        self.assertEqual(mock_stdout.write.call_count, 1)
 
     def test_cleanup_orphaned_accounts(self):
         self.make_test_accounts(count=10)
