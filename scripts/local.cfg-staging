@@ -6,4 +6,3 @@ db_host =
 includes =
     config/devel.cfg
     ../branches/project/config/acceptance.cfg
-

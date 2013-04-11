@@ -1,7 +1,7 @@
 [__noschema__]
 basedir = .
 db_host =
-hostname = localhost:$PORT
+hostname = 0.0.0.0:$PORT
 
 [__main__]
 includes =
