@@ -1,4 +1,4 @@
-
+/* Footer ------------------------------------------------------------*/
 footer {
     text-align: left;
     font-weight: 300;
@@ -6,7 +6,7 @@ footer {
     padding: 1em 2em;
 }
 
-footer h5 {
+footer .title {
     font-size: 13px;
     font-weight: 400;
 }
@@ -23,6 +23,7 @@ footer .links li {
     margin: 0;
     padding: 0;
     line-height: 1.5;
+
 }
 footer .links a {
     color: #676767;
@@ -68,14 +69,69 @@ footer .links a {
     background-image: url("../img/footer-icon-cloud.png");
 }
 
-.copyright {
+.copyright p {
     font-size: 13px;
     color: #676767;
+    display: inline;
 }
 
 .footer-logo {
     float: right;
 }
+
+/* Footer compact ------------------------------------------------------------*/
+
+.compact {
+    border-top: 1px dotted #D1D1D1;
+}
+
+.compact .copyright {
+    margin: 0;
+}
+
+.compact .year-and-canonical {
+    border-right: 1px solid #333;
+    display: inline-block;
+    padding-right: 0.65em;
+    margin: 0 0.65em 0 0;
+    line-height: 1.2;
+}
+.compact .title {
+    display: none;
+}
+
+.compact .footer-logo,
+.compact .other-links {
+    display: none;
+}
+.compact .ubuntuone-links {
+    left: 0;
+    margin: 0 0 0 169px;
+    position: absolute;
+    width: auto;
+    right: 0;
+}
+
+
+.compact .links {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+footer.compact .links li {
+    display: inline-block;
+    border-right: 1px solid #333;
+    margin-right: 0.5em;
+    padding-right: 0.5em;
+    line-height: 1em;
+}
+
+
+.compact .links a {
+    color: #333;
+}
+
+
 
 .form-box {
     border: 1px solid #CDCDCD;
