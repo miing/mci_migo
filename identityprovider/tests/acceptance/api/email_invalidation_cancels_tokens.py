@@ -7,9 +7,10 @@ from sst.actions import (
     go_to,
     write_textfield,
 )
+
 from u1testutils import mail
+from u1testutils.sso import mail as sso_mail
 from u1testutils.sst import config
-from u1testutils.sst.sso.utils import mail as sso_mail
 
 from identityprovider.tests.acceptance.shared import (
     apihelpers,

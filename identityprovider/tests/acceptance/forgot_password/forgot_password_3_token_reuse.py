@@ -8,8 +8,8 @@ from sst.actions import (
     write_textfield,
     wait_for,
 )
+from u1testutils.sso import mail
 from u1testutils.sst import config
-from u1testutils.sst.sso.utils import mail
 
 from identityprovider.tests.acceptance.shared import helpers
 

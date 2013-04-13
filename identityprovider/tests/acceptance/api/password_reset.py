@@ -1,7 +1,7 @@
 from sst import actions
 from ssoclient.v2 import CanNotResetPassword
+from u1testutils.sso import mail
 from u1testutils.sst import config
-from u1testutils.sst.sso.utils import mail
 
 from identityprovider.tests.acceptance.shared import apihelpers, helpers
 

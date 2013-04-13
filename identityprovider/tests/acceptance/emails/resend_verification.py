@@ -2,8 +2,8 @@ from identityprovider.tests.acceptance.shared import helpers, urls
 
 from sst import actions
 from u1testutils import mail
+from u1testutils.sso import mail as sso_mail
 from u1testutils.sst import config
-from u1testutils.sst.sso.utils import mail as sso_mail
 
 
 config.set_base_url_from_env()
