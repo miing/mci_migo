@@ -1,9 +1,11 @@
 # Packages.
+beautifulsoup4
 django==1.4
 mock
 pep8
 pyflakes
-sst
 Twisted
 bzr+ssh://bazaar.launchpad.net/~bloodearnest/localmail/trunk
+bzr+http://bazaar.launchpad.net/~ubuntuone-hackers/payclient/trunk@4
+bzr+http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk@367
 bzr+http://bazaar.launchpad.net/~canonical-isd-hackers/canonical-identity-provider/ssoclient@3

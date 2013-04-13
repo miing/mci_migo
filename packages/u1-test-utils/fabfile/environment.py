@@ -56,7 +56,7 @@ def _create_virtualenv():
 def _activate_virtualenv():
     activate_this = os.path.abspath(
         '{0}/bin/activate_this.py'.format(env.virtualenv))
-    execfile(activate_this, dict(__file__=activate_this))   
+    execfile(activate_this, dict(__file__=activate_this))
 
 
 def _install_dependencies():

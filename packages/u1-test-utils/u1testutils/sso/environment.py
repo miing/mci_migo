@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-# Copyright 2013 Canonical Ltd.
+# Copyright 2012, 2013 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License version 3, as
@@ -12,17 +10,11 @@
 # PURPOSE.  See the GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License along
-# with this program.  If not, see <http://www.gnu.org/licenses/
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-IMAP_USERNAME = 'test'
-IMAP_PASSWORD = 'test'
-IMAP_USE_SSL = False
-IMAP_SERVER = 'localhost'
-IMAP_PORT = 2143
+from django.conf import settings
 
-SSO_TEST_ACCOUNT_FULL_NAME = 'Test full name'
-SSO_TEST_ACCOUNT_EMAIL = 'email@test.com'
-SSO_TEST_ACCOUNT_PASSWORD = '7357 ¶@55\^/0rD'
 
-PAY_API_USERNAME = 'testuser'
-PAY_API_PASSWORD = 'testpassword'
+def get_sso_base_url(default='http://localhost:8000'):
+    base_url = getattr(settings, 'OPENID_SSO_SERVER_URL', default).rstrip('/')
+    return base_url

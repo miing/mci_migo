@@ -1,15 +1,19 @@
 Getting started:
 ================
 
-1. Get the code:
+1. Install the required packages:
 
-    bzr branch lp:u1-test-utils
+    $ sudo apt-get install firefox xvfb
 
-2. Set up the environment:
+2. Get the code:
 
-    cd u1-test-utils
-    fab bootstrap
+    $ bzr branch lp:u1-test-utils
 
-3. Run the tests:
+3. Set up the environment:
 
-    fab test
+    $ cd u1-test-utils
+    $ fab bootstrap
+
+4. Run the tests:
+
+    $ fab test

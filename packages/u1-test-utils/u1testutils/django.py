@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import re
 import string
 import time
-from contextlib import contextmanager
 
 from django.conf import settings
 from django.test import TestCase
@@ -29,15 +28,35 @@ def switch_settings(**kwargs):
 
     return old_settings
 
-
-@contextmanager
-def patch_settings(**kwargs):
-    old_settings = switch_settings(**kwargs)
-    try:
-        yield
-    finally:
-        switch_settings(**old_settings)
 # end snippet
+
+
+class patch_settings(object):
+
+    def __init__(self, **kwargs):
+        super(patch_settings, self).__init__()
+        self.marker = object()
+        self.old_settings = {}
+        self.kwargs = kwargs
+
+    def start(self):
+        for setting, new_value in self.kwargs.items():
+            old_value = getattr(settings, setting, self.marker)
+            self.old_settings[setting] = old_value
+            setattr(settings, setting, new_value)
+
+    def stop(self):
+        for setting, old_value in self.old_settings.items():
+            if old_value is self.marker:
+                delattr(settings, setting)
+            else:
+                setattr(settings, setting, old_value)
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
 
 
 class CsrfMiddlewareEnabledTestCase(TestCase):
