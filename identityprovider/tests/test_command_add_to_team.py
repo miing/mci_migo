@@ -45,7 +45,7 @@ class AddToTeamCommandTestCase(TestCase):
         stderr = StringIO()
         call_command('add_to_team', 'TeamA', email='foo@bar.com',
                      stderr=stderr)
-        mock_sys_exit.called_once_with(1)
+        mock_sys_exit.assert_called_once_with(1)
         stderr.seek(0)
         output = stderr.read()
         self.assertIn("Error: Email 'foo@bar.com' does not exist", output)
