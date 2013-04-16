@@ -12,6 +12,7 @@ from datetime import (
     timedelta,
 )
 
+from openid import oidutil
 from openid.extensions import (
     ax,
     pape,
@@ -530,7 +531,11 @@ def _should_reauthenticate(openid_request, user):
 def _django_response(request, oresponse, auth_success=False, orequest=None):
     """ Convert an OpenID response into a Django HttpResponse """
     webresponse = _get_openid_server().encodeResponse(oresponse)
-    response = HttpResponse(webresponse.body, mimetype="text/plain")
+    if oresponse.renderAsForm():
+        response = HttpResponse(
+            oidutil.autoSubmitHTML(webresponse.body), mimetype='text/html')
+    else:
+        response = HttpResponse(webresponse.body, mimetype='text/plain')
     response.status_code = webresponse.code
     for key, value in webresponse.headers.items():
         response[key] = value

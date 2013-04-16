@@ -192,6 +192,47 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
         self.assertEqual(query['openid.ax.value.account_verified.1'],
                          'token_via_email')
 
+    def test_handle_user_response_auto_auth_large_response(self):
+        # update rp to auto authorize
+        self.rpconfig.auto_authorize = True
+        self.rpconfig.allowed_ax = 'fullname,email,account_verified'
+        self.rpconfig.save()
+        # Make sure we get a large response
+        self.account.displayname = 'a' * OPENID1_URL_LIMIT
+        self.account.save()
+
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+        self.params.update({
+            'openid.ns.ax': AXMessage.ns_uri,
+            'openid.ax.mode': FetchRequest.mode,
+            'openid.ax.type.fullname': AX_URI_FULL_NAME,
+            'openid.ax.type.email': AX_URI_EMAIL,
+            'openid.ax.type.account_verified': AX_URI_ACCOUNT_VERIFIED,
+            'openid.ax.type.language': AX_URI_LANGUAGE,
+            'openid.ax.required': 'fullname,email,account_verified,language',
+        })
+        response = self.client.post(self.url, self.params)
+        self.assertEqual('text/html', response['Content-type'].split(';')[0])
+        self.assertContains(response, 'assoc_handle')
+        self.assertContains(response, 'openid.sig')
+        dom = PyQuery(response.content)
+        root = dom.root.getroot()
+        self.assertEqual('html', root.tag)
+        body = root.find('body')
+        self.assertEqual('document.forms[0].submit();', body.get('onload'))
+        forms = dom.find('form')
+        self.assertEqual(len(forms), 1)
+        expected_fields = (
+            ('openid.claimed_id', self.account.openid_identity_url),
+            ('openid.identity', self.account.openid_identity_url),
+            ('openid.ax.mode', 'fetch_response'),
+            ('openid.ax.value.email.1', self.email),
+            ('openid.ax.value.fullname.1', self.account.displayname),
+            ('openid.ax.value.account_verified.1', 'token_via_email'),
+        )
+        for k, v in expected_fields:
+            self.assertEqual(v, forms[0].fields[k])
+
     def test_handle_user_response_openid_is_authorized_idselect(self):
         # update rp to auto authorize
         self.rpconfig.auto_authorize = True
