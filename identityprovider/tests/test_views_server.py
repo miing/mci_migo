@@ -167,6 +167,31 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
         self.assertEqual(r.status_code, 200)
         self.assertTemplateUsed(r, 'server/invalid_identifier.html')
 
+    def test_handle_user_response_ax_openid_is_authorized_idselect(self):
+        # update rp to auto authorize
+        self.rpconfig.auto_authorize = True
+        self.rpconfig.allowed_ax = 'fullname,email,account_verified'
+        self.rpconfig.save()
+
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+        self.params.update({
+            'openid.ns.ax': AXMessage.ns_uri,
+            'openid.ax.mode': FetchRequest.mode,
+            'openid.ax.type.fullname': AX_URI_FULL_NAME,
+            'openid.ax.type.email': AX_URI_EMAIL,
+            'openid.ax.type.account_verified': AX_URI_ACCOUNT_VERIFIED,
+            'openid.ax.type.language': AX_URI_LANGUAGE,
+            'openid.ax.required': 'fullname,email,account_verified,language',
+        })
+        r = self.client.get(self.url, self.params)
+        query = self.get_query(r)
+        self.assertEqual(query['openid.ax.value.email.1'],
+                         quote_plus(self.email))
+        self.assertEqual(query['openid.ax.value.fullname.1'],
+                         quote_plus(self.account.get_full_name()))
+        self.assertEqual(query['openid.ax.value.account_verified.1'],
+                         'token_via_email')
+
     def test_handle_user_response_openid_is_authorized_idselect(self):
         # update rp to auto authorize
         self.rpconfig.auto_authorize = True

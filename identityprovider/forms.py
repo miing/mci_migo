@@ -361,7 +361,7 @@ class PreAuthorizeForm(forms.Form):
     callback = forms.CharField(error_messages=default_errors)
 
 
-def _get_data_for_user(request, fields, with_verified=False):
+def _get_data_for_user(request, fields, for_ax=False):
     """Get the data to ask about in the form based on the user's
     account record.
     """
@@ -370,9 +370,6 @@ def _get_data_for_user(request, fields, with_verified=False):
     values['fullname'] = user.displayname
     if user.preferredemail is not None:
         values['email'] = user.preferredemail.email
-        if with_verified:
-            values['account_verified'] = (
-                'token_via_email' if user.is_verified else 'no')
     if user.person is not None:
         values['nickname'] = user.person.name
         if user.person.time_zone is not None:
@@ -381,7 +378,11 @@ def _get_data_for_user(request, fields, with_verified=False):
         values['language'] = user.preferredlanguage
     else:
         values['language'] = translation.get_language_from_request(request)
-    logger.debug("values (sreg_fields) = " + str(values))
+    if for_ax:
+        values['account_verified'] = (
+            'token_via_email' if user.is_verified else 'no')
+    logger.debug('values (%s_fields) = %s',
+                 'ax' if for_ax else 'sreg', str(values))
 
     return dict([(f, values[f]) for f in fields if f in values])
 
@@ -419,7 +420,7 @@ class SRegRequestForm(Form):
                 fields = set()
         else:
             fields = sreg_fields
-        self.data = _get_data_for_user(request, fields, with_verified=False)
+        self.data = _get_data_for_user(request, fields, for_ax=False)
 
         super(SRegRequestForm, self).__init__(self.data)
         self._init_fields(self.data)
@@ -486,7 +487,7 @@ class AXFetchRequestForm(Form):
         ax_fields = self._get_requested_field_aliases()
         if rpconfig is not None:
             ax_fields = self._filter_allowed_fields(ax_fields)
-        self.data = _get_data_for_user(request, ax_fields, with_verified=True)
+        self.data = _get_data_for_user(request, ax_fields, for_ax=True)
 
         super(AXFetchRequestForm, self).__init__(self.data)
         self._init_fields(self.data)
@@ -569,11 +570,9 @@ class AXFetchRequestForm(Form):
     @property
     def data_approved_for_request(self):
         """Return the list of ax data approved for the request."""
-        if self.request_method == 'POST':
-            return dict(
-                [(f, self.data[f]) for f in self.data
-                 if self.field_approved(AX_DATA_FIELDS.getNamespaceURI(f))])
-        return {}
+        return dict(
+            [(f, self.data[f]) for f in self.data
+             if self.field_approved(AX_DATA_FIELDS.getNamespaceURI(f))])
 
     @property
     def has_data(self):

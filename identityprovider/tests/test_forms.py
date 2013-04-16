@@ -435,8 +435,27 @@ class AXFetchRequestFormTestCase(SSOBaseTestCase):
             AttrInfo(AX_URI_EMAIL, alias='email', required=False))
         form = AXFetchRequestForm(self._get_request_with_post_args(),
                                   fetch_request, self.rpconfig)
-        self.assertTrue('fullname' in form.data_approved_for_request)
-        self.assertFalse('email' in form.data_approved_for_request)
+        self.assertIn('fullname', form.data_approved_for_request)
+        self.assertNotIn('email', form.data_approved_for_request)
+
+    def test_fields_for_trusted_auto_authorize_site(self):
+        """The server should always return values for requested fields to
+        trusted sites configured to auto-authorize.
+        """
+        self.rpconfig.allowed_ax = 'fullname,email'
+        self.rpconfig.auto_authorize = True
+        fetch_request = FetchRequest()
+        # One required attribute
+        fetch_request.add(
+            AttrInfo(AX_URI_FULL_NAME, alias='fullname', required=True))
+        # One optional attribute
+        fetch_request.add(
+            AttrInfo(AX_URI_EMAIL, alias='email', required=False))
+        form = AXFetchRequestForm(self._get_request_with_post_args(),
+                                  fetch_request, self.rpconfig)
+        # Both attributes should be returned
+        self.assertIn('fullname', form.data_approved_for_request)
+        self.assertIn('email', form.data_approved_for_request)
 
     def test_optional_fields_for_trusted_site(self):
         """The server should return values for optional fields to trusted

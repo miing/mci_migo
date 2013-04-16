@@ -176,6 +176,7 @@ def _handle_user_response(request, orequest):
             else:
                 oresponse = orequest.answer(True)
             _add_sreg(request, orequest, oresponse)
+            _add_ax(request, orequest, oresponse)
             _check_team_membership(request, orequest, oresponse,
                                    immediate=True)
             response = _django_response(request, oresponse, True)
@@ -197,6 +198,7 @@ def _handle_user_response(request, orequest):
         else:
             oresponse = orequest.answer(True)
         _add_sreg(request, orequest, oresponse)
+        _add_ax(request, orequest, oresponse)
         _check_team_membership(request, orequest, oresponse, immediate=True)
         response = _django_response(request, oresponse, True)
     elif (twofactor.is_authenticated(request) and not
