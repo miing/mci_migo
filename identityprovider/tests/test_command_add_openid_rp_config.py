@@ -24,7 +24,7 @@ class AddOpenIDRPConfigCommandTestCase(TestCase):
         root = 'http://localhost:8000'
         call_command('add_openid_rp_config', root)
         config = get_object_or_none(OpenIDRPConfig, trust_root=root)
-        self.assertTrue(config)
+        self.assertIsNotNone(config)
         self.assertFalse(config.allow_unverified)
         self.assertEqual(config.allowed_sreg, '')
 
@@ -32,7 +32,7 @@ class AddOpenIDRPConfigCommandTestCase(TestCase):
         root = 'http://localhost:8000'
         call_command('add_openid_rp_config', root, allow_unverified=True)
         config = get_object_or_none(OpenIDRPConfig, trust_root=root)
-        self.assertTrue(config)
+        self.assertIsNotNone(config)
         self.assertTrue(config.allow_unverified)
 
     def test_add_with_sreg_value(self):
@@ -40,6 +40,26 @@ class AddOpenIDRPConfigCommandTestCase(TestCase):
         call_command(
             'add_openid_rp_config', root, allowed_sreg='nickname,email')
         config = get_object_or_none(OpenIDRPConfig, trust_root=root)
-        self.assertTrue(config)
+        self.assertIsNotNone(config)
         self.assertFalse(config.allow_unverified)
         self.assertEqual(config.allowed_sreg, 'nickname,email')
+
+    def test_add_with_ax_value(self):
+        root = 'http://localhost:8000'
+        call_command(
+            'add_openid_rp_config', root, allowed_ax='nickname,email')
+        config = get_object_or_none(OpenIDRPConfig, trust_root=root)
+        self.assertIsNotNone(config)
+        self.assertFalse(config.allow_unverified)
+        self.assertEqual(config.allowed_ax, 'nickname,email')
+
+    def test_add_with_ax_and_sreg_value(self):
+        root = 'http://localhost:8000'
+        call_command(
+            'add_openid_rp_config', root, allowed_sreg='nickname',
+            allowed_ax='nickname,email')
+        config = get_object_or_none(OpenIDRPConfig, trust_root=root)
+        self.assertIsNotNone(config)
+        self.assertFalse(config.allow_unverified)
+        self.assertEqual(config.allowed_sreg, 'nickname')
+        self.assertEqual(config.allowed_ax, 'nickname,email')
