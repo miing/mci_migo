@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.test import TestCase
 from django.test.client import RequestFactory
 from mock import patch
@@ -65,3 +66,15 @@ class BrandingTestCase(TestCase):
 
         self.assertEqual('zaraza', result['brand'])
         self.assertEqual('', result['brand_description'])
+
+
+class CombineTestCase(TestCase):
+
+    def test_includes_combo_context(self):
+        with patch.multiple(settings, COMBINE=True,
+                            COMBO_URL='http://example.com/combo/'):
+
+            result = context_processors.combine(RequestFactory().get(''))
+
+        self.assertEqual(result['combine'], True)
+        self.assertEqual(result['combo_url'], 'http://example.com/combo/')

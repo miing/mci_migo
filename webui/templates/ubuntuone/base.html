@@ -1,4 +1,4 @@
-{% load i18n static_url %}<!DOCTYPE html>
+{% load i18n static_url combo %}<!DOCTYPE html>
 <!--[if IE 7 ]><html class="ie7" lang="en" dir="ltr"><![endif]-->
 <!--[if IE 8 ]><html class="ie8" lang="en" dir="ltr"><![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!--><html lang="en" dir="ltr" {% block html_extra %}{% endblock %}><!--<![endif]-->
@@ -14,12 +14,7 @@
     <link rel="icon" type="image/vnd.microsoft.icon" href="{{ STATIC_URL }}ubuntu/favicon.ico">
 
     {% block corecss %}
-    <link href="{{STATIC_URL}}ubuntuone/css/grids-min.css" rel="stylesheet" type="text/css">
-    <link href="{{STATIC_URL}}ubuntuone/css/cssgrids-responsive-min.css" rel="stylesheet" type="text/css">
-    <link href="{{STATIC_URL}}ubuntuone/css/base.css" rel="stylesheet" type="text/css">
-    <link href="{{STATIC_URL}}ubuntuone/css/ubuntuone.css" rel="stylesheet" type="text/css">
-    <link href="{{STATIC_URL}}ubuntuone/css/footer-base.css" rel="stylesheet" type="text/css">
-
+    {% combo prefix='ubuntuone/css' 'grids-min.css' 'cssgrids-responsive-min.css' 'base.css' 'ubuntuone.css' 'footer-base.css' %}
     <link href='http://fonts.googleapis.com/css?family=Ubuntu:400,300,700' rel='stylesheet' type='text/css'>
 
     <!--[if lt IE 9]>
@@ -83,9 +78,16 @@
 </div><!-- close #cont -->
 
 {% block general_js %}
-
-    {% comment %}To be replaced by u1 js{% endcomment %}
-    <script src="{{STATIC_URL}}lazr-js/yui/yui-min.js"></script>
+    <script type="text/javascript">
+        YUI_config = {
+            maxURLLength: 2000,
+            combine: {{ combine|lower }},
+            comboBase: '{{ combo_url }}?',
+            base: '{{ STATIC_URL }}/yui/3.3.0/',
+            root: 'yui/3.3.0/'
+        }
+    </script>
+    {% combo prefix='yui/3.3.0' 'yui/yui-min.js' 'loader/loader-min.js' %}
 
 {% endblock %}
 

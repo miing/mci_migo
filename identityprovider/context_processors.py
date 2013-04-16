@@ -77,3 +77,10 @@ def branding(request=None):
         'brand': brand,
         'brand_description': settings.BRAND_DESCRIPTIONS.get(brand, ''),
     }
+
+
+def combine(request):
+    return {
+        'combine': settings.COMBINE,
+        'combo_url': settings.COMBO_URL,
+    }

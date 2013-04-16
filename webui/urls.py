@@ -73,7 +73,7 @@ urlpatterns = patterns(
     url(r'^\+faq$', 'static_page', {'page_name': 'faq'}, name='faq'),
     url(r'^\+ubuntuone-account$', 'static_page',
         {'page_name': 'ubuntuone-account'}, name='ubuntuone-account'),
-
+    url(r'^combo/$', 'combo_view', name='combo-view'),
 )
 
 urlpatterns += patterns(

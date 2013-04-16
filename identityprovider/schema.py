@@ -169,6 +169,8 @@ class SSOSchema(DjangoSchema):
             help="URL to POST when account data has changed")
         embedded_trust_root = StringOption()
         max_password_reset_tokens = IntOption(default=5)
+        combo_url = StringOption(default="/combo/")
+        combine = BoolOption(default=False)
 
     class twofactor(Section):
         hotp_drift = IntOption()

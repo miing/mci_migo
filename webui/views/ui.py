@@ -3,7 +3,12 @@
 # LICENSE).
 
 import logging
+import os
 
+from convoy.combo import (
+    combine_files,
+    parse_qs,
+)
 from django import forms
 from django.conf import settings
 from django.contrib import auth, messages
@@ -12,6 +17,7 @@ from django.core.urlresolvers import resolve, reverse
 from django.db.models import F
 from django.http import (
     Http404,
+    HttpResponse,
     HttpResponseNotAllowed,
     HttpResponseRedirect,
     urlencode,
@@ -970,3 +976,23 @@ def static_page(request, page_name):
 
     return render_to_response('static/%s.html' % page_name,
                               RequestContext(request))
+
+
+def combo_view(request):
+    """Handle a request for combining a set of files."""
+    fnames = parse_qs(request.META.get("QUERY_STRING", ""))
+    content_type = "text/plain"
+
+    if fnames:
+        if fnames[0].endswith(".js"):
+            content_type = "text/javascript"
+        elif fnames[0].endswith(".css"):
+            content_type = "text/css"
+
+        content = combine_files(
+            fnames, os.path.abspath(settings.STATIC_ROOT),
+            resource_prefix=settings.STATIC_URL, rewrite_urls=True)
+        return HttpResponse(
+            content_type=content_type, status=200,
+            content="".join(content))
+    return HttpResponse(content_type=content_type, status=404)
