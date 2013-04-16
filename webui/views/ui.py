@@ -70,6 +70,7 @@ from identityprovider.models import twofactor
 from identityprovider.models.twofactor import authenticate_device
 from identityprovider.utils import (
     encrypt_launchpad_password,
+    get_current_brand,
     polite_form_errors,
 )
 from identityprovider.stats import stats
@@ -144,7 +145,7 @@ class LoginBaseView(TemplateResponseMixin, View):
         }
 
         # if u1 brand, add captcha and account creation form
-        if settings.BRAND == 'ubuntuone':
+        if get_current_brand() == 'ubuntuone':
             context_conf['captcha_required'] = True
             context_conf = add_captcha_settings(context_conf)
             context_conf['create_account_form'] = create_account_form
@@ -174,7 +175,7 @@ class LoginView(LoginBaseView):
 
     def get_create_account_form(self, request):
         """return new account form if u1 brand"""
-        if settings.BRAND == 'ubuntuone':
+        if get_current_brand() == 'ubuntuone':
             old = 'old' in request.REQUEST
             form = OldNewAccountForm if old else NewAccountForm
             form = form()

@@ -270,6 +270,19 @@ class LoginTestCase(UIViewsBaseTestCase):
             r, 'form', None,
             "Password didn't match.")
 
+    def test_includes_create_account_form_for_u1_brand(self):
+        with patch.multiple(settings, BRAND='ubuntu'):
+            with switches(BRAND_UBUNTUONE=True):
+                r = self.client.get(reverse('login'))
+
+        self.assertIn('create_account_form', r.context)
+
+    def test_create_account_form_not_included_for_ubuntu_brand(self):
+        with patch.multiple(settings, BRAND='ubuntu'):
+            r = self.client.get(reverse('login'))
+
+        self.assertNotIn('create_account_form', r.context)
+
 
 class LogoutTestCase(UIViewsBaseTestCase):
 
