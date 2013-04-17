@@ -5,20 +5,7 @@ Development environment setup
 Getting started
 ===============
 
-1. Install the base dependencies
-::
-
-    sudo apt-get install git-core wget build-essential python libpq-dev postgresql-plpython python-dev python-setuptools swig fabric python-virtualenv memcached
-
-    Optionally, you also need this package, from multiverse:
-
-    python-profiler
-
-   For testing you will also need the system packages libxml2-dev and
-   libxslt1-dev
-
-
-2. Get the code
+1. Get the code
 
 To download the source code hosted on github.com, all you need to do is 
 just type in the following instructions from your favorite terminal.
@@ -27,7 +14,7 @@ just type in the following instructions from your favorite terminal.
 
     git clone git://github.com/miing/mci_migo.git migo
 
-3. Set up the environment
+2. Set up the environment
 
 If you're bootstrapping your environment only once (the simplest case), you
 can just get the dependencies as you need them.
@@ -48,7 +35,7 @@ get the dependencies from.
 	To keep these dependencies up to date, so far, we have already disabled
 	the method. So, now, don't try it.
 
-4. Set up the database
+3. Set up the database
 ::
 
     fab setup_postgresql_server
@@ -66,18 +53,18 @@ get the dependencies from.
     You could also set this to use a system database, by changing the "db_"
     settings in your "dj/local.cfg" file, under [__no_schema__].
 
-5. Run the tests
+4. Run the tests
 ::
 
     sudo service memcached restart
     fab test
 
-6. Run the instance
+5. Run the instance
 ::
 
     fab run
 
-7. (Optional) Setup reCaptcha
+6. (Optional) Setup reCaptcha
 ::
     1. For development, it's probably easiest to simply disable Captcha:
     ::
@@ -93,7 +80,7 @@ get the dependencies from.
         (Configuring a local squid proxy server is beyond the scope of this document.)
         If you don't have a reCaptcha key, get one at http://www.google.com/recaptcha
 
-8. (Optional) Configure a mail server
+7. (Optional) Configure a mail server
 ::
     (Configuring a local mail server is beyond the scope of this document.)
     If you don't have access to a local mail server, you can use a fake one.
@@ -107,7 +94,7 @@ get the dependencies from.
     ::
     python -u -m smtpd -n -c DebuggingServer localhost:1025
 
-9. (Optional) Create your own certificate and private key for SAML 2.0
+8. (Optional) Create your own certificate and private key for SAML 2.0
 ::
     Required if you want to test interaction with a real Service Point.
 
@@ -117,13 +104,13 @@ get the dependencies from.
     Once you have the files (certificate.pem and private-key.pem), update your
     "dj/local.cfg" to point to them.
 
-10. (Optional) Configure Django behind mod_wsgi on apache2.
+9. (Optional) Configure Django behind mod_wsgi on apache2.
 ::
     Generally a good idea if you're serving on the Big Bad Internet.
 
     #TODO: More here.
 
-11. (Optional) Running acceptance tests
+10. (Optional) Running acceptance tests
 ::
     In order to run acceptance tests a system dependency is required (this is
     in order to avoid having multiple firefox windows popping up all the time
@@ -181,7 +168,7 @@ get the dependencies from.
 
     fab acceptance:failfast=1,headless=0,screenshot=1
 
-12. (Optional) Running API tests
+11. (Optional) Running API tests
 ::
 
     In order to run API tests some configuration is needed. Just like when
@@ -203,7 +190,7 @@ get the dependencies from.
     external server. The default value will use the local development server,
     which you need to have started first.
 
-13. (Optional) Using a different brand
+12. (Optional) Using a different brand
 ::
     Currently there are ubuntu-branded templates (the default) as well as
     launchpad-branded templates and ubuntuone-branded templates. You can run
