@@ -28,8 +28,13 @@ from .constants import (
 	LPKG,
 	SPKG,
 	IPKG,
+	RPKG,
+	EIPIP,
+	IPIP,
 	BASE_DEPENDENCIES,
 	PSYCOPG2_CONFLICTS,
+	BASE_REMOVED_DEPENDENCIES,
+	BASE_PYPI_DEPENDENCIES,
 	VIRTUALENV,
 )
 
@@ -37,12 +42,8 @@ from .constants import (
 def bootstrap(download_cache_path=None):
     """Bootstrap the development environment"""
     setup_baseenv()
-
     setup_virtualenv()
-
     install_dependencies(download_cache_path)
-    work_around()
-    
     setup_configuration()
 
 
@@ -55,9 +56,10 @@ def clean():
 
 
 def setup_baseenv():
-	"""Install base env"""
+	"""Setup base env"""
 	_install_base_dependencies(_check_base_dependencies())
 	_check_psycopg2_conflicts()
+	_pip_base_dependencies()
 
 
 def setup_virtualenv():
@@ -75,14 +77,9 @@ def setup_virtualenv():
 
 
 def install_dependencies(download_cache_path=None):
-    """Install all dependencies into the virtualenv"""
-    _install_pip_dependencies(download_cache_path)
-
-
-def work_around():
-	"""Patch installed dependencies"""
-	_pypi_paste_no_init_file()
-	_pypi_django_piston_no_init_file()
+	"""Install all dependencies into the virtualenv"""
+	_install_pip_dependencies(download_cache_path)
+	_work_around()
 
 
 def setup_configuration():
@@ -125,10 +122,9 @@ def _check_base_dependencies():
 
 
 def _install_base_dependencies(packages):
-	"""Install based dependencies"""
-	if packages:
-		for pkg in packages:
-			local(IPKG % pkg)
+	"""Install base dependencies"""
+	for pkg in packages:
+		local(IPKG % pkg)
 
 
 def _check_psycopg2_conflicts():
@@ -144,6 +140,20 @@ def _check_psycopg2_conflicts():
         for pkg in conflicting:
             print pkg
         sys.exit(1)
+
+
+def _pip_base_dependencies():
+	"""Install PYPI base dependencies"""
+	for pkg in BASE_REMOVED_DEPENDENCIES:
+		output = local(LPKG % pkg, capture=True).strip()
+		if output == '1':
+			local(RPKG % pkg)
+	
+	for pkg in BASE_PYPI_DEPENDENCIES:
+		if pkg == 'pip':
+			local(EIPIP % pkg)
+		else:
+			local(IPIP % pkg)
 
 
 def _create_virtualenv(clear=False):
@@ -177,6 +187,12 @@ def _install_pip_dependencies(download_cache_path=None):
 	else: 
 		virtualenv_local('pip install -r requirements.txt', capture=False)
 
+
+def _work_around():
+	"""Patch installed dependencies"""
+	_pypi_paste_no_init_file()
+	_pypi_django_piston_no_init_file()
+	
 
 def _pypi_paste_no_init_file():
 	"""Fix 'No module named paste.request'

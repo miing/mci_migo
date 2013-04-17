@@ -28,6 +28,9 @@ if SYSTEM_NAME == 'Linux':
 		LPKG = "dpkg -l %s 2> /dev/null | grep '^ii' | wc -l"
 		SPKG = "apt-cache search --names-only %s | grep '^%s[[:space:]].*$' | wc -l"
 		IPKG = "sudo apt-get -y install %s"
+		RPKG = "sudo apt-get --yes --purge remove %s"
+		EIPIP = "sudo easy_install %s"
+		IPIP = "sudo pip install --upgrade %s"
 		BASE_DEPENDENCIES = [
 			# For grabing source code or files
 			'git',
@@ -45,8 +48,9 @@ if SYSTEM_NAME == 'Linux':
 			'python',
 			'python-dev',
 			'python-setuptools',
+			#'python-pip',
 			#'python-virtualenv',
-			#'python-pip'
+			#'fabric',
 			'swig',
 			# For performance
 			'memcached',
@@ -58,6 +62,8 @@ if SYSTEM_NAME == 'Linux':
 			'xvfb',
 		]
 		PSYCOPG2_CONFLICTS = ['python-egenix-mx-base-dev']
+		BASE_REMOVED_DEPENDENCIES = ['python-pip', 'fabric', 'python-virtualenv']
+		BASE_PYPI_DEPENDENCIES = ['pip', 'fabric', 'virtualenv']
 		PG_BIN_PATH = "/usr/lib/postgresql/%s/bin" % PG_VERSION,
 	elif DISTRO_NAME in ('SuSE', 'Fedora', 'Centos', 'Redhat'):
 		# RPM based distros
