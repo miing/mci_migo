@@ -26,10 +26,11 @@ if SYSTEM_NAME == 'Linux':
 	if DISTRO_NAME in ('Debian', 'Ubuntu'):
 		# Debian based distros
 		LPKG = "dpkg -l %s 2> /dev/null | grep '^ii' | wc -l"
-		IPKG = "apt-get -y install %s"
+		SPKG = "apt-cache search --names-only %s | grep '^%s[[:space:]].*$' | wc -l"
+		IPKG = "sudo apt-get -y install %s"
 		BASE_DEPENDENCIES = [
 			# For grabing source code or files
-			'git-core',
+			'git',
 			'wget',
 			# For building pypi packages
 			'build-essential',
@@ -54,7 +55,7 @@ if SYSTEM_NAME == 'Linux':
 			# For testting
 			'libxml2-dev',
 			'libxslt1-dev',
-			'xvfb'
+			'xvfb',
 		]
 		PSYCOPG2_CONFLICTS = ['python-egenix-mx-base-dev']
 		PG_BIN_PATH = "/usr/lib/postgresql/%s/bin" % PG_VERSION,

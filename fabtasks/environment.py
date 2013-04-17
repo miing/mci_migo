@@ -15,6 +15,7 @@
 #
 ###################################################################
 
+
 import os
 import sys
 import tempfile
@@ -25,6 +26,7 @@ from fabric.context_managers import lcd
 
 from .constants import (
 	LPKG,
+	SPKG,
 	IPKG,
 	BASE_DEPENDENCIES,
 	PSYCOPG2_CONFLICTS,
@@ -34,7 +36,7 @@ from .constants import (
 
 def bootstrap(download_cache_path=None):
     """Bootstrap the development environment"""
-    check_bootstrap_dependencies()
+    setup_baseenv()
 
     setup_virtualenv()
 
@@ -43,17 +45,20 @@ def bootstrap(download_cache_path=None):
     
     setup_configuration()
 
+
 def clean():
     """Clean up compiled and backup files"""
     with lcd('dj'):
         local("rm -rf .coverage coverage.d coverage.xml")
     local("find . -name '*.~*' -delete")
     local("find . -name '*.pyc' -delete")
-    
-def check_bootstrap_dependencies():
-    """Check dependencies required for bootstrap"""
-    _check_base_dependencies()
-    _check_psycopg2_conflicts()
+
+
+def setup_baseenv():
+	"""Install base env"""
+	_install_base_dependencies(_check_base_dependencies())
+	_check_psycopg2_conflicts()
+
 
 def setup_virtualenv():
     """Create the virtualenv"""
@@ -68,19 +73,23 @@ def setup_virtualenv():
     _activate_virtualenv()
     return created
 
+
 def install_dependencies(download_cache_path=None):
     """Install all dependencies into the virtualenv"""
     _install_pip_dependencies(download_cache_path)
+
 
 def work_around():
 	"""Patch installed dependencies"""
 	_pypi_paste_no_init_file()
 	_pypi_django_piston_no_init_file()
 
+
 def setup_configuration():
     """Setup the base local configuration file"""
     if not os.path.exists('dj/local.cfg'):
         _create_local_cfg()
+
 
 def virtualenv_local(command, capture=True):
     """Run a command inside the virtualenv"""
@@ -91,19 +100,36 @@ def virtualenv_local(command, capture=True):
     command = prefix + command
     return local(command, capture=capture)
     
+
 def _check_base_dependencies():
-    """Check base dependencies required for bootstrap"""
-    required = []
-    for pkg in BASE_DEPENDENCIES:
-        output = local(LPKG % pkg, capture=True).strip()
-        if output != '1':
-            required.append(pkg)
-    if required:
-        print "Please install the following packages, as they are required"
-        print "in order to build some of the dependencies:"
-        for pkg in required:
-            print pkg
-        sys.exit(1)
+	"""Check base dependencies"""
+	uninstalled = []
+	for pkg in BASE_DEPENDENCIES:
+		output = local(LPKG % pkg, capture=True).strip()
+		if output != '1':
+			uninstalled.append(pkg)
+
+	nonexistent = []
+	for pkg in uninstalled:
+		output = local(SPKG % (pkg, pkg), capture=True).strip()
+		if output != '1':
+			nonexistent.append(pkg)
+    
+	if nonexistent:
+		print "Please try to install the following packages, as they are required"
+		print "in order to build some of the dependencies:"
+		for pkg in nonexistent:
+			print pkg
+			sys.exit(1)
+	return uninstalled
+
+
+def _install_base_dependencies(packages):
+	"""Install based dependencies"""
+	if packages:
+		for pkg in packages:
+			local(IPKG % pkg)
+
 
 def _check_psycopg2_conflicts():
     """Check for libraries conflicting with psycopg2"""
@@ -119,6 +145,7 @@ def _check_psycopg2_conflicts():
             print pkg
         sys.exit(1)
 
+
 def _create_virtualenv(clear=False):
     """Create the virtualenv"""
     if not os.path.exists(VIRTUALENV) or clear:
@@ -131,11 +158,13 @@ def _create_virtualenv(clear=False):
         local("%s %s %s %s" % (sys.executable,
             virtualenv_bin_path, args, VIRTUALENV), capture=False)
 
+
 def _activate_virtualenv():
     """Activate the virtualenv"""
     activate_this = os.path.abspath(
         "%s/bin/activate_this.py" % env.virtualenv)
     execfile(activate_this, dict(__file__=activate_this))
+
 
 def _install_pip_dependencies(download_cache_path=None):
 	"""Install all dependencies on pypi or local into the virtualenv"""
@@ -147,6 +176,7 @@ def _install_pip_dependencies(download_cache_path=None):
                 cwd, capture=False) 
 	else: 
 		virtualenv_local('pip install -r requirements.txt', capture=False)
+
 
 def _pypi_paste_no_init_file():
 	"""Fix 'No module named paste.request'
@@ -162,6 +192,7 @@ def _pypi_paste_no_init_file():
 		virtualenv_local('cp Paste*/paste/__init__.py %s/%s' % (VIRTUALENV, dest_path))
 		virtualenv_local('rm -rf Paste*')
 
+
 def _pypi_django_piston_no_init_file():
 	"""Fix 'No module named piston.authentication'
 	
@@ -175,6 +206,7 @@ def _pypi_django_piston_no_init_file():
 		virtualenv_local('tar xzvf django-piston*.tar.gz')
 		virtualenv_local('cp dj*-piston*/piston/__init__.py %s/%s' % (VIRTUALENV, dest_path))
 		virtualenv_local('rm -rf django-piston*')
+
 
 def _create_local_cfg():
 	"""Create base local configuration file"""
