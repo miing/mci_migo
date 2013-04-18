@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load static_url %}
+<div class="twofactor-information related-information">
+    <p>
+        {% trans "Having trouble?" %}
+    </p>
+    <p>
+        {% blocktrans with "twofactor_faq"|static_url as 2FFAQ %}<a href="{{ 2FFAQ }}">2-Factor authentication FAQ</a>{% endblocktrans %}
+    </p>
+    <p>
+        <a href="{% url device-help %}">{% trans "Report a lost or stolen device" %}</a>
+    </p>
+
+</div>

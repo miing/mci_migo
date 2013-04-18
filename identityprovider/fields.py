@@ -17,7 +17,10 @@ class CommaSeparatedField(forms.MultipleChoiceField):
 
 class OATHPasswordField(forms.CharField):
     """A string of between 6 or 8 digits."""
-    widget = forms.widgets.TextInput(attrs={'autocomplete': 'off'})
+    widget = forms.widgets.TextInput(attrs={
+        'autocomplete': 'off',
+        'autofocus': 'autofocus'
+    })
     SIX = re.compile('[0-9]{6}$')
     EIGHT = re.compile('[0-9]{8}$')
 

@@ -181,7 +181,7 @@ label {
     font-size: 14px;
 }
 
-.ubuntuone-information {
+.related-information {
     padding: 1em;
 }
 
@@ -260,7 +260,7 @@ label {
 
 @media all and (min-width:768px) {
 
-    .ubuntuone-information {
+    .related-information {
         margin-top: 1em;
         margin-left: 3em;
         padding: 0 0 0 1em;
