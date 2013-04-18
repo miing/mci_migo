@@ -907,6 +907,8 @@ def forgot_password(request, token=None):
             stats.increment('flows.forgot_password', key='error.form',
                             rpconfig=rpconfig)
             polite_form_errors(form._errors)
+    else:
+        return HttpResponseNotAllowed(['GET', 'POST'])
 
     captcha_settings = dict(form=form, rpconfig=rpconfig, token=token)
     context = RequestContext(request, add_captcha_settings(captcha_settings))

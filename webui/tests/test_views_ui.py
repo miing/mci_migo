@@ -812,6 +812,10 @@ class ForgotPasswordTestCase(UIViewsBaseTestCase):
         for context in r.context:
             self.assertEqual(context['form'].errors, {})
 
+    def test_bad_method(self):
+        r = self.client.put(reverse('forgot_password'), {'email': self.email})
+        self.assertEqual(r.status_code, 405)
+
 
 class NewAccountTestCase(UIViewsBaseTestCase):
 
