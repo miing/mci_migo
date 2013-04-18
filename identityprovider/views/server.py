@@ -26,8 +26,9 @@ from openid.message import (
     registerNamespaceAlias,
 )
 from openid.server.server import (
-    CheckIDRequest,
+    BROWSER_REQUEST_MODES,
     ENCODE_URL,
+    CheckIDRequest,
     ProtocolError,
     Server,
 )
@@ -531,7 +532,11 @@ def _should_reauthenticate(openid_request, user):
 def _django_response(request, oresponse, auth_success=False, orequest=None):
     """ Convert an OpenID response into a Django HttpResponse """
     webresponse = _get_openid_server().encodeResponse(oresponse)
-    if oresponse.renderAsForm():
+    # This is a workaround for the fact the the openid library returns bare
+    # HTML form markup instead of a complete HTML document. See
+    # https://github.com/openid/python-openid/pull/31/files which has been
+    # merged, but not released.
+    if webresponse.body and oresponse.request.mode in BROWSER_REQUEST_MODES:
         response = HttpResponse(
             oidutil.autoSubmitHTML(webresponse.body), mimetype='text/html')
     else:

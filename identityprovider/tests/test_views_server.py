@@ -193,13 +193,25 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
                          'token_via_email')
 
     def test_handle_user_response_auto_auth_large_response(self):
+        # Make sure we get a large response
+        self.account.displayname = 'a' * OPENID1_URL_LIMIT
+        self.account.save()
+        self._test_auto_auth()
+
+    def test_handle_user_response_auto_auth_borderline_response(self):
+        # Make a response that's small enough that it fits in a redirect before
+        # signing, but large enough that it will need a POST after signing. We
+        # might want to come up with a more robust method of determining the
+        # required length, but this works for now.
+        self.account.displayname = 'a' * (OPENID1_URL_LIMIT / 2)
+        self.account.save()
+        self._test_auto_auth()
+
+    def _test_auto_auth(self):
         # update rp to auto authorize
         self.rpconfig.auto_authorize = True
         self.rpconfig.allowed_ax = 'fullname,email,account_verified'
         self.rpconfig.save()
-        # Make sure we get a large response
-        self.account.displayname = 'a' * OPENID1_URL_LIMIT
-        self.account.save()
 
         self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
         self.params.update({
