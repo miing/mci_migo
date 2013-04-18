@@ -461,6 +461,27 @@ label {
 }
 
 
+/* Language select -----------------------------------------------------------*/
+
+.language-select {
+    margin-bottom: 1em;
+}
+
+.language-select p {
+    border-bottom: 1px dotted #ccc;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+}
+
+.language-select label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.cannot-find-language {
+    float: right;
+}
+
 /* General -------------------------------------------------------------------*/
 @media all and (min-width:480px) {
 
