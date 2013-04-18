@@ -54,7 +54,6 @@ class SSOSchema(DjangoSchema):
     oops_dir = StringOption(help='Absolute path to the directory oops'
                                  ' reports will be stored in')
     pgconnect_timeout = IntOption(default=10)
-    serve_static_media = BoolOption()
     google_analytics_id = StringOption()
     support_phone = StringOption()
 

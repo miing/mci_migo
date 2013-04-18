@@ -24,8 +24,6 @@ import nexus
 import preflight
 from adminaudit import audit_install
 
-from webui.decorators import check_readonly
-
 
 admin.autodiscover()
 audit_install()
@@ -50,12 +48,4 @@ urlpatterns = patterns('',
     # OpenID views
     (r'^openid/', include('django_openid_auth.urls')),
     (r'^logout/$', logout, {'next_page': '/'}),
-)
-
-if settings.SERVE_STATIC_MEDIA:
-    urlpatterns += patterns('',
-        (r'assets/identityprovider/(.*)', 'django.views.static.serve',
-            {'document_root': settings.SSO_MEDIA_ROOT}),
-        (r'media/(.*)', 'django.views.static.serve',
-            {'document_root': settings.MEDIA_ROOT}),
 )

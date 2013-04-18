@@ -11,10 +11,10 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
     <head>
         <title>{% block title %}{% trans "Log in" %}{% endblock %}</title>
-        <link rel="shortcut icon" href="{{ STATIC_URL }}launchpad/favicon.png" />
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}launchpad/styles.css"/>
+        <link rel="shortcut icon" href="{{ STATIC_URL }}identityprovider/launchpad/favicon.png" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/launchpad/styles.css"/>
         {% block extra_header %}{% endblock %}
-        <script src="{{ STATIC_URL }}lazr-js/yui/yui-min.js"></script>
+        <script src="{{ STATIC_URL }}identityprovider/lazr-js/yui/yui-min.js"></script>
         <script type="text/javascript">
             // disable all submit buttons after initial form submission
             // to prevent double-clicks
@@ -49,7 +49,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
                     <div>
                         <div id="homepage" class="homepage">
                             <div class="top-portlet">
-                                <img src="{{ STATIC_URL }}launchpad/launchpad-logo-and-name.png" alt="" id="lplogo" />
+                                <img src="{{ STATIC_URL }}identityprovider/launchpad/launchpad-logo-and-name.png" alt="" id="lplogo" />
                             </div>
                             <div class="yui-g">
                                 <div class="yui-u first">

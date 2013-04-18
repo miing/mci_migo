@@ -1554,11 +1554,11 @@ class ComboViewTestCase(SSOBaseTestCase):
         response = self.client.get(
             settings.COMBO_URL +
             '?yui/3.3.0/widget/widget-base.js'
-            '&ubuntuone/js/ie/html5shiv.js')
+            '&identityprovider/ubuntuone/js/ie/html5shiv.js')
 
         self.assertEqual(response['content-type'], 'text/javascript')
         self.assertNotContains(response, '[missing]')
         self.assertContains(response, '/* yui/3.3.0/widget/widget-base.js */')
         self.assertContains(
             response,
-            '/* ubuntuone/js/ie/html5shiv.js */')
+            '/* identityprovider/ubuntuone/js/ie/html5shiv.js */')

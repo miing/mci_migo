@@ -9,11 +9,11 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 {% block title %}{% trans "Complete your registration" %}{% endblock %}
 
 {% block extra_js %}
-<script type="text/javascript" src="{{ STATIC_URL }}lazr-js/lazr/lazr-meta.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}identityprovider/lazr-js/lazr/lazr-meta.js"></script>
 <script type="text/javascript">
     var LAZR_YUI_CONFIG = {
         filter: "min",
-        base: "{{ STATIC_URL }}lazr-js/",
+        base: "{{ STATIC_URL }}identityprovider/lazr-js/",
         modules: LAZR_MODULES,
         insertBefore: "style-overrides"
     };

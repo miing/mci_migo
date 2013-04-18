@@ -566,7 +566,8 @@ class DecideTestCase(DecideBaseTestCase):
     def test_yui_js_url(self):
         r = self.client.get(self.url)
         self.assertContains(
-            r, '{0}lazr-js/yui/yui-min.js'.format(settings.STATIC_URL))
+            r, '{0}identityprovider/lazr-js/yui/yui-min.js'.format(
+                settings.STATIC_URL))
 
     def test_check_team_membership_multiple_openidrpsummary(self):
         # create multiple matching OpenIDRPSummary objects
