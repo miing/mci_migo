@@ -88,7 +88,6 @@ from webui.decorators import (
     requires_cookies,
     require_twofactor_enabled,
 )
-from webui.views.account import invalidate_email
 from webui.views.utils import (
     add_captcha_settings,
     display_email_sent,
@@ -471,7 +470,7 @@ def _handle_confirmation(confirmation_type, confirmation_code, email, request,
         args['token'] = token
 
     if confirmation_type == TokenType.PASSWORDRECOVERY:
-        view = reset_password
+        view = 'reset_password'
     elif confirmation_type == TokenType.NEWPERSONLESSACCOUNT:
         # This is a slight inefficiency for now, as the caller may
         # already have retrieved the confirmation code from the
@@ -490,14 +489,14 @@ def _handle_confirmation(confirmation_type, confirmation_code, email, request,
             messages.success(request, ACCOUNT_CREATED)
             return HttpResponseRedirect(redirection_url)
 
-        view = old_confirm_account
+        view = 'old_confirm_account'
         if 'token' in args:
             del args['token']
 
     elif confirmation_type == TokenType.VALIDATEEMAIL:
-        view = confirm_email
+        view = 'confirm_email'
     elif confirmation_type == TokenType.INVALIDATEEMAIL:
-        view = invalidate_email
+        view = 'invalidate_email'
     else:
         msg = ('Unknown type %s for confirmation code "%s"' %
                (confirmation_type, confirmation_code))

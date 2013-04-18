@@ -95,6 +95,13 @@ class AccountViewsUnauthenticatedTestCase(SSOBaseTestCase):
         login_url = reverse('login') + '?next=' + urllib.quote(url)
         self.assertRedirects(response, login_url)
 
+    def test_includes_create_account_form_for_u1_brand(self):
+        with mock.patch.multiple(settings, BRAND='ubuntu'):
+            with switches(BRAND_UBUNTUONE=True):
+                r = self.client.get(reverse('account-index'))
+
+        self.assertIn('create_account_form', r.context)
+
 
 class AccountViewStandAloneTestCase(AuthenticatedTestCase):
     """Contains the tests that are agnostic to TWOFACTOR issues."""

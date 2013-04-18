@@ -27,7 +27,7 @@ from identityprovider.emailutils import (
     send_invalidation_email_notice,
     send_validation_email_request,
 )
-from identityprovider.forms import EditAccountForm, LoginForm, NewEmailForm
+from identityprovider.forms import EditAccountForm, NewEmailForm
 from identityprovider.models import (
     AuthToken,
     EmailAddress,
@@ -57,6 +57,7 @@ from webui.views.const import (
     VALIDATE_EMAIL,
     VALIDATE_EMAIL_DESC,
 )
+from webui.views.ui import LoginView
 from webui.views.utils import (
     display_email_sent,
     redirection_url_for_token,
@@ -72,19 +73,10 @@ def index(request, token=None):
     if YADIS_CONTENT_TYPE in accept:
         return xrds(request)
 
-    context = RequestContext(request)
     if request.user.is_authenticated():
         resp = account_edit(request, token)
     else:
-        if token is None:
-            login_path = reverse('login')
-        else:
-            login_path = reverse('login', args=[token])
-        context = RequestContext(request, {
-            'form': LoginForm(),
-            'login_path': login_path,
-        })
-        resp = render_to_response('registration/login.html', context)
+        resp = LoginView.as_view()(request, token=token)
         # Perhaps the browser sent us the test cookie, or perhaps it
         # didn't.  We'll tell Django that we want one, and it will be
         # intelligent and not send it out again if the browser *did*

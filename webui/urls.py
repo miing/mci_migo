@@ -53,7 +53,7 @@ urlpatterns = patterns(
         % repls, 'reset_password', name='reset_password'),
 
     url(r'^token/%(authtoken)s/\+newaccount/%(email_address)s$' % repls,
-        'old_confirm_account'),
+        'old_confirm_account', name='old_confirm_account'),
     url(r'^confirm-account/%(authtoken)s/%(email_address)s$' % repls,
         'confirm_account', name='confirm_account'),
     url(r'^%(token)sconfirm-account/%(authtoken)s/%(email_address)s$' % repls,

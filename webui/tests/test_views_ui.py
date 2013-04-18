@@ -279,7 +279,8 @@ class LoginTestCase(UIViewsBaseTestCase):
 
     def test_create_account_form_not_included_for_ubuntu_brand(self):
         with patch.multiple(settings, BRAND='ubuntu'):
-            r = self.client.get(reverse('login'))
+            with switches(BRAND_UBUNTUONE=False):
+                r = self.client.get(reverse('login'))
 
         self.assertNotIn('create_account_form', r.context)
 
