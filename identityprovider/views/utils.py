@@ -10,7 +10,7 @@ from django.http import Http404
 
 from identityprovider import signed
 from identityprovider.models import OpenIDRPConfig
-from ubuntu_sso_saml import utils as saml_utils
+from saml2sso import utils as saml_utils
 
 
 def is_safe_redirect_url(url):
