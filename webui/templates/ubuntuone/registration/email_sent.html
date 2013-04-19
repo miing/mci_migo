@@ -10,20 +10,16 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 {% block title %}{{ email_heading }}{% endblock %}
 
 {% block text_title %}
-  <h1 class="main">{{ email_heading }}</h1>
+  <h1>{{ email_heading }}</h1>
+  <h2 class="u1-h-med">Step 2 of 3: Check your email</h2>
 {% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}<div class="email-sent-auth">{% endif %}
 
-<div id="col1">
+<div>
     <div>
         <p class="larger">{{ email_reason|safe }}</p>
-{% if not readonly %}
-        <p class="larger last">
-            {% trans "We've sent you a 6 digit confirmation code.  To continue, enter that code below." %}
-        </p>
-{% endif %}
     </div>
 
 {% if not readonly %}
@@ -31,13 +27,13 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
     {% else %}{% url enter_token as enter_token_url %}{% endif %}
     <form action="{{ enter_token_url }}" method="post" id="email_confirm">
       {% csrf_token %}
-      <p>
-        <label>{% trans "Confirmation code" %}</label><br />
+      <p class="input-row">
+        <label>{% trans "Confirmation code" %}</label>
         <input id="confirmation_code" name="confirmation_code" type="text" class="textType" />
         <input type="hidden" name="email" value="{{ email }}" />
       </p>
-      <p><button id="submit" type="submit" class="btn" disabled="true">
-          <span><span>{% trans "Confirm" %}</span></span>
+      <p><button id="submit" type="submit" class="btn cta" disabled="true">
+          <span>{% trans "Continue" %}</span>
         </button>
         {% url account-emails as emails_url %}
         {% if user.is_authenticated %}{% blocktrans %} or, <a href="{{ emails_url }}">return to email addresses</a>{% endblocktrans %}{% endif %}
@@ -46,38 +42,30 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 {% endif %}
 </div>
 
-<div id="col2">
-    <h2 class="main">{% trans "Haven&rsquo;t received it?" %}</h2>
-    <p>{% blocktrans %}If you don&rsquo;t receive the message within a few minutes, it might be because:{% endblocktrans %}</p>
-    <ul>
-        <li>{% blocktrans %}Your mail provider uses &ldquo;greylisting&rdquo; to reduce spam. If so, you&rsquo;ll need to wait an hour or two for the message to arrive.{% endblocktrans %}</li>
-        <li>{% blocktrans %}Your mail provider mistakenly blocks messages from this site. Try signing up using a service like <a href="http://gmail.com/">Gmail</a> or <a href="http://mail.yahoo.com/">Yahoo Mail</a>.{% endblocktrans %} </li>
-    {% if email_notreceived_extra %}
-    <li>{{ email_notreceived_extra|safe }}</li>
-    {% endif %}
+<div class="password-reset-advice">
+    <h2 class=u1-h-small>{% trans "Haven&rsquo;t received the email within a couple of minutes?" %}</h2>
+    <ul class=u1-list>
+        <li>{% blocktrans %}Make sure you typed the right email address.{% endblocktrans %}</li>
+        <li>{% blocktrans %}Check your spam folder.{% endblocktrans %}</li>
+        <li>{% blocktrans %}Still nothing? Contact <a href=''>Ubuntu One Support</a>{% endblocktrans %}</li>
     </ul>
-    <p>{% blocktrans with support_form_url="support_form"|static_url %}
-        If neither of those work, <a href="{{ support_form_url}}" title="Contact Login Support">our service might be having a problem.</a>
-    {% endblocktrans %}</p>
 </div>
-<div style="clear: both"></div>
+
 {% if user.is_authenticated %}</div>{% endif %}
 
 {% endblock %}
 
 {% block extra_js %}
-<script type="text/javascript">
-    YUI().use('node', function (Y) {
-        Y.on('domready', function() {
-            Y.one('#confirmation_code').on('keyup', function() {
-                var code = Y.one('#confirmation_code').get('value');
-                if (code.length === 0) {
-                    Y.one('#submit').setAttribute('disabled', 'true');
-                } else {
-                    Y.one('#submit').removeAttribute('disabled');
-                }
-            });
-        });
+<script>
+YUI().use('node', function (Y) {
+    Y.one('#confirmation_code').on('keyup', function() {
+        var code = Y.one('#confirmation_code').get('value');
+        if (code.length === 0) {
+            Y.one('#submit').setAttribute('disabled', 'true');
+        } else {
+            Y.one('#submit').removeAttribute('disabled');
+        }
     });
+});
 </script>
 {% endblock %}

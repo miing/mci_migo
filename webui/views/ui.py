@@ -883,19 +883,30 @@ def forgot_password(request, token=None):
                 'email_from': settings.NOREPLY_FROM_ADDRESS,
                 'support_form_url': settings.SUPPORT_FORM_URL,
             }
-            reason = _(
-                "We've just emailed "
-                "%(email_to)s (from %(email_from)s) with "
-                "instructions on resetting your password.<br/><br/>"
-                "If the email address you provided has not been verified "
-                "we'll use your account's verified email address instead. "
-                "If you don't have a verified email address please "
-                "<a href='%(support_form_url)s'>contact support</a>."
-            ) % msgs
+
+            if get_current_brand() == 'ubuntuone':
+                heading = 'Reset password'
+                reason = _(
+                    "We have sent an email to %(email_to)s. To continue, "
+                    "click on the link in your email, or enter the "
+                    "confirmation code below."
+                ) % msgs
+            else:
+                heading = 'Forgotten your password?'
+                reason = _(
+                    "We've just emailed "
+                    "%(email_to)s (from %(email_from)s) with "
+                    "instructions on resetting your password.<br/><br/>"
+                    "If the email address you provided has not been "
+                    "verified we'll use your account's verified email "
+                    "address instead. If you don't have a verified email "
+                    "address please "
+                    "<a href='%(support_form_url)s'>contact support</a>."
+                ) % msgs
             return display_email_sent(
                 request,
                 email,
-                _("Forgotten your password?"),
+                heading,
                 reason,
                 _("Check that you&rsquo;ve actually "
                   "entered a subscribed email address."),

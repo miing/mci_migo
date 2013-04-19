@@ -43,6 +43,8 @@ class HybridLoginNewAccountTest(SSOBaseTestCase):
 
 class NewAccountTest(SSOBaseTestCase):
 
+    @skipUnless(settings.BRAND == 'ubuntu',
+                "u1 and ubuntu brands use different text""")
     def test_newaccount_existing(self):
         query = {
             'email': 'nobody@debian.org',
@@ -50,6 +52,24 @@ class NewAccountTest(SSOBaseTestCase):
         response = self.client.post('/+forgot_password', query)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Forgotten your password?", response.content)
+        self.assertIn("nobody@debian.org", response.content)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            u"%s: Password reset request" % settings.BRAND_DESCRIPTIONS.get(
+                get_current_brand()))
+        self.assertTrue('nobody@debian.org' in mail.outbox[0].body)
+        self.assertTrue('+new_account' in mail.outbox[0].body)
+
+    @skipUnless(settings.BRAND == 'ubuntuone',
+                "u1 uses reset rather than forgot in text""")
+    def test_newaccount_existing_ubuntuone(self):
+        query = {
+            'email': 'nobody@debian.org',
+        }
+        response = self.client.post('/+forgot_password', query)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Reset password", response.content)
         self.assertIn("nobody@debian.org", response.content)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
@@ -97,6 +117,8 @@ class ForgottenPasswordTest(SSOBaseTestCase):
                              get_current_brand()))
         mail.outbox = []
 
+    @skipUnless(settings.BRAND == 'ubuntu',
+                "u1 uses reset rather than forgot in text""")
     def test_forgottenform_success(self):
         query = {
             'email': 'test@canonical.com',
@@ -104,6 +126,25 @@ class ForgottenPasswordTest(SSOBaseTestCase):
         response = self.client.post('/+forgot_password', query)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Forgotten your password?", response.content)
+        self.assertIn("test@canonical.com", response.content)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            u"%s: Forgotten Password" % settings.BRAND_DESCRIPTIONS.get(
+                get_current_brand()))
+        mail.outbox = []
+
+        AuthToken.objects.all().delete()
+
+    @skipUnless(settings.BRAND == 'ubuntuone',
+                "u1 uses reset rather than forgot in text""")
+    def test_resetform_success(self):
+        query = {
+            'email': 'test@canonical.com',
+        }
+        response = self.client.post('/+forgot_password', query)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Reset password", response.content)
         self.assertIn("test@canonical.com", response.content)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(

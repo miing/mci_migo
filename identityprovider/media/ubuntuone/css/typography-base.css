@@ -1,0 +1,110 @@
+/* Typography Base
+ *
+ * This is not meant to be a complete
+ * definition of every type variation but rather the core, or base, type styles
+ * in use.
+ *
+ */
+
+select,
+input,
+button,
+textarea,
+body {
+    font-family: Ubuntu, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, sans-serif;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* --- Headings ------------------------------------------------------------ */
+
+h1, h2, h3, h4,
+.u1-h-display,
+.u1-h-main,
+.u1-h-med,
+.u1-h-light {
+    font-weight:300;
+}
+
+h5, h6,
+.u1-h-small,
+.u1-h-subhead {
+    font-weight:700;
+}
+
+h6, .u1-h-subhead {
+    text-transform: uppercase;
+}
+
+/* small screen */
+
+h1, .u1-h-display {
+    font-size:32px;
+}
+h2, .u1-h-main {
+    font-size:23px;
+}
+h3, .u1-h-med {
+    font-size:20px;
+}
+h4, .u1-h-light {
+    font-size:16px;
+}
+h5, .u1-h-small {
+    font-size:13px;
+}
+h6, .u1-h-subhead {
+    font-size:12px;
+    text-transform: uppercase;
+}
+
+/* everything else */
+
+@media all and (min-width:480px) {
+
+    h1, .u1-h-display {
+        font-size:45px;
+    }
+    h2, .u1-h-main {
+        font-size:32px;
+    }
+    h3, .u1-h-med {
+        font-size:23px;
+    }
+    h4, .u1-h-light {
+        font-size:20px;
+    }
+    h5, .u1-h-small {
+        font-size:16px;
+    }
+    h6, .u1-h-subhead {
+        font-size:13px;
+    }
+
+}
+
+/* --- Everything Else ----------------------------------------------------- */
+
+p {
+    font-size: 16px;
+    margin-bottom: 0.75em;
+}
+
+strong, b { font-weight: bold; }
+em, i { font-style: italic; }
+
+a,
+a:link,
+a:active,
+a:hover,
+a:visited {
+    color: #dd4814;
+    text-decoration: none;
+}
+em, i {
+    font-style: italic;
+}
+
+strong, b {
+    font-weight:700;
+}

@@ -5,7 +5,7 @@
 {% comment %}Copyright 2013 Canonical Ltd. This software is licensed under the GNU Affero General Public License version 3 (see the file LICENSE).{% endcomment %}
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width">
     {% block extra_meta %}{% endblock %}
 
     {% block extra_header %}{% endblock %}
@@ -14,8 +14,8 @@
     <link rel="icon" type="image/vnd.microsoft.icon" href="{{ STATIC_URL }}identityprovider/ubuntu/favicon.ico">
 
     {% block corecss %}
-    {% combo prefix='identityprovider/ubuntuone/css' 'grids-min.css' 'cssgrids-responsive-min.css' 'base.css' 'ubuntuone.css' 'footer-base.css' %}
-    <link href='http://fonts.googleapis.com/css?family=Ubuntu:400,300,700' rel='stylesheet' type='text/css'>
+    {% combo prefix='identityprovider/ubuntuone/css' 'grids-min.css' 'cssgrids-responsive-min.css' 'base.css' 'ubuntuone.css' 'typography-base.css' 'footer-base.css' %}
+    <link href='//fonts.googleapis.com/css?family=Ubuntu:300,400,700' rel='stylesheet' type='text/css'>
 
     <!--[if lt IE 9]>
         <link href="{{ STATIC_URL }}identityprovider/ubuntuone/css/ubuntuone-no-mq.css" rel="stylesheet" type="text/css">
@@ -64,7 +64,7 @@
         {% endblock %}
 
         <div class="page-title">
-          <h1>{% block text_title %}{% endblock %}</h1>
+          <h1 class="u1-h-main">{% block text_title %}{% endblock %}</h1>
         </div>
 
         <div id="{% block content_id %}box{% endblock %}">

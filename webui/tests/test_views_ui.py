@@ -980,19 +980,6 @@ class ConfirmEmailTestCase(UIViewsBaseTestCase):
         r = self.client.get(reverse('suspended'))
         self.assertTemplateUsed(r, 'account/suspended.html')
 
-    def test_bullets_on_email_sent(self):
-        r = self.post_new_account(follow=True)
-        wait_html = '<li>Your mail provider uses'
-        block_html = '<li>Your mail provider mistakenly blocks'
-        self.assertContains(r, wait_html)
-        self.assertContains(r, block_html)
-
-    def test_bullets_on_email_sent_with_check_message(self):
-        r = self.client.post(reverse('forgot_password'),
-                             {'email': self.email}, follow=True)
-        check_html = '<li>Check that you&rsquo;ve actually entered'
-        self.assertContains(r, check_html)
-
     def test_invalid_email_does_not_blow_up(self):
         r = self.post_new_account(email='what<~@ever.com')
         self.assertEqual(200, r.status_code)
