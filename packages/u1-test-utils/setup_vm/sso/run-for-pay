@@ -1,0 +1,14 @@
+#!/bin/sh
+
+cd ~/{sso.src_dir}
+# We need an SMTP server to send emails.
+.env/bin/twistd localmail --imap {sso.imap_port} --smtp {sso.smtp_port}
+
+# Setup the database.
+fab setup_postgresql_server
+fab manage:loaddata,isdtest
+fab manage:loaddata,allow_unverified
+# Set the allow-unverified config for Pay.
+fab manage:add_openid_rp_config,{pay.url},--allow-unverified,--allowed-sreg="fullname\,nickname\,email\,language"
+# Start the SSO server, accessible from the local network.
+fab run:0.0.0.0:{sso.port}

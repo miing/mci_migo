@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd {pay.src_dir}
+
+SST_BASE_URL={pay.url} fab acceptance:screenshot=true,report=xml,extended=true

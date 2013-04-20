@@ -1,0 +1,6 @@
+#!/bin/sh -ex
+
+# TODO x86_64 sounds like trouble.
+# We can use G_MESSAGES_DEBUG=all to get debug messages on the console.
+# TODO change the name of the environment variables, it's not just staging.
+pkill unity-music; U1_STAGING_WEBAPI={u1.url} U1_STAGING_AUTHENTICATION={sso.url} /usr/lib/x86_64-linux-gnu/unity-lens-music/unity-musicstore-daemon

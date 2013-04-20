@@ -24,24 +24,15 @@ from u1testutils.sst import log_action
 class LogIn(u1testutils.sst.Page):
     """Log in page of the Ubuntu Single Sign On website.
 
-    This is a subclass of the Page object. It extends the assert_page_is_open
-    method with additional verifications and adds methods for the actions
-    available in this page.
-
-    Instance variables:
-    title -- The title of the page.
-    url_path -- The path of the page.
+    This is a subclass of the PageWithAnonymousSubheader object to add
+    methods for the actions available in this page.
 
     """
 
     title = 'Log in'
     url_path = '/'
-
-    def assert_page_is_open(self):
-        """Assert that the page is open."""
-        super(LogIn, self).assert_page_is_open()
-        sst.actions.assert_element(tag='h1', text='Ubuntu Single Sign On')
-        sst.actions.assert_element(tag='h2', text='Are you new?')
+    headings1 = ['Ubuntu Single Sign On']
+    headings2 = ['Log in to Ubuntu Single Sign On', 'Are you new?']
 
     @log_action(logging.info)
     def log_in_to_site_recognized(self, user=None):
@@ -55,6 +46,7 @@ class LogIn(u1testutils.sst.Page):
 
         """
         self._log_in(user)
+        return YourAccount(user.full_name)
 
     @log_action(logging.info)
     def log_in_to_site_not_recognized(self, user=None):
@@ -101,20 +93,32 @@ class LogIn(u1testutils.sst.Page):
         return CreateAccount()
 
 
-class CreateAccount(u1testutils.sst.Page):
+class PageWithAnonymousSubheader(u1testutils.sst.Page):
+
+    def __init__(self, open_page=False):
+        super(PageWithAnonymousSubheader, self).__init__(open_page)
+        self.subheader = _AnonymousSubheader()
+
+
+class _AnonymousSubheader(object):
+
+    @log_action(logging.info)
+    def go_to_log_in_or_create_account(self):
+        sst.actions.click_link('login-link')
+        return LogIn()
+
+
+class CreateAccount(PageWithAnonymousSubheader):
     """Create account page of the Ubuntu Single Sign On website.
 
-    This is a subclass of the Page object. It adds methods for the actions
-    available in this page.
-
-    Instance variables:
-    title -- The title of the page.
-    url_path -- The path of the page.
+    This is a subclass of the PageWithAnonymousSubheader object to add
+    methods for the actions available in this page.
 
     """
 
     title = 'Create account'
-    url_path = '/\+new_account'
+    url_path = '/+new_account'
+    headings1 = ['Ubuntu Single Sign On', 'Create an account']
 
     @log_action(logging.info)
     def create_ubuntu_sso_account(self, user):
@@ -128,32 +132,35 @@ class CreateAccount(u1testutils.sst.Page):
         self._fill_new_account_form(user)
         self._click_continue()
 
-    def _fill_new_account_form(self, user):
+    def _fill_new_account_form(self, user, password_confirmation=None):
+        if password_confirmation is None:
+            password_confirmation = user.password
         sst.actions.write_textfield('id_displayname', user.full_name)
         sst.actions.write_textfield('id_email', user.email)
         sst.actions.write_textfield('id_password', user.password)
-        sst.actions.write_textfield('id_passwordconfirm', user.password)
+        sst.actions.write_textfield(
+            'id_passwordconfirm', password_confirmation)
+        # Even though the recaptcha field is ignored for our tests, we do
+        # want to verify that it is on the page.
+        sst.actions.write_textfield('recaptcha_response_field', 'ignored')
 
     def _click_continue(self):
         continue_button = sst.actions.get_element(name='continue')
         sst.actions.click_button(continue_button)
 
 
-class RegistrationMailSent(u1testutils.sst.Page):
-    """Registration mail sent page of the Ubuntu Single Sign On website.
+class AccountCreationMailSent(PageWithAnonymousSubheader):
+    """AccountCreation mail sent page of the Ubuntu Single Sign On website.
 
-    This is a subclass of the Page object. It extends the assert_page_is_open
-    method with additional verifications and adds methods for the actions
-    available in this page.
-
-    Instance variables:
-    title -- The title of the page.
-    url_path -- The path of the page.
+    This is a subclass of the PageWithAnonymousSubheader object to add methods
+    for the actions available in this page.
 
     """
 
-    title = 'Registration mail sent'
-    url_path = '/\+new_account'
+    title = 'Account creation mail sent'
+    url_path = '/+new_account'
+    headings1 = ['Account creation mail sent']
+    headings2 = ["Haven't received it?"]
 
     @log_action(logging.info)
     def confirm_email_to_site_recognized(self, confirmation_code):
@@ -197,24 +204,42 @@ class RegistrationMailSent(u1testutils.sst.Page):
         sst.actions.click_button(continue_button)
 
 
-class ValidateEmail(u1testutils.sst.Page):
-    """Validate email address confirmation page.
+class PageWithUserSubheader(u1testutils.sst.Page):
+
+    def __init__(self, open_page=False):
+        # Some pages will need to take the user name from the subheader in
+        # order to assert that they are open. We need the subheader before
+        # that check.
+        self.subheader = UserSubheader()
+        super(PageWithUserSubheader, self).__init__(open_page)
+
+
+class UserSubheader(object):
+
+    @log_action(logging.info)
+    def log_out(self):
+        """Log out from the web site."""
+        sst.actions.click_link('logout-link')
+        return YouHaveBeenLoggedOut()
+
+    def get_user_name(self):
+        return sst.actions.get_element(id='account').text
+
+
+class CompleteEmailValidation(PageWithUserSubheader):
+    """Complete email address validation page.
 
     This is a subclass of the Page object. It adds methods for the actions
     available in this page.
 
-    Instance variables:
-    title -- The title of the page.
-    url_path -- The path of the page.
-
     """
 
     title = "Complete email address validation"
-    url_path = '/token/.*/\+newemail/*.@*.'
+    url_path = '/token/.+/\+newemail/.+@.+'
+    is_url_path_regex = True
 
-    def __init__(self, user_name):
-        self.user_name = user_name
-        super(ValidateEmail, self).__init__()
+    def __init__(self, open_page=False):
+        super(CompleteEmailValidation, self).__init__(open_page)
 
     def _click_continue_button(self):
         continue_button = sst.actions.get_element(css_class='btn',
@@ -228,30 +253,29 @@ class ValidateEmail(u1testutils.sst.Page):
     @log_action(logging.info)
     def confirm(self):
         self._click_continue_button()
-        return YourAccount(self.user_name)
+        user_name = self.subheader.get_user_name()
+        return YourAccount(user_name)
 
     @log_action(logging.info)
     def cancel(self):
-        return YourAccount(self.user_name)
+        user_name = self.subheader.get_user_name()
+        return YourAccount(user_name)
 
 
 class SiteNotRecognized(u1testutils.sst.Page):
     """Site not Recognized page of the Ubuntu Single Sign On website.
 
-    This is a subclass of the Page object. It overrides the assert_page_is_open
+    This is a subclass of the Page object. It overrides the assert_title
     method to check only the first part of the title, and adds methods for the
     actions available in this page.
 
-    Instance variables:
-    title -- The regular expression of the title of the page.
-    url_path -- The path of the page.
-
     """
 
-    title = 'Authenticate to .+'
-    url_path = '/.*/\+decide'
+    title = '^Authenticate to .+'
+    url_path = '/.+/\+decide'
+    is_url_path_regex = True
 
-    def assert_page_is_open(self):
+    def assert_title(self):
         """Assert that the page is open.
 
         We use a regular expression because the title has the URL of the site
@@ -286,7 +310,7 @@ class SiteNotRecognized(u1testutils.sst.Page):
         sst.actions.click_button(sign_me_in_button)
 
 
-class YourAccount(u1testutils.sst.Page):
+class YourAccount(PageWithUserSubheader):
     """Your account page of the Ubuntu Single Sign On website.
 
     This is a subclass of the Page object. It extends the constructor to
@@ -296,41 +320,20 @@ class YourAccount(u1testutils.sst.Page):
     Instance variables:
     title -- The title of the page. It's build when the page is instantiated
         using the user name.
-    url_path -- The path of the page.
-    sub_header -- The sub header menu displayed on the pages shown to logged
-        in users.
 
     """
 
     title = "{0}'s details"
     url_path = '/'
 
-    def __init__(self, user_name):
+    def __init__(self, user_name, open_page=False):
         self.title = self.title.format(user_name)
-        super(YourAccount, self).__init__()
-        self.sub_header = _UserSubHeader()
+        super(YourAccount, self).__init__(open_page)
 
 
-class _UserSubHeader(object):
-
-    @log_action(logging.info)
-    def log_out(self):
-        """Log out from the web site."""
-        sst.actions.click_link('logout-link')
-        return YouHaveBeenLoggedOut()
-
-
-class YouHaveBeenLoggedOut(u1testutils.sst.Page):
-    """Your account page of the Ubuntu Single Sign On website.
-
-    This is a subclass of the Page object.
-
-    Instance variables:
-    title -- The title of the page. It's build when the page is instantiated
-        using the user name.
-    url_path -- The path of the page.
-
-    """
+class YouHaveBeenLoggedOut(PageWithAnonymousSubheader):
+    """Your account page of the Ubuntu Single Sign On website."""
 
     title = 'You have been logged out'
-    url_path = '/\+logout'
+    url_path = '/+logout'
+    headings1 = ['Ubuntu Single Sign On', 'You have been logged out']

@@ -9,7 +9,14 @@
 Official Releases:
 ------------------
 
-version **0.2.3** (?? ?? ??)
+version **0.2.4** (Not yet released)
+*******************************
+
+* added ``get_text`` action
+* made it clearer that ``assert_text`` and ``assert_text_contains`` will check
+  the value instead of the text for text field elements.
+
+version **0.2.3** (2013 Apr 17)
 *******************************
 
 * added the ``save_page_source`` action.
@@ -27,8 +34,11 @@ version **0.2.3** (?? ?? ??)
 * added ``get_window_size`` action
 * added ``set_window_size`` action
 * added ``testtools`` dependency
-* command-line test names can be file glob patterns for loading wildcards
-* tests must be invoked using file name or wildcard name
+* command-line test names may use glob patterns for discovery
+* added ``--collect-only`` option to ``sst-run`` command line
+* removed `Browsermob` proxy integration
+* removed ``start`` and ``stop`` actions
+* added hookable browser
 
 
 version **0.2.2** (2012 Nov 4)

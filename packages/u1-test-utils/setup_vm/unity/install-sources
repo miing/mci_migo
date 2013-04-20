@@ -1,0 +1,19 @@
+#!/bin/sh
+# Allow ssh access to launchpad.
+# This should probably be provided by setup_vm. -- vila 2013-03-10
+ssh-keyscan bazaar.launchpad.net >>~/.ssh/known_hosts
+# Install sst and dependencies from source
+mkdir src
+cd src
+bzr branch lp:~ubuntuone-hackers/ubuntuone-servers/selenium
+bzr branch lp:~canonical-isd-qa/selenium-simple-test/trunk selenium-simple-test
+cd ~/src/selenium
+python setup.py install --user
+cd ~/src/selenium-simple-test
+python setup.py install --user
+
+# If the need arise to use sst-run, it may become necessary to create a
+# symlink to /home/ubuntu/.local/bin/sst-run
+
+# Also note that unittest2 is installed as a side-effect of installing sst
+# even if we're already using pyton-2.7 (which includes unittest2 features).

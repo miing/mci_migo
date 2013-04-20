@@ -1,0 +1,57 @@
+#!/bin/sh
+
+cd {pay.src_dir}
+
+# Setup the database.
+fab setup_postgresql_server
+# Add the U1 consumer.
+cat <<EOF >src/paymentservice/fixtures/consumer.json
+[
+    {
+        "pk": "U1",
+        "model": "paymentservice.consumer",
+        "fields": {
+            "notification_url": "{u1.url}/notifications/",
+            "ip_address": "{u1.address}",
+            "name": "Ubuntu One",
+            "default_business_unit": "Online Services",
+            "email_footer": "Test footer.",
+            "theme": "ubuntuone"
+        }
+    }
+]
+EOF
+fab manage:loaddata,consumer
+# Add the API user for U1.
+# We generated this json file with:
+# Go to {pay.url}/admin
+# Sign in with the admin/admin.
+# Click the more link next to the Model Admin heading.
+# On the Paymentservice section, click the +Add link next to API Users.
+# Fill the form with:
+# username: u1qauser
+# password: u1qapassword
+# Click the Save button.
+# Select the Ubuntu One (U1) Consumer.
+# Click the Save button.
+# $ fab manage:dumpdata,paymentservice.APIUser
+cat <<EOF >src/paymentservice/fixtures/apiuser.json
+[
+    {
+        "pk": 2,
+        "model": "paymentservice.apiuser",
+        "fields": {
+            "username": "u1qauser",
+            "created_at": "2013-04-15 00:09:48",
+            "password": "sha1\$b2a8e\$0e06d9cb46583aa53d3bf144ae07018a7546f737",
+            "consumer": "U1",
+            "updated_at": "2013-04-15 00:09:54"
+        }
+    }
+]
+EOF
+fab manage:loaddata,apiuser
+# Start the PAY server, accessible from the local network.
+# We don't call the run task because it loads a fixture that overwrites our
+# consumer.
+fab manage:runserver,0.0.0.0:{pay.port}

@@ -15,8 +15,6 @@ from sst.actions import (
     get_element,
     go_to,
     set_radio_value,
-    start,
-    stop,
     write_textfield,
 )
 from u1testutils.sst import config
@@ -126,8 +124,7 @@ assert_url(urls.DEVICES)
 
 # Stop the browser and restart to ensure 2F Flag is still set
 #  Tests defect #930377
-stop()
-start()
+helpers.logout()
 helpers.login()
 go_to(urls.DEVICES)
 

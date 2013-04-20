@@ -31,7 +31,7 @@ screen -dmS emailserver .env/bin/python -c 'import localmail; localmail.run()'
 sleep 10 # Time for the sso to start
 
 # run tests
-SST_BASE_URL="http://0.0.0.0:$PORT" fab acceptance:screenshot=true,report=xml,extended=true,flags="$SST_FLAGS"
+SST_BASE_URL="http://0.0.0.0:$PORT" fab acceptance:screenshot=true,report=xml,flags="$SST_FLAGS"
 
 # terminate sso server
 screen -X -S sso quit

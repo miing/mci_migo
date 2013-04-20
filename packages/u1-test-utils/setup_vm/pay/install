@@ -1,0 +1,40 @@
+#!/bin/sh -ex
+
+# Allow ssh access to launchpad.
+# This should probably be provided by setup_vm. -- vila 2013-03-10
+ssh-keyscan bazaar.launchpad.net >>~/.ssh/known_hosts
+# Get the branch.
+bzr branch lp:canonical-payment-service {pay.src_dir}
+# Get the download cache.
+bzr branch lp:~canonical-isd-hackers/+junk/download-cache
+# Setup the environment.
+cd {pay.src_dir}
+# Get the version controlled configs.
+bzr branch lp:~canonical-isd-hackers/isd-configs/payments-config branches/project
+# Bootstrap the dependencies
+fab bootstrap:download_cache_path=~/download-cache
+# Set up the correct Django configuration.
+cat <<EOF >django_project/local.cfg
+[__noschema__]
+db_host = /home/ubuntu/{pay.src_dir}/.env/db
+hostname = {pay.address}:{pay.port}
+
+[__main__]
+includes =
+    config/devel.cfg
+    ../branches/project/config/acceptance.cfg
+
+[django]
+debug = false
+internal_ips =
+
+[testing]
+imap_server = {sso.address}
+imap_port = {sso.imap_port}
+imap_use_ssl = False
+
+[openid]
+openid_sso_server_url = {sso.url}
+openid_trust_root = {pay.url}
+
+EOF

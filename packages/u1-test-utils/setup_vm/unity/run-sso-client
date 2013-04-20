@@ -1,0 +1,11 @@
+#!/bin/sh -ex
+
+# We can use U1_DEBUG=True to get debug messages on the console.
+USSOC_SERVICE_URL={sso.url}/api/1.0/ /usr/lib/ubuntu-sso-client/ubuntu-sso-login &
+# XXX ugly sleep.
+sleep 5s
+# TODO x86_64 sounds like trouble.
+# This has just stopped working on raring. See http://pad.lv/1161067
+# TODO in order for the application to be accessible with testability, we need
+# TESTABILITY=1
+/usr/lib/ubuntu-sso-client/ubuntu-sso-login-qt --app_name 'Ubuntu One' --help_text '...' --ping_url '{u1.url}/oauth/sso-finished-so-get-tokens/%7Bemail%7D?platform_version=3.8.0-2-generic&platform=Linux&client_version=4.1.90&platform_arch=x86_64' --policy_url {u1.url}/privacy/ --tc_url {u1.url}/terms/

@@ -61,7 +61,7 @@ def validate_user_email(user):
     """
     vlink = mail.get_verification_link_for_address(user.email)
     sst.actions.go_to(vlink)
-    validate_email = pages.ValidateEmail(user.full_name)
+    validate_email = pages.CompleteEmailAddressValidation()
     validate_email.confirm()
 
 
@@ -117,4 +117,4 @@ def log_out(user_name):
 
     """
     your_account = pages.YourAccount(user_name)
-    return your_account.sub_header.log_out()
+    return your_account.subheader.log_out()

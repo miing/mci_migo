@@ -1,0 +1,241 @@
+Getting started:
+================
+
+1. Install the dependencies:
+
+    sudo apt-get install bzr python-testtools python-yaml
+    sudp apt-get install libvirt-bin qemu qemu-utils virtinst
+    sudo apt-get install qemu-kvm-spice python-spice-client-gtk
+    
+    (Optional):
+    To use a gui manager to see the desktop:
+    sudo apt-get install virt-manager
+    
+    To use Apt proxy to speed up multiple downloads of the same packages:
+    sudo apt-get install squid-deb-proxy 
+    (See point 9 about configuring the apt cache.)
+    
+2. Reboot to allow kvm to activate on the running kernel.
+
+3. Get the code:
+
+    bzr branch lp:~online-services-qa/u1-test-utils/setup_vm
+
+4. Run the tests:
+
+    cd setup_vm
+    ./selftest.py
+
+    (The test_install_from_seed will require you to enter your password
+     because it executes a command with sudo. Your user must be a sudoer.)
+
+5. Configure a virtual machine:
+
+    Write the file ~/vms.conf with something like this:
+
+    vm.ram_size=2048
+    vm.cpus=2
+    vm.cpu_model=amd64
+
+    [raring-pristine]
+    vm.name = raring-pristine
+    vm.update = True
+    vm.packages = bzr, ubuntu-desktop, avahi-daemon
+    vm.release=raring
+    vm.ssh_authorized_keys = {your SSH public key path (~ is allowed, eg ~/.ssh/id_rsa.pub)}
+
+    Create the ~/.config/setup_vm directory where cloud-init configuration
+    files will be stored for each vm. Alternatively, you can create a
+    directory (~/vms) where you want and add the following line in ~/vms.conf:
+
+    vm.vms_dir=~/vms
+
+    Optionally, you can setup scripts to be executed as root or as the
+    ubuntu user just before the vm is powered off:
+
+    vm.root_script = {path to a script on the host}
+    vm.ubuntu_script = {path to a script on the host}
+
+    These scripts *must* specify a shebang line and can be written in any
+    language that can be run from a shebang line.
+
+    You can also ask for some local scripts to be uploaded with:
+
+    vm.uploaded_scripts = sso/run, sso/run-for-pay
+
+    The config options in these scripts will be expanded before the upload.
+
+    PPAS needs a bit of care to setup, as an example, the unity experimental
+    prevalidation PPA is configured by going to
+    https://launchpad.net/~ubuntu-unity/+archive/experimental-prevalidation
+    Click the "Technical details about this PPA" link.
+    Select the distribution from the combo box.
+    Copy the apt line below:
+
+    vm.apt_sources=deb http://ppa.launchpad.net/ubuntu-unity/experimental-prevalidation/ubuntu {vm.release} main|52D62F45
+
+    The page displays Signing Key: 1024R/52D62F45. Please note that only
+    52D62F45 should be specified, and that the url and the key are separated
+    by '|' with no intervening spaces. 
+
+    For a private PPA, make sure to include your launchpad id and your
+    password for that PPA in the URL. It would look something like this:
+
+    vm.apt_sources = deb https://<lp id>:<ppa password>@private-ppa.launchpad.net/a-user/ppa-name/ubuntu {vm.release} main|<ppa key>
+
+6. (Optional) Create a system-wide vms.conf.
+
+   In some cases, some options are better defined in a system-wide config
+   file (/etc/libvirt/vms.conf). This file is queried if no definitions are
+   found in ~/vms.conf and can define a no-name section and vm sections.
+
+7. (Optional) You can configure the location where the image will be
+   downloaded with something like this in the vms.conf file:
+
+    vm.download_cache=~/installers/ubuntu 
+
+8. (Optional) You can configure the location where the virtual machines will
+   be stored with something like this in the vms.conf file:
+
+    vm.images_dir=~/images
+
+9. (Optional) Set up an apt cache, so repeated virtual machine installs will
+   be faster, downloading the packages from the cache instead of an Ubuntu
+   archive mirror:
+    
+    Add this to the vms.conf file:
+    
+    vm.apt_proxy = http://{your-squid-deb-proxy-ip}:8000
+
+    If you need to install packages from non official Ubuntu repositories, you
+    will need to configure the proxy. For example, common tasks would require
+    to access Launchpad public and private PPAs. For that, write the file 
+    /etc/squid-deb-proxy/mirror-dstdomain.acl.d/20-local-vms with:
+
+    # /etc/squid-deb-proxy/mirror-dstdomain.acl.d/20-local-vms
+
+    # network destinations that are allowed by this cache targeted at
+    # locally installed vms
+
+    # launchpad personal package archives
+    ppa.launchpad.net
+    # launchpad private personal package archives
+    private-ppa.launchpad.net
+
+    After that, restart the proxy:
+    
+    sudo restart squid-deb-proxy
+
+    Each time you modify some file under /etc/squid-deb-proxy, don't forget to
+    restart the service.
+
+10. Download the image:
+
+    ./bin/setup_vm.py --download raring-pristine
+
+    (This command will require you to enter your password because the
+     directory where the image will be downloaded might be under control of
+     the root user. Your user must be a sudoer. A pending task is to ask for
+     the password just when needed.)
+
+11. Install the virtual machine:
+
+    ./bin/setup_vm.py --install raring-pristine
+
+    (This command will require you to enter your password because some of the
+     operations it executes require root access. Your user must be a sudoer.)
+
+12. You can ssh into the virtual machine:
+
+    virsh start raring-pristine
+    ssh ubuntu@raring-pristine.local
+
+    No password is needed because your SSH public key is authorized.
+
+13. You can run the virtual machine from virt-manager to get a graphical user
+    interface:
+
+    Open virt-manager.
+    Right-click on the machine and select Run.
+    You will be presented with the display manager greeter.
+    Log in with the user ubuntu, password ubuntu.
+    
+    (You may need to do the following if virt-manager says it can't connect,
+     sudo usermod -a -G libvirtd $USER (replace $USER with your username)
+     and reboot the system)
+    
+14. (Optional) You can set up a "throw away" virtual machine on top of
+    another. We call it "throw away" because all modifications happening there
+    won't affect the disk image of the backing on virtual machine.
+
+    In the vms.conf described above add:
+
+    [raring-test]
+    vm.name = raring-test
+    vm.update = False
+    vm.release = raring
+    vm.ssh_authorized_keys = {your SSH public key}
+    # The name of the disk image used as a base
+    vm.backing = raring-pristine.qcow2
+
+    Create the new vm with:
+
+    ./bin/setup_vm.py --install raring-test
+
+    The vm creation and boot should be faster.
+    
+15. (Very optional) A few commands for virsh that may be of use:
+    virsh list (shows what is running)
+    virsh start x (start a vm with the name x)
+    virsh destroy x (force shutdowns a vm with the name x)
+    virsh undefine x [--remove-all-storage] (Deletes a vm with the name x)
+
+16. (Optional) Raise sudo timeout.
+
+    If you run into vm installs taking too long and waiting for your
+    password to fisnish, you can change the default value (15 minutes) by
+    adding a file in /etc/sudoers.d containing:
+
+    Defaults:<your login here>	timestamp_timeout=60
+
+    This will setup the timeout to 60 minutes.
+
+17. (Optional) Setup launchpad access for the guests
+
+   If you need to access launchpad private branches from the guests, you'll
+   need to setup ssh launchpad access (if you only need access to public
+   branches, http is good enough and you don't even need to 'bzr
+   launchpad-login'):
+
+   - You need to create an ssh key dedicated to the guests, it has to be
+     passwordless and the public part uploaded to your launchpad profile.
+     You can generate a new key pair (replacing <user> with your launchpad
+     id) with:
+
+     $ (cd ~/.ssh ; ssh-keygen -f <user>@setup_vm -N '' -C '<user>@setup_vm')
+
+     This will create two files: '<user>@setup_vm' and
+     '<user>@setup_vm.pub' in your ~/.ssh directory.
+
+     Upload the later at https://launchpad.net/~/+editsshkeys
+
+     The keys are created in your .ssh directory so you can test that they
+     work against launchpad without involving a vm.
+
+     Note that if you create vms from different hosts, you'll need to either
+     copy the same keys on all the hosts or create a pair on each of them
+     (or any combination as long as the public keys are uploaded to
+     launchpad ;).
+
+   - You need to set vm.launchpad_id to <user>. This will trigger running
+     'bzr launchpad-login <user>' in the guest and copy
+     ~/.ssh/<user>@setup_vm (the private key) from your host to the guest.
+
+   - The bazaar.launchpad.net host ssh key needs to be known or you'll get
+     prompted to add it (which is not nice for scripts). This can be fixed
+     by issuing the following command from the {vm.ubuntu_script}:
+
+     $ ssh-keyscan bazaar.launchpad.net >>~/.ssh/known_hosts
+
+     This will probably be automated at some point in the future.
+

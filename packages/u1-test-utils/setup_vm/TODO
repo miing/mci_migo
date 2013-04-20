@@ -1,0 +1,129 @@
+* running setup_vm --install I-dont-exist raises an obscure error. Checking
+   that the config section exist for the vm would allow reporting a better
+   error.
+
+* Too many tests become too hard to write because their execution requires a
+   real vm. This can be addressed in much the same way than
+   requires_known_reference_image(), i.e. setup a real vm once (outside of
+   selftest execution for now) and then use throw-away vms. But even that
+   may be too costly and may need to wait for lxc/chroot support.
+
+* running --ssh-keygen twice gives an awful error message.
+
+* Find whether or not we should really support chroots or if lxcs are good
+   enough (roughly: if they can be set up as fast as chroots but provide
+   more features, just optimize the backing-on scenario).
+
+* Investigate btrfs support to use snapshots for nested backing.
+   This may not be appropriate with kvms but will surely shine for
+   lxc/chroot.
+
+* copying a file (with expanded options or not) from the host to the guest
+   is hard (even internally). There should be a way to more simply describe
+   a list of file/directories to install (with user:group and chmod bits).
+
+* Alternatively, we can allow the guest to access the host via ssh (after
+   all, we're installing a private key in the guest so we trust it enough
+   for that already).
+
+* As a first step, we can define vm.scripts as a list of relative paths on
+   the host, that will be option expanded into vm.config_dir and uploaded
+   from there into ~ubuntu/bin.
+
+* Provide the guest with config file containing the values used to build
+   this vm. From there, the guest itself would be able to expanded options
+   in files acquired from the host (including files modified after the vm
+   has been built/started which will help during dev/debug).
+
+* vm.ubuntu_script is kind of an implementation leak from cloud-init, that's
+   the default user there and comes with some nice properties but strictly
+   speaking setup_vm cares about having *a* user, no matter how it is named
+   so the option could be named vm.user_script. In any case, the features we
+   rely on from using ubuntu should be tested if only to document them.
+
+* we need a way to run scripts on the host while expanding the config option
+   for a given vm (see sso/test that needs at least the sso.url).
+
+*  launchpad interaction requires the launchpad host key.
+
+   => ssh-keyscan bazaar.launchpad.net >>~/.ssh/known_hosts does the
+   trick but it would be nice to automate it.
+
+* document the /etc/avahi/ fix required to use avahi with vms
+
+* lag times between significant hosts should be collected (not specific to
+   setup_vm but related to the use of the vms).
+
+* Add a way to display a vm configuration à la 'bzr config'
+
+* from the addresses below, find a way to test if some fixed subspace can be
+   safely used (de:ad:be:ef  or something...) or just steal some unused MAC
+   prefix (vbox's one ? or vmware's one ? or... the sky is the limit ;)
+
+
+$ sudo grep -n 'mac address' /etc/libvirt/qemu/*.xml
+/etc/libvirt/qemu/essex-precise.xml:45:                <mac address='52:54:00:26:3c:20'/>
+/etc/libvirt/qemu/freebsd8.xml:39:                     <mac address='08:00:27:5f:9f:06'/>
+/etc/libvirt/qemu/gentoo.xml:39:                       <mac address='08:00:27:da:65:cd'/>
+/etc/libvirt/qemu/indicator-sync.xml:45:               <mac address='52:54:00:43:15:9c'/>
+/etc/libvirt/qemu/pkgimporter-lucid.xml:45:            <mac address='52:54:00:95:4e:dc'/>
+/etc/libvirt/qemu/precise-cloud.xml:48:                <mac address='52:54:00:68:aa:af'/>
+/etc/libvirt/qemu/precise-pristine.xml:48:             <mac address='52:54:00:d5:52:06'/>
+/etc/libvirt/qemu/precise-pristine.xml:48:             <mac address='52:54:00:70:a3:64'/>
+/etc/libvirt/qemu/precise-server-pristine.xml:51:      <mac address='52:54:00:14:d5:be'/>
+/etc/libvirt/qemu/precise-test.xml:48:                 <mac address='52:54:00:25:8b:56'/>
+/etc/libvirt/qemu/quantal-cloud.xml:48:                <mac address='52:54:00:e6:6a:df'/>
+/etc/libvirt/qemu/quantal-pristine.xml:48:             <mac address='52:54:00:f5:95:0e'/>
+/etc/libvirt/qemu/quantal-pristine.xml:48:             <mac address='52:54:00:b9:68:11'/>
+/etc/libvirt/qemu/quantal-test.xml:48:                 <mac address='52:54:00:21:3b:7b'/>
+/etc/libvirt/qemu/raring-current.xml                   <mac address='52:54:00:d9:ca:70'/>
+/etc/libvirt/qemu/raring-in-dash-pristine.xml:51:      <mac address='52:54:00:c7:f9:ee'/>
+/etc/libvirt/qemu/raring-in-dash-test.xml:51:          <mac address='52:54:00:a5:83:b9'/>
+/etc/libvirt/qemu/raring-pristine.xml:48:              <mac address='52:54:00:07:09:cb'/>
+/etc/libvirt/qemu/raring-pristine.xml:48:              <mac address='52:54:00:34:7f:62'/>
+/etc/libvirt/qemu/raring-scope-base.xml:42:            <mac address='52:54:00:9c:0d:1c'/>
+/etc/libvirt/qemu/raring-scope-test.xml:42:            <mac address='52:54:00:8a:b1:d6'/>
+/etc/libvirt/qemu/raring-test.xml:48:                  <mac address='52:54:00:23:b6:8d'/>
+/etc/libvirt/qemu/raring-test.xml:51:                  <mac address='52:54:00:e3:05:db'/>
+/etc/libvirt/qemu/sso.xml:51:                          <mac address='52:54:00:f1:88:84'/>
+/etc/libvirt/qemu/u1test-quantal.xml:48:               <mac address='52:54:00:04:7b:45'/>
+/etc/libvirt/qemu/u1test-quantal.xml:48:               <mac address='52:54:00:04:7b:45'/>
+/etc/libvirt/qemu/u1test2-quantal.xml:45:              <mac address='52:54:00:df:35:6c'/>
+/etc/libvirt/qemu/u1test2-quantal.xml:45:              <mac address='52:54:00:df:35:6c'/>
+/etc/libvirt/qemu/xp-32bits.xml:58:                    <mac address='52:54:00:86:aa:99'/>
+/etc/libvirt/qemu/xp64bits.xml:46:                     <mac address='52:54:00:0a:5e:7c'/>
+
+* while using fixed IP addresses is one way to address known_hosts
+   stability, another way is to rely on `ssh-keygen -R` when installing the
+   host (to remove the previous mapping between the key and the ip) and then
+   add the new key with ssh-keyscan (or something else that doesn't require
+   the guest to be up and running).
+
+* make actions verbose and obey -q (at least for tests) so we get some
+   feeback about what is executed.
+
+* add a --delete action to make sure we clean up the config_dir
+
+* rework FileMonitor, ConsoleMonitor design, the actual result smells (pass
+   in _wait_for_install_with_seed, really ?).
+
+* investigate using an upstart job like MAAS:
+
+ write_poweroff_job() {
+   cat >/etc/init/maas-poweroff.conf <<EOF
+   description "poweroff when maas task is done"
+   start on stopped cloud-final
+   console output
+   task
+   script
+     [ ! -e /tmp/block-poweroff ] || exit 0
+     poweroff
+   end script
+EOF
+   # reload required due to lack of inotify in overlayfs (LP: #882147)
+   initctl reload-configuration
+}
+
+* look at PXE, interesting read may include:
+
+  http://ubuntuforums.org/archive/index.php/t-1713845.html

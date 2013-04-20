@@ -51,10 +51,9 @@ class Page(object):
 
     Instance variables:
     title -- The title of the page.
-    url_path -- The path of the page. It is a regular expression, so you can
-        use python's re special characters, but you will have to escape them
-        if they are part of the path. The URL structure is explained in the
-        documentation of python's urlparse.
+    url_path -- The path of the page.
+    is_url_path_regex -- If True, the url path will be considered as a regular
+        expression.
     headings1 -- A list with the expected text of the h1 elements. If it's
         empty, the h1 elements will not be checked.
     headings2 -- A list with the expected text of the h2 elements. If it's
@@ -64,20 +63,26 @@ class Page(object):
 
     title = None
     url_path = None
+    is_url_path_regex = False
     headings1 = []
     headings2 = []
 
-    def __init__(self, check=True):
+    def __init__(self, open_page=False):
         super(Page, self).__init__()
-        if check:
-            self.assert_page_is_open()
+        if open_page:
+            self._open_page()
+        self.assert_page_is_open()
 
     @log_action(logging.info)
-    def open_page(self):
+    def _open_page(self):
         """Open the page."""
-        assert self.url_path is not None
-        sst.actions.go_to(self.url_path)
-        return self
+        if self.is_url_path_regex:
+            raise ValueError(
+                "We can't open a page with a regular expression on the path.")
+        else:
+            assert self.url_path is not None
+            sst.actions.go_to(self.url_path)
+            return self
 
     def assert_page_is_open(self):
         """Assert that the page is open and that no oops are displayed."""
@@ -113,11 +118,23 @@ class Page(object):
 
     def assert_url_path(self):
         """Assert the path of the page URL."""
-        current_url = sst.actions.browser.current_url
-        current_url_path = urlparse.urlparse(current_url).path
+        if not self.is_url_path_regex:
+            sst.actions.assert_equal(
+                self._get_current_url_path(), self.url_path)
+        else:
+            self._assert_url_path_match()
+
+    def _assert_url_path_match(self):
         # Make sure that there are no more characters at the end of the path.
         url_path_regexp = self.url_path + '$'
-        assert re.match(url_path_regexp, current_url_path)
+        current_url_path = self._get_current_url_path()
+        assert re.match(url_path_regexp, current_url_path), \
+            "The current URL path {0} doesn't match {1}".format(
+                current_url_path, url_path_regexp)
+
+    def _get_current_url_path(self):
+        current_url = sst.actions.get_current_url()
+        return urlparse.urlparse(current_url).path
 
     def assert_headings1(self):
         """Assert the h1 elements of the page."""

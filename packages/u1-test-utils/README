@@ -3,7 +3,7 @@ Getting started:
 
 1. Install the required packages:
 
-    $ sudo apt-get install firefox xvfb
+    $ sudo apt-get install fabric firefox python-dev python-pip python-virtualenv xvfb
 
 2. Get the code:
 

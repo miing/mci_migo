@@ -1,9 +1,15 @@
-JAVASCRIPT_DISABLED = True
+import sst.actions
+from sst import config
 
-from sst.actions import *
+# disabling javascript is currently only implemented for Firefox in sst
+if config.browser_type != 'firefox':
+    sst.actions.skip()
 
-go_to('/nojs/')
-assert_text('test', "Before JS")
+sst.actions.JAVASCRIPT_DISABLED = True
+
+sst.actions.go_to('/nojs/')
+
+sst.actions.assert_text('test', "Before JS")
 
 from sst import config
 assert config.javascript_disabled

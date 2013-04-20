@@ -19,29 +19,37 @@
 #
 
 
-import sst
-from sst.runtests import runtests
-from sst.command import clear_old_results, get_opts_remote
+import testtools
+
+testtools.try_import('selenium')
+
+from sst import (
+    command,
+    runtests,
+)
 
 
 def main():
-    cmd_opts, args = get_opts_remote()
+    cmd_opts, args = command.get_opts_remote()
 
-    clear_old_results()
+    command.clear_old_results()
 
     print '--------------------------------------------------------------'
 
+    browser_factory = runtests.RemoteBrowserFactory(
+        {
+            "browserName": cmd_opts.browser_type.lower(),
+            "platform": cmd_opts.browser_platform.upper(),
+            "version": cmd_opts.browser_version,
+            "javascriptEnabled": not cmd_opts.javascript_disabled,
+            "name": cmd_opts.session_name},
+        cmd_opts.webdriver_remote_url)
     runtests.runtests(
         args,
         test_dir=cmd_opts.dir_name,
         count_only=cmd_opts.count_only,
         report_format=cmd_opts.report_format,
-        browser_type=cmd_opts.browser_type,
-        browser_version=cmd_opts.browser_version,
-        browser_platform=cmd_opts.browser_platform,
-        session_name=cmd_opts.session_name,
-        webdriver_remote_url=cmd_opts.webdriver_remote_url,
-        javascript_disabled=cmd_opts.javascript_disabled,
+        browser_factory=browser_factory,
         shared_directory=cmd_opts.shared_modules,
         screenshots_on=cmd_opts.screenshots_on,
         failfast=cmd_opts.failfast,

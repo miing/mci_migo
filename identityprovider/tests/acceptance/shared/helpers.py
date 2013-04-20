@@ -1,15 +1,15 @@
 import re
 from urllib import quote
 
+import u1testutils.sso.sst.pages
+
 from django.conf import settings
 from sst.actions import (
     assert_checkbox_value,
     assert_text_contains,
     assert_title,
-    assert_title_contains,
     assert_url,
     click_button,
-    click_link,
     exists_element,
     get_base_url,
     get_current_url,
@@ -19,13 +19,15 @@ from sst.actions import (
     set_radio_value,
     skip,
     wait_for,
-    write_textfield,
 )
 from sst import config
-
 from u1testutils import mail
-from u1testutils.sso import mail as sso_mail
+from u1testutils.sso import (
+    data,
+    mail as sso_mail
+)
 
+from identityprovider.tests.acceptance import pages
 from identityprovider.tests.acceptance.shared import devices, urls
 
 
@@ -51,30 +53,34 @@ def register_account(email_address=None, displayname="My Name",
         email_address = mail.make_unique_test_email_address()
 
     vcode = None
-    go_to(urls.NEW_ACCOUNT)
-    wait_for(assert_title, 'Create account')
-    fill_registration_form(email_address, displayname, password)
-    click_button(get_element(name='continue'))
+
+    create_account = u1testutils.sso.sst.pages.CreateAccount(open_page=True)
+
+    user = data.User(displayname, email_address, password)
+    create_account.create_ubuntu_sso_account(user)
 
     vcode = None
     if 'allow_unverified' in config.flags:
-        wait_for(assert_title_contains, "%s's details" % displayname)
+        u1testutils.sso.sst.pages.YourAccount(user.full_name)
         # default is not to verify for ALLOW_UNVERIFIED
         if verify is None:
             verify = False
         if verify:
             vlink = sso_mail.get_verification_link_for_address(email_address)
             go_to(vlink)
-            click_button(get_element(css_class='btn'))
+            validate_email = \
+                u1testutils.sso.sst.pages.CompleteEmailValidation()
+            validate_email.confirm()
     else:
-        wait_for(assert_title_contains, 'Account creation mail sent')
+        mail_sent = u1testutils.sso.sst.pages.AccountCreationMailSent()
         # old flow requries verify, usually
         if verify is None:
             verify = True
         if verify:
             vcode = sso_mail.get_verification_code_for_address(email_address)
-            write_textfield(get_element(name='confirmation_code'), vcode)
-            click_button(get_element(css_class='btn'))
+            # TODO add the site not recognized parameter and use the right
+            # public method.
+            mail_sent._confirm_email(vcode)
 
     _LAST_EMAIL = email_address
     _LAST_PASSWORD = password
@@ -83,34 +89,24 @@ def register_account(email_address=None, displayname="My Name",
 
 
 def fill_registration_form(
-        email,
-        displayname="My Name",
-        password="Admin007",
-        passwordconf=None):
+        email, displayname="My Name", password="Admin007", passwordconf=None):
 
-    if passwordconf is None:
-        passwordconf = password
-    write_textfield('id_displayname', displayname)
-    write_textfield('id_email', email)
-    write_textfield('id_password', password)
-    write_textfield('id_passwordconfirm', passwordconf)
-    if exists_element(id='recaptcha_response_field'):
-        write_textfield('recaptcha_response_field', 'ignored')
+    user = data.User(displayname, email, password)
+    create_account = u1testutils.sso.sst.pages.CreateAccount(open_page=True)
+    # TODO we either make the fill public, or call a public higher method,
+    # The latter sounds better.
+    create_account._fill_new_account_form(user, passwordconf)
 
 
 def add_email(address, verify=False):
-    go_to(urls.EMAILS)
-    wait_for(assert_title_contains, "'s email addresses")
-    write_textfield('id_newemail', address)
-    click_button(get_element(name='continue'))
+    your_email_addresses = pages.YourEmailAddresses(open_page=True)
+    your_email_addresses.add_email(address)
     code = sso_mail.get_verification_code_for_address(address)
     if verify:
-        go_to(urls.ENTER_TOKEN)
-        wait_for(write_textfield, 'id_confirmation_code', code)
-        write_textfield('id_email', address)
-        click_button(get_element(name='continue'))
-        assert_title('Complete email address validation')
-        click_button(get_element(name='continue'))
+        enter_confirmation_code = pages.EnterConfirmationCode(open_page=True)
+        complete_email_validation = enter_confirmation_code.confirm(
+            code, address)
+        complete_email_validation.confirm()
     return code
 
 
@@ -154,21 +150,20 @@ def is_production():
 
 
 def delete_email():
-    go_to(urls.EMAILS)
-    remove_link = get_element(tag='a', text='Delete')
-    click_link(remove_link)
-    confirm_button = get_element(name='delete')
-    click_button(confirm_button)
+    your_email_addresses = pages.YourEmailAddresses(open_page=True)
+    delete_email_confirmation = your_email_addresses.delete_email()
+    delete_email_confirmation.confirm()
 
 
 def try_to_validate_email(address, code, finish_validation=True):
-    go_to(urls.ENTER_TOKEN)
-    wait_for(write_textfield, 'id_confirmation_code', code)
-    write_textfield('id_email', address)
-    click_button(get_element(name='continue'))
+    # TODO implement the navigation and use the right public methods.
+    enter_confirmation_code = pages.EnterConfirmationCode(open_page=True)
+    enter_confirmation_code._fill_confirmation_form(
+        code, address)
+    enter_confirmation_code._continue()
     if finish_validation:
-        assert_title('Complete email address validation')
-        click_button(get_element(name='continue'))
+        complete = u1testutils.sso.sst.pages.CompleteEmailValidation()
+        complete.confirm()
 
 
 def login_or_register_account(device_cleanup=False):
@@ -190,10 +185,12 @@ def login(email=None, password=None):
     if email is None and password is None:
         email = _LAST_EMAIL
         password = _LAST_PASSWORD
-    go_to(urls.HOME)
-    write_textfield('id_email', email)
-    write_textfield('id_password', password)
-    click_button(get_element(name='continue'))
+    log_in = u1testutils.sso.sst.pages.LogIn(open_page=True)
+    # TODO we need the user name too.
+    user = data.User('TODO', email, password)
+    # TODO add the site not recognized parameter and use the right public
+    # method.
+    log_in._log_in(user)
 
 
 def logout_and_in():
@@ -206,17 +203,13 @@ def logout_and_in():
 
 
 def logout():
-    go_to(urls.LOGOUT)
+    u1testutils.sso.sst.pages.YouHaveBeenLoggedOut(open_page=True)
 
 
 def request_password_reset(email_address):
     logout()
-    go_to(urls.FORGOT_PASSWORD)
-    write_textfield('id_email', email_address)
-    # Even though the recaptcha field is ignored for our tests, we do
-    # want to verify that it is on the page.
-    write_textfield('recaptcha_response_field', 'ignored')
-    click_button(get_element(name='continue'))
+    reset_password = pages.ResetPassword(open_page=True)
+    reset_password.request_password_reset(email_address)
 
 
 def login_to_test_account():
@@ -254,12 +247,11 @@ def login_to_isdqa_account():
 
 def login_from_redirect(email=settings.QA_ACCOUNT_EMAIL,
                         password=settings.QA_ACCOUNT_PASSWORD):
-    wait_for(assert_title, 'Log in')
-    write_textfield('id_email', email)
-    write_textfield('id_password', password)
-    click_button(get_element(name='continue'))
-    wait_for(assert_title_contains, 'Authenticate to')
-    click_button(get_element(name='yes'))
+    log_in = pages.LogInFromRedirect()
+    # TODO we also need the user name.
+    user = data.User('TODO', email, password)
+    site_not_recognized = log_in.log_in_to_site_not_recognized(user)
+    site_not_recognized.yes_sign_me_in()
 
 
 def check_2f_for_url(url):

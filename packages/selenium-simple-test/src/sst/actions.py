@@ -37,6 +37,7 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
+import codecs
 import logging
 import os
 import re
@@ -46,11 +47,9 @@ from datetime import datetime
 from pdb import set_trace as debug
 from urlparse import urljoin, urlparse
 
-from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
-    InvalidElementStateException,
     NoSuchAttributeException,
     NoSuchElementException,
     NoSuchFrameException,
@@ -59,9 +58,10 @@ from selenium.common.exceptions import (
     WebDriverException,
 )
 
-from sst import config
-from sst import bmobproxy
-
+from sst import (
+    config,
+    DEVSERVER_PORT,
+)
 
 __all__ = [
     'accept_alert', 'add_cleanup', 'assert_attribute', 'assert_button',
@@ -72,30 +72,28 @@ __all__ = [
     'assert_table_headers', 'assert_table_row_contains_text',
     'assert_text', 'assert_text_contains', 'assert_textfield',
     'assert_title', 'assert_title_contains', 'assert_url',
-    'assert_url_contains', 'check_flags', 'clear_cookies',
-    'click_button', 'click_element', 'click_link', 'close_window',
-    'debug', 'dismiss_alert', 'end_test', 'execute_script',
+    'assert_url_contains', 'assert_url_network_location', 'check_flags',
+    'clear_cookies', 'click_button', 'click_element', 'click_link',
+    'close_window', 'debug', 'dismiss_alert', 'end_test', 'execute_script',
     'exists_element', 'fails', 'get_argument', 'get_base_url',
     'get_cookies', 'get_current_url', 'get_element',
     'get_element_by_css', 'get_element_by_xpath', 'get_element_source',
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
-    'get_link_url', 'get_page_source', 'get_wait_timeout', 'get_window_size',
-    'go_back', 'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
-    'run_test', 'save_page_source', 'set_base_url', 'set_checkbox_value',
-    'set_dropdown_value', 'set_radio_value', 'set_wait_timeout',
-    'set_window_size', 'simulate_keys', 'skip', 'sleep', 'start',
-    'stop', 'switch_to_frame', 'switch_to_window',
+    'get_link_url', 'get_page_source', 'get_text', 'get_wait_timeout',
+    'get_window_size', 'go_back', 'go_to', 'refresh', 'reset_base_url',
+    'retry_on_stale_element', 'run_test', 'save_page_source', 'set_base_url',
+    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
+    'set_wait_timeout', 'set_window_size', 'simulate_keys', 'skip', 'sleep',
+    'switch_to_frame', 'switch_to_window',
     'take_screenshot', 'toggle_checkbox', 'wait_for',
     'wait_for_and_refresh', 'write_textfield'
 ]
 
 
-browser = None
-browsermob_proxy = None
 _check_flags = True
 _test = None
 
-BASE_URL = 'http://localhost:8000/'
+BASE_URL = 'http://localhost:%s/' % DEVSERVER_PORT 
 __DEFAULT_BASE_URL__ = BASE_URL
 
 logger = logging.getLogger('SST')
@@ -175,104 +173,19 @@ def skip(reason=''):
     _test.skipTest(reason)
 
 
-def start(browser_type=None, browser_version='',
-          browser_platform='ANY', session_name='',
-          javascript_disabled=False, assume_trusted_cert_issuer=False,
-          webdriver_remote=None):
-    """
-    Starts Browser with a new session. Called for you at
-    the start of each test script."""
-    global browser
-    global browsermob_proxy
-
-    if browser_type is None:
-        browser_type = config.browser_type
-
-    if logger.isEnabledFor(logging.DEBUG):
-        # XXX We print a new line because otherwise the first debug message
-        # will be printed on the same line as the name of the test. This is 
-        # hacky and doesn't cover cases when the script logs things higher 
-        # than debug, but this way we are keeping the same behavior we had
-        # before adding the log.
-        print
-    logger.debug('Starting browser: %s' % browser_type)
-
-    if webdriver_remote is None:
-        if browser_type == 'Firefox':
-            # profile features are FF only
-            profile = getattr(webdriver, '%sProfile' % browser_type)()
-            profile.set_preference('intl.accept_languages', 'en')
-            if config.browsermob_enabled:
-                # proxy integration is currently FF only
-                browsermob_proxy = bmobproxy.BrowserMobProxy(
-                    'localhost', 8080)
-                selenium_proxy = webdriver.Proxy(
-                    {'httpProxy': browsermob_proxy.url})
-                profile.set_proxy(selenium_proxy)
-            if assume_trusted_cert_issuer:
-                profile.set_preference(
-                    'webdriver_assume_untrusted_issuer', False)
-                profile.setPreference(
-                    'capability.policy.default.Window.QueryInterface',
-                    'allAccess')
-                profile.setPreference(
-                    'capability.policy.default.Window.frameElement.get',
-                    'allAccess')
-            if javascript_disabled:
-                profile.set_preference('javascript.enabled', False)
-            browser = getattr(webdriver, browser_type)(profile)
-        else:
-            browser = getattr(webdriver, browser_type)()
-    else:
-        desired_capabilities = {"browserName": browser_type.lower(),
-                                "platform": browser_platform.upper(),
-                                "version": browser_version,
-                                "javascriptEnabled": not javascript_disabled,
-                                "name": session_name}
-        browser = webdriver.Remote(desired_capabilities=desired_capabilities,
-                                   command_executor=webdriver_remote)
-    return browser, browsermob_proxy
-
-
-def stop():
-    """
-    Stops Firefox and ends the browser session. Called automatically for you at
-    the end of each test script."""
-    global browser
-    global browsermob_proxy
-
-    logger.debug('Stopping browser')
-    # quit calls close() and does cleanup
-    browser.quit()
-    browser = None
-
-    if browsermob_proxy is not None:
-        logger.debug('Closing http proxy')
-        browsermob_proxy.close()
-        browsermob_proxy = None
-
-
 def refresh(wait=True):
     """
     Refresh the current page.
 
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
-    `wait=False`."""
-    if browsermob_proxy is not None:
-        logger.debug('Capturing http traffic...')
-        browsermob_proxy.new_har()
-
+    `wait=False`.
+    """
     logger.debug('Refreshing current page')
-    browser.refresh()
+    _test.browser.refresh()
 
     if wait:
         _waitforbody()
-
-    if browsermob_proxy is not None:
-        logger.debug('Saving HAR output')
-        _make_results_dir()
-        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def take_screenshot(filename='screenshot.png', add_timestamp=True):
@@ -286,7 +199,7 @@ def take_screenshot(filename='screenshot.png', add_timestamp=True):
     if add_timestamp:
         filename = _add_time_stamp(filename)
     screenshot_file = os.path.join(config.results_directory, filename)
-    browser.get_screenshot_as_file(screenshot_file)
+    _test.browser.get_screenshot_as_file(screenshot_file)
     return screenshot_file
 
 
@@ -301,20 +214,24 @@ def save_page_source(filename='pagedump.html', add_timestamp=True):
     Save the source of the currently opened page.
     Called automatically on failures when running `-s` mode.
 
-    Return the path to the saved file."""
+    Return the path to the saved file.
+    """
     logger.debug('Saving page source')
     _make_results_dir()
     if add_timestamp:
         filename = _add_time_stamp(filename)
+    # FIXME: Urgh, config.results_directory is a global set in
+    # runtests() -- vila 2012-10-29
     page_source_file = os.path.join(config.results_directory, filename)
-    with open(page_source_file, 'w') as file_:
-        file_.write(get_page_source())
+    with codecs.open(page_source_file, 'w', encoding='utf-8') as f:
+        f.write(get_page_source())
     return page_source_file
 
 
 def _make_results_dir():
     """
-    Make results directory if it does not exist."""
+    Make results directory if it does not exist.
+    """
     try:
         os.makedirs(config.results_directory)
     except OSError:
@@ -322,9 +239,10 @@ def _make_results_dir():
 
 
 def sleep(secs):
+    """Delay execution for the given number of seconds.
+
+    The argument may be a floating point number for subsecond precision.
     """
-    Delay execution for a given number of seconds. The argument may be a
-    floating point number for subsecond precision."""
     logger.debug('Sleeping %s secs' % secs)
     time.sleep(secs)
 
@@ -343,14 +261,14 @@ def _add_trailing_slash(url):
 
 
 def get_argument(name, default=_sentinel):
-    """
-    Get an argument from the one the test was called with.
+    """Get an argument from the one the test was called with.
 
     A test is called with arguments when it is executed by
     the `run_test`. You can optionally provide a default value
     that will be used if the argument is not set. If you don't
     provide a default value and the argument is missing an
-    exception will be raised."""
+    exception will be raised.
+    """
     args = config.__args__
 
     value = args.get(name, default)
@@ -388,18 +306,6 @@ def run_test(name, **kwargs):
     return context.run_test(name, kwargs)
 
 
-def _make_useable_har_name(stem=''):
-    now = datetime.now()
-    timestamped_base = 'har-%s' % now.strftime('%Y-%m-%d_%H-%M-%S-%f')
-    if stem:
-        slug_name = ''.join(x for x in stem if x.isalnum())
-        out_name = '%s-%s.har' % (timestamped_base, slug_name)
-    else:
-        out_name = '%s.har' % timestamped_base
-    file_name = os.path.join(config.results_directory, out_name)
-    return file_name
-
-
 def go_to(url='', wait=True):
     """
     Go to a specific URL. If the url provided is a relative url it will be
@@ -408,26 +314,15 @@ def go_to(url='', wait=True):
 
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
-    `wait=False`."""
-    if browser is None:
-        start()
-
+    `wait=False`.
+    """
     url = _fix_url(url)
 
-    if browsermob_proxy is not None:
-        logger.debug('Capturing http traffic...')
-        browsermob_proxy.new_har()
-
     logger.debug('Going to... %s' % url)
-    browser.get(url)
+    _test.browser.get(url)
 
     if wait:
         _waitforbody()
-
-    if browsermob_proxy is not None:
-        logger.debug('Saving HAR output')
-        _make_results_dir()
-        browsermob_proxy.save_har(_make_useable_har_name(url))
 
 
 def go_back(wait=True):
@@ -437,22 +332,13 @@ def go_back(wait=True):
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
-    if browsermob_proxy is not None:
-        logger.debug('Capturing http traffic...')
-        browsermob_proxy.new_har()
-
     logger.debug('Going back one step in browser history')
-    browser.back()
+    _test.browser.back()
 
     if wait:
         _waitforbody()
 
-    if browsermob_proxy is not None:
-        logger.debug('Saving HAR output')
-        _make_results_dir()
-        browsermob_proxy.save_har(_make_useable_har_name())
-
-
+        
 def assert_checkbox(id_or_elem):
     """
     Assert that the element is a checkbox.
@@ -472,9 +358,38 @@ def assert_checkbox_value(id_or_elem, value):
     or isn't a checkbox."""
     checkbox = assert_checkbox(id_or_elem)
     real = checkbox.is_selected()
-    msg = 'Checkbox: %r - Has Value: %r' % (_get_text(checkbox), real)
+    msg = 'Checkbox: %r - Has Value: %r' % (_element_to_string(checkbox), real)
     if real != value:
         _raise(msg)
+
+
+def _element_to_string(element):
+    """
+    Get a string that can be used to recognize the element.
+
+    If the element has an id, use it as it will uniquely identify the element.
+    Otherwise, fall back to the text. If it has no text, to the value.
+    Fallback to outerHTML as a last resort."""
+    element_id = element.get_attribute('id')
+    if element_id:
+        return element_id
+    else:
+        element_text = get_text(element)
+        if element_text:
+            return element_text
+        else:
+            element_value = element.get_attribute('value')
+            if element_value:
+                return element_value
+            else:
+                return element.get_attribute('outerHTML')
+
+
+def get_text(id_or_elem):
+    """
+    Return the text of an element. Takes an element id or object."""
+    element = _get_elem(id_or_elem)
+    return element.text
 
 
 def toggle_checkbox(id_or_elem):
@@ -482,13 +397,14 @@ def toggle_checkbox(id_or_elem):
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
     checkbox = assert_checkbox(id_or_elem)
-    logger.debug('Toggling checkbox: %r' % _get_text(checkbox))
+    element_string = _element_to_string(checkbox)
+    logger.debug('Toggling checkbox: %r' % element_string)
     before = checkbox.is_selected()
     checkbox.click()
     after = checkbox.is_selected()
-    msg = 'Checkbox: %r - was not toggled, value remains: %r' \
-        % (_get_text(checkbox), before)
     if before == after:
+        msg = 'Checkbox: %r - was not toggled, value remains: %r' \
+            % (element_string, before)
         _raise(msg)
 
 
@@ -498,7 +414,8 @@ def set_checkbox_value(id_or_elem, new_value):
     exception if the element specified doesn't exist or isn't a checkbox."""
     checkbox = assert_checkbox(id_or_elem)
     logger.debug(
-        'Setting checkbox %r to %r' % (_get_text(checkbox), new_value))
+        'Setting checkbox %r to %r' % (_element_to_string(checkbox),
+                                       new_value))
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
     if new_value != current_value:
@@ -525,7 +442,7 @@ def simulate_keys(id_or_elem, key_to_press):
     """
     key_element = _get_elem(id_or_elem)
     msg = 'Simulating keypress on %r with %r key' \
-        % (_get_text(key_element), key_to_press)
+        % (_element_to_string(key_element), key_to_press)
     logger.debug(msg)
     key_code = _make_keycode(key_to_press)
     key_element.send_keys(key_code)
@@ -557,7 +474,7 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     off by passing `clear=False`."""
     textfield = assert_textfield(id_or_elem)
     msg = 'Writing to textfield %r with text %r' \
-        % (_get_text(textfield), new_text)
+        % (_element_to_string(textfield), new_text)
     logger.debug(msg)
 
     # clear field like this, don't use clear()
@@ -575,7 +492,7 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     current_text = textfield.get_attribute('value')
     if current_text != new_text:
         msg = 'Textfield: %r - did not write. Text was: %r' \
-            % (_get_text(textfield), current_text)
+            % (_element_to_string(textfield), current_text)
         _raise(msg)
 
 
@@ -588,7 +505,7 @@ def assert_link(id_or_elem):
     link = _get_elem(id_or_elem)
     if link.tag_name != 'a':
         msg = 'The text %r is not part of a Link or a Link ID' \
-            % _get_text(link)
+            % _element_to_string(link)
         _raise(msg)
     return link
 
@@ -603,7 +520,7 @@ def get_link_url(id_or_elem):
 
 def get_current_url():
     """Gets the URL of the current page."""
-    return browser.current_url
+    return _test.browser.current_url
 
 
 def click_link(id_or_elem, check=False, wait=True):
@@ -618,20 +535,11 @@ def click_link(id_or_elem, check=False, wait=True):
     link = assert_link(id_or_elem)
     link_url = link.get_attribute('href')
 
-    if browsermob_proxy is not None:
-        _logger.debug('Capturing http traffic...')
-        browsermob_proxy.new_har()
-
-    logger.debug('Clicking link %r' % _get_text(link))
+    logger.debug('Clicking link %r' % _element_to_string(link))
     link.click()
 
     if wait:
         _waitforbody()
-
-    if browsermob_proxy is not None:
-        logger.debug('Saving HAR output')
-        _make_results_dir()
-        browsermob_proxy.save_har(_make_useable_har_name())
 
     # some links do redirects - so we
     # don't check by default
@@ -662,25 +570,16 @@ def click_element(id_or_elem, wait=True):
     `wait=False`."""
     elem = _get_elem(id_or_elem)
 
-    if browsermob_proxy is not None:
-        logger.debug('Capturing http traffic...')
-        browsermob_proxy.new_har()
-
-    logger.debug('Clicking element %r' % _get_text(elem))
+    logger.debug('Clicking element %r' % _element_to_string(elem))
     elem.click()
 
     if wait:
         _waitforbody()
 
-    if browsermob_proxy is not None:
-        logger.debug('Saving HAR output')
-        _make_results_dir()
-        browsermob_proxy.save_har(_make_useable_har_name())
-
 
 def assert_title(title):
     """Assert the page title is as specified."""
-    real_title = browser.title
+    real_title = _test.browser.title
     msg = 'Title is: %r. Should be: %r' % (real_title, title)
     if real_title != title:
         _raise(msg)
@@ -691,7 +590,7 @@ def assert_title_contains(text, regex=False):
     Assert the page title contains the specified text.
 
     set `regex=True` to use a regex pattern."""
-    real_title = browser.title
+    real_title = _test.browser.title
     msg = 'Title is: %r. Does not contain %r' % (real_title, text)
     if regex:
         if not re.search(text, real_title):
@@ -707,7 +606,7 @@ def assert_url(url):
     relative to the base url."""
     url = _fix_url(url)
     url = _add_trailing_slash(url)
-    real_url = browser.current_url
+    real_url = _test.browser.current_url
     real_url = _add_trailing_slash(real_url)
     msg = 'Url is: %r. Should be: %r' % (real_url, url)
     if url != real_url:
@@ -719,7 +618,7 @@ def assert_url_contains(text, regex=False):
     Assert the current url contains the specified text.
 
     set `regex=True` to use a regex pattern."""
-    real_url = browser.current_url
+    real_url = _test.browser.current_url
     msg = 'Url is %r. Does not contain %r' % (real_url, text)
     if regex:
         if not re.search(text, real_url):
@@ -727,6 +626,18 @@ def assert_url_contains(text, regex=False):
     else:
         if text not in real_url:
             _raise(msg)
+
+
+def assert_url_network_location(netloc):
+    """Assert the current url's network location is as specified.
+    
+    `netloc` is a string containing 'domain:port'.
+    In the case of port 80, `netloc` may contain domain only."""
+    real_netloc = urlparse(_test.browser.current_url).netloc
+    if netloc != real_netloc:
+        msg = 'Url network location is: %r. Should be: %r' % (
+            real_netloc, netloc)
+        _raise(msg)
 
 
 _TIMEOUT = 10
@@ -861,7 +772,7 @@ def _get_elem(id_or_elem):
     if isinstance(id_or_elem, WebElement):
         return id_or_elem
     try:
-        return browser.find_element_by_id(id_or_elem)
+        return _test.browser.find_element_by_id(id_or_elem)
     except (NoSuchElementException, WebDriverException):
         msg = 'Element with id: %r does not exist' % id_or_elem
         _raise(msg)
@@ -891,7 +802,8 @@ def set_dropdown_value(id_or_elem, text=None, value=None):
     """Set the select drop-list to a text or value specified."""
     elem = assert_dropdown(id_or_elem)
     logger.debug(
-        'Setting %r option list to %r' % (_get_text(elem), text or value))
+        'Setting %r option list to %r' % (_element_to_string(elem),
+                                          text or value))
     if text and not value:
         for element in elem.find_elements_by_tag_name('option'):
             if element.text == text:
@@ -945,7 +857,7 @@ def assert_radio_value(id_or_elem, value):
     a radio button"""
     elem = assert_radio(id_or_elem)
     selected = elem.is_selected()
-    msg = 'Radio %r should be set to: %s.' % (_get_text(elem), value)
+    msg = 'Radio %r should be set to: %s.' % (_element_to_string(elem), value)
     if value != selected:
         _raise(msg)
 
@@ -953,25 +865,8 @@ def assert_radio_value(id_or_elem, value):
 def set_radio_value(id_or_elem):
     """Select the specified radio button."""
     elem = assert_radio(id_or_elem)
-    logger.debug('Selecting radio button item %r' % _get_text(elem))
+    logger.debug('Selecting radio button item %r' % _element_to_string(elem))
     elem.click()
-
-
-def _get_text(elem):
-    text = None
-    try:
-        text = elem.text
-    except InvalidElementStateException:
-        pass
-    if text:
-        # Note that some elements (like textfields) return empty string
-        # for text and we still need to call value
-        return text
-    try:
-        text = elem.get_attribute('value')
-    except InvalidElementStateException:
-        pass
-    return text
 
 
 def assert_text(id_or_elem, text):
@@ -979,28 +874,54 @@ def assert_text(id_or_elem, text):
     Assert the specified element text is as specified.
 
     Raises a failure exception if the element specified doesn't exist or isn't
-    as specified"""
-    elem = _get_elem(id_or_elem)
-    real = _get_text(elem)
-    if real is None:
-        msg = 'Element %r has no text attribute' % _get_text(elem)
-        _raise(msg)
+    as specified.
+
+    For text fields, it checks the value attribute instead of the text of the
+    element."""
+    real = _get_text_for_assertion(id_or_elem)
     if real != text:
         msg = 'Element text should be %r. It is %r.' % (text, real)
         _raise(msg)
+
+
+def _get_text_for_assertion(id_or_elem):
+    elem = _get_elem(id_or_elem)
+    if _is_text_field(elem):
+        value = elem.get_attribute('value')
+        if not value:
+            # The text field is empty.
+            return ''
+        else:
+            return value
+    else:
+        text = get_text(elem)
+        if not text:
+            msg = 'Element %r has no text.' % _element_to_string(elem)
+            _raise(msg)
+        else:
+            return text
+
+
+def _is_text_field(element):
+    # XXX refactor assert_textfield. It should be the other way around,
+    # assert_textfield should call is_text_field. -- elopio 2013-04-18
+    try:
+        assert_textfield(element)
+        return True
+    except AssertionError:
+        return False
 
 
 def assert_text_contains(id_or_elem, text, regex=False):
     """
     Assert the specified element contains the specified text.
 
-    set `regex=True` to use a regex pattern."""
-    elem = _get_elem(id_or_elem)
-    real = _get_text(elem)
-    if real is None:
-        msg = 'Element %r has no text attribute' % _get_text(elem)
-        _raise(msg)
-    msg = 'Element text is %r. Does not contain %r' % (real, text)
+    set `regex=True` to use a regex pattern.
+
+    For text fields, it checks the value attribute instead of the text of the
+    element."""
+    real = _get_text_for_assertion(id_or_elem)
+    msg = 'Element text is %r. Does not contain %r.' % (real, text)
     if regex:
         if not re.search(text, real):
             _raise(msg)
@@ -1010,11 +931,11 @@ def assert_text_contains(id_or_elem, text, regex=False):
 
 
 def _check_text(elem, text):
-    return _get_text(elem) == text
+    return get_text(elem) == text
 
 
 def _match_text(elem, regex):
-    text = _get_text(elem) or ''
+    text = get_text(elem) or ''
     return bool(re.search(regex, text))
 
 
@@ -1046,12 +967,14 @@ def get_elements(tag=None, css_class=None, id=None, text=None,
                                 key, value in kwargs.items()])
     try:
         if text and not selector_string:
-            elems = browser.find_elements_by_xpath('//*[text() = %r]' % text)
+            elems = _test.browser.find_elements_by_xpath(
+                '//*[text() = %r]' % text)
         else:
             if not selector_string:
                 msg = 'Could not identify element: no arguments provided'
                 _raise(msg)
-            elems = browser.find_elements_by_css_selector(selector_string)
+            elems = _test.browser.find_elements_by_css_selector(
+                selector_string)
     except (WebDriverException, NoSuchElementException) as e:
         msg = 'Element not found: %s' % e
         _raise(msg)
@@ -1152,26 +1075,17 @@ def click_button(id_or_elem, wait=True):
     `wait=False`."""
     button = assert_button(id_or_elem)
 
-    if browsermob_proxy is not None:
-        logger.debug('Capturing http traffic...')
-        browsermob_proxy.new_har()
-
-    logger.debug('Clicking button %r' % _get_text(button))
+    logger.debug('Clicking button %r' % _element_to_string(button))
     button.click()
 
     if wait:
         _waitforbody()
 
-    if browsermob_proxy is not None:
-        logger.debug('Saving HAR output')
-        _make_results_dir()
-        browsermob_proxy.save_har(_make_useable_har_name())
-
 
 def get_elements_by_css(selector):
     """Find all elements that match a css selector."""
     try:
-        return browser.find_elements_by_css_selector(selector)
+        return _test.browser.find_elements_by_css_selector(selector)
     except (WebDriverException, NoSuchElementException) as e:
         msg = 'Element not found: %s' % e
         _raise(msg)
@@ -1189,7 +1103,7 @@ def get_element_by_css(selector):
 def get_elements_by_xpath(selector):
     """Find all elements that match an xpath."""
     try:
-        return browser.find_elements_by_xpath(selector)
+        return _test.browser.find_elements_by_xpath(selector)
     except (WebDriverException, NoSuchElementException) as e:
         msg = 'Element not found: %s' % e
         _raise(msg)
@@ -1210,13 +1124,13 @@ def _waitforbody():
 
 def get_page_source():
     """Gets the source of the current page."""
-    return browser.page_source
+    return _test.browser.page_source
 
 
 def close_window():
     """ Closes the current window """
     logger.debug('Closing the current window')
-    browser.close()
+    _test.browser.close()
 
 
 def switch_to_window(index_or_name=None):
@@ -1226,17 +1140,17 @@ def switch_to_window(index_or_name=None):
     if no window is given, switch focus to the default window."""
     if index_or_name is None:
         logger.debug('Switching to default window')
-        browser.switch_to_window('')
+        _test.browser.switch_to_window('')
     elif isinstance(index_or_name, int):
         index = index_or_name
-        window_handles = browser.window_handles
+        window_handles = _test.browser.window_handles
         if index >= len(window_handles):
             msg = 'Index %r is greater than available windows.' % index
             _raise(msg)
         window = window_handles[index]
         try:
             logger.debug('Switching to window: %r' % window)
-            browser.switch_to_window(window)
+            _test.browser.switch_to_window(window)
         except NoSuchWindowException:
             msg = 'Could not find window: %r' % window
             _raise(msg)
@@ -1244,7 +1158,7 @@ def switch_to_window(index_or_name=None):
         name = index_or_name
         try:
             logger.debug('Switching to window: %r' % name)
-            browser.switch_to_window(name)
+            _test.browser.switch_to_window(name)
         except NoSuchWindowException:
             msg = 'Could not find window: %r' % name
             _raise(msg)
@@ -1257,11 +1171,11 @@ def switch_to_frame(index_or_name=None):
     if no frame is given, switch focus to the default content frame."""
     if index_or_name is None:
         logger.debug('Switching to default content frame')
-        browser.switch_to_default_content()
+        _test.browser.switch_to_default_content()
     else:
         logger.debug('Switching to frame: %r' % index_or_name)
         try:
-            browser.switch_to_frame(index_or_name)
+            _test.browser.switch_to_frame(index_or_name)
         except NoSuchFrameException:
             msg = 'Could not find frame: %r' % index_or_name
             _raise(msg)
@@ -1273,8 +1187,8 @@ def _alert_action(action, expected_text=None, text_to_write=None):
 
     Optionally, it takes the expected text of the Popup box to check it,
     and the text to write in the prompt."""
-    wait_for(browser.switch_to_alert)
-    alert = browser.switch_to_alert()
+    wait_for(_test.browser.switch_to_alert)
+    alert = _test.browser.switch_to_alert()
     alert_text = alert.text
     if expected_text and expected_text != alert_text:
         error_message = 'Element text should be %r. It is %r.' \
@@ -1328,7 +1242,7 @@ def assert_table_headers(id_or_elem, headers):
     if not elem.tag_name == 'table':
         _raise('Element %r is not a table.' % (id_or_elem,))
     header_elems = elem.find_elements_by_tag_name('th')
-    header_text = [_get_text(elem) for elem in header_elems]
+    header_text = [get_text(e) for e in header_elems]
     if not header_text == headers:
         msg = ('Expected headers:%r. Actual headers%r\n' %
                (headers, header_text))
@@ -1380,7 +1294,7 @@ def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
         msg = 'Asked to fetch row %s. Highest row is %s' % (row, len(rows) - 1)
         _raise(msg)
     columns = rows[row].find_elements_by_tag_name('td')
-    cells = [_get_text(elem) for elem in columns]
+    cells = [get_text(e) for e in columns]
     if not regex:
         success = cells == contents
     elif len(contents) != len(cells):
@@ -1403,7 +1317,8 @@ def assert_attribute(id_or_elem, attribute, value, regex=False):
     the attribute using a regular expression search.
     """
     elem = _get_elem(id_or_elem)
-    logger.debug('Checking attribute %r of %r' % (attribute, _get_text(elem)))
+    logger.debug(
+        'Checking attribute %r of %r' % (attribute,  _element_to_string(elem)))
     actual = elem.get_attribute(attribute)
     if not regex:
         success = value == actual
@@ -1425,7 +1340,7 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     elem = _get_elem(id_or_elem)
     logger.debug(
         'Checking css property %r: %r of %r' % (
-            property, value, _get_text(elem)))
+            property, value, _element_to_string(elem)))
     actual = elem.value_of_css_property(property)
     # some browsers return string with space padded commas, some don't.
     actual = actual.replace(', ', ',')
@@ -1483,13 +1398,13 @@ def add_cleanup(func, *args, **kwargs):
 
 def get_cookies():
     """Gets the cookies of current session (set of dicts)."""
-    return browser.get_cookies()
+    return _test.browser.get_cookies()
 
 
 def clear_cookies():
     """Clear the cookies of current session."""
     logger.debug('Clearing browser session cookies')
-    browser.delete_all_cookies()
+    _test.browser.delete_all_cookies()
 
 
 def set_window_size(width, height):
@@ -1498,7 +1413,7 @@ def set_window_size(width, height):
     orig_width, orig_height = get_window_size()
     if (orig_width == width) and (orig_height == height):
         return (width, height)
-    browser.set_window_size(width, height)
+    _test.browser.set_window_size(width, height)
 
     def _was_resized(orig_width, orig_height):
         w, h = get_window_size()
@@ -1513,7 +1428,7 @@ def set_window_size(width, height):
 
 def get_window_size():
     """Get the current window size (width, height) in pixels."""
-    results = browser.get_window_size()
+    results = _test.browser.get_window_size()
     width = results['width']
     height = results['height']
     return (width, height)
@@ -1533,7 +1448,7 @@ def execute_script(script, *args):
     args will be made available to the script if given.
     """
     logger.debug('Executing script')
-    return browser.execute_script(script, *args)
+    return _test.browser.execute_script(script, *args)
 
 
 def get_element_source(id_or_elem):

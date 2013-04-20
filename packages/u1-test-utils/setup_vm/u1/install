@@ -1,0 +1,71 @@
+#!/bin/sh -ex
+
+# Allow ssh access to launchpad.
+# This should probably be provided by setup_vm. -- vila 2013-03-10
+ssh-keyscan bazaar.launchpad.net >>~/.ssh/known_hosts
+# Use the openjdk.
+sudo update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+# Get the branch.
+bzr branch lp:ubuntuone-servers {u1.src_dir}
+# Setup the environment.
+cd {u1.src_dir}
+# Set up the correct configuration.
+cat <<EOF >configs/local.conf
+[meta]
+extends: development-appserver-lazr.conf
+
+[general]
+port: {u1.port}
+django_module: u1servers.web.localsettings
+
+[upay]
+consumer_id: U1
+port: {pay.port}
+hostname: {pay.address}
+url_format: http://%(host)s:%(port)d/api/2.0
+
+[upay_u1ms]
+consumer_id: U1
+port: {pay.port}
+hostname: {pay.address}
+url_format: http://%(host)s:%(port)d/api/2.0
+
+[url]
+openid_sso_server: {sso.url}
+
+EOF
+# XXX The secrets file is overlayed, so we can't use the config file.
+# This is an ugly way to overwrite the default values.
+cat <<EOF >>configs/dev_secrets-lazr.conf
+ubuntu_pay_username: u1qauser
+ubuntu_pay_password: u1qapassword
+ubuntu_pay_username_u1ms: u1qauser
+ubuntu_pay_password_u1ms: u1qapassword
+
+EOF
+cat <<EOF >servers/u1servers/web/localsettings.py
+from u1servers.web.devsettings import *
+
+OPENID_SSO_SERVER_URL = config.url.openid_sso_server
+OPENID_SSO_LOGOUT_URL = '%s/+logout?return_to=%s' % (
+    OPENID_SSO_SERVER_URL, BASE_URL)
+
+if __name__ == os.environ.get("DJANGO_SETTINGS_MODULE"):
+    # This only gets executed if the configured DJANGO_SETTINGS_MODULE matches  
+    # the current module name.                                                  
+    from ubuntuone import dispatch
+    dispatch.connect_all(async=True)
+
+    from u1servers.web import email
+    email.connect_receivers()
+
+    # Triggered when the env variable U1_PAY_HOST is defined with               
+    # "<hostname>:<port>"                                                       
+    if config.upay.hostname or config.upay_u1ms.hostname:
+        from u1backends.account.upayclient import init_payclient
+        init_payclient()
+EOF
+make update-sourcedeps
+# TODO ask on #u1-ops if there's a better way.
+sed -i 's/development-lazr.conf/local.conf/g' utilities/supervisor-dev.conf.tpl
+sed -i 's/development-appserver-lazr.conf/local.conf/g' utilities/supervisor-dev.conf.tpl
