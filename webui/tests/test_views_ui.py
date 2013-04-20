@@ -817,6 +817,32 @@ class ForgotPasswordTestCase(UIViewsBaseTestCase):
         self.assertEqual(r.status_code, 405)
 
 
+class NewAccountSelectiveTestCase(UIViewsBaseTestCase):
+    def test_new_account_selective_on_post_request(self):
+        email = 'isdtest@canonical.com'
+        condition_set = 'identityprovider.gargoyle.RequestDataConditionSet'
+        self.conditionally_enable_flag('ALLOW_UNVERIFIED', 'email', email,
+                                       condition_set)
+
+        name = 'webui.views.ui.registration.new_account'
+        with patch(name) as mock_new_account:
+            mock_new_account.return_value = HttpResponse()
+            self.client.post(reverse('new_account'), {'email': email})
+        self.assertTrue(mock_new_account.called)
+
+    def test_new_account_selective_on_get_request(self):
+        email = 'isdtest@canonical.com'
+        condition_set = 'identityprovider.gargoyle.RequestDataConditionSet'
+        self.conditionally_enable_flag('ALLOW_UNVERIFIED', 'email', email,
+                                       condition_set)
+
+        name = 'webui.views.ui.registration.new_account'
+        with patch(name) as mock_new_account:
+            mock_new_account.return_value = HttpResponse()
+            self.client.get(reverse('new_account'), {'email': email})
+        self.assertTrue(mock_new_account.called)
+
+
 class NewAccountTestCase(UIViewsBaseTestCase):
 
     def setUp(self):

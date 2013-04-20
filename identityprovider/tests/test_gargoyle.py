@@ -1,3 +1,6 @@
+from urllib import urlencode
+
+from django.test.client import RequestFactory
 from django.utils.unittest import TestCase
 from gargoyle import gargoyle
 
@@ -113,6 +116,52 @@ class AccountConditionSetTestCase(SSOBaseTestCase):
         self.factory.make_email_for_account(
             self.account, 'isdtest+test@canonical.com', EmailStatus.NEW)
         self.assertTrue(gargoyle.is_active(self.key_name, self.account))
+
+
+class RequestDataConditionSetTestCase(SSOBaseTestCase):
+
+    key_name = 'test'
+
+    def setUp(self):
+        super(RequestDataConditionSetTestCase, self).setUp()
+        condition_set = 'identityprovider.gargoyle.RequestDataConditionSet'
+        self.conditionally_enable_flag(
+            self.key_name, 'email', 'isdtest(\+[^@]*)?@canonical\.com',
+            condition_set)
+        self.request = RequestFactory()
+
+    def test_is_active_no_email_in_post_data(self):
+        request = self.request.post('', {})
+        self.assertFalse(gargoyle.is_active(self.key_name, request))
+
+    def test_is_active_no_email_in_get_data(self):
+        request = self.request.get('')
+        self.assertFalse(gargoyle.is_active(self.key_name, request))
+
+    def test_is_active_email_in_post_data_not_match(self):
+        request = self.request.post('', {'email': 'foo@foo.com'})
+        self.assertFalse(gargoyle.is_active(self.key_name, request))
+
+    def test_is_active_email_in_post_data_match(self):
+        request = self.request.post('', {'email': 'isdtest@canonical.com'})
+        self.assertTrue(gargoyle.is_active(self.key_name, request))
+        request = self.request.post('', {'email': 'isdtest+foo@canonical.com'})
+        self.assertTrue(gargoyle.is_active(self.key_name, request))
+
+    def test_is_active_email_in_get_data_not_match(self):
+        request = self.request.get('?email=foo@foo.com')
+        self.assertFalse(gargoyle.is_active(self.key_name, request))
+
+    def test_is_active_email_in_get_data_match(self):
+        data = {'email': 'isdtest@canonical.com'}
+        qs = '?' + urlencode(data)
+        request = self.request.get(qs)
+        self.assertTrue(gargoyle.is_active(self.key_name, request))
+
+        data['email'] = 'isdtest+foo@canonical.com'
+        qs = '?' + urlencode(data)
+        request = self.request.get(qs)
+        self.assertTrue(gargoyle.is_active(self.key_name, request))
 
 
 class RegexTestCase(TestCase):

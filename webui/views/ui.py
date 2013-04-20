@@ -562,7 +562,7 @@ def _finish_account_creation(atrequest, displayname, password, request):
 
 @check_readonly
 def new_account(request, token=None):
-    if gargoyle.is_active('ALLOW_UNVERIFIED'):
+    if gargoyle.is_active('ALLOW_UNVERIFIED', request):
         return registration.new_account(request, token)
     else:
         return old_new_account(request, token)

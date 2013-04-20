@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import re
 
 from gargoyle import gargoyle
-from gargoyle.builtins import ModelConditionSet
+from gargoyle.builtins import ModelConditionSet, RequestConditionSet
 from gargoyle.conditions import String, Field
 
 from identityprovider.models.account import Account
@@ -60,5 +60,20 @@ class AccountConditionSet(ModelConditionSet):
             instance, field_name)
 
 
+class RequestDataConditionSet(RequestConditionSet):
+    email = Regex(label="Email address")
+
+    def get_namespace(self):
+        return 'request'
+
+    def get_group_label(self):
+        return 'Request'
+
+    def get_field_value(self, instance, field_name):
+        if field_name == 'email':
+            return instance.REQUEST.get('email')
+
+
 gargoyle.register(LPTeamConditionSet(Account))
 gargoyle.register(AccountConditionSet(Account))
+gargoyle.register(RequestDataConditionSet)
