@@ -11,12 +11,12 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
     <head>
         <title>{% block title %}{% trans "Log in" %}{% endblock %}</title>
-        <link rel="icon" type="image/vnd.microsoft.icon" href="{{ STATIC_URL }}ubuntu/favicon.ico" />
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}reset.css"/>
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ubuntu/styles.css"/>
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ubuntu/forms.css"/>
+        <link rel="icon" type="image/vnd.microsoft.icon" href="{{ STATIC_URL }}identityprovider/ubuntu/favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/reset.css"/>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/ubuntu/styles.css"/>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/ubuntu/forms.css"/>
         {% if embedded %}
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ubuntu/narrow.css"/>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/ubuntu/narrow.css"/>
         <script type="text/javascript">
             function blank_targets() {
                 for (var i = 0; i < document.links.length; i++) {
@@ -28,7 +28,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
             }
         </script>
         {% endif %}
-        <script src="{{ STATIC_URL }}lazr-js/yui/yui-min.js"></script>
+        <script src="{{ STATIC_URL }}identityprovider/lazr-js/yui/yui-min.js"></script>
         <script type="text/javascript">
             // disable all submit buttons after initial form submission
             // to prevent double-clicks
@@ -92,7 +92,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
                 {% if not embedded %}
                 {% block language_footer %}
                     <div id="language_footer">
-                        <img src="{{ STATIC_URL }}flags/{{ LANGUAGE_CODE }}.png" alt="{{ LANGUAGE_CODE }}" />
+                        <img src="{{ STATIC_URL }}identityprovider/flags/{{ LANGUAGE_CODE }}.png" alt="{{ LANGUAGE_CODE }}" />
                         <a href="/set_language?next={{request.path_info|urlencode}}" class="picker">
                             {% trans "Choose your language" %}
                         </a>&nbsp;&nbsp;| <a href="{{ 'support_form'|static_url }}">{% trans "Login support" %}</a>
@@ -105,8 +105,8 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
             <div id="copyright">
                 <p>{% blocktrans with current_date|date:"Y" as current_year %}&copy; 2009-{{ current_year }} Canonical Ltd.
-<a href="https://github.com/miing/mci_migo">Source code for this service</a> is licensed under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL</a>.<br />
-Miing and Migo are registered trademarks of Miing.org<br />
+<a href="https://launchpad.net/canonical-identity-provider">Source code for this service</a> is licensed under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL</a>.<br />
+Ubuntu and Canonical are registered trademarks of Canonical Group Ltd.<br />
 Please review our <a href="http://ubuntu.com/legal">Terms of Service</a> as well as our <a href="http://ubuntu.com/legal#privacy">Privacy Policy</a>.{% endblocktrans %}</p>
             </div>
         </div>
