@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}{% trans "Complete email address validation" %}{% endblock %}
+
+{% block text_title %}
+  <h1 class="u1-h-main">{% blocktrans %}Validate {{ email }}?{% endblocktrans %}</h1>
+{% endblock %}
+
+{% block content_id %}auth{% endblock %}
+
+{% block content %}
+<p>{% blocktrans %}Are you sure you want to confirm and validate this email address?{% endblocktrans %}</p>
+
+<div class="actions">
+  <form action="" method="post">
+    {% csrf_token %}
+    <p>
+      <input type="hidden" name="post" value="yes" />
+      <button type="submit" name="continue" class="btn cta">
+        <span><span>{% trans "Yes, I'm sure" %}</span></span>
+      </button>
+      {% trans "or" %}
+      <a href="{% if token %}/{{ token }}{% endif %}/">{% trans "cancel" %}</a>
+    </p>
+  </form>
+</div>
+
+<br style="clear: both" />
+{% endblock %}
