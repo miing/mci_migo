@@ -14,23 +14,33 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
                 <h5 class="yui3-hidden-phone title">Ubuntu one</h5>
 
                 <ul class="links">
+                    {% spaceless %}
                     <li class="terms">
 
                         <a href="#">{% trans "Terms of use" %}</a>
 
-                    </li><li class="privacy">
+                    </li>
+
+                    <li class="privacy">
 
                         <a href="#">{% trans "Privacy" %}</a>
 
-                    </li><li class="support">
+                    </li>
+                    <li class="support">
 
                         <a href="{{ 'support_form'|static_url }}">{% trans "Login support" %}</a>
 
-                    </li>{% block language_footer %}{% if not embedded %}<li id="language_footer" class="language">
+                    </li>
+                    {% block language_footer %}
+                    {% if not embedded %}
+                    <li id="language_footer" class="language">
 
                         <a href="{% url set_language %}">{% trans "Choose your language" %}</a>
 
-                    </li>{% endif %}{% endblock %}
+                    </li>
+                    {% endif %}
+                    {% endblock %}
+                    {% endspaceless %}
                 </ul>
 
             </section>
@@ -40,23 +50,28 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
                 <h5 class="title">One place to log in to everything on Ubuntu</h5>
 
                 <ul class="links">
+                    {% spaceless %}
                     <li class="link-app">
 
                         <a href="{{ 'apps'|static_url }}">Apps</a>
 
-                    </li><li class="link-photos">
+                    </li>
+                    <li class="link-photos">
 
                         <a href="{{ 'photos'|static_url }}">Photos</a>
 
-                    </li><li class="link-music">
+                    </li>
+                    <li class="link-music">
 
                         <a href="{{ 'music'|static_url }}">Music</a>
 
-                    </li><li class="link-cloud">
+                    </li>
+                    <li class="link-cloud">
 
                         <a href="{{ 'cloud'|static_url }}">Cloud</a>
 
                     </li>
+                    {% endspaceless %}
                 </ul>
             </section>
         </ul>

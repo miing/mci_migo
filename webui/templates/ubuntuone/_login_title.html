@@ -4,8 +4,15 @@
     <span class="trusted-rp-name" data-qa-id="_qa_trusted_rp_login">
         {{ rpconfig.displayname }}
     </span>
-    {% endif %}
     <span>
         {% blocktrans %}log in with {{ brand_description }}{% endblocktrans %}
     </span>
+    {% else %}
+    <span class="trusted-rp-name">
+        {{ brand_description }}
+    </span>
+    <span>
+        {% trans "log in" %}
+    </span>
+    {% endif %}
 </p>
