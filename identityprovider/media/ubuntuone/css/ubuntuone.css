@@ -96,7 +96,8 @@ header .wrapper h1 {
     display: inline;
 }
 
-.form-box .input-row {
+.form-box .input-row,
+.edit-account-details .input-row {
     width: inherit;
 }
 
