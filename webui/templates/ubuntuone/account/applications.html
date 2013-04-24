@@ -23,12 +23,13 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 </p>
 
 <section class="used-applications">
-    <h3>{% trans "Applications you last used" %} <span class="subtitle">Date</span></h3>
+    <h3>{% trans "Applications you last used" %}</h3>
     <table class="listing">
         <tbody>
             {% for token in tokens %}
             <tr>
                 <td>{{ token.name }}</td>
+                <td class="application-date">{{ token.created_at|date:"Y/m/d" }}</td>
                 <td class="actions">
                     <form action="{% url applications %}" method="post">
                         {% csrf_token %}
@@ -38,7 +39,6 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
                         </button>
                     </form>
                 </td>
-                <td class="application-date">{{ token.created_at|date:"Y/m/d" }}</td>
             </tr>
         {% endfor %}
         </tbody>

@@ -370,6 +370,9 @@ label {
 .application-date {
     text-align: right;
 }
+.application-date + td {
+    text-align: right;
+}
 
 
 /* Menu -------------------------------------------------------------------*/
@@ -523,6 +526,11 @@ label {
 }
 
 /* General -------------------------------------------------------------------*/
+
+table.listing {
+    margin: 0 0 2em 0;
+}
+
 @media all and (min-width:480px) {
 
     #cont {
