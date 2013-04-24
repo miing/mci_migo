@@ -1129,21 +1129,15 @@ class CookiesTestCase(SSOBaseTestCase):
         return Session.objects.all().count()
 
     def test_login(self):
-        url = reverse('login')
-        email = self.factory.make_email_address()
-        self.factory.make_account(email=email)
-        data = {'email': email,
-                'password': DEFAULT_USER_PASSWORD}
+        self._check_url(reverse('login'))
 
-        r = self._get(url)
+    def test_account_index(self):
+        url = reverse('account-index')
+
+        r = self.client.get(url)
+
+        self.assertEqual(r.status_code, 200)
         self.assertNotContains(r, '<title>Cookies required</title>')
-
-        # clear cookies after each step to fake UA without cookie support
-        self.client.cookies.clear()
-        r = self.client.post(url, data)
-        self.client.cookies.clear()
-        r = self.client.get(r['Location'])
-        self.assertContains(r, '<title>Cookies required</title>')
 
     def test_forgot_password(self):
         self._check_url(reverse('forgot_password'))

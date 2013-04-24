@@ -38,6 +38,7 @@ from identityprovider.tests.utils import (
     patch_settings,
 )
 from identityprovider.utils import validate_launchpad_password
+from webui import decorators
 
 
 class AccountEmailsViewTestCase(AuthenticatedTestCase):
@@ -71,20 +72,39 @@ class AccountEmailsViewTestCase(AuthenticatedTestCase):
 
 class AccountViewsUnauthenticatedTestCase(SSOBaseTestCase):
 
+    def ensure_cookie_check_enabled(self):
+        # Make sure the tests don't run with cookie checks disabled
+        # otherwise checking that the redirect doesn't happen is
+        # useless.
+        patcher = mock.patch.object(decorators, 'disable_cookie_check', False)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     def test_index_unauthenticated(self):
+        self.ensure_cookie_check_enabled()
+
         r = self.client.get(reverse('account-index'))
+
         self.assertEqual(r.status_code, 200)
 
     def test_index_xrds(self):
+        self.ensure_cookie_check_enabled()
         accept = "application/xrds+xml; q=1, text/html; q=0.9"
+
         response = self.client.get(reverse('account-index'),
                                    HTTP_ACCEPT=accept)
+
+        self.assertEqual(response.status_code, 200)
         self.assertTrue('Accept' in response['Vary'].split(','))
         self.assertFalse('X-XRDS-Location' in response)
         self.assertTrue('application/xrds+xml' in response['Content-Type'])
 
     def test_index_html(self):
+        self.ensure_cookie_check_enabled()
+
         response = self.client.get(reverse('account-index'))
+
+        self.assertEqual(response.status_code, 200)
         self.assertTrue('Accept' in response['Vary'].split(','))
         self.assertTrue('X-XRDS-Location' in response)
         self.assertTrue('text/html' in response['Content-Type'])

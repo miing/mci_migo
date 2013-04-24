@@ -194,7 +194,6 @@ class LoginView(LoginBaseView):
         return self.render(request, token, rpconfig, form_cls(),
                            create_account_form)
 
-    @method_decorator(requires_cookies)
     def post(self, request, token=None, rpconfig=None):
         rpconfig = self.setup(request, token, rpconfig)
         result = self.get_login_type(request, token, rpconfig)
@@ -258,6 +257,7 @@ class LoginView(LoginBaseView):
     @method_decorator(guest_required)
     @method_decorator(dont_cache)
     @method_decorator(limitlogin())
+    @method_decorator(requires_cookies)
     def dispatch(self, *args, **kwargs):
         return super(LoginView, self).dispatch(*args, **kwargs)
 

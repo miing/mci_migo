@@ -76,7 +76,10 @@ def index(request, token=None):
     if request.user.is_authenticated():
         resp = account_edit(request, token)
     else:
-        resp = LoginView.as_view()(request, token=token)
+        # We simply render LoginView's get() method as any posted
+        # login data will be handled by the configured 'login' url.
+        # (ie. /+login currently).
+        resp = LoginView(request=request).get(request, token=token)
         # Perhaps the browser sent us the test cookie, or perhaps it
         # didn't.  We'll tell Django that we want one, and it will be
         # intelligent and not send it out again if the browser *did*
