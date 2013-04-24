@@ -186,6 +186,9 @@ label {
     margin-bottom: 0.9em;
 }
 
+.readonly .new-user {
+    color: #ccc;
+}
 
 .login .forgot-password {
     display: inline-block;
@@ -494,6 +497,29 @@ label {
 
 .cannot-find-language {
     float: right;
+}
+
+
+/* Messages ------------------------------------------------------------------*/
+
+@media all and (min-width:768px) {
+    .readonly {
+        margin-top: 56px;
+    }
+    .readonly-message {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 10;
+        padding: .25em;
+        border-radius: 0;
+    }
+    .readonly .readonly-message p {
+        margin: 0 auto;
+        max-width: 700px;
+    }
 }
 
 /* General -------------------------------------------------------------------*/

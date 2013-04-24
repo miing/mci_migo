@@ -2,15 +2,18 @@ from django.test import TestCase
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
-from identityprovider.tests.utils import SSOBaseUnittestTestCase
-from mock import patch
-from pyquery import PyQuery
+
 from gargoyle.testutils import switches
 
-from unittest import skipUnless
-
 from identityprovider.models.openidmodels import OpenIDRPConfig
+from identityprovider.readonly import ReadOnlyManager
+from identityprovider.tests.utils import SSOBaseUnittestTestCase
 from identityprovider.tests.utils import patch_settings
+
+from mock import patch
+from pyquery import PyQuery
+
+from unittest import skipUnless
 
 
 class UbuntuLoginTemplateTestCase(TestCase):
@@ -94,6 +97,23 @@ class UbuntuLoginTemplateTestCase(TestCase):
         style, text = self.get_title_style_and_text(PyQuery(html))
         self.assertIn("url('http://localhost/img.png')", style)
         self.assertIn(u"log in with Ubuntu One", text)
+
+    @skipUnless(settings.BRAND == 'ubuntuone',
+                "New account form only applies to u1 brand.""")
+    def test_u1_branded_login_has_create_account_form(self):
+        response = self.client.get('/+login')
+        self.assertContains(response, "data-qa-id=\"_create_account_form\"")
+
+    @skipUnless(settings.BRAND == 'ubuntuone',
+                "New account form only applies to u1 brand.""")
+    def test_u1_branded_login_without_create_account_form(self):
+        rm = ReadOnlyManager()
+        rm.set_readonly()
+
+        response = self.client.get('/+login')
+        self.assertNotContains(response, "data-qa-id=\"_create_account_form\"")
+
+        rm.clear_readonly()
 
 
 class NewAccountTemplateTestCase(SSOBaseUnittestTestCase):

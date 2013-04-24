@@ -29,7 +29,7 @@
     <!--[if lt IE 9]><script type="text/javascript" src="{{ STATIC_URL }}identityprovider/ubuntuone/js/ie/html5shiv.js"></script><![endif]-->
 
 </head>
-<body class="{% block bodyclass %}with-menu{% endblock %}" {% if embedded %}onload="blank_targets()"{% endif %}>
+<body class="{% block bodyclass %}with-menu{% endblock %}{% if readonly %} readonly{% endif %}" {% if embedded %}onload="blank_targets()"{% endif %}>
 <div id="cont" role="main">
 
     {% include "_header.html" %}
@@ -47,8 +47,10 @@
 
         {% block readonly %}
         {% if readonly %}
-            <div class="message warning">
+            <div class="message warning readonly-message">
+                <p>
                 {% blocktrans %}We are currently in read-only mode. That means that at the moment you can't create new accounts, update your personal information, or request password reminders.{% endblocktrans %}
+                </p>
             </div>
         {% endif %}
         {% endblock %}

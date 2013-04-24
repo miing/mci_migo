@@ -50,6 +50,7 @@ LICENSE).
                     {% include "ubuntuone/registration/_login_form.html" %}
                 </div>
 
+                {% if not readonly %}
                 <noscript>
                     <p class="no-js-create-account">{% trans "Or create a new account:" %}</p>
                 </noscript>
@@ -57,6 +58,7 @@ LICENSE).
                 <div class="create-form show-no-js">
                     {% include "ubuntuone/registration/_create_account_form.html" with create_form=create_account_form csrf_token=csrf_token %}
                 </div>
+                {% endif %}
 
             </div>
 
