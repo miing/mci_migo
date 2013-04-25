@@ -85,11 +85,11 @@
             maxURLLength: 2000,
             combine: {{ combine|lower }},
             comboBase: '{{ combo_url }}?',
-            base: '{{ STATIC_URL }}yui/3.3.0/',
-            root: 'yui/3.3.0/'
+            base: '{{ STATIC_URL }}yui/3.10.0/',
+            root: 'yui/3.10.0/'
         }
     </script>
-    {% combo prefix='yui/3.3.0' 'yui/yui-min.js' 'loader/loader-min.js' %}
+    {% combo prefix='yui/3.10.0' 'yui/yui-min.js' 'loader/loader-min.js' %}
 
 {% endblock %}
 
