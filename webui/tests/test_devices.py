@@ -401,7 +401,7 @@ class TestPaperPrintingAndGenerating(TwoFactorMixin, SSOBaseTestCase):
         response = device_print(self.mock_request, self.device.id)
 
         doc = self._get_response_doc(response)
-        code_nodes = doc.find('ol#codes li')
+        code_nodes = doc.find('#codes li')
         used = code_nodes[:position]
         unused = code_nodes[position:]
 
@@ -448,7 +448,7 @@ class TestPaperPrintingAndGenerating(TwoFactorMixin, SSOBaseTestCase):
         response = device_generate(self.mock_request, self.device.id)
 
         doc = self._get_response_doc(response)
-        code_nodes = doc.find('ol#codes li')
+        code_nodes = doc.find('#codes li')
 
         start = settings.TWOFACTOR_PAPER_CODES * 4
         end = settings.TWOFACTOR_PAPER_CODES * 5
@@ -502,7 +502,7 @@ class TestPaperPrintingAndGenerating(TwoFactorMixin, SSOBaseTestCase):
         doc = self._get_response_doc(response)
         # check generate button is available
         generate_url = '/device-generate/%s' % self.device.id
-        generate_button = doc.find('a.btn[href="%s"]' % generate_url)
+        generate_button = doc.find('a[href="%s"]' % generate_url)
         self.assertEqual(len(generate_button), 1)
         self.assertTrue(response.context_data['generation_enabled'])
         # check warning message is set
@@ -558,7 +558,8 @@ class TestDeviceRemoval(TwoFactorMixin, SSOBaseTestCase):
         AuthenticationDevice.objects.get(id=device.id)
 
         tree = PyQuery(response.content)
-        self.assertEqual(tree.find('h2').text(), "Some device")
+        self.assertEqual(tree.find(
+            '[data-qa-id=_device_removal_device_name]').text(), "Some device")
 
     def test_post(self):
         account = self.factory.make_account()

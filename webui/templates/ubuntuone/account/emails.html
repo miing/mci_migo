@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2010 Canonical Ltd.  This software is licensed under the
+GNU Affero General Public License version 3 (see the file  LICENSE).
+{% endcomment %}
+
+{% block title %}
+  {% blocktrans %}{{ account_displayname }}'s email addresses{% endblocktrans %}
+{% endblock %}
+
+{% block extra_header_top %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/lazr-js/cssreset/reset-min.css"></link>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/lazr-js/cssfonts/fonts-min.css"></link>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}identityprovider/lazr-js/cssbase/base-min.css"></link>
+{% endblock %}
+
+{% block text_title %}{% trans "Your email addresses" %}{% endblock %}
+
+{% block content %}
+
+<p>
+
+{% if not verified_emails and not unverified_emails %}
+  <p>{% blocktrans %}You have no email addresses associated with your account.{% endblocktrans %}</p>
+{% endif %}
+
+{% if verified_emails %}
+
+  <section class="verified-emails">
+
+    <h3>{% trans "Verified" %}</h3>
+
+    <table class="listing hover">
+      {% for email in verified_emails %}
+        <tr>
+          <td class="email{% if email.is_preferred %} preferred-email{% endif %}">
+            <span class="email">{{ email }}</span>
+            {% if email.is_preferred %}
+              <span class="preferred-label">{% trans "(preferred)" %}</span>
+            {% endif %}
+          </td>
+          {% if not readonly %}
+            <td class="actions">
+              {% if not email.is_preferred %}
+                <a href="./+remove-email?id={{ email.id }}" class="btn-sm"><span>{% trans "Delete" %}</span></a>
+              {% endif %}
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </table>
+
+  </section>
+
+{% endif %}
+
+{% if unverified_emails %}
+
+  <section class="unverified-emails">
+
+    <h3>{% trans "Unverified" %}</h3>
+
+    <table class="listing hover">
+      {% for email in unverified_emails %}
+        <tr class="unverified-emails">
+          <td class="email">{{ email }}</td>
+          {% if not readonly %}
+            <td class="actions">
+              {% if email.is_verifiable %}
+              <a href="./+verify-email?id={{ email.id }}" data-qa-id="_verify_unverified_{{ email }}" class="verify-email btn-sm"><span>{% trans "Verify" %}</span></a>
+              {% endif %}
+              <a href="./+remove-email?id={{ email.id }}" data-qa-id="_delete_unverified_{{ email }}" class="btn-sm"><span>{% trans "Delete" %}</span></a>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </table>
+
+  </section>
+
+{% endif %}
+
+{% if not readonly %}
+
+  <section class="add-emails">
+
+    <h3>{% trans "Add email address" %}</h3>
+
+    <p>{% blocktrans %}Enter your email address, and we will send you instructions on how to verify it.{% endblocktrans %}</p>
+
+    <form action="{% url new_email %}" method="post">
+      {% csrf_token %}
+      <div class="input-row">
+        {{ form.newemail }}
+        {% if form.newemail.errors %}
+          <span class="error">{{ form.newemail.errors|first }}</span>
+        {% endif %}
+      </div>
+      <p class="actions">
+        <button type="submit" class="btn cta" name="continue">
+          <span>{% trans "Add address" %}</span>
+        </button>
+        <a class="cta secondary" href="/">{% trans "Cancel" %}</a>
+      </p>
+    </form>
+
+  </section>
+
+{% endif %}
+
+{% endblock %}

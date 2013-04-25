@@ -1,0 +1,29 @@
+{% load i18n %}
+<div id="codes" class="yui3-g-r codelist">
+    <ol class="yui3-u-1-5">
+    {% for code in codes %}
+      <li>{% spaceless %}
+        {% if forloop.counter0 < counter|default:0 %}
+          <strike>{{ code }}</strike>
+        {% else %}
+          {{ code }}
+        {% endif %}
+      {% endspaceless %}</li>
+        {% if forloop.counter|divisibleby:"5" and not forloop.last %}
+    </ol>
+    <ol class="yui3-u-1-5">
+        {%endif%}
+      {% endfor %}
+    </ol>
+</div>
+
+<style media="print">
+* { display: none; }
+{% comment %}
+You have to explicitly make visible every elem from html down
+{% endcomment %}
+html, body, #container, #container-inner, body.onecol #content,
+#box, .codelist, .codelist * {
+    display: block !important; margin: 0; padding: 0;
+}
+</style>

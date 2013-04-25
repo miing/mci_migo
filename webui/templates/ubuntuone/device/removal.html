@@ -12,24 +12,22 @@ Affero General Public License version 3 (see the file LICENSE).
 {% endblock %}
 
 
-{% block text_title %}
-  <h1 class="main">{% trans "Delete device?" %}</h1>
-{% endblock %}
+{% block text_title %}{% trans "Delete device?" %}{% endblock %}
 
 {% block content %}
 
 <p>{% blocktrans %}Are you sure that you want to delete the following
 authentication device?{% endblocktrans %}</p>
 
-<h2 data-qa-id="_device_removal_device_name">{{ name }}</h2>
+<p class="device-name" data-qa-id="_device_removal_device_name">{{ name }}</p>
 
 <form method="post" action="">
   {% csrf_token %}
   <p>
-    <button class="btn" type="submit">
-      <span><span>{% trans "Delete this device" %}</span></span>
+    <button class="btn cta" type="submit">
+      <span>{% trans "Delete this device" %}</span>
     </button>
-    {% trans "or" %} <a href="{{ device_list_path }}">{% trans "cancel" %}</a>
+    <a class="cta secondary" href="{{ device_list_path }}">{% trans "Cancel" %}</a>
   </p>
 </form>
 

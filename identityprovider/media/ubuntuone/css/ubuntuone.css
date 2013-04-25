@@ -317,10 +317,6 @@ label {
 
 /* Edit account -----------------------------------------------------------*/
 
-.backupdevice-warn-input label {
-    display: inline;
-}
-
 .edit-account-details {
     margin-bottom: 2em;
 }
@@ -333,7 +329,6 @@ label {
     position: relative;
     top: 1em;
 }
-
 
 @media all and (min-width:768px) {
 
@@ -361,6 +356,43 @@ label {
 }
 
 
+/* Devices ----------------------------------------------------------------*/
+
+.backupdevice-warn-input label {
+    display: inline;
+}
+
+.devices-you-added {
+    margin-bottom: 2em;
+}
+
+.codelist {
+    background-color: #F9F9F9;
+    text-align: center;
+    margin: 2em 0;
+}
+
+.codelist li {
+    color: #444444;
+    font-family: monospace;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.codelist li:first-child {
+    padding-top: 1em;
+}
+.codelist li:last-child {
+    padding-bottom: 1em;
+}
+
+.device-name {
+    font-weight: bold;
+}
+
+.print-new-codes {
+    float: right;
+}
+
 /* Applications -----------------------------------------------------------*/
 
 .used-applications .subtitle {
@@ -375,6 +407,20 @@ label {
     text-align: right;
 }
 
+/* Emails -----------------------------------------------------------*/
+
+.preferred-email .email {
+    font-weight: bold;
+}
+
+.preferred-label {
+    font-style: italic;
+    color: #999;
+}
+
+.verified-emails, .unverified-emails {
+    margin-bottom: 2em;
+}
 
 /* Menu -------------------------------------------------------------------*/
 
@@ -527,6 +573,11 @@ label {
 }
 
 /* General -------------------------------------------------------------------*/
+
+td.actions {
+    text-align: right;
+
+}
 
 table.listing {
     margin: 0 0 2em 0;

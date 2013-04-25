@@ -4,12 +4,12 @@
 
     <label for="id_new_user" class="new-user">
         <input type="radio" id="id_new_user" name="user-intentions" {% if readonly %}disabled="disabled"{%endif%}
-        {%if page == "create" %} checked="true"{%endif%} tabindex="20" value="create">
+        {%if page == "create" %} checked="checked"{%endif%} tabindex="20" value="create">
         <span>{% trans "I am a new Ubuntu One user" %}</span>
     </label>
 
     <label for="id_returning_user" class="returning-user">
-        <input type="radio" id="id_returning_user" name="user-intentions"{%if page == "login" %} checked="true"{%endif%} tabindex="30" value="returning">
+        <input type="radio" id="id_returning_user" name="user-intentions"{%if page == "login" %} checked="checked"{%endif%} tabindex="30" value="returning">
         <span>{% trans "I am a returning Ubuntu One user <i>and my password is:</i>" %}</span>
     </label>
 

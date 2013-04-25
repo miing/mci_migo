@@ -327,9 +327,19 @@ class EditAccountForm(forms.ModelForm):
 
 
 class NewEmailForm(forms.Form):
+
+    newemail_widget_conf = {'class': 'textType', 'size': '26'}
+
+    if get_current_brand() == 'ubuntuone':
+        newemail_widget_conf['placeholder'] = _('Email address')
+        newemail_widget = widgets.Input(attrs=newemail_widget_conf)
+        newemail_widget.input_type = 'email'
+    else:
+        newemail_widget = widgets.TextInput(attrs=newemail_widget_conf)
+
     newemail = fields.EmailField(
         error_messages=email_errors,
-        widget=widgets.TextInput(attrs={'class': 'textType', 'size': '26'}))
+        widget=newemail_widget)
 
     def __init__(self, *args, **kwargs):
         self.account = kwargs.pop('account', None)

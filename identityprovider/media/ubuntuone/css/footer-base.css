@@ -3,6 +3,7 @@ footer {
     padding: 1em;
     text-align: center;
     margin-top: 2em;
+    clear: both;
 }
 
 footer .links li {

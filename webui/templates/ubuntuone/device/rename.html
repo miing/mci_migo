@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}
+Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
+Affero General Public License version 3 (see the file LICENSE).
+{% endcomment %}
+
+{% block title %}
+  {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
+{% endblock %}
+
+
+{% block text_title %}{% trans "Rename device" %}{% endblock %}
+
+{% block content %}
+
+<form method="post" action="">
+  {% csrf_token %}
+
+  <p><label for="id_name">
+      {% trans "Name:" %}
+      {{ form.name }}
+      {% if form.name.errors %}
+        <span class="error" id="name-error">{{ form.name.errors|first }}</span>
+      {% endif %}
+  </label></p>
+
+  <p>
+    <button class="btn cta" type="submit">
+      <span>{% trans "Rename" %}</span>
+    </button>
+    <a class="cta secondary" href="{{ device_list_path }}">{% trans "Cancel" %}</a>
+  </p>
+
+</form>
+
+{% endblock %}
