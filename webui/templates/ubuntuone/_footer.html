@@ -17,13 +17,13 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
                     {% spaceless %}
                     <li class="terms">
 
-                        <a href="#">{% trans "Terms of use" %}</a>
+                        <a href="{{ 'terms_of_service'|static_url}}">{% trans "Terms of use" %}</a>
 
                     </li>
 
                     <li class="privacy">
 
-                        <a href="#">{% trans "Privacy" %}</a>
+                        <a href="{{ 'privacy'|static_url }}">{% trans "Privacy" %}</a>
 
                     </li>
                     <li class="support">

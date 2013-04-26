@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static_url %}
 
 {% if token %}{% url new_account token as new_account_url %}
 {% else %}{% url new_account as new_account_url %}{% endif %}
@@ -47,7 +47,7 @@
 
         {{ create_form.accept_tos }}
 
-        <label for="id_accept_tos">{% trans "I have read and accept the <a href='#'>Ubuntu One terms of use</a>" %}</label>
+        <label for="id_accept_tos">{% blocktrans with "terms_of_service"|static_url as tos_url %}I have read and accept the <a href='{{ tos_url }}' class='external' target="_blank">Ubuntu One terms of use</a>{% endblocktrans %}</label>
 
     </div>
 

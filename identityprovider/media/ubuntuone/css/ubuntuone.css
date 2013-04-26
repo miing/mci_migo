@@ -157,6 +157,7 @@ label {
 
 .accept-tos-input label {
     display: inline;
+    font-size: 0.8em;
 }
 
 .accept-tos-input .error {

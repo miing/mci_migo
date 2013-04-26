@@ -33,6 +33,8 @@ iframe {
 .breadcrumb li.last:after {
     content: "";
 }
+
+/* helpers -------------------------------------------------------------- */
 .show-nojs {
     display: block;
 }
@@ -61,6 +63,10 @@ iframe {
 }
 .ie7 .js .hide-ib-nojs {
     display: inline;
+}
+
+.external:hover:after {
+    content: " " url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAAZiS0dEAN0ASAAU7HUIkgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oLBAocL8fy1n0AAADESURBVBjThVAxD8FgFLyv9QMaJIJYEDMxk3TrbDayNNGfoNGfYDAZbUaLTcLMYpOySCWSp+lqqGewfF9L3PYul3t3J5AAOzrjCzLyEXQrfDbaMJy5Isp5BWgyUd5eRS1a4dlrpR19C6lXxdEQYYLTAMBYEIwFodbQwR0XoWkju5kpzpqcQxaJ3QSl5g3RdKCW4Y6Ly/GAKj6i8ylGfQ0RdPcstrGAb4GJiImIX0uP2dGZiDiZXWkdmjYe4zt+7hj18/iHN91rTR+X+JGpAAAAAElFTkSuQmCC");
 }
 
 /* Form placeholder */

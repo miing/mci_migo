@@ -217,6 +217,9 @@ class SSOSchema(DjangoSchema):
         music_url = StringOption()
         cloud_url = StringOption()
 
+        terms_of_service_url = StringOption()
+        privacy_url = StringOption()
+
     # settings for testing (acceptance, api)
     class testing(Section):
         test_account_email = StringOption()
