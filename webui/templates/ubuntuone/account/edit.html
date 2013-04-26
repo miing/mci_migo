@@ -130,3 +130,9 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
 <div data-qa-id="_qa_edit_account"></div>
 {% endblock %}
+
+{% block extra_js %}
+
+{% include "registration/_password_meter.html" with css_expr="#id_password" %}
+
+{% endblock %}

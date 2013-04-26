@@ -50,11 +50,6 @@ LICENSE).
 
 {% block extra_js %}
 
-{% comment %}
-To be replaced by u1 port
-{% include "widgets/passwords_head_content.html" %}
-{% endcomment %}
-
 <script type="text/javascript">
     YUI().use('node', function(Y) {
         var email = Y.one('#id_email');
@@ -65,5 +60,9 @@ To be replaced by u1 port
         }
 
     });
+
 </script>
+
+{% include "registration/_password_meter.html" with css_expr="#id_password" %}
+
 {% endblock %}

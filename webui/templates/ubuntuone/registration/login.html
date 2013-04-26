@@ -79,6 +79,9 @@ LICENSE).
 {% block extra_js %}
 <script type="text/javascript">
 
+    {% comment %}
+    // TODO: We'd want to make this a module in the u1 project, and test it really well
+    {% endcomment %}
     YUI().use('node', function(Y) {
 
         var createForm = Y.one('.create-form'),
@@ -127,4 +130,7 @@ LICENSE).
     });
 
 </script>
+
+{% include "registration/_password_meter.html" with css_expr=".create-form #id_password" %}
+
 {% endblock %}

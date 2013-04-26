@@ -164,6 +164,15 @@ label {
     display: block;
 }
 
+/* password meter */
+.yui3-passwordmeter-indicatorNode div {
+    margin: 1em 0 0;
+}
+
+.yui3-passwordmeter-indicatorNode p {
+    text-shadow: 1px 1px 0 #fff;
+}
+
 @media all and (min-width:768px) {
 
     .form-box {
@@ -334,8 +343,13 @@ label {
 @media all and (min-width:768px) {
 
     .edit-account-details input,
-    .edit-account-details select {
+    .edit-account-details select,
+    .edit-account-details .yui3-passwordmeter-content {
         max-width: 50%;
+    }
+
+    .edit-account-details .yui3-passwordmeter-content input {
+        max-width: none;
     }
 
 
