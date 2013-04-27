@@ -19,7 +19,8 @@ from identityprovider.tests.acceptance.shared import helpers
 config.set_base_url_from_env()
 
 # Login so that we can attempt to change the password
-helpers.login(settings.QA_ACCOUNT_EMAIL, settings.QA_ACCOUNT_PASSWORD)
+helpers.login(
+    settings.SSO_TEST_ACCOUNT_EMAIL, settings.SSO_TEST_ACCOUNT_PASSWORD)
 
 # Write the new password into the fields
 write_textfield('id_password', new_password)

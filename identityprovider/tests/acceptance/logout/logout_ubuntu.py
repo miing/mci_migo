@@ -20,8 +20,8 @@ config.set_base_url_from_env()
 
 # login first
 go_to(urls.HOME)
-write_textfield('id_email', settings.QA_ACCOUNT_EMAIL)
-write_textfield('id_password', settings.QA_ACCOUNT_PASSWORD)
+write_textfield('id_email', settings.SSO_TEST_ACCOUNT_EMAIL)
+write_textfield('id_password', settings.SSO_TEST_ACCOUNT_PASSWORD)
 click_button(get_element(name='continue'))
 # logout by clicking on link
 click_link('logout-link')
@@ -31,8 +31,8 @@ go_to(urls.HOME)
 assert_title('Log in')
 
 # login first
-write_textfield('id_email', settings.QA_ACCOUNT_EMAIL)
-write_textfield('id_password', settings.QA_ACCOUNT_PASSWORD)
+write_textfield('id_email', settings.SSO_TEST_ACCOUNT_EMAIL)
+write_textfield('id_password', settings.SSO_TEST_ACCOUNT_PASSWORD)
 click_button(get_element(name='continue'))
 # logout by hitting url directly
 go_to(urls.LOGOUT)

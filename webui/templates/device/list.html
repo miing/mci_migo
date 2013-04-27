@@ -68,7 +68,7 @@ table#device-list td.command
     <p>{% trans "You don't have any authentication devices associated with this account." %}</p>
   {% endif %}
 
-  <p><a href="{{ device_addition_path }}">
+  <p><a data-qa-id="add-device" href="{{ device_addition_path }}">
     {% trans "Add a new authentication device" %}
   </a></p>
 

@@ -64,8 +64,8 @@ set_radio_value(radio_language)
 click_button(get_element(value='Begin'))
 
 wait_for(assert_title, 'Log in')
-write_textfield('id_email', settings.QA_ACCOUNT_EMAIL)
-write_textfield('id_password', settings.QA_ACCOUNT_PASSWORD)
+write_textfield('id_email', settings.SSO_TEST_ACCOUNT_EMAIL)
+write_textfield('id_password', settings.SSO_TEST_ACCOUNT_PASSWORD)
 click_button(get_element(name='continue'))
 
 wait_for(assert_title_contains, 'Authenticate to')

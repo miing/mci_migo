@@ -73,10 +73,10 @@ p span.key
   <p>
     <input type="hidden" name="type" value="{{ type }}">
     <input type="hidden" name="hex_key" value="{{ hex_key }}">
-    <button class="btn" type="submit">
+    <button class="btn" type="submit" data-qa-id="add-device">
       <span><span>{% trans "Add device" %}</span></span>
     </button>
-    {% trans "or" %} <a href="{{ device_list_path }}">{% trans "cancel" %}</a>
+    {% trans "or" %} <a data-qa-id="cancel" href="{{ device_list_path }}">{% trans "cancel" %}</a>
   </p>
 
 </form>

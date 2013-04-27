@@ -49,7 +49,7 @@ td.actions {
         {% if not readonly %}
           <td class="actions">
             {% if not email.is_preferred %}
-              <a href="./+remove-email?id={{ email.id }}" class="btn-sm"><span>{% trans "Delete" %}</span></a>
+              <a href="./+remove-email?id={{ email.id }}" class="btn-sm" data-qa-id="remove-email"><span>{% trans "Delete" %}</span></a>
             {% endif %}
           </td>
         {% endif %}

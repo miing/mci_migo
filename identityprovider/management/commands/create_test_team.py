@@ -16,8 +16,8 @@ class Command(BaseCommand):
             "features.")
 
     def handle(self, *args, **options):
-        email = settings.QA_ACCOUNT_EMAIL
-        password = settings.QA_ACCOUNT_PASSWORD
+        email = settings.SSO_TEST_ACCOUNT_EMAIL
+        password = settings.SSO_TEST_ACCOUNT_PASSWORD
 
         # hardcoded in tests
         name = 'isdtest'

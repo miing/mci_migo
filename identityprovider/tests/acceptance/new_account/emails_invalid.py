@@ -20,7 +20,7 @@ go_to(urls.NEW_ACCOUNT)
 helpers.fill_registration_form(
     invalid_email,
     displayname='test name',
-    password=settings.QA_ACCOUNT_PASSWORD
+    password=settings.SSO_TEST_ACCOUNT_PASSWORD
 )
 click_button(get_element(name="continue"))
 assert_element(text='Invalid email.')

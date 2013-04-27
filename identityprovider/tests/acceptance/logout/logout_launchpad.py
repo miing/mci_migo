@@ -30,8 +30,8 @@ set_base_url(lp_base_url)
 # Goes to LP skinned version of SSO to login then,
 #   uses the logout button to logout
 go_to(urls.HOME)
-write_textfield('id_email', settings.QA_ACCOUNT_EMAIL)
-write_textfield('id_password', settings.QA_ACCOUNT_PASSWORD)
+write_textfield('id_email', settings.SSO_TEST_ACCOUNT_EMAIL)
+write_textfield('id_password', settings.SSO_TEST_ACCOUNT_PASSWORD)
 click_button(get_element(name='continue'))
 click_button(get_element(name='logout'))
 assert_element(href="/+login")
@@ -40,8 +40,8 @@ assert_title('Log in')
 
 # Goes to LP skinned version of SSO to login then,
 #   uses the /+logout URL to logout
-write_textfield('id_email', settings.QA_ACCOUNT_EMAIL)
-write_textfield('id_password', settings.QA_ACCOUNT_PASSWORD)
+write_textfield('id_email', settings.SSO_TEST_ACCOUNT_EMAIL)
+write_textfield('id_password', settings.SSO_TEST_ACCOUNT_PASSWORD)
 click_button(get_element(name='continue'))
 go_to(urls.LOGOUT)
 assert_element(href="/+login")

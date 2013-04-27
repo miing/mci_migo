@@ -27,8 +27,7 @@ from u1testutils.sso import (
     mail as sso_mail
 )
 
-from identityprovider.tests.acceptance import pages
-from identityprovider.tests.acceptance.shared import devices, urls
+from identityprovider.tests.acceptance.shared import devices, pages, urls
 
 
 def fail(msg):
@@ -173,7 +172,7 @@ def login_or_register_account(device_cleanup=False):
     # else use the sanctified QA Account
     else:
         login_to_isdqa_account()
-        email = settings.QA_ACCOUNT_EMAIL
+        email = settings.SSO_TEST_ACCOUNT_EMAIL
         # We only need to cleanup the QA account
         if device_cleanup:
             devices.add_device_cleanup()
@@ -233,7 +232,7 @@ def login_to_isdqa_account():
 
     global _LAST_EMAIL, _LAST_PASSWORD
 
-    login(settings.QA_ACCOUNT_EMAIL, settings.QA_ACCOUNT_PASSWORD)
+    login(settings.SSO_TEST_ACCOUNT_EMAIL, settings.SSO_TEST_ACCOUNT_PASSWORD)
     # Wait for the reload
     wait_for(exists_element, id='ubuntu-header')
 
@@ -241,12 +240,12 @@ def login_to_isdqa_account():
                       text="Password didn't match."):
         actions._raise("This test requires a test account to be present")
 
-    _LAST_EMAIL = settings.QA_ACCOUNT_EMAIL
-    _LAST_PASSWORD = settings.QA_ACCOUNT_PASSWORD
+    _LAST_EMAIL = settings.SSO_TEST_ACCOUNT_EMAIL
+    _LAST_PASSWORD = settings.SSO_TEST_ACCOUNT_PASSWORD
 
 
-def login_from_redirect(email=settings.QA_ACCOUNT_EMAIL,
-                        password=settings.QA_ACCOUNT_PASSWORD):
+def login_from_redirect(email=settings.SSO_TEST_ACCOUNT_EMAIL,
+                        password=settings.SSO_TEST_ACCOUNT_PASSWORD):
     log_in = pages.LogInFromRedirect()
     # TODO we also need the user name.
     user = data.User('TODO', email, password)

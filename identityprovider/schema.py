@@ -222,10 +222,17 @@ class SSOSchema(DjangoSchema):
 
     # settings for testing (acceptance, api)
     class testing(Section):
+        # We use sso_test_account_* credentials also on pay and u1 projects.
+        # The helpers from u1testutils.sso.data.User will create a user data
+        # object based on this values and the email_address_pattern.
+        sso_test_account_full_name = StringOption()
+        sso_test_account_email = StringOption()
+        sso_test_account_password = StringOption()
+        # We shouldn't need test_account_* credentials.
+        # TODO refactor and remove them. All the tests that rely on this config
+        # should create a new user. -- elopio 2013-04-22
         test_account_email = StringOption()
         test_account_password = StringOption()
-        qa_account_email = StringOption()
-        qa_account_password = StringOption()
         email_address_pattern = StringOption(
             raw=True, default=r'isdtest+%s@canonical.com')
         imap_server = StringOption()

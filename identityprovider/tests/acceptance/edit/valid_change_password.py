@@ -20,7 +20,8 @@ from identityprovider.tests.acceptance.shared import helpers
 config.set_base_url_from_env()
 
 # Login so we can change the password
-helpers.login(settings.QA_ACCOUNT_EMAIL, settings.QA_ACCOUNT_PASSWORD)
+helpers.login(
+    settings.SSO_TEST_ACCOUNT_EMAIL, settings.SSO_TEST_ACCOUNT_PASSWORD)
 
 # Change the password on the account and logout
 write_textfield('id_password', new_password)
@@ -30,10 +31,10 @@ assert_element(text='Your account details have been successfully updated')
 click_link('logout-link')
 
 # Login with the new password
-helpers.login(settings.QA_ACCOUNT_EMAIL, password=new_password)
+helpers.login(settings.SSO_TEST_ACCOUNT_EMAIL, password=new_password)
 
 # Change the password back
-write_textfield('id_password', settings.QA_ACCOUNT_PASSWORD)
-write_textfield('id_passwordconfirm', settings.QA_ACCOUNT_PASSWORD)
+write_textfield('id_password', settings.SSO_TEST_ACCOUNT_PASSWORD)
+write_textfield('id_passwordconfirm', settings.SSO_TEST_ACCOUNT_PASSWORD)
 click_button(get_element(name="update"))
 assert_element(text='Your account details have been successfully updated')
