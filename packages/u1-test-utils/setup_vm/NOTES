@@ -29,7 +29,7 @@ magically automated.
   # Tweak according to your squid-deb-proxy setup, 8000 is the default port. 
   # Use {your-ip} or any address reachable by the vms (keeping in mind that
   # avahi's .local domain may not be up in the early stages of the install
-  vm.apt_proxy = http://{your-ip}:800
+  vm.apt_proxy = http://{your-ip}:8000
   vm.launchpad_id=your-launchpad-id
   # This is the ssh key of your host machine. Make sure that you have
   uploaded it to https://launchpad.net/~/+editsshkeys
@@ -51,8 +51,8 @@ magically automated.
 
 5. Get the branch:
 
-  $ bzr branch lp:~online-services-qa/u1-test-utils/setup_vm
-  $ cd setup_vm
+  $ bzr branch lp:u1-test-utils
+  $ cd u1-test-utils/setup_vm
 
 6. Download the image for the server (do so every time you want to use a
    fresh image):

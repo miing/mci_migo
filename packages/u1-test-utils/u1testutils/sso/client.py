@@ -32,8 +32,16 @@ def get_account_openid(email, password, token_name):
     return openid
 
 
-def create_new_account(user):
+def create_new_account(user, captcha_id=None, captcha_solution=None):
     client = get_api_client()
-    response = client.register(email=user.email, password=user.password,
-                               displayname=user.full_name)
+    data = dict(
+        email=user.email,
+        password=user.password,
+        displayname=user.full_name
+    )
+    if captcha_id is not None:
+        data['captcha_id'] = captcha_id
+    if captcha_solution is not None:
+        data['captcha_solution'] = captcha_solution
+    response = client.register(data)
     return response.status_code == 201

@@ -81,3 +81,29 @@ class ClientTestCase(unittest.TestCase):
         with patch(client_register, mock_register):
             created = client.create_new_account(user)
         self.assertFalse(created)
+
+    def test_create_new_account_without_captcha(self):
+        user = data.User.make_from_configuration()
+        expected_data = dict(
+            email=user.email,
+            password=user.password,
+            displayname=user.full_name
+        )
+        client_register = self.base_namespace + '.V2ApiClient.register'
+        with patch(client_register) as mock_register:
+            client.create_new_account(user)
+        mock_register.assert_called_once_with(expected_data)
+
+    def test_create_new_account_with_captcha(self):
+        user = data.User.make_from_configuration()
+        expected_data = dict(
+            email=user.email,
+            password=user.password,
+            displayname=user.full_name,
+            captcha_id='Test id',
+            captcha_solution='Test solution'
+        )
+        client_register = self.base_namespace + '.V2ApiClient.register'
+        with patch(client_register) as mock_register:
+            client.create_new_account(user, 'Test id', 'Test solution')
+        mock_register.assert_called_once_with(expected_data)
