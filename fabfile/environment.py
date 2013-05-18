@@ -229,10 +229,10 @@ def _create_local_cfg():
 	config = textwrap.dedent("""
         [__noschema__]
         basedir = %s
-        db_host = %s/db
 
         [__main__]
         includes = config/devel.cfg
+        test_dsn = host=%(db_host)s dbname=%(db_name)s user=%(db_user)s
     """ % (os.path.abspath(os.curdir), env.virtualenv))
 	
 	with file('dj/local.cfg', 'w') as local_cfg: 

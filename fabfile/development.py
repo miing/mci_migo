@@ -109,10 +109,6 @@ def resetdb():
     syncdb()
     setup_db_access()
 
-def docs():
-	"""Build docs"""
-	virtualenv_local('sphinx-build docs docs/html')
-    
 def _is_true(arg, name):
     if arg.lower() in ('t', 'true', 'on', '1', 'yes'):
         return True

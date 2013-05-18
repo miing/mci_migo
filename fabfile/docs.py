@@ -1,6 +1,5 @@
 ###################################################################
 #
-# Copyright (c) 2011 Canonical Ltd.
 # Copyright (c) 2013 Miing.org <samuel.miing@gmail.com>
 # 
 # This software is licensed under the GNU Affero General Public 
@@ -16,12 +15,9 @@
 ###################################################################
 
 
-from .environment import *
-from .django import *
-from .postgresql import *
-from .development import *
-from .docs import *
+from .environment import virtualenv_local
 
 
-# make sure the virtualenv is automatically activated
-setup_virtualenv()
+def docs():
+	"""Build docs"""
+	virtualenv_local('sphinx-build docs docs/html')

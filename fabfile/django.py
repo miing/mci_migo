@@ -37,9 +37,11 @@ def get_django_settings(*keys):
 		result[key] = getattr(settings, key)	
 	return result
 
+
 def brand(brand):
 	"""Setup brand names"""
 	os.environ["CONFIGGLUE_BRANDING_BRAND"] = brand
+
 
 def manage(command, *args, **kwargs):
     """Run manage.py command"""
@@ -51,6 +53,7 @@ def manage(command, *args, **kwargs):
     cmd.extend(args)
 
     virtualenv_local(" ".join(cmd), capture=False)
+
 
 def compilemessages(args=''):
     """Compile .po translation files into binary (.mo)"""
@@ -77,17 +80,30 @@ def makemessages():
                     locale_name = lang
                 virtualenv_local(cmd.format(locale_name), capture=False)
 
-def syncdb():
-    """Sync the database
 
-    If south is listed in INSTALLED_APPS syncdb runs with --migrate.
-    """
-    args = ['--noinput', '--django_database_user=postgres',
-        '--django_database_password=']
-    django_settings = get_django_settings('INSTALLED_APPS')
-    if 'south' in django_settings['INSTALLED_APPS']:
-        args.append('--migrate')
-    manage('syncdb', *args)
+def syncdb():
+	"""Sync database
+
+	If south is listed in INSTALLED_APPS syncdb runs with --migrate.
+	"""
+	django_settings = get_django_settings('DATABASES')
+	database = django_settings['DATABASES']['default']
+	args = ['--noinput', '--django_database_user=%s' % database['USER'],
+        '--django_database_password=%s' % database['PASSWORD']]    
+	django_settings = get_django_settings('INSTALLED_APPS')
+	if 'south' in django_settings['INSTALLED_APPS']:
+		args.append('--migrate')
+	manage('syncdb', *args)
+    
+
+def grantuser():
+	"""Grant user access to database"""
+	django_settings = get_django_settings('DATABASES')
+	database = django_settings['DATABASES']['default']
+	django_settings = get_django_settings('INSTALLED_APPS')
+	if 'pgtools' in django_settings['INSTALLED_APPS']:
+		manage('grantuser', database['USER'])
+
     
 def createsuperuser():
 	"""Create admin accounts for target site"""
@@ -102,6 +118,7 @@ def createsuperuser():
 				sys.stdout.write("User '%s' exists already.\n" % item[0])
 	else:
 		manage('createsuperuser')
+
 		
 def _username_present(username):
 	"""Check if username exists"""

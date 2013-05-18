@@ -40,12 +40,14 @@ def setup_postgresql_server():
     start_database()
     setup_database()
 
+
 def shutdown_postgresql_server():
     """Shutdown the PostgreSQL server"""
     _set_postgres_environment()
     dropdb()
     stop_database()
     local("rm -rf %s" % env.postgres['HOST'])
+
 
 def start_database():
     """Start the PostgreSQL server"""
@@ -54,11 +56,13 @@ def start_database():
         '%(HOST)s/postgresql.log', '-o', '"-F -k %(HOST)s -h \'\'"']
     local(' '.join(cmd) % env.postgres)
 
+
 def stop_database():
     """Stop the PostgreSQL server"""
     _set_postgres_environment()
     cmd = ['%(ENV)s', '%(BIN)s/pg_ctl', 'stop', '-w', '-m', 'fast']
     local(' '.join(cmd) % env.postgres)
+
 
 def setup_database():
     """Setup the database"""
@@ -69,10 +73,12 @@ def setup_database():
     syncdb()
     setup_db_access()
 
+
 def createdb():
     """Create the database"""
     _set_postgres_environment()
     local("%(ENV)s %(BIN)s/createdb -U postgres -O postgres %(DATABASE)s" % env.postgres)
+
 
 def dropdb(warn_only=False):
     """Remove the database"""
@@ -82,6 +88,7 @@ def dropdb(warn_only=False):
     with settings(warn_only=warn_only):
         local("%(ENV)s %(BIN)s/dropdb -U postgres %(DATABASE)s" % env.postgres)
 
+
 def setup_db_access():
     """Grant access to the database"""
     _set_postgres_environment()
@@ -89,6 +96,7 @@ def setup_db_access():
     if 'pgtools' in django_settings['INSTALLED_APPS']:
         manage('grantuser', env.database['USER'],
                '--django_database_user=postgres')
+
 
 def _set_postgres_environment():
     """Update the environment with the PostgreSQL settings"""
@@ -118,6 +126,7 @@ def _set_postgres_environment():
 
     env.postgres['ENV'] = ' '.join(pg_env)
 
+
 def _set_database_environment():
     """Update the environment with the database settings"""
     if 'database' in env:
@@ -127,6 +136,7 @@ def _set_database_environment():
     settings = get_django_settings('DATABASES')
     db = settings['DATABASES']
     env.database = db['default']
+
 
 def _check_database():
     """Check the database is accessible"""
@@ -141,6 +151,7 @@ def _check_database():
             # presumably the db didn't exist
             success = False
     return success
+
 
 def _createrole():
     """Create required users/roles"""
