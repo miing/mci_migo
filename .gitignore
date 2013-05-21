@@ -9,7 +9,7 @@ dj/local.cfg
 scripts/local.cfg-
 
 # packages
-/packages/*
+packages
 
 # tests
 .coverage*
