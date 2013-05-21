@@ -10,7 +10,7 @@ from copy import copy
 
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler
-from django.core.management import call_command
+from django.core.management import call_command, CommandError
 from wsgi_intercept import (
     add_wsgi_intercept,
     remove_wsgi_intercept,
@@ -77,7 +77,7 @@ class ReadonlyCommandTestCase(SSOBaseTestCase):
         return output
 
     def test_readonly(self):
-        self.assertRaises(SystemExit, call_command, 'readonly')
+        self.assertRaises(CommandError, call_command, 'readonly')
 
     def test_readonly_list_all(self):
         output = self.get_status()

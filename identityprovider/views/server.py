@@ -69,10 +69,9 @@ from identityprovider.const import (
     LAUNCHPAD_TEAMS_NS,
 )
 from identityprovider.forms import (
-    AXFetchRequestForm,
     PreAuthorizeForm,
-    SRegRequestForm,
     TeamsRequestForm,
+    UserAttribsRequestForm,
 )
 
 from identityprovider.middleware.xrds import XRDSMiddleware
@@ -167,18 +166,19 @@ def _handle_openid_error(error):
 
 def _handle_user_response(request, orequest):
     response = None
+    rp_config = utils.get_rpconfig(orequest.trust_root)
+    user_verified_for_rp = _user_is_verified_for_rp(request.user, rp_config)
     if orequest.immediate:
-        rp_config = utils.get_rpconfig(orequest.trust_root)
         auto_authorized = _is_auto_authorized_rp(rp_config)
-        if (auto_authorized and twofactor.is_authenticated(request) and
+        if (auto_authorized and user_verified_for_rp and
+                twofactor.is_authenticated(request) and
                 _is_identity_owner(request.user, orequest)):
             if orequest.idSelect():
                 oresponse = orequest.answer(
                     True, identity=request.user.openid_identity_url)
             else:
                 oresponse = orequest.answer(True)
-            _add_sreg(request, orequest, oresponse)
-            _add_ax(request, orequest, oresponse)
+            _add_user_attribs(request, orequest, oresponse)
             _check_team_membership(request, orequest, oresponse,
                                    immediate=True)
             response = _django_response(request, oresponse, True)
@@ -193,14 +193,13 @@ def _handle_user_response(request, orequest):
         })
         response = render_to_response('server/invalid_identifier.html',
                                       context)
-    elif _openid_is_authorized(request, orequest):
+    elif (user_verified_for_rp and _openid_is_authorized(request, orequest)):
         if orequest.idSelect():
             oresponse = orequest.answer(
                 True, identity=request.user.openid_identity_url)
         else:
             oresponse = orequest.answer(True)
-        _add_sreg(request, orequest, oresponse)
-        _add_ax(request, orequest, oresponse)
+        _add_user_attribs(request, orequest, oresponse)
         _check_team_membership(request, orequest, oresponse, immediate=True)
         response = _django_response(request, oresponse, True)
     elif (twofactor.is_authenticated(request) and not
@@ -267,11 +266,11 @@ def decide(request, token):
         from webui.views import ui
         return ui.LoginView.as_view()(request, token, rpconfig=rpconfig)
 
-    if (not request.user.is_verified and
-            rpconfig is not None and not rpconfig.allow_unverified):
+    if not _user_is_verified_for_rp(request.user, rpconfig):
+        name = rpconfig.displayname if rpconfig else orequest.trust_root
         messages.warning(
             request,
-            SITE_REQUIRES_VERIFIED.format(rp_name=rpconfig.displayname),
+            SITE_REQUIRES_VERIFIED.format(rp_name=name)
         )
         return HttpResponseRedirect(reverse('account-emails'))
 
@@ -299,19 +298,16 @@ def decide(request, token):
     except OpenIDRPSummary.DoesNotExist:
         approved_data = {}
 
-    ax_form = (AXFetchRequestForm(
-        request, ax_request, rpconfig, approved_data=approved_data.get('ax'))
-        if ax_request else None)
-    sreg_form = SRegRequestForm(request, sreg_request, rpconfig,
-                                approved_data=approved_data.get('sreg'))
+    user_attribs_form = UserAttribsRequestForm(
+        request, sreg_request, ax_request, rpconfig,
+        approved_data=approved_data.get('user_attribs'))
     teams_form = TeamsRequestForm(request, teams_request, rpconfig,
                                   approved_data=approved_data.get('teams'))
     context = RequestContext(request, {
         'account': request.user,
         'trust_root': orequest.trust_root,
         'rpconfig': rpconfig,
-        'ax_form': ax_form,
-        'sreg_form': sreg_form,
+        'user_attribs_form': user_attribs_form,
         'teams_form': teams_form,
         'token': token,
         'sane_trust_root': _request_has_sane_trust_root(orequest)
@@ -488,6 +484,12 @@ def _is_auto_authorized_rp(rp):
     return rp is not None and rp.auto_authorize
 
 
+def _user_is_verified_for_rp(user, rp):
+    if user.is_authenticated():
+        return user.is_verified or (rp is not None and rp.allow_unverified)
+    return False
+
+
 def _should_reauthenticate(openid_request, user):
     """Should the user re-enter their password?
 
@@ -568,19 +570,14 @@ def _get_approved_data(request, orequest):
     rpconfig = utils.get_rpconfig(orequest.trust_root)
 
     sreg_request = SRegRequest.fromOpenIDRequest(orequest)
-    sreg_form = SRegRequestForm(request, sreg_request, rpconfig)
-    if sreg_form.has_data:
-        approved_data['sreg'] = {
-            'requested': sreg_form.data.keys(),
-            'approved': sreg_form.data_approved_for_request.keys()}
-
     ax_request = ax.FetchRequest.fromOpenIDRequest(orequest)
-    if ax_request:
-        ax_form = AXFetchRequestForm(request, ax_request, rpconfig)
-        if ax_form.has_data:
-            approved_data['ax'] = {
-                'requested': ax_form.data.keys(),
-                'approved': ax_form.data_approved_for_request.keys()}
+
+    user_attribs_form = UserAttribsRequestForm(
+        request, sreg_request, ax_request, rpconfig)
+    if user_attribs_form.has_data:
+        approved_data['user_attribs'] = {
+            'requested': user_attribs_form.data.keys(),
+            'approved': user_attribs_form.data_approved_for_request.keys()}
 
     args = orequest.message.getArgs(LAUNCHPAD_TEAMS_NS)
     team_names = args.get('query_membership')
@@ -607,26 +604,22 @@ def _is_identity_owner(user, openid_request):
     return ret
 
 
-def _add_sreg(request, openid_request, openid_response):
-    # Add sreg result data
+def _add_user_attribs(request, openid_request, openid_response):
+    # Add ax and sreg result data
     sreg_request = SRegRequest.fromOpenIDRequest(openid_request)
+    ax_request = ax.FetchRequest.fromOpenIDRequest(openid_request)
     rpconfig = utils.get_rpconfig(openid_request.trust_root)
-    form = SRegRequestForm(request, sreg_request, rpconfig)
+    form = UserAttribsRequestForm(
+        request, sreg_request, ax_request, rpconfig)
     if form.data_approved_for_request:
         sreg_response = SRegResponse.extractResponse(
             sreg_request, form.data_approved_for_request)
         openid_response.addExtension(sreg_response)
-
-
-def _add_ax(request, openid_request, openid_response):
-    ax_request = ax.FetchRequest.fromOpenIDRequest(openid_request)
-    if ax_request:
-        rpconfig = utils.get_rpconfig(openid_request.trust_root)
-        form = AXFetchRequestForm(request, ax_request, rpconfig)
-        if form.data_approved_for_request:
+        if ax_request is not None:
             ax_response = ax.FetchResponse(ax_request)
             for k, v in form.data_approved_for_request.iteritems():
-                ax_response.addValue(AX_DATA_FIELDS.getNamespaceURI(k), v)
+                if AX_DATA_FIELDS.getNamespaceURI(k) in ax_request:
+                    ax_response.addValue(AX_DATA_FIELDS.getNamespaceURI(k), v)
             openid_response.addExtension(ax_response)
 
 
@@ -646,8 +639,7 @@ def _process_decide(request, orequest, decision):
             request.user,
             orequest.trust_root,
             client_id=request.session.session_key)
-        _add_sreg(request, orequest, oresponse)
-        _add_ax(request, orequest, oresponse)
+        _add_user_attribs(request, orequest, oresponse)
         # if there's no submitted POST data, this is an auto-authorized
         # (immediate) request
         immediate = not request.POST

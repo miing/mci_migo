@@ -1,8 +1,8 @@
 {% load i18n static_url %}
 
-{% if token %}{% url new_account token as new_account_url %}
-{% else %}{% url new_account as new_account_url %}{% endif %}
-<form action="{{ new_account_url }}" method="post" name="newaccountform" data-qa-id="_create_account_form">
+{% if token %}{% url 'new_account' token as new_account_url %}
+{% else %}{% url 'new_account' as new_account_url %}{% endif %}
+<form action="{{ new_account_url }}" method="post" name="newaccountform" data-qa-id="create_account_form">
 
     {% csrf_token %}
 
@@ -57,7 +57,7 @@
         <input type="hidden" name="old" value="old">
         {% endif %}
 
-        <button type="submit" class="cta" name="continue"><span>{% trans "Create account" %}</span></button>
+        <button type="submit" class="btn cta" name="continue"><span>{% trans "Create account" %}</span></button>
         {% include "common/cancel_link.html" %}
     </div>
 </form>

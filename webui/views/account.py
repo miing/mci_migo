@@ -29,6 +29,7 @@ from identityprovider.emailutils import (
 )
 from identityprovider.forms import EditAccountForm, NewEmailForm
 from identityprovider.models import (
+    Account,
     AuthToken,
     EmailAddress,
 )
@@ -38,8 +39,14 @@ from identityprovider.models.const import (
     TokenType,
 )
 from identityprovider.models.twofactor import is_twofactor_enabled
-from identityprovider.signals import account_email_added
-from identityprovider.utils import get_object_or_none
+from identityprovider.signals import (
+    account_email_added,
+    set_session_oauth_token,
+)
+from identityprovider.utils import (
+    get_object_or_none,
+    redirection_url_for_token,
+)
 from identityprovider.views.server import xrds
 from identityprovider.views.utils import (
     get_rpconfig_from_request,
@@ -60,7 +67,6 @@ from webui.views.const import (
 from webui.views.ui import LoginView
 from webui.views.utils import (
     display_email_sent,
-    redirection_url_for_token,
     set_session_email
 )
 
@@ -113,6 +119,8 @@ def account_edit(request, token=None):
                                enable_device_prefs=enable_device_prefs)
         if form.is_valid():
             form.save()
+            if form.password_changed:
+                set_session_oauth_token(Account, account, request)
             messages.success(request, DETAILS_UPDATED)
             return HttpResponseRedirect(request.path)
     else:
@@ -312,7 +320,9 @@ def delete_email(request, token=None):
         redirection_url = (token and redirection_url_for_token(token) or
                            '/+emails')
         email.delete()
-        messages.success(request, EMAIL_DELETED.format(email=email.email))
+        messages.success(request,
+                         EMAIL_DELETED.format(email=email.email),
+                         'temporary')
         return HttpResponseRedirect(redirection_url)
     else:
         context = RequestContext(request, {

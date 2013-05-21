@@ -158,11 +158,12 @@ class SSOObjectFactory(object):
             account=account, name=name, key=key)
         return device
 
-    def make_oauth_token(self, account=None):
+    def make_oauth_token(self, account=None, token_name=None):
         """Create a new set of OAuth token and consumer creds."""
         if account is None:
             account = self.make_account()
-        token_name = self.get_unique_string(prefix='token-name')
+        if token_name is None:
+            token_name = self.get_unique_string(prefix='token-name')
         return account.create_oauth_token(token_name)
 
     def make_authtoken(self, token_type=None, email=None, redirection_url=None,

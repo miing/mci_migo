@@ -2,6 +2,7 @@
 # GNU Affero General Public License version 3 (see the file LICENSE).
 
 import copy
+import json
 import os
 import stat
 import shutil
@@ -14,8 +15,7 @@ from StringIO import StringIO
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db import DEFAULT_DB_ALIAS, connection
-from django.utils import simplejson as json
+from django.db import DEFAULT_DB_ALIAS, connection, connections
 from mock import Mock, patch
 
 from identityprovider.readonly import ReadOnlyManager
@@ -72,9 +72,10 @@ class ReadOnlyBaseTestCase(SSOBaseTestCase):
         self.addCleanup(shutil.rmtree, settings.DBFAILOVER_FLAG_DIR, True)
         self.addCleanup(patched.stop)
 
-        mock_settings_dict = copy.deepcopy(connection.settings_dict)
-        patched = patch.object(connection, 'settings_dict',
-                               mock_settings_dict)
+        mock_settings_dict = copy.deepcopy(
+            connections[DEFAULT_DB_ALIAS].settings_dict)
+        patched = patch.object(
+            connections[DEFAULT_DB_ALIAS], 'settings_dict', mock_settings_dict)
         patched.start()
         self.addCleanup(patched.stop)
 
@@ -416,21 +417,19 @@ class ReadOnlyViewsTestCase(ReadOnlyBaseTestCase):
              'PORT': '8000'}
         ]
         self.patch_app_servers_setting(new_setting)
-
-        expected = [{'appservers': [{'name': 'localhost', 'reachable': False}],
-                     'admin_media_prefix': settings.ADMIN_MEDIA_PREFIX,
-                     'clear_all_readonly': False,
-                     'set_all_readonly': False}]
+        expected = {'appservers': [{'name': 'localhost', 'reachable': False}],
+                    'clear_all_readonly': False,
+                    'set_all_readonly': False}
         r = self.client.get('/readonly')
         self.assertTemplateUsed(r, 'admin/readonly.html')
         for item in r.context:
-            self.assertEqual(item.dicts, expected)
+            for key, value in expected.items():
+                self.assertEqual(item[key], value)
 
     def test_get_server_atts_server_unreachable(self):
         servers = [{'SERVER_ID': 'localhost', 'SCHEME': 'http',
                     'HOST': 'localhost', 'VIRTUAL_HOST': '', 'PORT': '8000'}]
         expected = {'appservers': [{'name': 'localhost', 'reachable': False}],
-                    'admin_media_prefix': settings.ADMIN_MEDIA_PREFIX,
                     'clear_all_readonly': False,
                     'set_all_readonly': False}
         atts = get_server_atts(servers)
@@ -449,7 +448,6 @@ class ReadOnlyViewsTestCase(ReadOnlyBaseTestCase):
         servers = [{'SERVER_ID': 'localhost', 'SCHEME': 'http',
                     'HOST': 'localhost', 'VIRTUAL_HOST': '', 'PORT': '8000'}]
         expected = {'appservers': [{'name': 'localhost', 'reachable': False}],
-                    'admin_media_prefix': settings.ADMIN_MEDIA_PREFIX,
                     'clear_all_readonly': False,
                     'set_all_readonly': True}
         atts = get_server_atts(servers)
@@ -467,7 +465,6 @@ class ReadOnlyViewsTestCase(ReadOnlyBaseTestCase):
                     'HOST': 'localhost', 'VIRTUAL_HOST': '', 'PORT': '8000'}]
         expected = {'appservers': [{'name': 'localhost', 'reachable': True,
                                     'readonly': True}],
-                    'admin_media_prefix': settings.ADMIN_MEDIA_PREFIX,
                     'clear_all_readonly': True,
                     'set_all_readonly': False}
         atts = get_server_atts(servers)

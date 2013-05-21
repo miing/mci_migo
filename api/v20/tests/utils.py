@@ -9,4 +9,5 @@ def call(method, url, data):
     # fake the json deserialisation that piston framework performs
     request.data = data
     response = method(request)
+    response._base_content_is_iter = False
     return response, response._container

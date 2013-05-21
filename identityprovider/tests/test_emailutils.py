@@ -171,6 +171,7 @@ class SendEmailTestCase(SSOBaseTestCase):
     brand = 'ubuntu'
     brand_desc = 'Foo Bar Baz'
     brand_url = 'http://foobarbaz.amazing'
+    tokens_count = 1
 
     def setUp(self):
         super(SendEmailTestCase, self).setUp()
@@ -205,9 +206,11 @@ class SendEmailTestCase(SSOBaseTestCase):
         assert AuthToken.objects.all().count() == 0
 
     def assert_tokens(self, target_email=None, requester_email=None,
-                      displayname=None, password=None, tokens_count=1,
+                      displayname=None, password=None, tokens_count=None,
                       **kwargs):
         tokens = AuthToken.objects.all()
+        if tokens_count is None:
+            tokens_count = self.tokens_count
         self.assertEqual(tokens.count(), tokens_count)
 
         if target_email is None:
@@ -551,6 +554,7 @@ class SendEmailToNewAddressTestCase(SendEmailTestCase):
 
     email = 'testtest@canonical.com'
     status = EmailStatus.NEW
+    tokens_count = 2
 
     # assert changes since the invalidation link has to added to emails
 
@@ -569,5 +573,6 @@ class SendEmailToUnknownAddressTestCase(SendEmailToNewAddressTestCase):
 
     email = 'newemail@foo.com'
     status = None
+    tokens_count = 2
 
     # all the same asserts as parent, unknown email behaves just like NEW

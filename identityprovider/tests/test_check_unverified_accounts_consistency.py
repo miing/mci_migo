@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from StringIO import StringIO
 
-from django.core.management import call_command
+from django.core.management import call_command, CommandError
 
 from identityprovider.models import Account
 from identityprovider.models.const import AccountStatus
@@ -85,16 +85,16 @@ class CheckUnverifiedAccountsTestCase(SSOBaseTestCase):
         self.create_unverified_account(seconds_old=seconds)
         self.create_unverified_account(seconds_old=seconds - 1)
 
-        self.call_command()
+        with self.assertRaises(CommandError) as cm:
+            self.call_command()
 
         msg = ('found %s suspended and unverified accounts older than %s '
                'days (those should be deleted).')
         self.mock_logger.warning.assert_called_once_with(
             'check_unverified_accounts_consistency: ' + msg,
             2, self.delete_threshold)
-        self.sys_exit.assert_called_once_with(1)
-        self.stderr.seek(0)
-        self.assertIn(msg % (2, self.delete_threshold), self.stderr.read())
+        self.assertEqual(msg % (2, self.delete_threshold),
+                         str(cm.exception))
         self.assertFalse(self.mock_logger.info.called)
         self.assertFalse(self.mock_logger.error.called)
         self.assertFalse(self.mock_logger.exception.called)

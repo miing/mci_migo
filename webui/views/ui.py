@@ -5,6 +5,8 @@
 import logging
 import os
 
+from urllib import urlencode
+
 from convoy.combo import (
     combine_files,
     parse_qs,
@@ -20,7 +22,6 @@ from django.http import (
     HttpResponse,
     HttpResponseNotAllowed,
     HttpResponseRedirect,
-    urlencode,
 )
 from django.shortcuts import (
     get_object_or_404,
@@ -40,7 +41,6 @@ from identityprovider import (
 )
 from identityprovider.forms import (
     ConfirmNewAccountForm,
-    GenericEmailForm,
     LoginForm,
     NewAccountForm,
     OldNewAccountForm,
@@ -72,6 +72,7 @@ from identityprovider.utils import (
     encrypt_launchpad_password,
     get_current_brand,
     polite_form_errors,
+    redirection_url_for_token,
 )
 from identityprovider.stats import stats
 from identityprovider.views.utils import (
@@ -83,7 +84,7 @@ from identityprovider.views.utils import (
 from webui.decorators import (
     check_readonly,
     dont_cache,
-    guest_required,
+    redirect_home_if_logged_in,
     limitlogin,
     requires_cookies,
     require_twofactor_enabled,
@@ -92,7 +93,6 @@ from webui.views.utils import (
     add_captcha_settings,
     display_email_sent,
     set_session_email,
-    redirection_url_for_token,
 )
 from webui.views import registration
 
@@ -254,7 +254,7 @@ class LoginView(LoginBaseView):
     # we must overwrite and decorate the dispatch method
     # OMFG. Srsly? :(
     # Docs: https://docs.djangoproject.com/en/dev/topics/class-based-views/
-    @method_decorator(guest_required)
+    @method_decorator(redirect_home_if_logged_in)
     @method_decorator(dont_cache)
     @method_decorator(limitlogin())
     @method_decorator(requires_cookies)
@@ -568,7 +568,7 @@ def new_account(request, token=None):
         return old_new_account(request, token)
 
 
-@guest_required
+@redirect_home_if_logged_in
 @check_readonly
 @requires_cookies
 def old_new_account(request, token=None):
@@ -808,125 +808,6 @@ def suspended(request):
     return TemplateResponse(request, 'account/suspended.html')
 
 
-def _handle_reset_request(request, email, token):
-    account = Account.objects.get_by_email(email)
-    if account is not None:
-        verified_emails = account.verified_emails()
-        if account.can_reset_password:
-            redirection_url = redirection_url_for_token(token)
-            if not verified_emails.filter(email=email).count() > 0:
-                # provided email is not verified
-                # send email to verified addresses instead
-                # XXXX should not send multiple emails here!
-                for email_obj in verified_emails:
-                    emailutils.send_password_reset_email(account,
-                                                         email_obj.email,
-                                                         redirection_url)
-            else:
-                emailutils.send_password_reset_email(account, email,
-                                                     redirection_url)
-            set_session_email(request.session, email)
-        elif verified_emails.count() == 0:
-            # user does not have any verified email address
-            # he should contact support
-            condition = ("account '%s' has no verified email address" %
-                         account.displayname)
-            logger.debug("In view 'forgot_password' email was not "
-                         "sent out because %s" % condition)
-        else:
-            # log why email was not sent
-            condition = ("account '%s' is not active" %
-                         account.displayname)
-            logger.debug("In view 'forgot_password' email was not "
-                         "sent out because %s" % condition)
-    else:
-        # they've tried to reset with an invalid email, so send them an email
-        # on how to create an account
-        emailutils.send_invitation_after_password_reset(email)
-
-
-@guest_required
-@check_readonly
-@requires_cookies
-def forgot_password(request, token=None):
-    # Need this for displaying metrics per RP
-    rpconfig = get_rpconfig_from_request(request, token)
-    if request.method == 'GET':
-        # track forgot password requests
-        stats.increment('flows.forgot_password', key='requested',
-                        rpconfig=rpconfig)
-
-        if 'email' in request.GET:
-            form = GenericEmailForm(initial={'email': request.GET['email']})
-        else:
-            form = GenericEmailForm()
-    elif request.method == 'POST':
-        form = GenericEmailForm(request.POST)
-        if form.is_valid():
-            response = _verify_captcha_response(
-                'registration/forgot_password.html', request, form)
-            if response:
-                # track captcha errors
-                stats.increment('flows.forgot_password', key='error.captcha',
-                                rpconfig=rpconfig)
-                return response
-
-            email = form.cleaned_data['email']
-
-            # handle the reset request
-            _handle_reset_request(request, email, token)
-
-            # regardless of result, we always display the same information back
-            # to the user
-            msgs = {
-                'email_to': email,
-                'email_from': settings.NOREPLY_FROM_ADDRESS,
-                'support_form_url': settings.SUPPORT_FORM_URL,
-            }
-
-            if get_current_brand() == 'ubuntuone':
-                heading = 'Reset password'
-                reason = _(
-                    "We have sent an email to %(email_to)s. To continue, "
-                    "click on the link in your email, or enter the "
-                    "confirmation code below."
-                ) % msgs
-            else:
-                heading = 'Forgotten your password?'
-                reason = _(
-                    "We've just emailed "
-                    "%(email_to)s (from %(email_from)s) with "
-                    "instructions on resetting your password.<br/><br/>"
-                    "If the email address you provided has not been "
-                    "verified we'll use your account's verified email "
-                    "address instead. If you don't have a verified email "
-                    "address please "
-                    "<a href='%(support_form_url)s'>contact support</a>."
-                ) % msgs
-            return display_email_sent(
-                request,
-                email,
-                heading,
-                reason,
-                _("Check that you&rsquo;ve actually "
-                  "entered a subscribed email address."),
-                token=token,
-                rpconfig=rpconfig,
-            )
-        else:
-            # track form errors
-            stats.increment('flows.forgot_password', key='error.form',
-                            rpconfig=rpconfig)
-            polite_form_errors(form._errors)
-    else:
-        return HttpResponseNotAllowed(['GET', 'POST'])
-
-    captcha_settings = dict(form=form, rpconfig=rpconfig, token=token)
-    context = RequestContext(request, add_captcha_settings(captcha_settings))
-    return render_to_response('registration/forgot_password.html', context)
-
-
-@guest_required
 def reset_password(request, authtoken, email_address, token=None):
     # Need this for displaying metrics per RP
     rpconfig = get_rpconfig_from_request(request, token)

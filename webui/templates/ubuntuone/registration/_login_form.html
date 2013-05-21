@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<form id="login-form" action="{{ login_path }}" method="post" name="loginform" data-qa-id="_login_form">
+<form id="login-form" action="{{ login_path }}" method="post" name="loginform" data-qa-id="login_form">
     {% csrf_token %}
     <div class="input-row{% if form.email.errors or form.non_field_errors %} haserrors{% endif %} email-input">
         <label for="id_email">{% trans "Please type your email:" %}</label>
@@ -38,7 +38,7 @@
 
     <div class="actions">
         {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-        <button type="submit" class="cta" name="continue" data-qa-id="_qa_ubuntu_login_button"><span>{% trans "Log in" %}</span></button>
+        <button type="submit" class="btn cta" name="continue" data-qa-id="ubuntu_login_button"><span>{% trans "Log in" %}</span></button>
         <p class="forgot-password">{% include "common/forgot_password_link.html" %}</p>
 
         {% comment %}

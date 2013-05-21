@@ -5,7 +5,7 @@
   <p>{% blocktrans %}Your printed list of backup codes is nearly used up.
   Please print a new list for the following devices.{% endblocktrans %}</p>
   {% for device in paper_devices_needing_renewal %}
-  <p>{{ device.name }} <a href="{% url device-print device.id %}" class="btn-sm"><span>{% trans 'Generate New Codes' %}</span></a></p>
+  <p>{{ device.name }} <a href="{% url 'device-print' device.id %}" class="btn-sm"><span>{% trans 'Generate New Codes' %}</span></a></p>
   {% endfor %}
 </div>
 {% endif %}

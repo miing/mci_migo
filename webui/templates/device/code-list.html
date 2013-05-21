@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<ol id="codes" class="codelist">
+<ol id="codes" class="codelist" data-qa-id="codelist">
 {% for code in codes %}
   <li>
     {% if forloop.counter0 < counter|default:0 %}

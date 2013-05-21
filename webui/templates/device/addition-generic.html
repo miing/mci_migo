@@ -6,6 +6,7 @@ Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
 Affero General Public License version 3 (see the file LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="generic_device_addition"{% endblock %}
 
 {% block extra_header %}
 <style type="text/css">
@@ -73,7 +74,7 @@ p span.key
   <p>
     <input type="hidden" name="type" value="{{ type }}">
     <input type="hidden" name="hex_key" value="{{ hex_key }}">
-    <button class="btn" type="submit" data-qa-id="add-device">
+    <button class="btn" type="submit" data-qa-id="add_generic_device">
       <span><span>{% trans "Add device" %}</span></span>
     </button>
     {% trans "or" %} <a data-qa-id="cancel" href="{{ device_list_path }}">{% trans "cancel" %}</a>

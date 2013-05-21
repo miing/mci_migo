@@ -4,7 +4,7 @@
 
 {% block extra_css %}
     {% if rpconfig and rpconfig.logo_url %}
-    <style type="text/css" data-qa-id="_test_2f_rp">
+    <style type="text/css" data-qa-id="test_2f_rp">
         p.title {
             background-image: url('{{ rpconfig.logo_url }}');
             background-repeat: no-repeat;
@@ -29,9 +29,9 @@
 
         <div class="form-box">
 
-            <p class="title" data-qa-id="_qa_ubuntu_2fauth_title">
+            <p class="title" data-qa-id="ubuntu_2fauth_title">
                 {% if rpconfig and rpconfig.displayname %}
-                <span class="trusted-rp-name" data-qa-id="_qa_trusted_rp_2fauth">
+                <span class="trusted-rp-name" data-qa-id="trusted_rp_2fauth">
                     {{ rpconfig.displayname }}
                 </span>
                 {% endif %}

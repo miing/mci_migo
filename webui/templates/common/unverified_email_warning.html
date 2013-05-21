@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% if need_verify_email_warning  %}
-{% url verify_email as verify %}
+{% url 'verify_email' as verify %}
 <div id="unverified_email_warning" class="message warning">
   <p>
     {% blocktrans with unverified_email.id as email_id %}

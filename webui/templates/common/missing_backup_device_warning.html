@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% if need_backup_device_warning %}
-{% url device-addition as add_device %}
+{% url 'device-addition' as add_device %}
 <div class="message warning" id="missing_backup_device">
   <p>
     {% blocktrans %}We strongly recommend having two authentication devices,

@@ -23,7 +23,7 @@ from oops_dictconfig.configglue_options import OopsOption
 from saml2sso.schema import Saml2IdpSchema
 
 
-DjangoSchema = schemas.get('1.3')
+DjangoSchema = schemas.get('1.5.1')
 
 
 class UpperCaseDictOption(DictOption):
@@ -56,6 +56,9 @@ class SSOSchema(DjangoSchema):
     pgconnect_timeout = IntOption(default=10)
     google_analytics_id = StringOption()
     support_phone = StringOption()
+
+    class gargoyle(Section):
+        gargoyle_switch_defaults = DictOption(item=DictOption())
 
     #i18n
     class i18n(Section):

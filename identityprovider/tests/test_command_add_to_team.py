@@ -1,9 +1,5 @@
-from StringIO import StringIO
-
-from django.core.management import call_command
+from django.core.management import call_command, CommandError
 from django.test import TestCase
-
-from mock import patch
 
 from identityprovider.models import Account, Person
 from identityprovider.tests import DEFAULT_USER_PASSWORD
@@ -40,31 +36,21 @@ class AddToTeamCommandTestCase(TestCase):
         self.assertTrue(self.account.person_in_team('TeamA'))
         self.assertTrue(self.account.person_in_team('TeamB'))
 
-    @patch('sys.exit')
-    def test_add_unknown_email(self, mock_sys_exit):
-        stderr = StringIO()
-        call_command('add_to_team', 'TeamA', email='foo@bar.com',
-                     stderr=stderr)
-        mock_sys_exit.assert_called_once_with(1)
-        stderr.seek(0)
-        output = stderr.read()
-        self.assertIn("Error: Email 'foo@bar.com' does not exist", output)
+    def test_add_unknown_email(self):
+        with self.assertRaises(CommandError) as cm:
+            call_command('add_to_team', 'TeamA', email='foo@bar.com')
 
-    @patch('sys.exit')
-    def test_add_unknown_openid(self, mock_sys_exit):
-        stderr = StringIO()
-        call_command('add_to_team', 'TeamA', openid='foobar', stderr=stderr)
-        mock_sys_exit.assert_called_once_with(1)
-        stderr.seek(0)
-        output = stderr.read()
-        self.assertIn("Error: Account with openid 'foobar' does not exist",
-                      output)
+        self.assertEqual("Email 'foo@bar.com' does not exist",
+                         str(cm.exception))
 
-    @patch('sys.exit')
-    def test_add_no_team(self, mock_sys_exit):
-        stderr = StringIO()
-        call_command('add_to_team', stderr=stderr)
-        mock_sys_exit.assert_called_once_with(1)
-        stderr.seek(0)
-        output = stderr.read()
-        self.assertIn('Error: Need to specify --email or --openid', output)
+    def test_add_unknown_openid(self):
+        with self.assertRaises(CommandError) as cm:
+            call_command('add_to_team', 'TeamA', openid='foobar')
+        self.assertEqual("Account with openid 'foobar' does not exist",
+                         str(cm.exception))
+
+    def test_add_no_team(self):
+        with self.assertRaises(CommandError) as cm:
+            call_command('add_to_team')
+        self.assertEqual('Need to specify --email or --openid',
+                         str(cm.exception))

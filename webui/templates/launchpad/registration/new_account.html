@@ -39,8 +39,8 @@ LICENSE).
   {% blocktrans %}Enter the following information, and we will send you instructions on how to confirm your account.{% endblocktrans %}
   {% endifswitch %}
 </p>
-    {% if token %}{% url new_account token as new_account_url %}
-    {% else %}{% url new_account as new_account_url %}{% endif %}
+    {% if token %}{% url 'new_account' token as new_account_url %}
+    {% else %}{% url 'new_account' as new_account_url %}{% endif %}
     <form action="{{ new_account_url }}" method="post" name="newaccountform">
         {% csrf_token %}
         <p class="input-row{% if form.displayname.errors %} haserrors{% endif %}">

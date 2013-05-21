@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from gargoyle.testutils import switches
+
 from identityprovider.models.account import Account
 from identityprovider.models.const import TokenType
 from identityprovider.tests.helpers import OpenIDTestCase
@@ -8,6 +10,7 @@ from identityprovider.utils import get_current_brand
 
 class SSOWorkflowCompleteTestCase(OpenIDTestCase):
 
+    @switches(ALLOW_UNVERIFIED=False)
     def test(self):
         # = Launchpad Single-Signon Workflow: The whole process =
 
@@ -33,7 +36,7 @@ class SSOWorkflowCompleteTestCase(OpenIDTestCase):
         )
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_create_account_link"]',
+            'a[data-qa-id="create_account_link"]',
             'href')
         response = self.client.post(link, data=data, follow=True)
 
@@ -97,7 +100,7 @@ class SSOWorkflowCompleteTestCase(OpenIDTestCase):
 
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_forgot_password_link"]',
+            'a[data-qa-id="forgot_password_link"]',
             'href')
         response = self.client.get(link)
         title = self.get_from_response(response, 'h1.main').text()

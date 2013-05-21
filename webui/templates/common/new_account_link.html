@@ -1,8 +1,8 @@
 {% load i18n %}
-{% if token %}{% url new_account token as new_account_url %}
-{% else %}{% url new_account as new_account_url %}{% endif %}
+{% if token %}{% url 'new_account' token as new_account_url %}
+{% else %}{% url 'new_account' as new_account_url %}{% endif %}
 {% if not readonly %}
     <a href="{{ new_account_url }}{% if form.email.data %}?email={{ form.email.data|urlencode }}{% endif %}"
-       id="new-account-link" data-qa-id="_qa_create_account_link" class="btn alt"><span><span>{% trans "Create account" %}</span></span>
+       id="new-account-link" data-qa-id="create_account_link" class="btn alt"><span><span>{% trans "Create account" %}</span></span>
     </a>
 {% endif %}

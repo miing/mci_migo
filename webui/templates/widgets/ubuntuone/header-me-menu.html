@@ -2,8 +2,8 @@
 <ul>
 {% if user.is_authenticated %}
     <li>
-        {{user.displayname}} <a href="{% url account-index %}">{% trans "My account" %}</a> <span class="sep">|</span>
-        <a href="{% url logout %}">{% trans "Log out" %}</a>
+        {{user.displayname}} <a href="{% url 'account-index' %}">{% trans "My account" %}</a> <span class="sep">|</span>
+        <a href="{% url 'logout' %}" id="logout-link">{% trans "Log out" %}</a>
     </li>
 {% endif %}
 </ul>

@@ -1,7 +1,7 @@
 # Copyright 2010 Canonical Ltd.  This software is licensed under the
 # GNU Affero General Public License version 3 (see the file LICENSE).
 
-from django.utils import simplejson as json
+import json
 import os
 import socket
 import stat
@@ -112,7 +112,6 @@ def get_server_atts(servers):
         appservers.append(data)
     atts = {
         'appservers': appservers,
-        'admin_media_prefix': settings.ADMIN_MEDIA_PREFIX,
         'clear_all_readonly': clear_all_readonly,
         'set_all_readonly': set_all_readonly,
     }

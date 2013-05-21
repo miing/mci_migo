@@ -559,7 +559,7 @@ class TestDeviceRemoval(TwoFactorMixin, SSOBaseTestCase):
 
         tree = PyQuery(response.content)
         self.assertEqual(tree.find(
-            '[data-qa-id=_device_removal_device_name]').text(), "Some device")
+            '[data-qa-id="device_removal_device_name"]').text(), "Some device")
 
     def test_post(self):
         account = self.factory.make_account()

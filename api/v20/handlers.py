@@ -8,13 +8,14 @@ from django.conf import settings
 from gargoyle import gargoyle
 from oauth import oauth
 from piston.handler import AnonymousBaseHandler, BaseHandler
-from piston.utils import require_mime, rc
+from piston.utils import require_mime
 
 from api.v20 import registration
 from api.v20.utils import (
     errors,
     get_account_data,
-    get_minimal_account_data
+    get_minimal_account_data,
+    rc
 )
 from identityprovider import emailutils
 from identityprovider.login import (
@@ -36,7 +37,11 @@ from identityprovider.models.const import (
     AccountStatus,
     TokenType,
 )
+from identityprovider.utils import redirection_url_for_token
 from identityprovider.store import SSODataStore
+
+
+logger = logging.getLogger('sso')
 
 
 class AnonymousAccountsHandler(AnonymousBaseHandler):
@@ -72,11 +77,17 @@ class PasswordResetTokenHandler(BaseHandler):
         if email is None:
             return errors.INVALID_DATA(email='Field required')
 
+        token = data.get('token')
+
         account = Account.objects.get_by_email(email)
         invalidated_email = InvalidatedEmailAddress.objects.filter(
             email__iexact=email)
 
         if account is None:
+            # they've tried to reset with an invalid email, so send them
+            # an email on how to create an account
+            emailutils.send_invitation_after_password_reset(email)
+
             if invalidated_email.exists():
                 # there is no account with this email
                 # but there was some with it invalidated
@@ -88,20 +99,41 @@ class PasswordResetTokenHandler(BaseHandler):
 
         if not account.can_reset_password:
             if account.status == AccountStatus.SUSPENDED:
+                # log why email was not sent
+                condition = ("account '%s' is not active" %
+                             account.displayname)
+                logger.debug("PasswordResetTokenHandler.create: email was "
+                             "not sent out because %s" % condition)
                 return errors.ACCOUNT_SUSPENDED()
             elif account.status == AccountStatus.DEACTIVATED:
+                # log why email was not sent
+                condition = ("account '%s' is not active" %
+                             account.displayname)
+                logger.debug("PasswordResetTokenHandler.create: email was "
+                             "not sent out because %s" % condition)
                 return errors.ACCOUNT_DEACTIVATED()
+
+            # user does not have any verified email address
+            # he should contact support
+            condition = ("account '%s' is not allowed to reset password" %
+                         account.displayname)
+            logger.debug("PasswordResetTokenHandler.create: email was not "
+                         "sent out because %s" % condition)
             return errors.CAN_NOT_RESET_PASSWORD()
+
+        if account.preferredemail is not None:
+            email = account.preferredemail.email
 
         tokens = AuthToken.objects.filter(
             token_type=TokenType.PASSWORDRECOVERY, requester_email=email,
-            email=account.preferredemail.email, date_consumed=None)
+            email=email, date_consumed=None)
         if tokens.count() >= settings.MAX_PASSWORD_RESET_TOKENS:
             return errors.TOO_MANY_TOKENS()
 
         # create new token and send email to user
+        redirection_url = redirection_url_for_token(token)
         token = emailutils.send_password_reset_email(
-            account, account.preferredemail.email)
+            account, email, redirection_url)
 
         # return response
         data = dict(email=token.email)

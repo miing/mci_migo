@@ -2,6 +2,7 @@ from django.utils import simplejson as json
 
 from django.core import mail
 from django.core.urlresolvers import NoReverseMatch, reverse
+from gargoyle.testutils import switches
 from mock import ANY, patch
 
 from identityprovider.models import (
@@ -20,11 +21,13 @@ from identityprovider.tests.utils import (
     authorization_header_from_token,
     patch_settings,
 )
+from identityprovider.utils import redirection_url_for_token
 
 from api.v20 import handlers
 
 
 class POSTOnlyResourceMixin(object):
+
     def do_post(self, data=None):
         if data is None:
             data = getattr(self, 'data', {})
@@ -39,6 +42,8 @@ class POSTOnlyResourceMixin(object):
 
     def test_requires_post_data_json_encoded(self):
         response = self.client.post(self.url, data={'foo': ['bar', 'baz']})
+        # django-piston doesn't set this required attribute
+        response._base_content_is_iter = False
         self.assertContains(response, 'Bad Request', status_code=400)
 
 
@@ -254,6 +259,7 @@ class PasswordResetTokenHandlerTestCase(SSOBaseTestCase,
         self.token = self.factory.make_authtoken(
             token_type=TokenType.PASSWORDRECOVERY, email=self.email.email)
         self.url = reverse(self.url_name)
+        self.mock_logger = self._apply_patch('api.v20.handlers.logging')
 
     def test_email_missing(self):
         response = self.do_post()
@@ -265,7 +271,12 @@ class PasswordResetTokenHandlerTestCase(SSOBaseTestCase,
             'extra': {'email': 'Field required'}})
 
     def test_invalid_email(self):
-        response = self.do_post({'email': 'invalid@foo.com'})
+        name = ('api.v20.handlers.emailutils.'
+                'send_invitation_after_password_reset')
+        with patch(name) as mock_send_invitation:
+            response = self.do_post({'email': 'invalid@foo.com'})
+
+        mock_send_invitation.assert_called_once_with('invalid@foo.com')
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content)
         self.assertEqual(content, {
@@ -288,6 +299,10 @@ class PasswordResetTokenHandlerTestCase(SSOBaseTestCase,
             'code': 'ACCOUNT_SUSPENDED',
             'extra': {}})
 
+        condition = "account '%s' is not active" % self.account.displayname
+        self.mock_logger.debug("PasswordResetTokenHandler.create: email was "
+                               "not sent out because %s" % condition)
+
     def test_deactivated_account(self):
         self.account.status = AccountStatus.DEACTIVATED
         self.account.save()
@@ -304,6 +319,10 @@ class PasswordResetTokenHandlerTestCase(SSOBaseTestCase,
             'code': 'ACCOUNT_DEACTIVATED',
             'extra': {}})
 
+        condition = "account '%s' is not active" % self.account.displayname
+        self.mock_logger.debug("PasswordResetTokenHandler.create: email was "
+                               "not sent out because %s" % condition)
+
     def test_can_not_reset_password(self):
         name = 'identityprovider.models.account.Account.can_reset_password'
         with patch(name, False):
@@ -315,6 +334,10 @@ class PasswordResetTokenHandlerTestCase(SSOBaseTestCase,
             'message': 'Can not reset password. Please contact login support',
             'code': 'CAN_NOT_RESET_PASSWORD',
             'extra': {}})
+
+        condition = "account '%s' is not active" % self.account.displayname
+        self.mock_logger.debug("PasswordResetTokenHandler.create: email was "
+                               "not sent out because %s" % condition)
 
     def test_reset_password(self):
         email = self.email.email
@@ -350,6 +373,29 @@ class PasswordResetTokenHandlerTestCase(SSOBaseTestCase,
         mail_content = unicode(mail.outbox[0].message())
         self.assertIn(email.email, mail_content)
         self.assertNotIn(self.email.email, mail_content)
+
+    @switches(ALLOW_UNVERIFIED=False)
+    def test_reset_password_no_preferredemail(self):
+        email = EmailAddress.objects.get(id=self.email.id)
+        email.status = EmailStatus.NEW
+        email.save()
+        # cleanup old tokens
+        AuthToken.objects.filter(email=email.email).delete()
+        account = Account.objects.get(id=self.account.id)
+        assert account.preferredemail is None
+
+        response = self.do_post({'email': email.email})
+
+        self.assertEqual(response.status_code, 201)
+
+        tokens = AuthToken.objects.filter(
+            token_type=TokenType.PASSWORDRECOVERY,
+            email=email.email)
+        self.assertEqual(tokens.count(), 1)
+
+        self.assertEqual(len(mail.outbox), 1)
+        mail_content = unicode(mail.outbox[0].message())
+        self.assertIn(self.email.email, mail_content)
 
     def test_too_many_tokens(self):
         with patch_settings(MAX_PASSWORD_RESET_TOKENS=0):
@@ -388,11 +434,26 @@ class PasswordResetTokenHandlerTestCase(SSOBaseTestCase,
     def test_invalidated_email(self):
         invalidated_email = self.email.invalidate()
 
-        response = self.do_post({'email': invalidated_email.email})
+        name = ('api.v20.handlers.emailutils.'
+                'send_invitation_after_password_reset')
+        with patch(name) as mock_send_invitation:
+            response = self.do_post({'email': invalidated_email.email})
 
+        mock_send_invitation.assert_called_once_with(self.email.email)
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
         self.assertEqual(content, {
             'message': ANY,
             'code': 'EMAIL_INVALIDATED',
             'extra': {}})
+
+    @patch('api.v20.handlers.emailutils.send_password_reset_email')
+    def test_redirect_from_token(self, mock_send_password_reset_email):
+        token = 'ABCDEFGH' * 2
+        redirection_url = redirection_url_for_token(token)
+        response = self.do_post({'email': self.email.email,
+                                 'token': token})
+        self.assertEqual(response.status_code, 201)
+
+        mock_send_password_reset_email.assert_called_once_with(
+            self.account, self.email.email, redirection_url)

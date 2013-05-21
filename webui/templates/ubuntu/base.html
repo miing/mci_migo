@@ -8,7 +8,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
 {% load i18n %}
 {% load static_url %}
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" {% block html_extra %}{% endblock %}>
     <head>
         <title>{% block title %}{% trans "Log in" %}{% endblock %}</title>
         <link rel="icon" type="image/vnd.microsoft.icon" href="{{ STATIC_URL }}identityprovider/ubuntu/favicon.ico" />

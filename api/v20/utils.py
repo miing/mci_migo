@@ -1,10 +1,12 @@
 # Copyright 2010-2012 Canonical Ltd.  This software is licensed under the
 # GNU Affero General Public License version 3 (see the file LICENSE).
-from django.utils import simplejson as json
+import json
 
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+
+from piston.utils import rc_factory
 
 from identityprovider.auth import SSOOAuthAuthentication
 from identityprovider.models.const import AccountStatus
@@ -18,6 +20,8 @@ def api_error(status, code, message, extra=None):
     }
     response = HttpResponse(content=data, status=status)
     response['Vary'] = 'Accept'
+    # Add back bit expected by django-piston but removed from django 1.5
+    response._is_string = False
     return response
 
 
@@ -71,6 +75,38 @@ class Errors(object):
 errors = Errors()
 
 
+# Reimplementation of rc_factory from piston.utils. This version
+# returns HttpResponseWrapper compatible with Django 1.5. It's a
+# drop-in replacement
+class sso_rc_factory(rc_factory):
+
+    def __getattr__(self, attr):
+        try:
+            r, c = self.CODES.get(attr)
+        except TypeError:
+            raise AttributeError(attr)
+
+        class HttpResponseWrapper(HttpResponse):
+
+            def _set_content(self, content):
+                is_str = isinstance(content, basestring)
+                is_iter = hasattr(content, '__iter__')
+
+                if not is_str and is_iter:
+                    self._container = content
+                else:
+                    self._container = [content]
+
+                self._base_content_is_iter = is_iter
+                self._is_string = not is_iter
+
+            content = property(HttpResponse.content.fget, _set_content)
+
+        return HttpResponseWrapper(r, content_type='text/plain', status=c)
+
+rc = sso_rc_factory()
+
+
 def _get_account_status_text(status):
     return unicode(AccountStatus._verbose[status])
 
@@ -97,8 +133,8 @@ def get_account_data(account):
         displayname=account.displayname,
         status=_get_account_status_text(account.status),
         emails=[
-            dict(href=reverse('api-email', args=(email.email,)))
-            for email in account.emailaddress_set.all()
+            dict(href=reverse('api-email', args=(e.email,)))
+            for e in account.emailaddress_set.all()
         ]
     )
     return data

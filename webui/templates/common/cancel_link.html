@@ -1,6 +1,6 @@
 {% load i18n %}
-{% if token %}{% url cancel token as cancel_url %}
-{% else %}{% url account-index as cancel_url %}{% endif %}
+{% if token %}{% url 'cancel' token as cancel_url %}
+{% else %}{% url 'account-index' as cancel_url %}{% endif %}
 <a href="{{ cancel_url }}">
     {% if rpconfig  %}
     {% blocktrans with rpconfig_name=rpconfig.displayname %}go back to {{ rpconfig_name }}{% endblocktrans %}

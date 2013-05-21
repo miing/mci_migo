@@ -1,0 +1,26 @@
+{% extends "admin/base_site.html" %}
+{% load i18n staticfiles %}
+
+{% block stylesheet %}{% static 'admin/css/login.css' %}{% endblock %}
+
+{% block bodyclass %}login{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+{% if error_message %}
+<p class="errornote">{{ error_message }}</p>
+{% endif %}
+<div id="content-main">
+  <form name="fopenid" action="/openid/login/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ app_path }}" />
+    <div class="form-row">
+      {{ form.openid_identifier }}
+    </div>
+    <div class="submit-row "><input name="bsignin" type="submit" value="{% trans "Sign in" %}"></div>
+  </form>
+</div>
+{% endblock %}

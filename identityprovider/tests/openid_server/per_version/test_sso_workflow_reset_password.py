@@ -23,7 +23,7 @@ class SSOWorkflowResetPasswordTestCase(OpenIDTestCase):
         # addresses:
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_forgot_password_link"]',
+            'a[data-qa-id="forgot_password_link"]',
             'href')
         data = dict(email='no-account@example.com')
         response = self.client.post(link, data=data, follow=True)
@@ -38,7 +38,7 @@ class SSOWorkflowResetPasswordTestCase(OpenIDTestCase):
 
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_forgot_password_link"]',
+            'a[data-qa-id="forgot_password_link"]',
             'href')
         data = dict(email='support@ubuntu.com')
         response = self.client.post(link, data=data, follow=True)
@@ -52,7 +52,7 @@ class SSOWorkflowResetPasswordTestCase(OpenIDTestCase):
         response = self.do_openid_dance()
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_forgot_password_link"]',
+            'a[data-qa-id="forgot_password_link"]',
             'href')
         data = dict(email=self.default_email)
         response = self.client.post(link, data=data, follow=True)

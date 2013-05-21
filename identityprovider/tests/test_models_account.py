@@ -373,9 +373,9 @@ class AccountTestCase(SSOBaseTestCase):
         with self.assertRaises(ValidationError):
             account.preferredemail = account.emailaddress_set.get()
 
-    def test_cant_reset_password_without_verified_email(self):
+    def test_can_reset_password_without_verified_email(self):
         account = self.factory.make_account(email_validated=False)
-        self.assertFalse(account.can_reset_password)
+        self.assertTrue(account.can_reset_password)
 
     def test_validated_email_address_is_preferred_email_by_default(self):
         account = self.factory.make_account(email_validated=False)
@@ -422,6 +422,8 @@ class AccountTestCase(SSOBaseTestCase):
         # remove all passwords
         AccountPassword.objects.filter(account=account).delete()
 
+        # reload account, to bypass django orm cache
+        account = Account.objects.get(pk=account.pk)
         # trigger test
         account.status = AccountStatus.SUSPENDED
         account.save()
@@ -554,6 +556,20 @@ class CreateOAuthTokenForAccountTestCase(SSOBaseTestCase):
         self.assertNotEqual(token, token3)
         self.assertEqual(token3.consumer.id, consumer.id)
 
+    def test_get_or_create_when_multiple_results(self):
+        consumer, _ = Consumer.objects.get_or_create(user=self.user)
+
+        # create multiple tokens
+        token1 = consumer.token_set.create(name='new-token')
+        token2 = consumer.token_set.create(name='new-token')
+        token2.created_at = token1.created_at + timedelta(seconds=10)
+        token2.save()
+
+        token, created = self.account.get_or_create_oauth_token('new-token')
+
+        self.assertEqual(token, token2)
+        self.assertFalse(created)
+
     def test_get_when_account_has_no_associated_consumer(self):
         Consumer.objects.filter(user=self.user).delete()
 
@@ -568,6 +584,13 @@ class CreateOAuthTokenForAccountTestCase(SSOBaseTestCase):
 
         self.assertTrue(created)
         self.assertEqual(token.consumer.user.id, self.user.id)
+
+    def test_invalidate_oauth_tokens(self):
+        token, created = self.account.get_or_create_oauth_token('new-token')
+        assert self.account.oauth_tokens()
+
+        self.account.invalidate_oauth_tokens()
+        self.assertEqual(self.account.oauth_tokens().count(), 0)
 
 
 class AuthenticateUserTestCase(SSOBaseTestCase):
@@ -614,7 +637,7 @@ class AuthenticateUserTestCase(SSOBaseTestCase):
         email = self.account.emailaddress_set.get(email=self.email)
         email.status = EmailStatus.NEW
         email.save()
-        with switches(ALLOW_UNVERIFIED=False):
+        with switches(ALLOW_UNVERIFIED=False, LOGIN_BY_PHONE=False):
             self.assert_failed_login(AuthenticationError)
 
     def test_new_email_allowed(self):

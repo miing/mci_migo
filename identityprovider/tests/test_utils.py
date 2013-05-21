@@ -13,6 +13,7 @@ from identityprovider.utils import (
     http_request_with_timeout,
     password_policy_compliant,
     polite_form_errors,
+    redirection_url_for_token,
     validate_launchpad_password,
 )
 from identityprovider.tests.utils import (
@@ -162,3 +163,15 @@ class GetCurrentBrandTestCase(TestCase):
             brand = get_current_brand()
 
         self.assertEqual('ubuntu', brand)
+
+
+class RedirectionURLForTokenTestCase(SSOBaseTestCase):
+
+    def test_if_token_is_none(self):
+        url = redirection_url_for_token(None)
+        self.assertEqual(url, "/")
+
+    def test_if_token_is_not_none(self):
+        token = "ABCDEFGH" * 2
+        url = redirection_url_for_token(token)
+        self.assertEqual(url, "/%s/+decide" % token)

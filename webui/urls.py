@@ -2,7 +2,7 @@
 # the GNU Affero General Public License version 3 (see the file
 # LICENSE).
 
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 
 from identityprovider.models import AUTHTOKEN_PATTERN
 from webui.views.ui import LoginView, TwoFactorView
@@ -35,11 +35,6 @@ urlpatterns = patterns(
     url(r'^\+new_account$' % repls, 'new_account', name='new_account'),
     url(r'^%(token)s\+new_account$' % repls, 'new_account',
         name='new_account'),
-
-    url(r'^\+forgot_password$' % repls, 'forgot_password',
-        name='forgot_password'),
-    url(r'^%(token)s\+forgot_password$' % repls, 'forgot_password',
-        name='forgot_password'),
 
     url(r'^\+enter_token$' % repls, 'enter_token', name='enter_token'),
     url(r'^%(token)s\+enter_token$' % repls, 'enter_token',
@@ -74,6 +69,14 @@ urlpatterns = patterns(
     url(r'^\+ubuntuone-account$', 'static_page',
         {'page_name': 'ubuntuone-account'}, name='ubuntuone-account'),
     url(r'^combo/$', 'combo_view', name='combo-view'),
+)
+
+urlpatterns += patterns(
+    'webui.views.registration',
+    url(r'^\+forgot_password$' % repls, 'forgot_password',
+        name='forgot_password'),
+    url(r'^%(token)s\+forgot_password$' % repls, 'forgot_password',
+        name='forgot_password'),
 )
 
 urlpatterns += patterns(

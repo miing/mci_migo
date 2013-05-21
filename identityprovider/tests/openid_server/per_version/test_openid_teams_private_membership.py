@@ -98,7 +98,7 @@ class OpenIDTeamsPrivateMembershipTestCase(OpenIDTestCase):
 
         response = self.do_openid_dance(self.claimed_id, teams='myteam')
         myteam = self.get_from_response(
-            response, 'input[type="checkbox"][value="myteam"]')
+            response, 'input[type="checkbox"][name="myteam"]')
         self.assertEqual(len(myteam), 1)
 
         # authorize sending membership info

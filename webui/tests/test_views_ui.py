@@ -79,7 +79,12 @@ class BaseTestCase(SSOBaseTestCase):
                      'password': DEFAULT_USER_PASSWORD}
         self.account = self.factory.make_account(**self.data)
 
-    def post_new_account(self, email=None, token=None, follow=False):
+    def post_new_account(
+            self,
+            email=None,
+            token=None,
+            follow=False,
+            captcha=True):
         if email is None:
             email = self.new_email
         if token is None:
@@ -93,6 +98,9 @@ class BaseTestCase(SSOBaseTestCase):
             'passwordconfirm': 'Testing123',
             'accept_tos': True
         }
+        if captcha:
+            data['recaptcha_challenge_field'] = 'ignored'
+            data['recaptcha_response_field'] = 'ignored'
 
         return self.client.post(url, data, follow=follow)
 
@@ -211,6 +219,7 @@ class LoginTestCase(UIViewsBaseTestCase):
         r = self.client.post(reverse('login'), self.data)
         self.assertRedirects(r, reverse('account-index'))
 
+    @switches(LOGIN_BY_PHONE=False, ALLOW_UNVERIFIED=False)
     def test_login_with_not_validated_email_not_permitted(self):
         """Preventing regression for bug 816622"""
         self.account.emailaddress_set.create(
@@ -219,6 +228,7 @@ class LoginTestCase(UIViewsBaseTestCase):
         r = self.client.post(reverse('login'), self.data)
         self.assertFormError(r, 'form', None, "Password didn't match.")
 
+    @switches(LOGIN_BY_PHONE=False)
     def test_login_with_not_validated_email_permitted(self):
         self.account.emailaddress_set.create(
             email="mark-2@example.com", status=EmailStatus.NEW)
@@ -242,7 +252,7 @@ class LoginTestCase(UIViewsBaseTestCase):
 
         # use a token in the request to fake an openid request
         token = 'a' * 16
-        with switches(ALLOW_UNVERIFIED=True):
+        with switches(ALLOW_UNVERIFIED=True, LOGIN_BY_PHONE=False):
             r = self.client.post(reverse('login', kwargs={'token': token}),
                                  self.data)
 
@@ -269,6 +279,33 @@ class LoginTestCase(UIViewsBaseTestCase):
         self.assertFormError(
             r, 'form', None,
             "Password didn't match.")
+
+    def test_suspended_account_should_require_a_password_reset(self):
+        """Checking regression in #620462."""
+        self.account.suspend()
+
+        # Try to log in using just suspended account
+        response = self.client.post(
+            reverse('login'), data=dict(email=self.email,
+                                        password=DEFAULT_USER_PASSWORD))
+        # This should produce an error
+        suspended = ('<span class="error">Your account has been suspended. '
+                     'Please contact login support to re-enable it</span>')
+        self.assertContains(response, suspended)
+
+        # re-enable the account
+        self.account.status = AccountStatus.ACTIVE
+        self.account.save()
+
+        response = self.client.post(
+            reverse('login'), data=dict(email=self.email,
+                                        password=DEFAULT_USER_PASSWORD))
+
+        # If the url is still the same, that means that the log in was
+        # unsuccessful.
+        self.assertContains(
+            response,
+            '<span class="error">Password didn&#39;t match.</span>')
 
     def test_includes_create_account_form_for_u1_brand(self):
         with patch.multiple(settings, BRAND='ubuntu'):
@@ -330,8 +367,8 @@ class LogoutTestCase(UIViewsBaseTestCase):
 
         self.client.post(reverse('forgot_password'), {'email': self.email})
 
-        # since there is verified email address, no email was sent
-        self.assertEqual(self.mock_send_email.call_count, 0)
+        # we send an email anyway despite there not being a validated email
+        self.assertEqual(self.mock_send_email.call_count, 1)
 
 
 class EnterTokenTestCase(UIViewsBaseTestCase):
@@ -439,6 +476,7 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         r = self.client.get(token.absolute_url)
         self.assertRedirects(r, reverse('logout_to_confirm'))
 
+    @switches(ALLOW_UNVERIFIED=False)
     def test_confirm_account_redirect_to_decide_token_error(self):
         # get a valid session
         token1 = 'a' * 16
@@ -453,6 +491,7 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         self.assertRedirects(
             r, reverse('server-decide', kwargs=dict(token=token1)))
 
+    @switches(ALLOW_UNVERIFIED=False)
     def test_confirm_account_redirect_to_decide_token(self):
         # get a valid session
         token1 = create_token(16)
@@ -467,6 +506,7 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         self.assertRedirects(
             r, reverse('server-decide', kwargs=dict(token=token1)))
 
+    @switches(ALLOW_UNVERIFIED=False)
     def test_confirm_account_redirect_to_decide_with_rpconfig(self):
         token = create_token(16)
         r = self.post_new_account(token=token)
@@ -537,6 +577,7 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
 
     @patch('identityprovider.emailutils.send_new_user_email')
     @patch('webui.views.ui.encrypt_launchpad_password')
+    @switches(ALLOW_UNVERIFIED=False)
     def test_new_user_email_sent(self, mock_encrypt, mock_send):
         mock_encrypt.return_value = 'password'
         email = 'foo@example.com'
@@ -552,6 +593,7 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         mock_encrypt.assert_called_once_with('Testing123')
 
     @patch('identityprovider.emailutils.send_impersonation_email')
+    @switches(ALLOW_UNVERIFIED=False)
     def test_impersonation_warning_email_sent(self, mock_send):
         self.factory.make_email_for_account(
             self.account, email=self.new_email, status=EmailStatus.NEW)
@@ -566,6 +608,7 @@ class ConfirmAccountTestCase(LogHandlerTestCase, UIViewsBaseTestCase):
         mock_send.assert_called_once_with(self.email)
 
     @patch('identityprovider.emailutils.send_impersonation_email')
+    @switches(ALLOW_UNVERIFIED=False)
     def test_impersonation_warning_email_for_unverified_account(self,
                                                                 mock_send):
         # make sure account has no preferred email
@@ -595,11 +638,6 @@ class ForgotPasswordTestCase(UIViewsBaseTestCase):
         response = self.client.get(
             reverse('forgot_password', kwargs=dict(token=token)))
         self.assertContains(response, "_gaq.push(['_setAccount', '12345']);")
-
-    def test_forgot_password_when_captcha_verification_fails(self):
-        r = self.request_when_captcha_fails(
-            reverse('forgot_password'), self.data)
-        self.assertTemplateUsed(r, 'registration/forgot_password.html')
 
     def test_forgot_password_email_when_account_active(self):
         self.client.post(reverse('forgot_password'), {'email': self.email})
@@ -678,10 +716,11 @@ class ForgotPasswordTestCase(UIViewsBaseTestCase):
         r = self.client.post(self._token_url(), data)
         self.assertRedirects(r, reverse('account-index'))
 
+        account = Account.objects.get(pk=self.account.pk)
         # check password changed
         self.assertTrue(
             validate_launchpad_password('password',
-                                        self.account.encrypted_password))
+                                        account.encrypted_password))
 
     def test_reset_password_when_account_active_no_password(self):
         r = self.client.post(reverse('forgot_password'), {'email': self.email})
@@ -725,14 +764,14 @@ class ForgotPasswordTestCase(UIViewsBaseTestCase):
 
         self.client.post(reverse('forgot_password'), {'email': self.email})
 
-        # since there is verified email address, no email was sent
-        self.assertEqual(self.mock_send_email.call_count, 0)
+        # we sent an email anyway, despite there not being a validated email
+        self.assertEqual(self.mock_send_email.call_count, 1)
 
     def test_reset_password_when_account_no_verified_emails(self):
         self.account.emailaddress_set.update(status=EmailStatus.NEW)
         self.client.post(reverse('forgot_password'), {'email': self.email})
-        # since there is verified email address, no email was sent
-        self.assertEqual(self.mock_send_email.call_count, 0)
+        # we sent an email anyway, despite there not being a validated email
+        self.assertEqual(self.mock_send_email.call_count, 1)
 
     def test_reset_password_unverified_email_but_account_verified_email(self):
         verified = self.account.verified_emails()
@@ -766,33 +805,6 @@ class ForgotPasswordTestCase(UIViewsBaseTestCase):
         r = self.client.post(self._token_url(), data)
         self.assertRedirects(r, reverse('bad_token'))
 
-    def test_suspended_account_should_require_a_password_reset(self):
-        """Checking regression in #620462."""
-        self.account.suspend()
-
-        # Try to log in using just suspended account
-        response = self.client.post(
-            reverse('login'), data=dict(email=self.email,
-                                        password=DEFAULT_USER_PASSWORD))
-        # This should produce an error
-        suspended = ('<span class="error">Your account has been suspended. '
-                     'Please contact login support to re-enable it</span>')
-        self.assertContains(response, suspended)
-
-        # re-enable the account
-        self.account.status = AccountStatus.ACTIVE
-        self.account.save()
-
-        response = self.client.post(
-            reverse('login'), data=dict(email=self.email,
-                                        password=DEFAULT_USER_PASSWORD))
-
-        # If the url is still the same, that means that the log in was
-        # unsuccessful.
-        self.assertContains(
-            response,
-            '<span class="error">Password didn&#39;t match.</span>')
-
     def test_reset_password_invalid_form(self):
         # get valid session
         r = self.client.post(reverse('forgot_password'), {'email': self.email})
@@ -815,6 +827,28 @@ class ForgotPasswordTestCase(UIViewsBaseTestCase):
     def test_bad_method(self):
         r = self.client.put(reverse('forgot_password'), {'email': self.email})
         self.assertEqual(r.status_code, 405)
+
+    def test_reset_password_invalidate_tokens(self):
+        # make sure the account is active
+        assert self.account.status == AccountStatus.ACTIVE
+
+        token = self.account.create_oauth_token('new-token')
+        r = self.client.post(reverse('forgot_password'), {'email': self.email})
+
+        # confirm account
+        data = {'password': 'Password1', 'passwordconfirm': 'Password1'}
+        r = self.client.post(self._token_url(), data)
+        self.assertRedirects(r, reverse('account-index'))
+        self.assertNotIn(token, self.account.oauth_tokens())
+
+
+class LoggedInForgotPasswordTestCase(ForgotPasswordTestCase):
+    # forgot_password and reset_password views should also work
+    # for logged in users, repeat tests with an authenticated user
+
+    def setUp(self):
+        super(LoggedInForgotPasswordTestCase, self).setUp()
+        self.authenticate()
 
 
 class NewAccountSelectiveTestCase(UIViewsBaseTestCase):
@@ -1011,12 +1045,14 @@ class ConfirmEmailTestCase(UIViewsBaseTestCase):
         self.assertEqual(200, r.status_code)
         self.assertContains(r, 'Invalid email')
 
+    @switches(ALLOW_UNVERIFIED=False)
     def test_valid_email_redirects(self):
         r = self.post_new_account(email='what@ever.com')
         self.assertEqual(r.status_code, 200)
 
 
 class CaptchaVerificationTestCase(BaseTestCase):
+    success_status = 302
 
     def setUp(self):
         super(CaptchaVerificationTestCase, self).setUp()
@@ -1045,7 +1081,7 @@ class CaptchaVerificationTestCase(BaseTestCase):
         )
         with patch_settings(**overrides):
             response = self.post_new_account(email=email)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, self.success_status)
 
     def test_new_account_captcha_whitelist_with_uuid(self):
         email = 'canonicaltest+something@gmail.com'
@@ -1056,8 +1092,9 @@ class CaptchaVerificationTestCase(BaseTestCase):
         )
         with patch_settings(**overrides):
             response = self.post_new_account(email=email)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, self.success_status)
 
+    @switches(CAPTCHA=True)
     def test_new_account_captcha_whitelist_fail(self):
         email = 'notcanonicaltest@gmail.com'
         pattern = '^canonicaltest(?:\+.+)?@gmail\.com$'
@@ -1069,6 +1106,16 @@ class CaptchaVerificationTestCase(BaseTestCase):
             response = self.post_new_account(email=email)
             msg = 'It appears that our captcha service was unable to load'
             self.assertContains(response, msg)
+
+
+class CaptchaVerificationTestCaseOldFlow(CaptchaVerificationTestCase):
+    success_status = 200
+
+    def setUp(self):
+        super(CaptchaVerificationTestCaseOldFlow, self).setUp()
+        patch = switches(ALLOW_UNVERIFIED=False)
+        patch.patch()
+        self.addCleanup(patch.unpatch)
 
 
 @skipUnless(settings.BRAND == 'ubuntu',
@@ -1104,6 +1151,7 @@ class CookiesTestCase(SSOBaseTestCase):
         super(CookiesTestCase, self).setUp()
         _disable_cookie_check = decorators.disable_cookie_check
         decorators.disable_cookie_check = False
+        Session.objects.all().delete()
         self.addCleanup(setattr, decorators, 'disable_cookie_check',
                         _disable_cookie_check)
 
@@ -1244,14 +1292,6 @@ class ForgotPasswordFlowStatsTestCase(UIViewsBaseTestCase):
         self.forgot_password()
         self.reset_password()
         self.assertEqual(self.mock_increment.call_args_list, self.args_list())
-
-    @patch('webui.views.ui._verify_captcha_response')
-    def test_forgot_password_captcha_error(self, mock_verify_captcha_response):
-        mock_verify_captcha_response.return_value = HttpResponse()
-
-        self.forgot_password()
-        self.assertEqual(self.mock_increment.call_args_list,
-                         self.args_list(key='error.captcha'))
 
     def test_forgot_password_form_error(self):
         self.forgot_password(data={'foo': 'invalid'})

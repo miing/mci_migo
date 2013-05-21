@@ -194,7 +194,8 @@ def _create_device(request, device_name, hex_key, counter, device_type):
         device_type=device_type
     )
     twofactor.login(request)
-    messages.success(request, DEVICE_ADDED.format(name=device_name))
+    messages.success(request,
+                     DEVICE_ADDED.format(name=device_name), 'temporary')
     return device
 
 

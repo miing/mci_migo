@@ -79,6 +79,8 @@
 
 </div><!-- close #cont -->
 
+<div id="account" class="qa-hidden">{{user.displayname}}</div>
+
 {% block general_js %}
     <script type="text/javascript">
         YUI_config = {
@@ -90,6 +92,27 @@
         }
     </script>
     {% combo prefix='yui/3.10.0' 'yui/yui-min.js' 'loader/loader-min.js' %}
+
+    <script type="text/javascript">
+        YUI().use('node', 'transition', function (Y) {
+            Y.all('.message.temporary').transition({
+                easing: 'ease-out',
+                duration: 0.1,
+                delay: 5,
+                height: 0,
+                opacity: 0,
+                marginTop: 0,
+                marginBottom: 0,
+                paddingTop: 0,
+                paddingBottom: 0,
+                on: {
+                    start: function () {
+                        this.setStyle('overflow', 'hidden');
+                    }
+                }
+            });
+        });
+    </script>
 
 {% endblock %}
 

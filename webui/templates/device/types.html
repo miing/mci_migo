@@ -8,6 +8,7 @@ Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
 Affero General Public License version 3 (see the file LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="device_addition"{% endblock %}
 
 {% block title %}
   {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
@@ -60,7 +61,7 @@ Affero General Public License version 3 (see the file LICENSE).
   </dl>
 
   <p>
-    <button class="btn" type="submit">
+    <button class="btn" type="submit" data-qa-id="add_device_from_type">
       <span><span>{% trans "Add device" %}</span></span>
     </button>
     {% trans "or" %} <a data-qa-id="cancel" href="{{ device_list_path }}">{% trans "cancel" %}</a>

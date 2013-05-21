@@ -1,9 +1,10 @@
-from django.utils import simplejson as json
-from django.conf.urls.defaults import patterns, url
+import json
+
+import requests
+from django.conf.urls import patterns, url
 from django.http import HttpResponse
 from django.test.client import RequestFactory
 from django.views.decorators.csrf import csrf_exempt
-import requests
 
 from identityprovider.tests.utils import (
     SSOBaseTestCase,

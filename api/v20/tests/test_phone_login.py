@@ -1,4 +1,3 @@
-
 from django.core.urlresolvers import reverse
 from gargoyle.testutils import switches
 from mock import patch

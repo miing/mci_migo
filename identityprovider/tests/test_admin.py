@@ -52,17 +52,17 @@ class AdminTestCase(SSOBaseTestCase):
         for model in (AccountPassword, Person, LPOpenIdIdentifier):
             self.assertRaises(NotRegistered, admin.site.unregister, model)
 
-    def test_openidrpconfig_allowed_sreg_checkboxes_postable(self):
+    def test_openidrpconfig_allowed_user_attribs_checkboxes_postable(self):
         trust_root = 'http://localhost/bla/'
         displayname = 'My Test RP'
         description = 'Bla'
-        allowed_sreg = ['fullname', 'email']
+        allowed_user_attribs = ['fullname', 'email']
         creation_rationale = 13
 
         data = {'trust_root': trust_root,
                 'displayname': displayname,
                 'description': description,
-                'allowed_sreg': allowed_sreg,
+                'allowed_user_attribs': allowed_user_attribs,
                 'creation_rationale': creation_rationale,
                 }
         add_view = reverse('admin:identityprovider_openidrpconfig_add')
@@ -77,15 +77,15 @@ class AdminTestCase(SSOBaseTestCase):
         self.assertEqual(rpconfig.trust_root, trust_root)
         self.assertEqual(rpconfig.displayname, displayname)
         self.assertEqual(rpconfig.description, description)
-        self.assertEqual(sorted(rpconfig.allowed_sreg.split(',')),
-                         sorted(allowed_sreg))
+        self.assertEqual(sorted(rpconfig.allowed_user_attribs.split(',')),
+                         sorted(allowed_user_attribs))
         self.assertEqual(rpconfig.creation_rationale, creation_rationale)
 
-    def test_openidrpconfig_allowed_sreg_checkboxes_getable(self):
+    def test_openidrpconfig_allowed_user_attribs_checkboxes_getable(self):
         data = {'trust_root': 'http://localhost/bla/',
                 'displayname': 'My Test RP',
                 'description': 'Bla',
-                'allowed_sreg': 'fullname',
+                'allowed_user_attribs': 'fullname',
                 'creation_rationale': '13',
                 }
         rpconfig = OpenIDRPConfig.objects.create(**data)
@@ -97,53 +97,6 @@ class AdminTestCase(SSOBaseTestCase):
         checked = dom.find('input[checked=checked]')
         self.assertEqual(len(checked), 1)
         self.assertEqual(checked[0].value, 'fullname')
-
-    def test_openidrpconfig_allowed_ax_checkboxes_postable(self):
-        trust_root = 'http://localhost/bla/'
-        displayname = 'My Test RP'
-        description = 'Bla'
-        allowed_ax = ['fullname', 'email']
-        creation_rationale = 13
-
-        data = {'trust_root': trust_root,
-                'displayname': displayname,
-                'description': description,
-                'allowed_ax': allowed_ax,
-                'creation_rationale': creation_rationale,
-                }
-        add_view = reverse('admin:identityprovider_openidrpconfig_add')
-        response = self.client.get(add_view)
-        response = self.client.post(add_view, data)
-        self.assertEqual(302, response.status_code)
-        # We don't get the ID back, so ensure we only have one entity and
-        # assume it's the correct one.  This is racy, but the alternative is
-        # another request to the list screen to scrape the ID from there.
-        self.assertEqual(OpenIDRPConfig.objects.count(), 1)
-        rpconfig = OpenIDRPConfig.objects.get()
-        self.assertEqual(rpconfig.trust_root, trust_root)
-        self.assertEqual(rpconfig.displayname, displayname)
-        self.assertEqual(rpconfig.description, description)
-        self.assertEqual(sorted(rpconfig.allowed_ax.split(',')),
-                         sorted(allowed_ax))
-        self.assertEqual(rpconfig.creation_rationale, creation_rationale)
-
-    def test_openidrpconfig_allowed_ax_checkboxes_getable(self):
-        data = {'trust_root': 'http://localhost/bla/',
-                'displayname': 'My Test RP',
-                'description': 'Bla',
-                'allowed_ax': 'email',
-                'creation_rationale': '13',
-                }
-        rpconfig = OpenIDRPConfig(**data)
-        rpconfig.save()
-        change_view = reverse(
-            'admin:identityprovider_openidrpconfig_change',
-            args=(rpconfig.id,))
-        response = self.client.get(change_view)
-        dom = PyQuery(response.content)
-        checked = dom.find('input[checked=checked]')
-        self.assertEqual(len(checked), 1)
-        self.assertEqual(checked[0].value, 'email')
 
     def test_inline_models(self):
         expected_inlines = [AccountPasswordInline, EmailAddressInline,
@@ -285,8 +238,11 @@ class AdminTestCase(SSOBaseTestCase):
                               args=(self.account.id,))
         r = self.client.get(change_view)
         self.assertEqual(r.status_code, 200)
-        self.assertContains(r, '<input type="password" '
-                            'name="accountpassword-0-password"')
+        self.assertContains(r,
+                            '<input type="password" '
+                            'name="accountpassword-0-password" '
+                            'id="id_accountpassword-0-password">',
+                            html=True)
 
     def test_add_api_user(self):
         add_view = reverse('admin:identityprovider_apiuser_add')
@@ -328,17 +284,19 @@ class RPAdminTestCase(SSOBaseTestCase):
 
     def test_form_has_2f_checkbox(self):
         r = self._get_form()
-        self.assertContains(
-            r, '<input type="checkbox" name="require_two_factor"')
+        dom = PyQuery(r.content)
+        el = dom.find('input[name="require_two_factor"]')[0]
+        self.assertEqual(el.get('type'), 'checkbox')
 
     def test_table_has_2f_column(self):
         r = self._get_table()
-        self.assertContains(r, "Require two factor\n</a></th>")
+        self.assertContains(r, "Require two factor</a></div>")
 
     def test_table_2f_is_editable(self):
         r = self._get_table()
-        self.assertContains(
-            r, '<input type="checkbox" name="form-0-require_two_factor"')
+        dom = PyQuery(r.content)
+        el = dom.find('input[name="form-0-require_two_factor"]')[0]
+        self.assertEqual(el.get('type'), 'checkbox')
 
     def test_table_is_filterable_by_2f(self):
         r = self._get_table()

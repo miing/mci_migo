@@ -11,6 +11,7 @@ from django.contrib.auth.models import User, AnonymousUser
 
 from openid.message import IDENTIFIER_SELECT, OPENID1_URL_LIMIT, OPENID2_NS
 
+from identityprovider.const import SESSION_TOKEN_KEY
 from identityprovider.middleware import exception, util as middleware_util
 from identityprovider.middleware.useraccount import (
     UserAccountConversionMiddleware)
@@ -44,25 +45,26 @@ class UserAccountConversionMiddlewareTestCase(SSOBaseTestCase):
         request = MockRequest('/')
         request.user = self.user
 
-        self.middleware.process_request(request)
+        # also needs a token
+        token = self.account.create_oauth_token('Test')
+        request.session[SESSION_TOKEN_KEY] = token.token
 
-        self.assertTrue(isinstance(request.user, Account))
+        self.middleware.process_request(request)
+        self.assertIsInstance(request.user, Account)
 
     def test_when_not_admin_and_user_object_in_request_have_no_account(self):
         request = MockRequest('/')
         request.user = User(username='fail')
 
         self.middleware.process_request(request)
-
-        self.assertTrue(request.user, AnonymousUser)
+        self.assertIsInstance(request.user, AnonymousUser)
 
     def test_when_admin_and_account_object_in_request(self):
         request = MockRequest('/admin/test')
         request.user = self.account
 
         self.middleware.process_request(request)
-
-        self.assertTrue(isinstance(request.user, User))
+        self.assertIsInstance(request.user, User)
 
     def test_when_admin_and_account_object_in_request_have_no_user(self):
         request = MockRequest('/admin/test')
@@ -70,8 +72,41 @@ class UserAccountConversionMiddlewareTestCase(SSOBaseTestCase):
         request.user = self.account
 
         self.middleware.process_request(request)
+        self.assertIsInstance(request.user, AnonymousUser)
 
-        self.assertTrue(isinstance(request.user, AnonymousUser))
+    def test_session_without_token_logs_out(self):
+        request = MockRequest('/')
+        request.user = self.account
+
+        self.middleware.process_request(request)
+        self.assertIsInstance(request.user, AnonymousUser)
+
+    def test_invalid_session_token_logs_out(self):
+        request = MockRequest('/')
+        request.user = self.account
+        request.session[SESSION_TOKEN_KEY] = '123'
+
+        self.middleware.process_request(request)
+        self.assertIsInstance(request.user, AnonymousUser)
+
+    def test_read_only_mode_session(self):
+        request = MockRequest('/')
+        request.user = self.account
+        request.session[SESSION_TOKEN_KEY] = ''
+
+        with patch_settings(READ_ONLY_MODE=True):
+            self.middleware.process_request(request)
+
+        self.assertIsInstance(request.user, Account)
+
+    def test_valid_session_token(self):
+        token = self.account.create_oauth_token('Test')
+        request = MockRequest('/')
+        request.user = self.account
+        request.session[SESSION_TOKEN_KEY] = token.token
+
+        self.middleware.process_request(request)
+        self.assertIsInstance(request.user, Account)
 
 
 class UtilTestCase(TestCase):

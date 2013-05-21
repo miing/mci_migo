@@ -8,13 +8,14 @@ from datetime import date, datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_backends
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, update_last_login
+from django.contrib.auth.signals import user_logged_in
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.query import EmptyQuerySet
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from model_utils.managers import PassThroughManager
-from oauth_backend.models import Consumer
+from oauth_backend.models import Consumer, Token
 from south.modelsinspector import add_introspection_rules
 
 from gargoyle import gargoyle
@@ -42,6 +43,19 @@ __all__ = [
     'PasswordField',
     'LPOpenIdIdentifier',
 ]
+
+# Disconnect default signal handler, which tries to update last_login
+# field on the db level, but on the Account object this is a virtual
+# property
+user_logged_in.disconnect(update_last_login)
+
+
+def update_account_last_login(**kwargs):
+    account = kwargs['user']
+    account.last_login = timezone.now()
+    # there's no ned to save, as property handler does that
+
+user_logged_in.connect(update_account_last_login)
 
 
 class AccountQuerySet(models.query.QuerySet):
@@ -318,8 +332,7 @@ class Account(models.Model):
 
     @property
     def can_reset_password(self):
-        return ((self.is_active or self.can_reactivate) and
-                self.verified_emails().count() > 0)
+        return (self.is_active or self.can_reactivate)
 
     @property
     def is_active(self):
@@ -402,10 +415,18 @@ class Account(models.Model):
             consumer = user.oauth_consumer
         except Consumer.DoesNotExist:
             consumer = Consumer.objects.create(user=user)
-        token, created = consumer.token_set.get_or_create(name=token_name)
-        if not created:
+
+        tokens = consumer.token_set.filter(name=token_name).order_by(
+            '-created_at')
+        if tokens:
+            # if multiple tokens are present, keep the newest one
+            token = tokens[0]
             token.updated_at = datetime.utcnow()
             token.save()
+            created = False
+        else:
+            token = consumer.token_set.create(name=token_name)
+            created = True
         return token, created
 
     def oauth_tokens(self):
@@ -414,7 +435,10 @@ class Account(models.Model):
             consumer = user.oauth_consumer
             return consumer.token_set.all()
         except Consumer.DoesNotExist:
-            return EmptyQuerySet()
+            return Token.objects.none()
+
+    def invalidate_oauth_tokens(self):
+        self.oauth_tokens().delete()
 
     def has_twofactor_devices(self):
         """Returns True if this Account has any associated two-factor

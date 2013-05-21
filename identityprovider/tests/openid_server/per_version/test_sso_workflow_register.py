@@ -1,3 +1,5 @@
+from gargoyle.testutils import switches
+
 from identityprovider.models.account import Account
 from identityprovider.models.const import (
     AccountCreationRationale,
@@ -7,6 +9,7 @@ from identityprovider.tests.helpers import OpenIDTestCase
 
 class SSOWorkflowRegisterTestCase(OpenIDTestCase):
 
+    @switches(ALLOW_UNVERIFIED=False)
     def test(self):
         # = Launchpad Single-Signon Workflow: Registration =
 
@@ -42,7 +45,7 @@ class SSOWorkflowRegisterTestCase(OpenIDTestCase):
         )
         link = self.get_from_response(
             response,
-            'a[data-qa-id="_qa_create_account_link"]'
+            'a[data-qa-id="create_account_link"]'
         )[0].get('href')
         response = self.client.post(link, data=data, follow=True)
 
@@ -58,7 +61,7 @@ class SSOWorkflowRegisterTestCase(OpenIDTestCase):
         )
         link = self.get_from_response(
             response,
-            'a[data-qa-id="_qa_create_account_link"]'
+            'a[data-qa-id="create_account_link"]'
         )[0].get('href')
         response = self.client.post(link, data=data, follow=True)
 
@@ -81,7 +84,7 @@ class SSOWorkflowRegisterTestCase(OpenIDTestCase):
         # Now the user is logged in with their new account, and has been
         # directed back to the original site:
 
-        self.assertContains(response, "_qa_rp_login_title")
+        self.assertContains(response, "rp_login_title")
 
         response = self.yes_to_decide(response)
 

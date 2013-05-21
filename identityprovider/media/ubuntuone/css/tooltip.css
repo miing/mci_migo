@@ -1,0 +1,46 @@
+
+.tooltip-light {
+    background-color: #F3F2F1;
+    border: 1px solid #888888;
+    color: #3F3F3F;
+    min-width: 220px;
+}
+
+.tooltip-light p {
+    font-size: 1.2em;
+}
+
+.tooltip-light p:last-child {
+    margin: 0;
+}
+
+.tooltip-light .tooltip-title {
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+    font-size: 1.5em;
+}
+
+.yui3-tooltip .tooltip-light:before {
+    background-color: #F3F2F1
+}
+
+.tooltip {
+    display: none;
+}
+
+@media all and (min-width:768px) {
+
+    .tooltip {
+        display: block;
+    }
+
+    label.tooltip {
+        max-width: 50%;
+    }
+
+    label.tooltip span {
+        float: right;
+    }
+
+}

@@ -5,6 +5,9 @@ from openid.message import NamespaceMap
 
 LAUNCHPAD_TEAMS_NS = 'http://ns.launchpad.net/2007/openid-teams'
 
+SESSION_TOKEN_KEY = 'session_token'
+SESSION_TOKEN_NAME = 'Web Login'
+
 PERSON_VISIBILITY_PUBLIC = 1
 PERSON_VISIBILITY_PRIVATE_MEMBERSHIP = 20
 PERSON_VISIBILITY_PRIVATE = 30

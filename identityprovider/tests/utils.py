@@ -12,6 +12,7 @@ import gargoyle
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.db import DEFAULT_DB_ALIAS, connection
 from django.http import HttpRequest
 from django.test import TestCase, TransactionTestCase
@@ -280,6 +281,7 @@ class MockRequest(HttpRequest):
     def __init__(self, path):
         super(HttpRequest, self).__init__()
         self.path = path
+        self.POST = {}
 
         class MockSession(dict):
             def flush(self):
@@ -328,6 +330,8 @@ def test_concurrently(times):
                 except Exception, e:
                     exceptions.append(e)
                     raise
+                finally:
+                    connection.close()
 
             threads = []
             for i in range(times):
@@ -371,13 +375,24 @@ class SSORequestFactory(object):
         self._setup(request, user, session)
         return request
 
+    def put(self, url, user=None, session=None, **kwargs):
+        request = self.factory.put(url, data=kwargs)
+        self._setup(request, user, session)
+        return request
+
     def _setup(self, request, user, session):
         if user is None:
             user = AnonymousUser()
+
         if session is None:
             session = self.FakeSession()
         request.user = user
         request.session = session
+
+        # RequestFactory does not support middleware
+        # Supplying missing message data to request
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
 
 
 class TeamConditionSelectiveMixin(object):

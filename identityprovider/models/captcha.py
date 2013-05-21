@@ -66,6 +66,7 @@ class Captcha(object):
 
     As is verifying received solution:
 
+        >>> ip_addr = '1.1.1.1'
         >>> email = 'foo@email.com'
         >>> captcha = Captcha('captcha-id-received-from-client', email)
         >>> captcha.verify("this-is-invalid-solution", ip_addr, email)

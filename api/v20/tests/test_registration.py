@@ -101,7 +101,9 @@ class RegistrationHandlerTestCase(SSOBaseUnittestTestCase):
         self.data = {
             'email': self.factory.make_email_address(),
             'password': 'asdfASDF1',
-            'displayname': 'Ricardo the Magnificent'
+            'displayname': 'Ricardo the Magnificent',
+            'captcha_id': 'ignored',
+            'captcha_solution': 'ignored',
         }
         self.mock_account = MagicMock(
             spec=Account,
@@ -119,7 +121,12 @@ class RegistrationHandlerTestCase(SSOBaseUnittestTestCase):
         self.mock_register.return_value = self.mock_account
 
     def test_registration_handler_invalid_data(self):
-        data = {'email': 'x', 'password': 'y'}
+        data = {
+            'email': 'x',
+            'password': 'y',
+            'captcha_id': 'ignored',
+            'captcha_solution': 'ignored',
+        }
         self.mock_register.side_effect = ValidationError({'email': 'Invalid'})
         response, json_body = call(self.handler.create, self.url, data)
         self.assertEqual(response.status_code, 400)
@@ -152,6 +159,8 @@ class RegistrationHandlerTestCase(SSOBaseUnittestTestCase):
     @patch('api.v20.handlers.Captcha')
     def test_register_captcha_required(self, mock_captcha):
         captcha_data = {'captcha_id': 999, 'image_url': 'somewhere'}
+        del self.data['captcha_id']
+        del self.data['captcha_solution']
         mock_captcha.new.return_value.serialize.return_value = captcha_data
         with switches(CAPTCHA=True):
             response, json_body = call(

@@ -2,6 +2,7 @@
 # GNU Affero General Public License version 3 (see the file LICENSE).
 
 import base64
+import json
 from datetime import datetime, timedelta
 from time import time
 
@@ -357,4 +358,104 @@ class OpenIDRPSummaryTestCase(SSOBaseTestCase):
         summary2 = OpenIDRPSummary.objects.get(
             account=self.account,
             trust_root=self.trust_root, openid_identifier='oid')
-        self.assertEqual(summary2.get_approved_data(), self.approved_data)
+        expected = self.approved_data.copy()
+        expected.update({
+            'user_attribs': {
+                'requested': [],
+                'approved': [],
+            }
+        })
+        self.assertEqual(summary2.get_approved_data(), expected)
+
+    def test_get_approved_data_with_sreg(self):
+        summary = self.create_summary()
+        summary.set_approved_data({'sreg': {'requested': ['email', 'fullname'],
+                                            'approved': ['email']}})
+        approved_data = summary.get_approved_data()
+        self.assertEqual(approved_data, {
+            'sreg': {
+                'requested': ['email', 'fullname'],
+                'approved': ['email'],
+            },
+            'user_attribs': {
+                'requested': list(set(['email', 'fullname'])),
+                'approved': ['email'],
+            }
+        })
+
+    def test_get_approved_data_with_ax(self):
+        summary = self.create_summary()
+        summary.set_approved_data({
+            'ax': {
+                'requested': ['email', 'account_verified'],
+                'approved': ['account_verified'],
+            }
+        })
+        approved_data = summary.get_approved_data()
+        self.assertEqual(approved_data, {
+            'ax': {
+                'requested': ['email', 'account_verified'],
+                'approved': ['account_verified'],
+            },
+            'user_attribs': {
+                'requested': list(set(['email', 'account_verified'])),
+                'approved': ['account_verified'],
+            }
+        })
+
+    def test_get_approved_data_mixed_sreg_ax(self):
+        summary = self.create_summary()
+        summary.set_approved_data({
+            'sreg': {
+                'requested': ['email', 'fullname'],
+                'approved': ['email'],
+            },
+            'ax': {
+                'requested': ['email', 'account_verified'],
+                'approved': ['account_verified'],
+            }
+        })
+        approved_data = summary.get_approved_data()
+        self.assertEqual(approved_data, {
+            'sreg': {
+                'requested': ['email', 'fullname'],
+                'approved': ['email'],
+            },
+            'ax': {
+                'requested': ['email', 'account_verified'],
+                'approved': ['account_verified'],
+            },
+            'user_attribs': {
+                'requested': list(set(['email', 'fullname',
+                                       'account_verified'])),
+                'approved': list(set(['email', 'account_verified'])),
+            }
+        })
+
+    def test_get_approved_data_persistent(self):
+        summary = self.create_summary()
+        summary.set_approved_data({
+            'ax': {
+                'requested': ['email', 'account_verified'],
+                'approved': ['account_verified'],
+            }
+        })
+        approved_data = summary.get_approved_data()
+        # refresh object from db
+        summary = OpenIDRPSummary.objects.get(id=summary.id)
+        self.assertEqual(json.loads(summary.approved_data), approved_data)
+
+    def test_get_approved_data_with_user_attribs(self):
+        summary = self.create_summary()
+        approved_data = {
+            'sreg': {
+                'requested': ['email', 'fullname'],
+                'approved': [],
+            },
+            'user_attribs': {
+                'requested': ['email'],
+                'approved': ['email'],
+            }
+        }
+        summary.set_approved_data(approved_data)
+        self.assertEqual(summary.get_approved_data(), approved_data)

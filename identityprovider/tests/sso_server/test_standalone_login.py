@@ -1,9 +1,12 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
+from gargoyle.testutils import switches
+
 from identityprovider.models.account import Account
 from identityprovider.models.const import TokenType
 from identityprovider.tests.helpers import FunctionalTestCase
+from identityprovider.tests import DEFAULT_USER_PASSWORD
 from identityprovider.utils import get_current_brand
 
 
@@ -21,7 +24,7 @@ class StandaloneLoginTestCase(FunctionalTestCase):
         content = self.get_from_response(response, '#content').text()
         self.assertIn("Log in to " + settings.BRAND_DESCRIPTIONS.get(
             get_current_brand()), content)
-        self.assertIn("_qa_create_account_link", response.content)
+        self.assertIn("create_account_link", response.content)
 
         response = self.login()
         # Once successfully logged in, they will see the details of their
@@ -29,13 +32,16 @@ class StandaloneLoginTestCase(FunctionalTestCase):
         self.assertContains(response, "Full name")
         self.assertContains(response, self.default_email)
 
-    def test_register(self, reset_client=False):
+    @switches(ALLOW_UNVERIFIED=False)
+    def test_register_oldflow(self, reset_client=False):
         """Creating a new account."""
         url = reverse('new_account')
         self.client.get(url)  # set cookie
         data = dict(
-            displayname='New User', email=self.new_email,
-            password='testP4ss', passwordconfirm='testP4ss',
+            displayname='New User',
+            email=self.new_email,
+            password=DEFAULT_USER_PASSWORD,
+            passwordconfirm=DEFAULT_USER_PASSWORD,
         )
         response = self.client.post(url, data=data, follow=True)
         self.assertContains(response, "Account creation mail sent")
@@ -48,7 +54,7 @@ class StandaloneLoginTestCase(FunctionalTestCase):
 
         response = self.client.get(link)
         self.assertContains(
-            response, '_qa_confirm_new_account')
+            response, 'confirm_new_account')
         msg = 'The account for %s is ready to be created.' % self.new_email
         self.assertContains(response, msg)
 
@@ -60,13 +66,46 @@ class StandaloneLoginTestCase(FunctionalTestCase):
         self.assertEqual(account.displayname, 'New User')
         self.assertTrue(account.person is None)
 
+    def _do_register_account(self):
+        """Creating a new account."""
+        url = reverse('new_account')
+        self.client.get(url)  # set cookie
+        data = dict(
+            displayname='New User',
+            email=self.new_email,
+            password=DEFAULT_USER_PASSWORD,
+            passwordconfirm=DEFAULT_USER_PASSWORD,
+            recaptcha_challenge_field='ignored',
+            recaptcha_response_field='ignored',
+        )
+        return self.client.post(url, data=data, follow=True)
+
+    def _do_confirm_email(self):
+        link = self.new_email_link()
+        real_link = self.client.get(link)['Location']
+        return self.client.post(real_link)
+
+    def test_register(self):
+        """Creating a new account."""
+        response = self._do_register_account()
+        self.assertContains(response, "Your account was created successfully")
+
+        response = self._do_confirm_email()
+        self.assertRedirects(response, reverse('account-index'))
+
+        account = Account.objects.get_by_email(email=self.new_email)
+        self.assertEqual(account.displayname, 'New User')
+        self.assertTrue(account.person is None)
+
+    @switches(ALLOW_UNVERIFIED=False)
     def test_register_out_of_session(self):
-        self.test_register(reset_client=True)
+        self.test_register_oldflow(reset_client=True)
 
     def test_password_reset(self, reset_client=False):
         """Resetting the password."""
         # user should be registered with a confirmed email address
-        self.test_register()
+        self._do_register_account()
+        self._do_confirm_email()
         self.client.logout()
 
         response = self.client.get('/+forgot_password', follow=True)
@@ -87,7 +126,7 @@ class StandaloneLoginTestCase(FunctionalTestCase):
         self.assertRedirects(response, link)
 
         if reset_client:
-            # Try to confirm the new account from out of the original session.
+            # try to reset password out of session
             self.reset_client()
 
         response = self.client.get(link)
@@ -115,7 +154,7 @@ class StandaloneLoginTestCase(FunctionalTestCase):
         response = self.client.get(reverse('account-edit'))
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_manage_email_addresses_link"]',
+            'a[data-qa-id="manage_email_addresses_link"]',
             'href')
         response = self.client.get(link)
         self.assertContains(response, 'Your email addresses')

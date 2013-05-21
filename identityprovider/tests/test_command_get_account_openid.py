@@ -1,8 +1,7 @@
 import operator
 from StringIO import StringIO
 
-from django.core.management import call_command
-from mock import patch
+from django.core.management import call_command, CommandError
 
 from identityprovider.management.commands.get_account_openid import (
     Command as GetAccountOpenIdCommand,
@@ -22,7 +21,7 @@ class GetAccountOpenIDCommandTestCase(SSOBaseTestCase):
     def assert_output_equal(self, stream, expected):
         stream.seek(0)
         output = stream.read()
-        self.assertEqual(output, expected)
+        self.assertEqual(output.strip(), expected.strip())
 
     def assert_output_contain(self, stream, expected):
         stream.seek(0)
@@ -49,20 +48,14 @@ class GetAccountOpenIDCommandTestCase(SSOBaseTestCase):
         self.assert_output_equal(stderr, '')
         self.assert_output_equal(stdout, expected)
 
-    @patch('sys.exit')
-    def test_get_account_openid_without_username(self, mock_sys_exit):
-        stdout = StringIO()
-        stderr = StringIO()
+    def test_get_account_openid_without_username(self):
+        with self.assertRaises(CommandError) as cm:
+            call_command('get_account_openid')
 
-        call_command('get_account_openid', stdout=stdout, stderr=stderr)
+        expected = "Enter at least one label."
+        self.assertEqual(expected, str(cm.exception))
 
-        mock_sys_exit.assert_called_once_with(1)
-        expected = "Error: Enter at least one label."
-        self.assert_output_contain(stderr, expected)
-        self.assert_output_equal(stdout, '')
-
-    @patch('sys.exit')
-    def test_get_account_openid_multiple_usernames(self, mock_sys_exit):
+    def test_get_account_openid_multiple_usernames(self):
         stdout = StringIO()
         stderr = StringIO()
 
@@ -80,33 +73,21 @@ class GetAccountOpenIDCommandTestCase(SSOBaseTestCase):
         self.assert_output_equal(
             stdout, '\n'.join(("%s,%s" % item for item in expected)))
 
-    @patch('sys.exit')
-    def test_get_account_openid_for_valid_username_without_account(
-            self, mock_sys_exit):
-        stdout = StringIO()
-        stderr = StringIO()
+    def test_get_account_openid_for_valid_username_without_account(self):
         self.account.delete()
         person = Person.objects.get(pk=self.person.pk)
         assert person.account is None
 
-        call_command('get_account_openid', person.name,
-                     stdout=stdout, stderr=stderr)
+        with self.assertRaises(CommandError) as cm:
+            call_command('get_account_openid', person.name)
 
-        mock_sys_exit.assert_called_once_with(1)
-        expected = ("Error: LP account matching username '%s' is not linked "
+        expected = ("LP account matching username '%s' is not linked "
                     "to any SSO account." % person.name)
-        self.assert_output_contain(stderr, expected)
-        self.assert_output_equal(stdout, '')
+        self.assertEqual(expected, str(cm.exception))
 
-    @patch('sys.exit')
-    def test_get_account_openid_for_invalid_username(self, mock_sys_exit):
-        stdout = StringIO()
-        stderr = StringIO()
+    def test_get_account_openid_for_invalid_username(self):
+        with self.assertRaises(CommandError) as cm:
+            call_command('get_account_openid', 'invalid')
 
-        call_command('get_account_openid', 'invalid',
-                     stdout=stdout, stderr=stderr)
-
-        mock_sys_exit.assert_called_once_with(1)
-        expected = "Error: No LP account found matching username 'invalid'."
-        self.assert_output_contain(stderr, expected)
-        self.assert_output_equal(stdout, '')
+        expected = "No LP account found matching username 'invalid'."
+        self.assertEqual(expected, str(cm.exception))

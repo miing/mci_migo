@@ -6,6 +6,7 @@ Copyright 2012 Canonical Ltd.  This software is licensed under the GNU
 Affero General Public License version 3 (see the file LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="device_removal"{% endblock %}
 
 {% block title %}
   {% blocktrans %}{{ user }}'s devices{% endblocktrans %}
@@ -19,15 +20,15 @@ Affero General Public License version 3 (see the file LICENSE).
 <p>{% blocktrans %}Are you sure that you want to delete the following
 authentication device?{% endblocktrans %}</p>
 
-<p class="device-name" data-qa-id="_device_removal_device_name">{{ name }}</p>
+<p class="device-name" data-qa-id="device_removal_device_name">{{ name }}</p>
 
 <form method="post" action="">
   {% csrf_token %}
   <p>
-    <button class="btn cta" type="submit">
+    <button class="btn cta" type="submit" data-qa-id="delete_this_device">
       <span>{% trans "Delete this device" %}</span>
     </button>
-    <a class="cta secondary" href="{{ device_list_path }}">{% trans "Cancel" %}</a>
+    <a class="cta secondary" data-qa-id="cancel_deleting_this_device" href="{{ device_list_path }}">{% trans "Cancel" %}</a>
   </p>
 </form>
 

@@ -19,6 +19,7 @@
 from .environment import *
 from .django import *
 from .postgresql import *
+from .dbengine import *
 from .development import *
 from .docs import *
 

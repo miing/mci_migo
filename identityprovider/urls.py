@@ -2,8 +2,9 @@
 # the GNU Affero General Public License version 3 (see the file
 # LICENSE).
 
-from django.conf.urls.defaults import *
+from django.conf.urls import include, patterns, url
 from django.conf import settings
+from django.views.generic import RedirectView
 
 
 repls = {
@@ -28,11 +29,11 @@ urlpatterns = patterns(
 )
 
 urlpatterns += patterns(
-    'django.views.generic.simple',
-    (r'^%(token)s$' % repls, 'redirect_to',
-     {'url': '/%(token)s/+decide', 'permanent': False}),
-    (r'^\+id/(?P<identifier>[A-Za-z0-9\-_]+)/\+index$', 'redirect_to',
-     {'url': '/+id/%(identifier)s', 'permanent': False}),
+    '',
+    (r'^%(token)s$' % repls,
+     RedirectView.as_view(url='/%(token)s/+decide', permanent=False)),
+    (r'^\+id/(?P<identifier>[A-Za-z0-9\-_]+)/\+index$',
+     RedirectView.as_view(url='/+id/%(identifier)s', permanent=False)),
 )
 
 if settings.DEBUG:

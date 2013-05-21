@@ -23,7 +23,7 @@ class Command(BaseCommand):
         name = 'isdtest'
         fullname = 'ISD Test'
         teams = ['canonical-voices', 'canonical-isd-hackers']
-        allowed_sreg = ','.join([
+        allowed_user_attribs = ','.join([
             'fullname', 'nickname', 'email', 'timezone',
             'language'
         ])
@@ -47,7 +47,7 @@ class Command(BaseCommand):
             defaults={
                 'displayname': 'test',
                 'auto_authorize': False,
-                'allowed_sreg': allowed_sreg,
+                'allowed_user_attribs': allowed_user_attribs,
                 'allow_unverified': True,
             }
         )

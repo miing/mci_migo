@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2010, 2012 Canonical Ltd.  This software is licensed under
 # the GNU Affero General Public License version 3 (see the file
 # LICENSE).
@@ -31,6 +32,7 @@ from pyquery import PyQuery
 
 import identityprovider.signed as signed
 from identityprovider.const import (
+    AX_DATA_FIELDS,
     AX_URI_ACCOUNT_VERIFIED,
     AX_URI_EMAIL,
     AX_URI_FULL_NAME,
@@ -170,7 +172,7 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
     def test_handle_user_response_ax_openid_is_authorized_idselect(self):
         # update rp to auto authorize
         self.rpconfig.auto_authorize = True
-        self.rpconfig.allowed_ax = 'fullname,email,account_verified'
+        self.rpconfig.allowed_user_attribs = 'fullname,email,account_verified'
         self.rpconfig.save()
 
         self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
@@ -192,58 +194,108 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
         self.assertEqual(query['openid.ax.value.account_verified.1'],
                          'token_via_email')
 
-    def test_handle_user_response_auto_auth_large_response(self):
+    def test_handle_user_response_auto_auth_large_ax_sreg_response(self):
         # Make sure we get a large response
         self.account.displayname = 'a' * OPENID1_URL_LIMIT
         self.account.save()
-        self._test_auto_auth()
+        self._test_auto_auth(ax=['email',
+                                 'account_verified',
+                                 'language'],
+                             sreg=['fullname'])
 
-    def test_handle_user_response_auto_auth_borderline_response(self):
+    def test_decide_with_ax_non_ascii_data(self):
+        # Make sure we get a large response
+        displayname = u'Sömê únicỏde h¢r€'
+        # add padding to force a POST
+        padding = u'a' * (OPENID1_URL_LIMIT - len(displayname))
+        self.account.displayname = displayname + padding
+        self.account.save()
+        self._test_auto_auth(ax=['fullname'])
+
+    def test_handle_user_response_auto_auth_borderline_ax_sreg_response(self):
         # Make a response that's small enough that it fits in a redirect before
         # signing, but large enough that it will need a POST after signing. We
         # might want to come up with a more robust method of determining the
         # required length, but this works for now.
         self.account.displayname = 'a' * (OPENID1_URL_LIMIT / 2)
         self.account.save()
-        self._test_auto_auth()
+        self._test_auto_auth(ax=['email',
+                                 'account_verified',
+                                 'language'],
+                             sreg=['fullname'])
 
-    def _test_auto_auth(self):
+    def test_handle_user_response_auto_auth_large_ax_only_response(self):
+        self.account.displayname = 'a' * OPENID1_URL_LIMIT
+        self.account.save()
+        self._test_auto_auth(ax=['fullname'])
+
+    def test_handle_user_response_auto_auth_large_sreg_only_response(self):
+        self.account.displayname = 'a' * OPENID1_URL_LIMIT
+        self.account.save()
+        self._test_auto_auth(sreg=['fullname'])
+
+    def _test_auto_auth(self, ax=None, sreg=None):
         # update rp to auto authorize
         self.rpconfig.auto_authorize = True
-        self.rpconfig.allowed_ax = 'fullname,email,account_verified'
+        self.rpconfig.allowed_user_attribs = 'fullname,email,account_verified'
         self.rpconfig.save()
 
+        # Define expected values for each attribute
+        expected_values = {
+            'email': self.email,
+            'account_verified': 'token_via_email',
+            'language': None,  # disallowed by rpconfig
+            'fullname': self.account.displayname,
+        }
+        expected_fields = [
+            ('openid.claimed_id', self.account.openid_identity_url),
+            ('openid.identity', self.account.openid_identity_url),
+        ]
+        unexpected_fields = []
+
         self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
-        self.params.update({
-            'openid.ns.ax': AXMessage.ns_uri,
-            'openid.ax.mode': FetchRequest.mode,
-            'openid.ax.type.fullname': AX_URI_FULL_NAME,
-            'openid.ax.type.email': AX_URI_EMAIL,
-            'openid.ax.type.account_verified': AX_URI_ACCOUNT_VERIFIED,
-            'openid.ax.type.language': AX_URI_LANGUAGE,
-            'openid.ax.required': 'fullname,email,account_verified,language',
-        })
+        if ax:
+            self.params.update({
+                'openid.ns.ax': AXMessage.ns_uri,
+                'openid.ax.mode': FetchRequest.mode,
+                'openid.ax.required': ','.join(ax)
+            })
+            self.params.update(
+                [['openid.ax.type.%s' % alias,
+                  AX_DATA_FIELDS.getNamespaceURI(alias)] for alias in ax])
+            expected_fields += [('openid.ax.mode', 'fetch_response')]
+            expected_fields += [('openid.ax.value.%s.1' % k, v)
+                                for k, v in expected_values.iteritems()
+                                if k in ax and v is not None]
+            unexpected_fields += [('openid.ax.value.%s.1' % k)
+                                  for k, v in expected_values.iteritems()
+                                  if k not in ax or v is None]
+        if sreg:
+            self.params.update({
+                'openid.ns.sreg': 'http://openid.net/sreg/1.0',
+                'openid.sreg.required': ','.join(sreg),
+            })
+            expected_fields += [('openid.sreg.%s' % k, v)
+                                for k, v in expected_values.iteritems()
+                                if k in sreg and v is not None]
+            unexpected_fields += ['openid.sreg.%s' % k
+                                  for k, v in expected_values.iteritems()
+                                  if k not in sreg or v is None]
         response = self.client.post(self.url, self.params)
         self.assertEqual('text/html', response['Content-type'].split(';')[0])
-        self.assertContains(response, 'assoc_handle')
-        self.assertContains(response, 'openid.sig')
-        dom = PyQuery(response.content)
+        dom = PyQuery(response.content.decode('utf-8'))
         root = dom.root.getroot()
         self.assertEqual('html', root.tag)
         body = root.find('body')
         self.assertEqual('document.forms[0].submit();', body.get('onload'))
         forms = dom.find('form')
         self.assertEqual(len(forms), 1)
-        expected_fields = (
-            ('openid.claimed_id', self.account.openid_identity_url),
-            ('openid.identity', self.account.openid_identity_url),
-            ('openid.ax.mode', 'fetch_response'),
-            ('openid.ax.value.email.1', self.email),
-            ('openid.ax.value.fullname.1', self.account.displayname),
-            ('openid.ax.value.account_verified.1', 'token_via_email'),
-        )
         for k, v in expected_fields:
             self.assertEqual(v, forms[0].fields[k])
+        for k in unexpected_fields:
+            self.assertNotIn(k, forms[0].fields)
+        for k in ('openid.assoc_handle', 'openid.sig'):
+            self.assertIn(k, forms[0].fields)
 
     def test_handle_user_response_openid_is_authorized_idselect(self):
         # update rp to auto authorize
@@ -330,6 +382,98 @@ class HandleUserResponseTestCase(SSOBaseTestCase):
         r = self.client.post(login_url)
         # rpconfig should be refetched
         self.assertEqual(r.context['rpconfig'], self.rpconfig)
+
+
+class HandleUserResponseUnverifiedUserLogedInTestCase(SSOBaseTestCase):
+    # regression tests for
+    # https://bugs.launchpad.net/canonical-identity-provider/+bug/1155656
+    email = 'mark@example.com'
+    openid_identifier = 'mark_oid'
+    openid_url = settings.SSO_ROOT_URL + '+id/mark_oid'
+    url = reverse('server-openid')
+
+    def setUp(self):
+        super(HandleUserResponseUnverifiedUserLogedInTestCase, self).setUp()
+        self.params = {'openid.trust_root': 'http://localhost/',
+                       'openid.return_to': 'http://localhost/',
+                       'openid.identity': IDENTIFIER_SELECT,
+                       'openid.claimed_id': 'http://localhost/~userid',
+                       'openid.ns': OPENID2_NS,
+                       'openid.mode': 'checkid_setup'}
+        self.account = self.factory.make_account(
+            email=self.email, password=DEFAULT_USER_PASSWORD,
+            openid_identifier=self.openid_identifier)
+        self.account.emailaddress_set.update(status=EmailStatus.NEW)
+
+    def assert_redirected_with_warning(self, response):
+        self.assertIn(
+            reverse('account-emails'), response.redirect_chain[-1][0])
+        msgs = list(response.context['messages'])
+        self.assertEqual(len(msgs), 1)
+        self.assertEqual(msgs[0].level, server.messages.WARNING)
+
+    def test_check_setup_with_rpconfig_when_not_allowed_unverifed(self):
+        OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/', auto_authorize=True)
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+
+        r = self.client.get(self.url, self.params, follow=True)
+        self.assert_redirected_with_warning(r)
+
+    def test_check_setup_no_rpconfig(self):
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+
+        r = self.client.get(self.url, self.params, follow=True)
+        self.assert_redirected_with_warning(r)
+
+    def test_check_setup_with_rpconfig_when_allowed_unverifed(self):
+        OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/',
+            auto_authorize=True,
+            allow_unverified=True
+        )
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+
+        r = self.client.get(self.url, self.params)
+        query = self.get_query(r)
+        self.assertEqual(query['openid.mode'], 'id_res')
+        self.assertEqual(query['openid.identity'],
+                         quote_plus(self.account.openid_identity_url))
+
+    def test_check_immediate_with_rpconfig_when_not_allowed_unverifed(self):
+        OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/', auto_authorize=True)
+        self.params['openid.mode'] = 'checkid_immediate'
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+
+        r = self.client.get(self.url, self.params)
+        query = self.get_query(r)
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(query['openid.mode'], 'setup_needed')
+
+    def test_check_immediate_no_rpconfig(self):
+        self.params['openid.mode'] = 'checkid_immediate'
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+
+        r = self.client.get(self.url, self.params)
+        query = self.get_query(r)
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(query['openid.mode'], 'setup_needed')
+
+    def test_check_immediate_with_rpconfig_when_allowed_unverifed(self):
+        OpenIDRPConfig.objects.create(
+            trust_root='http://localhost/',
+            auto_authorize=True,
+            allow_unverified=True
+        )
+
+        self.params['openid.mode'] = 'checkid_immediate'
+        self.client.login(username=self.email, password=DEFAULT_USER_PASSWORD)
+        r = self.client.get(self.url, self.params)
+        query = self.get_query(r)
+        self.assertEqual(query['openid.mode'], 'id_res')
+        self.assertEqual(query['openid.identity'],
+                         quote_plus(self.account.openid_identity_url))
 
 
 class MultiLangOpenIDTestCase(SSOBaseTestCase):
@@ -598,9 +742,9 @@ class DecideTestCase(DecideBaseTestCase):
         # no extra check is needed
         server._check_team_membership(request, self.orequest, oresponse)
 
-    def test_only_ax_or_sreg_form_is_displayed(self):
-        """Even if both SReg and AX requests are present, only display the AX
-        form."""
+    def test_ax_and_sreg_fields_are_merged(self):
+        """If both SReg and AX requests are present, only display one set of
+        fields."""
         team_name = 'ubuntu-team'
         team = self.factory.make_team(name=team_name)
         self.factory.add_account_to_team(self.account, team)
@@ -608,8 +752,7 @@ class DecideTestCase(DecideBaseTestCase):
         # create a trusted rpconfig
         rpconfig = OpenIDRPConfig(
             trust_root='http://localhost/',
-            allowed_sreg='fullname,email',
-            allowed_ax='fullname,email,account_verified',
+            allowed_user_attribs='fullname,email,account_verified',
             can_query_any_team=True,
             description="Some description",
         )
@@ -628,8 +771,8 @@ class DecideTestCase(DecideBaseTestCase):
         self._prepare_openid_token(param_overrides=param_overrides)
         response = self.client.get('/%s/+decide' % self.token)
         dom = PyQuery(response.content)
-        self.assertEqual(len(dom.find('li.ax')), 3)
-        self.assertEqual(len(dom.find('li.sreg')), 0)
+        # Only 3 fields, because language isn't allowed by the rpconfig
+        self.assertEqual(len(dom.find('li.user_attribs')), 3)
 
     def test_list_of_details_is_complete_with_sreg(self):
         team_name = 'ubuntu-team'
@@ -639,7 +782,7 @@ class DecideTestCase(DecideBaseTestCase):
         # create a trusted rpconfig
         OpenIDRPConfig.objects.create(
             trust_root='http://localhost/',
-            allowed_sreg='fullname,email,language',
+            allowed_user_attribs='fullname,email,language',
             can_query_any_team=True,
             description="Some description",
         )
@@ -662,7 +805,7 @@ class DecideTestCase(DecideBaseTestCase):
         # create a trusted rpconfig
         rpconfig = OpenIDRPConfig(
             trust_root='http://localhost/',
-            allowed_ax='fullname,email,account_verified',
+            allowed_user_attribs='fullname,email,account_verified',
             can_query_any_team=True,
             description="Some description",
         )
@@ -702,7 +845,6 @@ class DecideTestCase(DecideBaseTestCase):
             self.assertEqual(elem[0].get('disabled'), 'disabled')
         else:
             self.assertIsNone(elem[0].get('disabled'))
-        self.assertEqual(elem[0].get('value'), value)
         elem = dom.find('label[for=id_%s]' % field)
         self.assertEqual(len(elem), 1)
         self.assertEqual(
@@ -747,7 +889,7 @@ class DecideTestCase(DecideBaseTestCase):
         # create a trusted rpconfig
         OpenIDRPConfig.objects.create(
             trust_root='http://localhost/',
-            allowed_sreg='nickname,email,language',
+            allowed_user_attribs='nickname,email,language',
             can_query_any_team=True,
             description="Some description",
         )
@@ -759,7 +901,7 @@ class DecideTestCase(DecideBaseTestCase):
         self._prepare_openid_token(param_overrides=param_overrides)
         response = self.client.get(self.url)
         dom = PyQuery(response.content)
-        self.assertEqual(len(dom.find('li.sreg')), 3)
+        self.assertEqual(len(dom.find('li.user_attribs')), 3)
 
         nickname = self.account.person.name
         self._test_required_trusted_field(dom, field='nickname',
@@ -784,7 +926,7 @@ class DecideTestCase(DecideBaseTestCase):
         # create a trusted rpconfig
         rpconfig = OpenIDRPConfig(
             trust_root='http://localhost/',
-            allowed_ax='nickname,email,language,account_verified',
+            allowed_user_attribs='nickname,email,language,account_verified',
             can_query_any_team=True,
             description="Some description",
         )
@@ -803,7 +945,7 @@ class DecideTestCase(DecideBaseTestCase):
         self._prepare_openid_token(param_overrides=param_overrides)
         response = self.client.get('/%s/+decide' % self.token)
         dom = PyQuery(response.content)
-        self.assertEqual(len(dom.find('li.ax')), 3)
+        self.assertEqual(len(dom.find('li.user_attribs')), 3)
 
         self._test_required_trusted_field(dom, field='email',
                                           label='Email address',
@@ -838,7 +980,7 @@ class DecideTestCase(DecideBaseTestCase):
         self._prepare_openid_token(param_overrides=param_overrides)
         response = self.client.get(self.url)
         dom = PyQuery(response.content)
-        self.assertEqual(len(dom.find('li.sreg')), 4)
+        self.assertEqual(len(dom.find('li.user_attribs')), 4)
 
         nickname = self.account.person.name
         self._test_required_untrusted_field(dom, field='nickname',
@@ -885,7 +1027,7 @@ class DecideTestCase(DecideBaseTestCase):
         self._prepare_openid_token(param_overrides=param_overrides)
         response = self.client.get('/%s/+decide' % self.token)
         dom = PyQuery(response.content)
-        self.assertEqual(len(dom.find('li.ax')), 4)
+        self.assertEqual(len(dom.find('li.user_attribs')), 4)
 
         fullname = self.account.get_full_name()
         self._test_required_untrusted_field(dom, field='fullname',
@@ -911,11 +1053,11 @@ class DecideUserUnverifiedTestCase(DecideBaseTestCase):
         self.account.emailaddress_set.update(status=EmailStatus.NEW)
         assert not self.account.is_verified
 
-    def assert_redirected_with_warning(self, response, rp):
+    def assert_redirected_with_warning(self, response, name):
         self.assertIn(reverse('account-emails'), response.redirect_chain[0][0])
         msgs = list(response.context['messages'])
         self.assertEqual(len(msgs), 1)
-        msg = server.SITE_REQUIRES_VERIFIED.format(rp_name=rp.displayname)
+        msg = server.SITE_REQUIRES_VERIFIED.format(rp_name=name)
         self.assertEqual(msgs[0].message, msg)
         self.assertEqual(msgs[0].level, server.messages.WARNING)
 
@@ -937,7 +1079,7 @@ class DecideUserUnverifiedTestCase(DecideBaseTestCase):
     def test_user_unverified_no_rpconfig(self):
         assert OpenIDRPConfig.objects.count() == 0
         response = self.client.get(self.url, follow=True)
-        self.assert_decide_page_shown(response)
+        self.assert_redirected_with_warning(response, 'http://localhost/')
 
     def test_user_unverified_rpconfig_allow_unverified(self):
         OpenIDRPConfig.objects.create(
@@ -952,7 +1094,7 @@ class DecideUserUnverifiedTestCase(DecideBaseTestCase):
             displayname='Foo Bar baz')
         self._prepare_openid_token()
         response = self.client.get(self.url, follow=True)
-        self.assert_redirected_with_warning(response, rpconfig)
+        self.assert_redirected_with_warning(response, rpconfig.displayname)
 
 
 # The particular flows in these test cases are not particularly
@@ -1676,11 +1818,10 @@ class ApprovedDataTestCase(SSOBaseTestCase):
             self._get_request_with_post_args(post_args),
             self._get_openid_request(with_sreg=True, with_ax=False,
                                      with_teams=False))
-        self.assertEqual(sorted(result['sreg']['requested']),
+        self.assertEqual(sorted(result['user_attribs']['requested']),
                          ['email', 'fullname'])
-        self.assertEqual(result['sreg']['approved'], ['email'])
+        self.assertEqual(result['user_attribs']['approved'], ['email'])
         self.assertNotIn('teams', result)
-        self.assertNotIn('ax', result)
 
     def test_approved_data_for_ax_only(self):
         post_args = {'email': 'email', 'ubuntu-team': 'ubuntu-team'}
@@ -1688,10 +1829,9 @@ class ApprovedDataTestCase(SSOBaseTestCase):
             self._get_request_with_post_args(post_args),
             self._get_openid_request(with_sreg=False, with_ax=True,
                                      with_teams=False))
-        self.assertEqual(sorted(result['ax']['requested']),
+        self.assertEqual(sorted(result['user_attribs']['requested']),
                          ['email', 'fullname'])
-        self.assertEqual(result['ax']['approved'], ['email'])
-        self.assertNotIn('sreg', result)
+        self.assertEqual(result['user_attribs']['approved'], ['email'])
         self.assertNotIn('teams', result)
 
     def test_approved_data_for_teams_only(self):
@@ -1702,8 +1842,7 @@ class ApprovedDataTestCase(SSOBaseTestCase):
                                      with_teams=True))
         self.assertEqual(result['teams']['requested'], ['ubuntu-team'])
         self.assertEqual(result['teams']['approved'], ['ubuntu-team'])
-        self.assertNotIn('ax', result)
-        self.assertNotIn('sreg', result)
+        self.assertNotIn('user_attribs', result)
 
     def test_approved_data_for_sreg_and_teams(self):
         post_args = {'email': 'email', 'ubuntu-team': 'ubuntu-team'}
@@ -1711,12 +1850,11 @@ class ApprovedDataTestCase(SSOBaseTestCase):
             self._get_request_with_post_args(post_args),
             self._get_openid_request(with_sreg=True, with_ax=False,
                                      with_teams=True))
-        self.assertEqual(sorted(result['sreg']['requested']),
+        self.assertEqual(sorted(result['user_attribs']['requested']),
                          ['email', 'fullname'])
-        self.assertEqual(result['sreg']['approved'], ['email'])
+        self.assertEqual(result['user_attribs']['approved'], ['email'])
         self.assertEqual(result['teams']['requested'], ['ubuntu-team'])
         self.assertEqual(result['teams']['approved'], ['ubuntu-team'])
-        self.assertNotIn('ax', result)
 
     def test_approved_data_for_ax_and_teams(self):
         post_args = {'email': 'email', 'ubuntu-team': 'ubuntu-team'}
@@ -1724,12 +1862,11 @@ class ApprovedDataTestCase(SSOBaseTestCase):
             self._get_request_with_post_args(post_args),
             self._get_openid_request(with_sreg=False, with_ax=True,
                                      with_teams=True))
-        self.assertEqual(sorted(result['ax']['requested']),
+        self.assertEqual(sorted(result['user_attribs']['requested']),
                          ['email', 'fullname'])
-        self.assertEqual(result['ax']['approved'], ['email'])
+        self.assertEqual(result['user_attribs']['approved'], ['email'])
         self.assertEqual(result['teams']['requested'], ['ubuntu-team'])
         self.assertEqual(result['teams']['approved'], ['ubuntu-team'])
-        self.assertNotIn('sreg', result)
 
 
 class TokenLoginTestCase(SSOBaseTestCase):

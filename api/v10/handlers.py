@@ -1,7 +1,7 @@
 # Copyright 2010-2012 Canonical Ltd.  This software is licensed under the
 # GNU Affero General Public License version 3 (see the file LICENSE).
 import logging
-from django.utils import simplejson as json
+import json
 
 from datetime import datetime, timedelta
 
@@ -54,7 +54,10 @@ from api.v10.forms import (
 
 def api_error(cls, msg):
     """Ensure 4xx response content in plain text to avoid XSS"""
-    return cls(msg, content_type='text/plain')
+    response = cls(msg, content_type='text/plain')
+    # Add back bit expected by django-piston but removed from django 1.5
+    response._is_string = True
+    return response
 
 
 class LazrRestfulEmitter(Emitter):
@@ -141,7 +144,9 @@ class RootHandler(LazrRestfulHandler):
         if ('application/vd.sun.wadl+xml' in request.META['HTTP_ACCEPT'] or
                 'application/vnd.sun.wadl+xml' in request.META['HTTP_ACCEPT']):
             context = {'baseurl': self.baseurl}
-            return render_to_response(self.wadl_template, context)
+            response = render_to_response(self.wadl_template, context)
+            response._is_string = True
+            return response
         else:
             return self.response
 

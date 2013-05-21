@@ -7,6 +7,8 @@ Copyright 2010 Canonical Ltd.  This software is licensed under the
 GNU Affero General Public License version 3 (see the file  LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="forgot_password_step_2"{% endblock %}
+
 {% block title %}{{ email_heading }}{% endblock %}
 
 {% block text_title %}
@@ -23,8 +25,8 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
     </div>
 
 {% if not readonly %}
-    {% if token %}{% url enter_token token as enter_token_url %}
-    {% else %}{% url enter_token as enter_token_url %}{% endif %}
+    {% if token %}{% url 'enter_token' token as enter_token_url %}
+    {% else %}{% url 'enter_token' as enter_token_url %}{% endif %}
     <form action="{{ enter_token_url }}" method="post" id="email_confirm">
       {% csrf_token %}
       <p class="input-row">
@@ -35,7 +37,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
       <p><button id="submit" type="submit" class="btn cta" disabled="true">
           <span>{% trans "Continue" %}</span>
         </button>
-        {% url account-emails as emails_url %}
+        {% url 'account-emails' as emails_url %}
         {% if user.is_authenticated %}{% blocktrans %} or, <a href="{{ emails_url }}">return to email addresses</a>{% endblocktrans %}{% endif %}
       </p>
     </form>

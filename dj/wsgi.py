@@ -35,7 +35,7 @@ paths.setup_paths()
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'dj.settings'
 
 # add extra paths to system path if not already there
 # check if path is already there to avoid path duplication when
@@ -45,6 +45,7 @@ extra_paths = [path for path in settings.EXTRA_PYTHONPATH
 sys.path.extend(extra_paths)
 
 os.environ['PGCONNECT_TIMEOUT'] = str(settings.PGCONNECT_TIMEOUT)
+os.environ['PGSSLMODE'] = 'allow'
 
 from identityprovider.wsgi_handler import OOPSWSGIHandler
 

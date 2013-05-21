@@ -1,7 +1,7 @@
 [__noschema__]
 basedir = .
 db_host =
-hostname = 0.0.0.0:$PORT
+hostname = ${SSO_HOSTNAME:-0.0.0.0:8000}
 
 [__main__]
 includes =

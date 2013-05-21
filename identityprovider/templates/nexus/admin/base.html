@@ -1,0 +1,12 @@
+{% extends "nexus/base.html" %}
+
+{% load nexus_helpers %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% nexus_media_prefix %}/nexus/css/admin.css" />
+    <script>
+    window.__admin_media_prefix__ = '{{ STATIC_URL }}/admin';
+    window.__nexus_media_prefix__ = '{% nexus_media_prefix %}';
+    </script>
+{% endblock %}

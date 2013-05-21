@@ -18,7 +18,10 @@ def api_user_required(func):
         if user:
             if isinstance(user, APIUser):
                 return func(self, request, *args, **kwargs)
-        return HttpResponseForbidden('403 Forbidden')
+        response = HttpResponseForbidden('403 Forbidden')
+        # Added back bit required by django-piston
+        response._is_string = True
+        return response
     return wrapper
 
 
@@ -29,7 +32,10 @@ def plain_user_required(func):
         if user:
             if isinstance(user, Account):
                 return func(self, request, *args, **kwargs)
-        return HttpResponseForbidden('403 Forbidden')
+        response = HttpResponseForbidden('403 Forbidden')
+        # Added back bit required by django-piston
+        response._is_string = True
+        return response
     return wrapper
 
 

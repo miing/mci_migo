@@ -12,6 +12,7 @@ import gargoyle
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
 SALT_LENGTH = 20
@@ -182,3 +183,11 @@ def get_current_brand():
             # Go with the default from the setting above.
             pass
     return brand
+
+
+def redirection_url_for_token(token):
+    if token is not None:
+        # Redirected from an OpenID request, must get back after confirmation
+        return reverse('server-decide', kwargs=dict(token=token))
+    else:
+        return '/'

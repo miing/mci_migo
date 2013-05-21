@@ -42,14 +42,14 @@ EMAIL_INVALIDATED = _(
 )
 
 
-def guest_required(func):
+def redirect_home_if_logged_in(func):
     @functools.wraps(func)
-    def _guest_required_decorator(request, *args, **kwargs):
+    def _redirect_home_if_logged_in(request, *args, **kwargs):
         if request.user.is_authenticated():
             return HttpResponseRedirect('/')
         else:
             return func(request, *args, **kwargs)
-    return _guest_required_decorator
+    return _redirect_home_if_logged_in
 
 
 def dont_cache(func):

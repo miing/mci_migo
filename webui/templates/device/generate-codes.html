@@ -28,10 +28,10 @@ Please print this new list and <strong>destroy any old lists</strong>.
 <form method="post">
   {% csrf_token %}
   <p>
-    <button class="btn" type="submit">
+    <button class="btn" type="submit" data-qa-id="confirm-codes">
       <span><span>{% trans "Confirm new codes" %}</span></span>
     </button>
-    {% trans "or" %} <a href="{% url device-print device_id %}">{% trans "cancel" %}</a>
+    {% trans "or" %} <a href="{% url 'device-print' device_id %}" data-qa-id="cancel">{% trans "cancel" %}</a>
   </p>
 </form>
 {% endblock %}

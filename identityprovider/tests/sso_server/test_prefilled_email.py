@@ -15,7 +15,7 @@ class PrefilledEmailTestCase(FunctionalTestCase):
 
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_forgot_password_link"]',
+            'a[data-qa-id="forgot_password_link"]',
             'href')
 
         response = self.client.get(link)
@@ -28,7 +28,7 @@ class PrefilledEmailTestCase(FunctionalTestCase):
 
         link = self.get_attribute_from_response(
             response,
-            'a[data-qa-id="_qa_create_account_link"]',
+            'a[data-qa-id="create_account_link"]',
             'href')
 
         response = self.client.get(link)

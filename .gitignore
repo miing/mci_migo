@@ -6,6 +6,10 @@
 
 # config 
 dj/local.cfg
+scripts/local.cfg-
+
+# packages
+packages/*
 
 # tests
 .coverage*
@@ -15,15 +19,15 @@ tags
 .backup
 reports
 
+# logging
+logs/*
+oopses/*
+
+# docs
+docs/html
+docs/html/*
+
 # other
 .pyflymakerc*
 .noseids
-sso.log
-sso.wpr
-sso.wpu
 results
-docs/html
-docs/html/*
-log
-scripts/local.cfg-
-oopses/*

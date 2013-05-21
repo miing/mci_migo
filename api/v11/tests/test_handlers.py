@@ -68,7 +68,7 @@ class Authentication11TestCase(AuthenticationTestCase):
         # the account has no tokens at all
         assert len(self.account.oauth_tokens()) == 0
 
-        response = self.client.put('/api/1.1/authentications', data, **extra)
+        response = self.put('/api/1.1/authentications', data, **extra)
         self.assertEqual(response.status_code, 404)
 
     def test_authenticate_refresh_token_is_not_owned(self):
@@ -85,7 +85,7 @@ class Authentication11TestCase(AuthenticationTestCase):
         self.account.create_oauth_token('foobar')
         assert len(self.account.oauth_tokens()) == 1
 
-        response = self.client.put('/api/1.1/authentications', data, **extra)
+        response = self.put('/api/1.1/authentications', data, **extra)
         self.assertEqual(response.status_code, 404)
 
     def test_authenticate_get_has_no_side_effects(self):

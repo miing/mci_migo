@@ -47,7 +47,7 @@
         </div>
         <div style="clear: both">&nbsp;</div>
     </form>
-    <p><a href="{% url device-help %}">{% trans "Report a lost or stolen device" %}</a></p>
+    <p><a href="{% url 'device-help' %}">{% trans "Report a lost or stolen device" %}</a></p>
    <p>{% blocktrans with "twofactor_faq"|static_url as 2FFAQ %}
      <a href="{{ 2FFAQ }}">2-Factor Auth FAQ</a>
    {% endblocktrans %}</p>

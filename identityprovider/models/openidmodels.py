@@ -3,7 +3,7 @@
 
 import base64
 import hashlib
-from django.utils import simplejson as json
+import json
 import time
 
 from datetime import datetime
@@ -154,6 +154,7 @@ class OpenIDRPConfig(models.Model):
     displayname = models.TextField()
     description = models.TextField()
     logo = models.TextField(blank=True, null=True)
+    allowed_user_attribs = models.TextField(blank=True, null=True)
     allowed_ax = models.TextField(blank=True, null=True)
     allowed_sreg = models.TextField(blank=True, null=True)
     creation_rationale = models.IntegerField(
@@ -266,6 +267,22 @@ class OpenIDRPSummary(models.Model):
             data = json.loads(self.approved_data)
         except (TypeError, ValueError):
             data = {}
+
+        if not data.get('user_attribs'):
+            # fallback to read from old ax/sreg approved data
+            ax_data = data.get('ax', {})
+            requested_ax = set(ax_data.get('requested', []))
+            approved_ax = set(ax_data.get('approved', []))
+            sreg_data = data.get('sreg', {})
+            requested_sreg = set(sreg_data.get('requested', []))
+            approved_sreg = set(sreg_data.get('approved', []))
+
+            data['user_attribs'] = {
+                'requested': list(requested_ax | requested_sreg),
+                'approved': list(approved_ax | approved_sreg),
+            }
+            self.approved_data = json.dumps(data)
+            self.save()
         return data
 
     def set_approved_data(self, approved_data):

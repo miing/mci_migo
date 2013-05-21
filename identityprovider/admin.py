@@ -43,8 +43,13 @@ DEVICE_TYPE_CHOICES = [
 
 class OpenIDRPConfigForm(forms.ModelForm):
     displayname = forms.CharField(label="Display name")
-    trust_root = forms.URLField(verify_exists=False)
+    trust_root = forms.URLField()
     logo = forms.CharField(required=False)
+    allowed_user_attribs = CommaSeparatedField(
+        choices=AX_DATA_LABELS.items(),
+        required=False,
+        widget=CommaSeparatedWidget,
+    )
     allowed_ax = CommaSeparatedField(
         choices=AX_DATA_LABELS.items(),
         required=False,

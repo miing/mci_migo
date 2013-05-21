@@ -4,6 +4,7 @@
 import logging
 
 from django import forms
+from django.core.urlresolvers import reverse
 from django.forms import Form, fields, widgets
 from django.utils import translation
 from django.utils.translation import ugettext as _
@@ -11,8 +12,6 @@ from django.utils.translation import ugettext as _
 from identityprovider.const import (
     AX_DATA_FIELDS,
     AX_DATA_LABELS,
-    SREG_DATA_FIELDS_ORDER,
-    SREG_LABELS,
 )
 from identityprovider.models import (
     Account,
@@ -22,7 +21,6 @@ from identityprovider.models import (
 )
 from identityprovider.models.const import EmailStatus
 from identityprovider.utils import (
-    encrypt_launchpad_password,
     get_current_brand,
 )
 from identityprovider.validators import (
@@ -238,6 +236,7 @@ class EditAccountForm(forms.ModelForm):
         required=False)
 
     def __init__(self, *args, **kwargs):
+        self.password_changed = False
         enable_device_prefs = kwargs.pop('enable_device_prefs', False)
 
         super(EditAccountForm, self).__init__(*args, **kwargs)
@@ -251,6 +250,19 @@ class EditAccountForm(forms.ModelForm):
         validated_emails = self.instance.verified_emails()
 
         if validated_emails.count() > 0:
+
+            if get_current_brand() == 'ubuntuone':
+                text = _(
+                    'Only verified email addresses are listed. '
+                    'Click <a href="%s">Manage email addresses</a> '
+                    'to add and verify email addresses.') % reverse(
+                        'account-emails'
+                    )
+            else:
+                text = _(
+                    'Only verified email addresses are listed. '
+                    'You can add and verify emails through the link below.')
+
             # add and display a dropdown with the valid choices
             self.fields['preferred_email'] = PreferredEmailField(
                 queryset=validated_emails.order_by('email'),
@@ -258,9 +270,7 @@ class EditAccountForm(forms.ModelForm):
                 widget=ROAwareSelect,
                 error_messages=email_errors,
                 empty_label=None,
-                help_text=_(
-                    'Only verified email addresses are listed. '
-                    'You can add and verify emails through the link below.'),
+                help_text=text,
             )
 
         if not enable_device_prefs:
@@ -317,9 +327,8 @@ class EditAccountForm(forms.ModelForm):
     def save(self):
         password = self.cleaned_data['password']
         if password:
-            new_password = encrypt_launchpad_password(password)
-            self.instance.accountpassword.password = new_password
-            self.instance.accountpassword.save()
+            self.instance.set_password(password)
+            self.password_changed = True
         if 'preferred_email' in self.cleaned_data:
             self.instance.preferredemail = self.cleaned_data['preferred_email']
 
@@ -371,147 +380,74 @@ class PreAuthorizeForm(forms.Form):
     callback = forms.CharField(error_messages=default_errors)
 
 
-def _get_data_for_user(request, fields, for_ax=False):
-    """Get the data to ask about in the form based on the user's
-    account record.
-    """
-    values = {}
-    user = request.user
-    values['fullname'] = user.displayname
-    if user.preferredemail is not None:
-        values['email'] = user.preferredemail.email
-    if user.person is not None:
-        values['nickname'] = user.person.name
-        if user.person.time_zone is not None:
-            values['timezone'] = user.person.time_zone
-    if user.preferredlanguage is not None:
-        values['language'] = user.preferredlanguage
-    else:
-        values['language'] = translation.get_language_from_request(request)
-    if for_ax:
-        values['account_verified'] = (
-            'token_via_email' if user.is_verified else 'no')
-    logger.debug('values (%s_fields) = %s',
-                 'ax' if for_ax else 'sreg', str(values))
-
-    return dict([(f, values[f]) for f in fields if f in values])
-
-
-class SRegRequestForm(Form):
-    """A form object for user control over OpenID sreg data.
-    """
-    fields = {}
-
-    @property
-    def data_approved_for_request(self):
-        """Return the list of sreg data approved for the request."""
-        return dict([(f, self.data[f]) for f in self.data
-                     if self.field_approved(f)])
-
-    @property
-    def has_data(self):
-        """Helper property to check if this form has any data."""
-        return len(self.data) > 0
-
-    def __init__(self, request, sreg_request, rpconfig, approved_data=None):
-        self.request = request
-        self.request_method = request.META.get('REQUEST_METHOD')
-        self.sreg_request = sreg_request
-        self.rpconfig = rpconfig
-        self.approved_data = approved_data
-        # generate initial form data
-        sreg_fields = [f for f in SREG_DATA_FIELDS_ORDER if f in set(
-            self.sreg_request.required + self.sreg_request.optional)]
-        if rpconfig is not None:
-            if rpconfig.allowed_sreg:
-                fields = set(sreg_fields).intersection(
-                    set(rpconfig.allowed_sreg.split(',')))
-            else:
-                fields = set()
-        else:
-            fields = sreg_fields
-        self.data = _get_data_for_user(request, fields, for_ax=False)
-
-        super(SRegRequestForm, self).__init__(self.data)
-        self._init_fields(self.data)
-
-    def _init_fields(self, data):
-        """Initialises form fields for the user's sreg data.
-        """
-        for key, val in data.items():
-            label = "%s: %s" % (SREG_LABELS.get(key, key), val)
-            attrs = {}
-            if key in self.sreg_request.required:
-                attrs['class'] = 'required'
-                if self.rpconfig is not None:
-                    attrs['disabled'] = 'disabled'
-            self.fields[key] = fields.BooleanField(
-                label=label,
-                widget=forms.CheckboxInput(attrs=attrs,
-                                           check_test=self.check_test),
-            )
-
-    def check_test(self, value):
-        """Determines if a checkbox should be pre-checked based on previously
-        approved user data, openid request and relying party type.
-        """
-        for k, v in self.data.items():
-            if value == v:
-                value = k
-                break
-
-        if self.rpconfig and value in self.sreg_request.required:
-            return True
-        elif (self.approved_data and
-                value in self.approved_data.get('requested', [])):
-            return value in self.approved_data.get('approved', [])
-        elif self.rpconfig:
-            return True
-        else:
-            return value in self.sreg_request.required
-
-    def field_approved(self, field):
-        """Check if the field should be returned in the response based on user
-        preferences and overridden for trusted relying parties.
-        """
-        approved = set(self.request.POST.keys())
-        if self.rpconfig is not None:
-            sreg_fields = set(self.sreg_request.required)
-            if self.rpconfig.auto_authorize:
-                # also include optional fields
-                sreg_fields.update(set(self.sreg_request.optional))
-            approved.update(sreg_fields)
-        return field in approved
-
-
-class AXFetchRequestForm(Form):
+class UserAttribsRequestForm(Form):
     """A form object for user control over OpenID Attribute Exchange."""
 
-    def __init__(self, request, ax_request, rpconfig, approved_data=None):
+    def __init__(self, request, sreg_request, ax_request, rpconfig,
+                 approved_data=None):
         self.request = request
-        self.request_method = request.META.get('REQUEST_METHOD')
+        self.sreg_request = sreg_request
         self.ax_request = ax_request
         self.rpconfig = rpconfig
         self.approved_data = approved_data
         # generate initial form data
-        ax_fields = self._get_requested_field_aliases()
-        if rpconfig is not None:
-            ax_fields = self._filter_allowed_fields(ax_fields)
-        self.data = _get_data_for_user(request, ax_fields, for_ax=True)
-
-        super(AXFetchRequestForm, self).__init__(self.data)
+        self._split_and_filter_requested_attributes()
+        self._get_data_for_user()
+        super(UserAttribsRequestForm, self).__init__(self.data)
         self._init_fields(self.data)
 
-    def _get_requested_field_aliases(self):
-        return [AX_DATA_FIELDS.getAlias(f)
-                for f in AX_DATA_FIELDS.iterNamespaceURIs()
-                if f in set(self.ax_request.requested_attributes.keys())]
+    def _split_and_filter_requested_attributes(self):
+        # Merge the requested attributes from sreg_request and ax_request and
+        # filter out any that we don't recognise or that aren't allowed by our
+        # rpconfig.
+        # The rule is that if at least one request lists it as required, it's
+        # required, otherwise it's optional.
+        known_attribs = set([a for a in AX_DATA_FIELDS.iterAliases()])
+        if self.rpconfig is not None:
+            allowed = self.rpconfig.allowed_user_attribs or ''
+            allowed_attribs = known_attribs.intersection(allowed.split(','))
+        else:
+            allowed_attribs = known_attribs
 
-    def _filter_allowed_fields(self, requested_fields):
-        if self.rpconfig.allowed_ax:
-            return set(requested_fields).intersection(
-                set(self.rpconfig.allowed_ax.split(',')))
-        return set()
+        required = set()
+        optional = set()
+        if self.sreg_request:
+            required.update(self.sreg_request.required)
+            optional.update(self.sreg_request.optional)
+        if self.ax_request:
+            for uri, attr in self.ax_request.requested_attributes.iteritems():
+                if attr.required:
+                    required.add(AX_DATA_FIELDS.getAlias(uri))
+                else:
+                    optional.add(AX_DATA_FIELDS.getAlias(uri))
+        optional.difference_update(required)
+        self.required = required.intersection(allowed_attribs)
+        self.optional = optional.intersection(allowed_attribs)
+
+    def _get_data_for_user(self):
+        """Get the data to ask about in the form based on the user's
+        account record.
+        """
+        values = {}
+        user = self.request.user
+        values['fullname'] = user.displayname
+        if user.preferredemail is not None:
+            values['email'] = user.preferredemail.email
+        if user.person is not None:
+            values['nickname'] = user.person.name
+            if user.person.time_zone is not None:
+                values['timezone'] = user.person.time_zone
+        if user.preferredlanguage is not None:
+            values['language'] = user.preferredlanguage
+        else:
+            values['language'] = translation.get_language_from_request(
+                self.request)
+        values['account_verified'] = (
+            'token_via_email' if user.is_verified else 'no')
+        logger.debug('user attrib values = %s', str(values))
+
+        self.data = dict([(f, values[f]) for f in self.required | self.optional
+                          if f in values])
 
     def _init_fields(self, data):
         """Initialises form fields for the user's ax data.
@@ -519,70 +455,61 @@ class AXFetchRequestForm(Form):
         for key, val in data.items():
             label = "%s: %s" % (AX_DATA_LABELS.get(key, key), val)
             attrs = {}
-            if (AX_DATA_FIELDS.getNamespaceURI(key) in
-                    self.ax_request.getRequiredAttrs()):
+            if (key in self.required):
                 attrs['class'] = 'required'
                 if self.rpconfig is not None:
                     attrs['disabled'] = 'disabled'
             self.fields[key] = fields.BooleanField(
                 label=label,
                 widget=forms.CheckboxInput(attrs=attrs,
-                                           check_test=self.check_test),
+                                           check_test=self.check_test(key)),
             )
 
-    def check_test(self, value):
+    def check_test(self, name):
         """Determines if a checkbox should be pre-checked based on previously
         approved user data, openid request and relying party type.
         """
-        for k, v in self.data.items():
-            if value == v:
-                value = k
-                break
+        def inner(value):
+            # Don't approve fields that weren't requested
+            if name not in (self.required | self.optional):
+                return False
 
-        if self.rpconfig:
-            # Trusted site, check required fields
-            if (AX_DATA_FIELDS.getNamespaceURI(value) in
-                    self.ax_request.getRequiredAttrs()):
+            if self.rpconfig:
+                # Trusted site, check required fields
+                if (name in self.required):
+                    return True
+                if self.approved_data and name in self.approved_data.get(
+                        'requested', []):
+                    # The field was previously requested, use the same response
+                    return name in self.approved_data.get('approved', [])
+                # We've never (dis)approved this field before, default to True
                 return True
-            # If we have previous (dis)approval for this site, use it
-            if self.approved_data:
-                return (value in self.approved_data.get('requested', []) and
-                        value in self.approved_data.get('approved', []))
-            # Otherwise, default to True
-            return (AX_DATA_FIELDS.getNamespaceURI(value) in
-                    self.ax_request.requested_attributes)
-        else:
-            # If we have previous (dis)approval for this site, use it
-            if self.approved_data:
-                return (value in self.approved_data.get('requested', []) and
-                        value in self.approved_data.get('approved', []))
-            # No previous (dis)approval, check required and leave the rest
-            if (AX_DATA_FIELDS.getNamespaceURI(value) in
-                    self.ax_request.getRequiredAttrs()):
-                return True
-            # Otherwise default to False
-            return False
+            else:
+                # If we have previous (dis)approval for this site, use it
+                if self.approved_data and name in self.approved_data.get(
+                        'requested', []):
+                    return name in self.approved_data.get('approved', [])
+                # No previous (dis)approval, check required and leave the rest
+                return name in self.required
+        return inner
 
     def field_approved(self, field):
         """Check if the field should be returned in the response based on user
         preferences and overridden for trusted relying parties.
         """
-        approved = set([AX_DATA_FIELDS.getNamespaceURI(f)
-                        for f in self.request.POST.keys()])
+        post = self.request.POST
+        approved = set([k for k in post.keys() if post[k]])
         if self.rpconfig is not None:
+            approved.update(self.required)
             if self.rpconfig.auto_authorize:
-                ax_fields = set(self.ax_request.requested_attributes.keys())
-            else:
-                ax_fields = set(self.ax_request.getRequiredAttrs())
-            approved.update(ax_fields)
+                approved.update(self.optional)
         return field in approved
 
     @property
     def data_approved_for_request(self):
-        """Return the list of ax data approved for the request."""
+        """Return the list of user attributes approved for the request."""
         return dict(
-            [(f, self.data[f]) for f in self.data
-             if self.field_approved(AX_DATA_FIELDS.getNamespaceURI(f))])
+            [(f, self.data[f]) for f in self.data if self.field_approved(f)])
 
     @property
     def has_data(self):
@@ -638,17 +565,19 @@ class TeamsRequestForm(Form):
             label = label_format % team
             self.fields[team] = fields.BooleanField(
                 label=label, widget=forms.CheckboxInput(
-                    check_test=self.check_test))
+                    check_test=self.check_test(team)))
 
-    def check_test(self, value):
+    def check_test(self, name):
         """Determines if a checkbox should be pre-checked based on previously
         approved user data and relying party type.
         """
-        if (self.approved_data and
-                value in self.approved_data.get('requested', [])):
-            return value in self.approved_data.get('approved', [])
-        else:
-            return self.rpconfig is not None
+        def inner(value):
+            if (self.approved_data and
+                    name in self.approved_data.get('requested', [])):
+                return name in self.approved_data.get('approved', [])
+            else:
+                return self.rpconfig is not None
+        return inner
 
     @property
     def has_data(self):

@@ -10,8 +10,8 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--allow-unverified', action="store_true",
                     default=False, dest='allow_unverified'),
-        make_option('--allowed-ax', action="store", dest='allowed_ax'),
-        make_option('--allowed-sreg', action="store", dest='allowed_sreg'))
+        make_option('--allowed-user-attribs', action="store",
+                    dest='allowed_user_attribs'))
     help = "Create OpenID RP config entry."
 
     def handle(self, *args, **kwargs):
@@ -20,8 +20,9 @@ class Command(BaseCommand):
 
         trust_root = args[0]
         allow_unverified = kwargs.get('allow_unverified', False)
-        allowed_sreg = kwargs.get('allowed_sreg', '')
-        allowed_ax = kwargs.get('allowed_ax', '')
+        allowed_user_attribs = kwargs.get('allowed_user_attribs', '')
+        if allowed_user_attribs is None:
+            allowed_user_attribs = ''
         OpenIDRPConfig.objects.create(
             trust_root=trust_root, allow_unverified=allow_unverified,
-            allowed_sreg=allowed_sreg, allowed_ax=allowed_ax)
+            allowed_user_attribs=allowed_user_attribs)

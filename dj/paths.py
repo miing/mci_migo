@@ -34,7 +34,8 @@ base = os.path.realpath(os.path.join(curdir, '..'))
 def setup_paths():
 	"""Setup necessary python paths"""
 	sys.path = list(_get_paths(PATHS)) + sys.path
-	os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+	os.environ['DJANGO_SETTINGS_MODULE'] = 'dj.settings'
+
 
 def _get_paths(paths):
     """Get a set of paths not duplicate"""
@@ -51,4 +52,4 @@ if __name__ == '__main__':
     # For use in shell scripting
     # e.g. $(python paths.py)
     print "export PYTHONPATH=%s" % ":".join(_get_paths(PATHS))
-    print "export DJANGO_SETTINGS_MODULE=settings"
+    print "export DJANGO_SETTINGS_MODULE=dj.settings"

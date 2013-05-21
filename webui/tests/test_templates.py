@@ -54,7 +54,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
         titles = dom.find('p[class=title]')
         self.assertEqual(1, titles.length)
         text = " ".join(titles[0].text_content().split())
-        style = dom.find('style[data-qa-id=_test_login_rp]')
+        style = dom.find('style[data-qa-id="test_login_rp"]')
         if len(style) == 1:
             style = " ".join(style.text().split())
         else:
@@ -102,7 +102,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
                 "New account form only applies to u1 brand.""")
     def test_u1_branded_login_has_create_account_form(self):
         response = self.client.get('/+login')
-        self.assertContains(response, "data-qa-id=\"_create_account_form\"")
+        self.assertContains(response, "data-qa-id=\"create_account_form\"")
 
     @skipUnless(settings.BRAND == 'ubuntuone',
                 "New account form only applies to u1 brand.""")
@@ -111,7 +111,7 @@ class UbuntuLoginTemplateTestCase(TestCase):
         rm.set_readonly()
 
         response = self.client.get('/+login')
-        self.assertNotContains(response, "data-qa-id=\"_create_account_form\"")
+        self.assertNotContains(response, "data-qa-id=\"create_account_form\"")
 
         rm.clear_readonly()
 

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.test import TestCase
 from gargoyle.testutils import switches
@@ -15,6 +16,7 @@ from identityprovider.tests.utils import SSOBaseTestCase
 from webui.decorators import (
     EMAIL_INVALIDATED,
     ratelimit,
+    redirect_home_if_logged_in,
     require_twofactor_enabled,
     sso_login_required,
 )
@@ -254,6 +256,7 @@ class SSOLoginRequiredInvalidatedEmailsTestCase(SSOBaseTestCase):
         assert self.account.invalidatedemailaddress_set.count() > 0
 
         self.request = Mock()
+        self.request._messages = []
         self.request.user = self.account
         self.view = view
 
@@ -379,3 +382,27 @@ class SSOLoginRequiredInvalidatedEmailsWarningTestCase(SSOBaseTestCase):
         self.assertEqual(invalid, self.invalid)
         # message was not shown
         self.assertFalse(self.mock_messages.warning.called)
+
+
+class RedirectHomeIfLoggedInTestCase(SSOBaseTestCase):
+
+    def setUp(self):
+        super(RedirectHomeIfLoggedInTestCase, self).setUp()
+        self.request = Mock()
+
+        @redirect_home_if_logged_in
+        def view(request):
+            return 'SUCCESS'
+        self.view = view
+
+    def test_decorator_with_logged_in_user(self):
+        account = self.factory.make_account()
+        self.request.user = account
+        response = self.view(self.request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], reverse('account-index'))
+
+    def test_decorator_with_anonymous_user(self):
+        self.request.user = AnonymousUser()
+        response = self.view(self.request)
+        self.assertEqual(response, 'SUCCESS')

@@ -6,10 +6,12 @@ Copyright 2010 Canonical Ltd.  This software is licensed under the
 GNU Affero General Public License version 3 (see the file  LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="confirm_new_account"{% endblock %}
+
 {% block title %}{% trans "Complete creating your account" %}{% endblock %}
 
 {% block text_title %}
-  <h1 class="main" data-qa-id="_qa_confirm_new_account">{% blocktrans %}Complete creating your {{ brand_description }} account{% endblocktrans %}</h1>
+  <h1 class="main">{% blocktrans %}Complete creating your {{ brand_description }} account{% endblocktrans %}</h1>
 {% endblock %}
 
 {% block content_id %}auth{% endblock %}

@@ -32,7 +32,7 @@
         "logo": "",
         "require_two_factor": false,
         "auto_authorize": false,
-        "allowed_sreg": "",
+        "allowed_user_attribs": "",
         "creation_rationale": 13}},
     {"pk": 1, "model": "auth.user", "fields": {
         "username": "KxHA3MH",

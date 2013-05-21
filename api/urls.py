@@ -1,7 +1,7 @@
 # Copyright 2010 Canonical Ltd.  This software is licensed under the
 # GNU Affero General Public License version 3 (see the file LICENSE).
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 from piston.authentication import HttpBasicAuthentication
 from piston.resource import Resource
@@ -11,10 +11,10 @@ from identityprovider.auth import (
     SSOOAuthAuthentication,
 )
 
-
 import api.v10.handlers as v10
 import api.v11.handlers as v11
 import api.v20.handlers as v20
+
 from api.v20.utils import ApiOAuthAuthentication
 
 

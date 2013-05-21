@@ -15,9 +15,9 @@ class BrandedRPTestCase(FunctionalTestCase):
         response = self.do_request(mode='checkid_setup', oid='mark_oid')
 
         # On this screen, we find our branding information.
-        self.assertContains(response, '_qa_trusted_rp_login')
+        self.assertContains(response, 'trusted_rp_login')
 
         # Then we log in to ensure the branding is still present:
         response = self.login(response)
 
-        self.assertContains(response, '_qa_rp_backlink')
+        self.assertContains(response, 'rp_backlink')

@@ -65,7 +65,7 @@ class Person(models.Model):
         db_table = u'lp_person'
 
     def __unicode__(self):
-        return self.displayname
+        return self.displayname if self.displayname else self.name
 
     def in_team(self, team):
         from identityprovider.models import TeamParticipation

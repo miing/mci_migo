@@ -22,7 +22,7 @@ LICENSE).
 
 {% block extra_css %}
     {% if rpconfig and rpconfig.logo_url %}
-    <style type="text/css" data-qa-id="_test_login_rp">
+    <style type="text/css" data-qa-id="test_login_rp">
         p.title {
             background-image: url('{{ rpconfig.logo_url }}');
             background-repeat: no-repeat;
@@ -84,28 +84,46 @@ LICENSE).
     {% endcomment %}
     YUI().use('node', function(Y) {
 
+
         var createForm = Y.one('.create-form'),
             loginForm = Y.one('.login-form'),
             email = Y.one('#id_email'),
             radios = Y.one('.user-intention'),
+
+            showLogin = function () {
+                radios.addClass('selected-login');
+                radios.removeClass('selected-create');
+                loginForm.one('#id_email').set('value', createForm.one('#id_email').get('value'));
+                createForm.hide();
+                createForm.setStyle('position', 'absolute')
+                loginForm.show();
+            },
+
+            showCreate = function () {
+                radios.removeClass('selected-login');
+                radios.addClass('selected-create');
+                createForm.one('#id_email').set('value', loginForm.one('#id_email').get('value'));
+
+                loginForm.hide();
+                createForm.show();
+                createForm.setStyle('position', 'relative');
+            },
+
+            pageChange = function () {
+                // show whatever the radio is on right now
+                if(Y.one('.user-intention input[type=radio]:checked').get('value') === 'create') {
+                    showCreate();
+                } else {
+                    showLogin();
+                }
+            },
+
             userIntentionChange = function (e) {
 
                 if(e.target.get('value') === 'create') {
-                    radios.removeClass('selected-login');
-                    radios.addClass('selected-create');
-                    createForm.one('#id_email').set('value', loginForm.one('#id_email').get('value'));
-
-                    loginForm.hide();
-                    createForm.show();
-                    createForm.setStyle('position', 'relative');
-
+                    showCreate();
                 } else {
-                    radios.addClass('selected-login');
-                    radios.removeClass('selected-create');
-                    loginForm.one('#id_email').set('value', createForm.one('#id_email').get('value'));
-                    createForm.hide();
-                    createForm.setStyle('position', 'absolute')
-                    loginForm.show();
+                    showLogin();
                 }
             };
 
@@ -119,13 +137,19 @@ LICENSE).
             });
         });
 
+        // remove class that hid and rely on inline style
+        Y.one('.create-form').setStyle('display', 'none').removeClass('show-no-js');
+
+        Y.config.win.addEventListener('pageshow', function () {
+            pageChange();
+        }, false);
+
+        pageChange();
+
         // autofocus shiv
         if (!("autofocus" in document.createElement("input"))) {
             email.focus();
         }
-
-        // remove class that hid and rely on inline style
-        Y.one('.create-form').setStyle('display', 'none').removeClass('show-no-js');
 
     });
 

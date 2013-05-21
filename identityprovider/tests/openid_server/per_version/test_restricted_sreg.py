@@ -89,10 +89,11 @@ class RestrictedSregTestCase(OpenIDTestCase):
         # If we create a Relying Party configuration for the trust root, things
         # play out a bit differently:
 
-        allowed_sreg = ','.join(['fullname', 'nickname', 'email', 'timezone'])
+        allowed_user_attribs = ','.join(['fullname', 'nickname',
+                                         'email', 'timezone'])
         self.create_openid_rp_config(
             trust_root=self.consumer_url,
-            allowed_sreg=allowed_sreg)
+            allowed_user_attribs=allowed_user_attribs)
 
         # Now begin another identical OpenID authentication request:
         response = self.initial_dance()
@@ -125,10 +126,10 @@ class RestrictedSregTestCase(OpenIDTestCase):
         # == Behaviour for known trust roots with auto_authorize ==
 
         # enable auto-authorize for the rpconfig
-        allowed_sreg = ','.join(['fullname', 'email', 'timezone'])
+        allowed_user_attribs = ','.join(['fullname', 'email', 'timezone'])
         self.create_openid_rp_config(
             trust_root=self.consumer_url,
-            allowed_sreg=allowed_sreg, auto_authorize=True)
+            allowed_user_attribs=allowed_user_attribs, auto_authorize=True)
         # Now begin another identical OpenID authentication request:
         response = self.initial_dance()
 

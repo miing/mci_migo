@@ -20,10 +20,10 @@ class SwitchUserTwiceTestCase(OpenIDTestCase):
 
         # Then log in as Sample Person:
 
-        self.assertContains(response, "_qa_ubuntu_login_button")
+        self.assertContains(response, "ubuntu_login_button")
 
         response = self.login(response)
-        self.assertContains(response, '_qa_rp_backlink')
+        self.assertContains(response, 'rp_backlink')
 
         # Now lets start a second authentication request, which should take us
         # to the authentication page asking if we want to sign in as someone

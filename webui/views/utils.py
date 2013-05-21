@@ -5,7 +5,6 @@
 from functools import wraps
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
@@ -37,14 +36,6 @@ def display_email_sent(request, email, heading, reason, extra=None, token=None,
         'rpconfig': rpconfig,
     }
     return TemplateResponse(request, 'registration/email_sent.html', context)
-
-
-def redirection_url_for_token(token):
-    if token is not None:
-        # Redirected from an OpenID request, must get back after confirmation
-        return reverse('server-decide', kwargs=dict(token=token))
-    else:
-        return '/'
 
 
 def set_session_email(session, email):

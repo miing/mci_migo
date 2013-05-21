@@ -123,7 +123,7 @@ class CleanupCommandTestCase(TestCase, SSOBaseTestCaseMixin):
         with patch(name) as mock_filter:
             mock_filter.return_value.__nonzero__.side_effect = [True, True,
                                                                 False]
-            call_command('cleanup', testdata=True, limit=5)
+            call_command('cleanup', testdata=True, limit=5, verbosity=0)
 
         self.assertEqual(mock_filter.return_value.delete.call_count, 2)
 
@@ -162,6 +162,6 @@ class CleanupCommandTestCase(TestCase, SSOBaseTestCaseMixin):
                 'pk')[:5]
         EmailAddress.objects.filter(pk__in=email_ids).delete()
 
-        call_command('cleanup', testdata=True)
+        call_command('cleanup', testdata=True, verbosity=0)
 
         self.assert_testdata(emails=0, accounts=5, passwords=5)

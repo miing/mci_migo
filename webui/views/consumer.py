@@ -10,11 +10,10 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.simple import direct_to_template
 
 from openid import fetchers
 from openid.consumer import consumer
@@ -130,7 +129,7 @@ def render_index_page(request, **template_args):
     template_args['sreg_states'] = [SREG_REQUIRED, SREG_OPTIONAL,
                                     SREG_DONT_REQUEST]
 
-    response = direct_to_template(
+    response = render(
         request, 'consumer/index.html', template_args)
     response[YADIS_HEADER_NAME] = get_view_full_url(request, rpXRDS)
     return response
@@ -220,7 +219,7 @@ def start_open_id(request):
             form_html = auth_request.formMarkup(trust_root, return_to,
                                                 immediate, {'id': form_id})
             context = RequestContext(request, {'html': form_html})
-            return render_to_response('consumer/request_form.html', context)
+            return render(request, 'consumer/request_form.html', context)
 
     return render_index_page(request)
 
@@ -304,7 +303,7 @@ def rpXRDS(request):
         'type_uris': [RP_RETURN_TO_URL_TYPE],
         'endpoint_uris': [get_view_full_url(request, finish_open_id)],
     }
-    response = direct_to_template(request, 'server/openidapplication-xrds.xml',
-                                  args)
+    response = render(request, 'server/openidapplication-xrds.xml',
+                      args)
     response['Content-Type'] = YADIS_CONTENT_TYPE
     return response

@@ -46,18 +46,27 @@ header .wrapper h1 {
 }
 
 /* Messages -------------------------------------------------------------------*/
+
+.message:last-child {
+    margin-bottom: 1em;
+}
+
 .message {
     border-radius: 6px;
-    padding: 1em;
-    margin-bottom: 1em;
+    padding: 5px;
+    margin-top: 1em;
+    background: #f3f2f1;
+}
+
+@media all and (min-width:768px) {
+
+    .message {
+        padding: 0.6em 1em;
+    }
 }
 
 .message p:last-child {
     margin: 0;
-}
-
-.warning {
-    background: #ffa;
 }
 
 .error {
@@ -72,17 +81,15 @@ header .wrapper h1 {
 
 .success,
 .informational,
-.info {
-    background: url("../../tick-large.png") no-repeat scroll 0 1.2em transparent;
-    padding-left: 2em;
-}
+.info {}
 
 /* Form box -------------------------------------------------------------------*/
 .form-box {
     background: #F7F7F7;
     border-top: 1px solid #CDCDCD;
     border-bottom: 1px solid #CDCDCD;
-    padding: 20px 22px;
+    padding: 10px 5px;
+    margin: 0 -5px;
 }
 
 .form-box .title {
@@ -179,9 +186,11 @@ label {
         border: 1px solid #CDCDCD;
         border-radius: 5px;
         margin: 0 1em 1em 0;
+        padding: 20px 22px;
 
         /* always wrap the recaptcha */
         min-width: 315px;
+
     }
 
 
@@ -207,7 +216,7 @@ label {
 }
 
 .related-information {
-    padding: 1em;
+    margin-top: 1em;
 }
 
 .js .create-form.show-no-js {
@@ -223,6 +232,7 @@ label {
     top: 0;
     right: 0;
     left: 0;
+    margin-top: -30px;
 }
 
 .js .user-intention i {
@@ -259,7 +269,11 @@ label {
 
     .js .login .email-input {
         position: relative;
-        top: -105px;
+        top: -100px;
+    }
+
+    .js .create-form .email-input {
+        top: -70px;
     }
 
     .js .login .user-intention {
@@ -287,8 +301,10 @@ label {
 
     .related-information {
         margin-left: 3em;
+        margin-top: 0;
         padding: 0 0 0 1em;
         border-left: 1px dotted #ccc;
+        padding: 0 1em;
     }
 
     .js .login .returning-user span {
@@ -444,7 +460,7 @@ label {
     display: block;
     border-bottom: 1px dotted #ccc;
     line-height: 2.5em;
-    padding: 0 1em;
+    padding: 0 5px;
     color: #333;
 }
 
@@ -464,6 +480,12 @@ label {
         width: 15em;
         float: left;
     }
+
+    .menu li a,
+    .menu li span {
+        padding: 0 1em;
+    }
+
 
     .with-menu #content {
         border-left: 1px dotted #ccc;
@@ -580,12 +602,102 @@ label {
         z-index: 10;
         padding: .25em;
         border-radius: 0;
+        margin-top: 0;
     }
     .readonly .readonly-message p {
         margin: 0 auto;
         max-width: 700px;
     }
 }
+
+/* Tooltips -------------------------------------------------------------------*/
+
+.question-mark {
+    background-color: #AEA79F;
+    border-radius: 100px 100px 100px 100px;
+    color: white;
+    cursor: pointer;
+
+    font-size: 1em;
+    font-weight: bold;
+    line-height: 1.1em;
+    padding: 0 0.3em;
+}
+
+.yui3-hastooltip {
+  cursor:default;
+}
+
+.yui3-tooltip {
+  position:absolute;
+  opacity:1;
+  transition:opacity 750ms ease-in-out;
+  padding:10px;
+  max-width:10em;
+}
+
+.yui3-tooltip-content {
+  position:relative;
+  background:rgba(30,30,30,1);
+  border-color:rgba(30,30,30,1);
+  border-radius:3px;
+  padding:10px;
+  color:rgb(200,200,200);
+  font-size:11px;
+  line-height:1.4;
+}
+
+div.yui3-tooltip-hidden {
+  opacity:0;
+  visibility:hidden;
+  display: block;
+}
+
+.yui3-tooltip .yui3-tooltip-content::before {
+  content: "";
+  position:absolute;
+}
+
+.yui3-tooltip-position-north .yui3-tooltip-content::before {
+  bottom:-4px;
+  left:50%;
+  margin-left:-4px;
+  border-top: 4px solid black;
+  border-top-color: inherit;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.yui3-tooltip-position-east .yui3-tooltip-content::before {
+  top:50%;
+  left:-4px;
+  margin-top:-4px;
+  border-right: 4px solid black;
+  border-right-color: inherit;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.yui3-tooltip-position-south .yui3-tooltip-content::before {
+  top:-4px;
+  left:50%;
+  margin-left:-4px;
+  border-bottom: 4px solid black;
+  border-bottom-color: inherit;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.yui3-tooltip-position-west .yui3-tooltip-content::before {
+  top:50%;
+  right:-4px;
+  margin-top:-4px;
+  border-left: 4px solid black;
+  border-left-color: inherit;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
 
 /* General -------------------------------------------------------------------*/
 
@@ -596,6 +708,10 @@ td.actions {
 
 table.listing {
     margin: 0 0 2em 0;
+}
+
+#content {
+    padding: 0 5px;
 }
 
 @media all and (min-width:480px) {

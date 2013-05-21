@@ -22,13 +22,13 @@ Affero General Public License version 3 (see the file LICENSE).
 {% include 'device/code-list.html' %}
 
 <p>
-  <a class="btn" id="printbtn" onclick="window.print()"><span><span>{% trans "Print Codes" %}</span></span>
+  <a class="btn" id="printbtn" onclick="window.print()" data-qa-id="print_btn"><span><span>{% trans "Print Codes" %}</span></span>
   </a>
   {% if generation_enabled %}
-  <a class="btn" href="{% url device-generate device_id %}">
+  <a class="btn" href="{% url 'device-generate' device_id %}" data-qa-id="generate_codes">
     <span><span>{% trans "Generate new codes" %}</span></span>
   </a>
   {% endif %}
-  {% trans "or" %} <a href="{% url device-list %}">{% trans "go back to device list" %}</a>
+  {% trans "or" %} <a href="{% url 'device-list' %}" data-qa-id="go_back">{% trans "go back to device list" %}</a>
 </p>
 {% endblock %}

@@ -26,11 +26,11 @@ Affero General Public License version 3 (see the file LICENSE).
 {% include 'device/code-list.html' %}
 
 <p>
-  <button class="btn cta" id="printbtn" onclick="window.print()"><span>{% trans "Print Codes" %}</span></button>
+  <button class="btn cta" id="printbtn" onclick="window.print()" data-qa-id="print_btn"><span>{% trans "Print Codes" %}</span></button>
   {% if generation_enabled %}
   {% endif %}
-  <a class="cta secondary" href="{% url device-list %}">{% trans "Go back" %}</a>
-  <a class="cta secondary print-new-codes" href="{% url device-generate device_id %}">
+  <a class="cta secondary" href="{% url 'device-list' %}">{% trans "Go back" %}</a>
+  <a class="cta secondary print-new-codes" href="{% url 'device-generate' device_id %}">
     <span>{% trans "Generate new codes" %}</span>
 </a>
 </p>

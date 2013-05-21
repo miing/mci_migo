@@ -94,5 +94,5 @@ class AuthenticationHandler(LazrRestfulHandler):
             token = refresh_token()
 
         if token is None:
-            return HttpResponseNotFound()
+            return api_error(HttpResponseNotFound, '')
         return token.serialize()

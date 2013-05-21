@@ -6,6 +6,8 @@ Copyright 2010 Canonical Ltd.  This software is licensed under the
 GNU Affero General Public License version 3 (see the file  LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="edit_account"{% endblock %}
+
 {% block title %}
     {% blocktrans %}{{ account_displayname }}'s details{% endblocktrans %}
 {% endblock %}
@@ -67,11 +69,11 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 {% include "common/missing_backup_device_warning.html" %}
 {% include "common/printed_codes_nearly_exhausted_warning.html" %}
 
-<form action="" method="post" class="shortfields" data-qa-id="_qa_edit_fieldsets">
+<form action="" method="post" class="shortfields" data-qa-id="edit_fieldsets">
     {% csrf_token %}
     <fieldset class="undecorated{% if enable_device_prefs %} boxed{% endif %}">
         {% if enable_device_prefs %}
-        <legend data-qa-id="_qa_personal_details">{% trans "Personal Details" %}</legend>
+        <legend data-qa-id="personal_details">{% trans "Personal Details" %}</legend>
         {% endif %}
         <p {% if form.displayname.errors %}class="haserrors"{% endif %}>
             <label class="formLabel" for="id_displayname">{% trans "Full name" %}</label>
@@ -111,7 +113,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
             {% endif %}
         </p>
         {% if not embedded %}
-        <p><a href="/+emails" data-qa-id="_qa_manage_email_addresses_link">{% trans "Manage email addresses" %}</a></p>
+        <p><a href="/+emails" data-qa-id="manage_email_addresses_link">{% trans "Manage email addresses" %}</a></p>
         {% endif %}
 
         {% if not readonly %}
@@ -122,7 +124,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
     {% if enable_device_prefs %}
     <fieldset class="undecorated boxed">
-        <legend data-qa-id="_qa_authentication_devices">{% trans "Authentication Devices" %}</legend>
+        <legend data-qa-id="authentication_devices">{% trans "Authentication Devices" %}</legend>
         <p {% if form.twofactor_required.errors %}class="haserrors"{% endif %}>
             {{ form.twofactor_required }}
             {% if form.twofactor_required.errors %}
@@ -154,5 +156,4 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
 {% include "widgets/last_auth_sites.html" %}
 
-<div data-qa-id="_qa_edit_account"></div>
 {% endblock %}

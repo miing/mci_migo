@@ -17,6 +17,7 @@ from oauth_backend.models import Consumer, Token
 from pyquery import PyQuery
 from unittest import skipUnless
 
+from identityprovider.const import SESSION_TOKEN_KEY, SESSION_TOKEN_NAME
 from identityprovider.models import (
     Account,
     AuthToken,
@@ -139,6 +140,11 @@ class AccountViewStandAloneTestCase(AuthenticatedTestCase):
         self.assertEqual(r.status_code, 302)
 
     def test_index_edit_password(self):
+        oauth_tokens = self.account.oauth_tokens()
+        # web login token should be there
+        assert oauth_tokens
+        orig_token = oauth_tokens[0]
+
         data = {
             'displayname': "New Display Name",
             'preferred_email': self.account.preferredemail.id,
@@ -151,6 +157,13 @@ class AccountViewStandAloneTestCase(AuthenticatedTestCase):
         self.assertEqual(r.status_code, 302)
         self.assertTrue(validate_launchpad_password(
             'new-Password', account.accountpassword.password))
+        oauth_tokens = account.oauth_tokens()
+        self.assertEqual(oauth_tokens.count(), 1)
+        # previous token was invalidated
+        self.assertNotIn(orig_token, oauth_tokens)
+        # new session is set up
+        session_token_key = self.client.session.get(SESSION_TOKEN_KEY)
+        self.assertEqual(session_token_key, oauth_tokens[0].token)
 
     @switches(ALLOW_UNVERIFIED=True)
     def test_index_cannot_edit_preferred_if_unverified(self):
@@ -283,7 +296,7 @@ class AccountEditTestCase(AuthenticatedTestCase):
 
     def test_authentication_device_section(self):
         response = self.client.get(self.url)
-        device_identifier = '_qa_authentication_devices'
+        device_identifier = 'authentication_devices'
         if self.twofactor_enabled is False or self.devices_count == 0:
             # Since the user has no devices, do not show the Devices section
             self.assertNotContains(response, device_identifier)
@@ -339,6 +352,7 @@ class AccountEditTestCase(AuthenticatedTestCase):
         self.assertEqual(account.warn_about_backup_device,
                          self.user_wants_warn)
 
+    @switches(ALLOW_UNVERIFIED=False)
     def test_preferredemail_none(self):
         self.account.emailaddress_set.update(status=EmailStatus.NEW)
         assert self.account.preferredemail is None
@@ -494,17 +508,17 @@ class AccountTemplateTestCase(
         self.assertEqual(response.status_code, 200)
 
         tree = PyQuery(response.content)
-        return tree.find('[data-qa-id="_qa_edit_fieldsets"] fieldset')
+        return tree.find('[data-qa-id="edit_fieldsets"] fieldset')
 
     def test_with_flag_for_user(self):
         fieldset = self.get_devices_fieldset()
         self.assertEqual(len(fieldset), 2)
 
         self.assertIsNotNone(fieldset.find(
-            '[data-qa-id="_qa_personal_details"]'
+            '[data-qa-id="personal_details"]'
         ))
         self.assertIsNotNone(fieldset.find(
-            '[data-qa-id="_qa_authentication_devices"]'
+            '[data-qa-id="authentication_devices"]'
         ))
 
     def test_without_flag_for_user(self):
@@ -689,7 +703,8 @@ class ApplicationsTestCase(AuthenticatedTestCase):
 
     def test_account_without_applications_does_not_renders_token_table(self):
         r = self.client.get(reverse('applications'))
-        self.assertNotContains(r, '<table')
+        # since user is logged in, there should be the web login token
+        self.assertContains(r, SESSION_TOKEN_NAME)
 
     def test_revoking_token_removes_it_from_being_displayed(self):
         token_1 = self.account.create_oauth_token("Token-1")

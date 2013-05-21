@@ -34,7 +34,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
         <td>{{ token.name }}</td>
         <td>{{ token.created_at|date:"Y-m-d" }}</td>
         <td class="actions">
-          <form action="{% url applications %}" method="post">
+          <form action="{% url 'applications' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="token_id" value="{{ token.token }}" />
             <button type="submit" class="btn-sm" name="Delete">

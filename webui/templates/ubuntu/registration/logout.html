@@ -6,6 +6,8 @@ Copyright 2010 Canonical Ltd.  This software is licensed under the
 GNU Affero General Public License version 3 (see the file  LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="logout"{% endblock %}
+
 {% block title %}{% trans "You have been logged out" %}{% endblock %}
 
 {% block text_title %}
@@ -43,5 +45,6 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
       </table>
     </div>
     {% endif %}
+
 {% endblock %}
 

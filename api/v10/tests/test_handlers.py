@@ -2,7 +2,9 @@
 from django.utils import simplejson as json
 from datetime import datetime, timedelta
 
+from django.utils.http import urlencode
 from django.core.urlresolvers import reverse
+
 from mock import patch
 from lazr.restfulclient.errors import HTTPError
 
@@ -51,6 +53,20 @@ class RegistrationHandlerTestCase(AnonAPITestCase):
             email='test@example.com', token=authtoken.token,
             new_password='pass')
         self.assertEqual(response['status'], "error")
+
+    def test_set_new_password_ok(self):
+        email_address = self.factory.make_email_address()
+        account = self.factory.make_account(email=email_address)
+        account.create_oauth_token('some-token')
+        authtoken = self.factory.make_authtoken(
+            requester=account, requester_email=email_address,
+            email=email_address, token_type=TokenType.PASSWORDRECOVERY)
+
+        response = self.api.registrations.set_new_password(
+            email=email_address, token=authtoken.token,
+            new_password='testing-password')
+        self.assertEqual(response['status'], "ok")
+        self.assertEqual(account.oauth_tokens().count(), 0)
 
     def test_set_new_password_invalid(self):
         email_address = self.factory.make_email_address()
@@ -259,6 +275,14 @@ class AuthenticationTestCase(SSOBaseTestCase):
         self.account = self.factory.make_account(email=self.email_address)
         self.apiuser = self.factory.make_apiuser()
 
+    def put(self, url, data, **extra):
+        return self.client.put(
+            url,
+            urlencode(data),
+            content_type='application/x-www-form-urlencoded',
+            **extra
+        )
+
     def authenticate(self, token_name='', token=None, method='GET',
                      api_version='1.0'):
         data = {
@@ -270,6 +294,9 @@ class AuthenticationTestCase(SSOBaseTestCase):
 
         extra = http_authorization_extra(self.email_address,
                                          password=DEFAULT_USER_PASSWORD)
+        if method == 'PUT':
+            data = urlencode(data)
+            extra['content_type'] = 'application/x-www-form-urlencoded'
         dispatcher = getattr(self.client, method.lower())
         response = dispatcher("/api/%s/authentications" % api_version, data,
                               **extra)

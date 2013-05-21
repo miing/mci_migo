@@ -35,10 +35,10 @@ class HybridLoginNewAccountTest(SSOBaseTestCase):
 
     def test_create_account_form_required_field(self):
         r = self.client.get('/+login')
-        self.assertIn("_login_create_account_radio", r.content)
+        self.assertIn("login_create_account_radio", r.content)
 
-        self.assertIn("_login_form", r.content)
-        self.assertIn("_create_account_form", r.content)
+        self.assertIn("login_form", r.content)
+        self.assertIn("create_account_form", r.content)
 
 
 class NewAccountTest(SSOBaseTestCase):
@@ -105,11 +105,12 @@ class ForgottenPasswordTest(SSOBaseTestCase):
             'email': 'test@canonical.com',
             'password': 'Testing123',
             'passwordconfirm': 'Testing123',
-            'accept_tos': True
+            'accept_tos': True,
+            'recaptcha_challenge_field': 'ignored',
+            'recaptcha_response_field': 'ignored',
         }
         response = self.client.post('/+new_account', query)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Account creation mail sent", response.content)
         self.assertIn("test@canonical.com", response.content)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject,

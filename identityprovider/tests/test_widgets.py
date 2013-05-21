@@ -29,17 +29,18 @@ class ROAwareTextInputTestCase(TestCase):
         settings.READ_ONLY_MODE = True
 
         r = self.widget.render('test', None)
-        self.assertEqual(r, '<span class="rofield"></span>')
+        self.assertHTMLEqual(r, '<span class="rofield"></span>')
 
         r = self.widget.render('test', 'value')
-        self.assertEqual(r, '<span class="rofield">value</span>')
+        self.assertHTMLEqual(r, '<span class="rofield">value</span>')
 
     def test_render_when_not_readonly(self):
         r = self.widget.render('test', None)
-        self.assertEqual(r, '<input type="text" name="test" />')
+        self.assertHTMLEqual(r, '<input type="text" name="test" />')
 
         r = self.widget.render('test', 'value')
-        self.assertEqual(r, '<input type="text" name="test" value="value" />')
+        self.assertHTMLEqual(
+            r, '<input type="text" name="test" value="value" />')
 
 
 class ROAwareSelectTestCase(TestCase):
@@ -56,14 +57,14 @@ class ROAwareSelectTestCase(TestCase):
         settings.READ_ONLY_MODE = True
 
         r = self.widget.render('test', 'value', choices=self.choices)
-        self.assertEqual(r, '<span class="rofield"></span>')
+        self.assertHTMLEqual(r, '<span class="rofield"></span>')
 
     def test_render_when_readonly_selected(self):
         settings.READ_ONLY_MODE = True
 
         choices = self.choices + (('value', 'The Value'),)
         r = self.widget.render('test', 'value', choices=choices)
-        self.assertEqual(r, '<span class="rofield">The Value</span>')
+        self.assertHTMLEqual(r, '<span class="rofield">The Value</span>')
 
     def test_render_when_not_readonly(self):
         r = self.widget.render('test', 'value', choices=self.choices)
@@ -71,7 +72,7 @@ class ROAwareSelectTestCase(TestCase):
 <option value="1">One</option>
 <option value="2">Two</option>
 </select>"""
-        self.assertEqual(r, expected)
+        self.assertHTMLEqual(r, expected)
 
 
 class CommaSeparatedWidgetTestCase(TestCase):
@@ -107,7 +108,7 @@ class StatusWidgetTestCase(TestCase):
 <option value="1">One</option>
 <option value="2">Two</option>
 </select> """
-        self.assertEqual(r, expected)
+        self.assertHTMLEqual(r, expected)
 
     def test_render_date_status_set(self):
         self.widget.date_status_set = datetime(2010, 01, 01)
@@ -116,7 +117,7 @@ class StatusWidgetTestCase(TestCase):
 <option value="1">One</option>
 <option value="2">Two</option>
 </select> Set on 2010-01-01 00:00:00"""
-        self.assertEqual(r, expected)
+        self.assertHTMLEqual(r, expected)
 
 
 class ReadOnlyDateTimeWidgetTestCase(TestCase):
@@ -162,7 +163,7 @@ class LPUsernameWidgetTestCase(SSOBaseTestCase):
         r = self.widget.render('test', None)
         widget = '<a href="https://launchpad.net/~{name}">{name}</a>'.format(
             name=self.widget.account.person.name)
-        self.assertEqual(r, widget)
+        self.assertHTMLEqual(r, widget)
 
     def test_render_no_account(self):
         # unlink account

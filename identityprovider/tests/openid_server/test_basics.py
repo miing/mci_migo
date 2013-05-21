@@ -76,14 +76,14 @@ class BasicsTestCase(OpenIDTestCase):
                                  self.base_url + '/.*?/\+decide')
 
         # Sign into SSO itself
-        self.assertContains(response, '_qa_ubuntu_login_title')
+        self.assertContains(response, 'ubuntu_login_title')
 
         response = self.login(response)
 
-        msg = '<a data-qa-id="_qa_rp_backlink" href="{link}">{link}</a>'
+        msg = '<a data-qa-id="rp_backlink" href="{link}">{link}</a>'
         self.assertContains(response, msg.format(link=self.consumer_url))
 
-        self.assertContains(response, '_qa_rp_confirm_login')
+        self.assertContains(response, 'rp_confirm_login')
 
         response = self.yes_to_decide(response)
         self.assertRegexpMatches(

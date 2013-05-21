@@ -6,6 +6,8 @@ Copyright 2010 Canonical Ltd.  This software is licensed under the
 GNU Affero General Public License version 3 (see the file  LICENSE).
 {% endcomment %}
 
+{% block html_extra %}data-qa-id="account_emails"{% endblock %}
+
 {% block title %}
   {% blocktrans %}{{ account_displayname }}'s email addresses{% endblocktrans %}
 {% endblock %}
@@ -49,7 +51,7 @@ td.actions {
         {% if not readonly %}
           <td class="actions">
             {% if not email.is_preferred %}
-              <a href="./+remove-email?id={{ email.id }}" class="btn-sm" data-qa-id="remove-email"><span>{% trans "Delete" %}</span></a>
+              <a href="./+remove-email?id={{ email.id }}" class="btn-sm" data-qa-id="remove_verified_email"><span>{% trans "Delete" %}</span></a>
             {% endif %}
           </td>
         {% endif %}
@@ -70,9 +72,9 @@ td.actions {
         {% if not readonly %}
           <td class="actions">
             {% if email.is_verifiable %}
-            <a href="./+verify-email?id={{ email.id }}" data-qa-id="_verify_unverified_{{ email }}" class="verify-email btn-sm"><span>{% trans "Verify" %}</span></a>
+            <a href="./+verify-email?id={{ email.id }}" data-qa-id="verify_unverified_{{ email }}" class="verify-email btn-sm"><span>{% trans "Verify" %}</span></a>
             {% endif %}
-            <a href="./+remove-email?id={{ email.id }}" data-qa-id="_delete_unverified_{{ email }}" class="btn-sm"><span>{% trans "Delete" %}</span></a>
+            <a href="./+remove-email?id={{ email.id }}" data-qa-id="delete_unverified_{{ email }}" class="btn-sm"><span>{% trans "Delete" %}</span></a>
           </td>
         {% endif %}
       </tr>
@@ -87,7 +89,7 @@ td.actions {
 
   <p>{% blocktrans %}Enter your email address, and we will send you instructions on how to verify it.{% endblocktrans %}</p>
 
-  <form action="{% url new_email %}" method="post">
+  <form action="{% url 'new_email' %}" method="post">
     {% csrf_token %}
     <p class="input-row">
       <label for="id_newemail">{% trans "Email address" %}</label><br>

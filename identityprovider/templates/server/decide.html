@@ -14,8 +14,8 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
 {% block content %}
     <div id="trust-root">
-        <h2 class="main" data-qa-id="_qa_rp_login_title">
-            {% blocktrans %} You are logging in to <a data-qa-id="_qa_rp_backlink" href="{{ trust_root }}">{{ trust_root }}</a>{% endblocktrans %}
+        <h2 class="main" data-qa-id="rp_login_title">
+            {% blocktrans %} You are logging in to <a data-qa-id="rp_backlink" href="{{ trust_root }}">{{ trust_root }}</a>{% endblocktrans %}
         </h2>
     </div>
 
@@ -31,18 +31,12 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
         <form action="{{ action }}" method="POST" name="decideform">
             {% csrf_token %}
             <div class="info-items">
-                {% if sreg_form.has_data or teams_form.has_data or ax_form.has_data %}
+                {% if user_attribs_form.has_data or teams_form.has_data %}
                 <ul class="list">
-                    {% if ax_form.has_data %}
-                        {% for field in ax_form %}
-                    <li class="ax">{{ field|safe }} {{ field.label_tag }}</li>
+                    {% if user_attribs_form.has_data %}
+                        {% for field in user_attribs_form %}
+                    <li class="user_attribs">{{ field|safe }} {{ field.label_tag }}</li>
                         {% endfor %}
-                    {% else %}
-                        {% if sreg_form.has_data %}
-                            {% for field in sreg_form %}
-                    <li class="sreg">{{ field|safe }} {{ field.label_tag }}</li>
-                            {% endfor %}
-                        {% endif %}
                     {% endif %}
                     {% if teams_form.has_data %}
                         {% ifequal teams_form.fields|length 1 %}
@@ -66,7 +60,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 
             <p>
                 <input type="hidden" name="ok" />
-                <button type="submit" class="btn" name="yes" data-qa-id="_qa_rp_confirm_login"><span><span>{% trans "Yes, log me in" %}</span></span></button>
+                <button type="submit" class="btn" name="yes" data-qa-id="rp_confirm_login"><span><span>{% trans "Yes, log me in" %}</span></span></button>
                 {% trans "or" %}
                 <a href="+cancel">{% trans "cancel" %}</a>
             </p>

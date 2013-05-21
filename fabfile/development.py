@@ -15,14 +15,15 @@
 #
 ###################################################################
 
+
 import os
 from urlparse import urlparse
 
 from fabric.api import settings
 
-from .database import createdb, dropdb, setup_db_access
-from .django import get_django_settings, manage, syncdb
 from .environment import bootstrap, virtualenv_local
+from .dbengine import setup_pgsql_database drop_pgsql_database
+from .django import get_django_settings, manage, syncdb
 
 
 def run(*args, **kwargs):
@@ -32,15 +33,18 @@ def run(*args, **kwargs):
         args = [parsed.netloc]
     manage('runserver', *args, **kwargs)
 
+
 def test(extra='', coverage=False):
     """Run unit tests"""
     args = ['--noinput', extra]
     manage('test', args)
 
+
 def apitests():
     """Run API tests only"""
     manage('test', '', 
     	'--testing_test_discover_root=./identityprovider/tests/api')
+
 
 def acceptance(headless='true', screenshot='false', report='', quiet='true',
         failfast='false', testcase='', flags=None, tests='', debug='false',
@@ -78,36 +82,16 @@ def acceptance(headless='true', screenshot='false', report='', quiet='true',
     cmd.append(directory)
     virtualenv_local(' '.join(cmd), capture=False)
 
-def gargoyle_flags(*args):
-    """Define and set the specified gargoyle flags
-
-    This allows setting up the server (via the database) in a specific
-    configuration.  You probably want to call `resetdb` first to ensure you set
-    only the relevant flags.
-    """
-    error_msg = 'json file %r does not exist (current working dir is %r)'
-    for a in args:
-        json_file = os.path.join('identityprovider', 'fixtures', a + '.json')
-        assert os.path.exists(json_file), error_msg % (json_file, os.getcwd())
-    manage('loaddata', *args)
 
 def jenkins():
     """Run the tests for jenkins"""
     bootstrap()
     # use the system's database
-    virtualenv_local("sed -i 's/db_host = .*/db_host =/g' dj/local.cfg")
-    resetdb()
+    setup_pgsql_database()
     manage('loaddata test')
     manage('jenkins', '', 
     	'--testing_test_discover_root=')
 
-def resetdb():
-    """Drop and recreate then sync the database"""
-    with settings(hide='warnings'):
-        dropdb(warn_only=True)
-    createdb()
-    syncdb()
-    setup_db_access()
 
 def _is_true(arg, name):
     if arg.lower() in ('t', 'true', 'on', '1', 'yes'):

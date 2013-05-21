@@ -17,7 +17,7 @@ GNU Affero General Public License version 3 (see the file  LICENSE).
 {% block content %}
     <p>{% blocktrans %}Enter your email address, and we will send you instructions on how to confirm your account.{% endblocktrans %}</p>
 
-    <form action="{% url new_email %}" method="post" name="newemailform">
+    <form action="{% url 'new_email' %}" method="post" name="newemailform">
         {% csrf_token %}
         <p class="input-row{% if form.newemail.errors %} haserrors{% endif %}">
             <label for="id_newemail">{% trans "Email address" %}</label>
