@@ -1,9 +1,0 @@
-#!/bin/sh
-
-cd {pay.src_dir}
-
-# Setup the database.
-fab setup_postgresql_server
-fab manage:loaddata,test
-# Start the PAY server, accessible from the local network.
-fab run:0.0.0.0:{pay.port}

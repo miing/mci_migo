@@ -1,3 +1,0 @@
-improve logging output
-Add SSL support back in
-better tests using twisted.trial

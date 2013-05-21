@@ -1,9 +1,0 @@
-* while setting up sso.local .env/db/postgresql.log ends up with:
-
-FATAL:  role "postgres" does not exist
-
-=> This may be "expected" according to mfoord
-
-
-* bzr+ssh://bazaar.launchpad.net/~canonical-isd-hackers/isd-configs/sso-config/ is missing in the sso config and local.cfg should also be generated to refer to that.
-

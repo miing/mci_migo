@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cd ~/{u1.src_dir}
-HOSTNAME={u1.address} DJANGO_SETTINGS_MODULE=u1servers.web.localsettings U1CONFIG=`pwd`/configs/local.conf make start

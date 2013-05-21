@@ -1,4 +1,0 @@
-#!/bin/sh
-# For an unclear reason (probably a transient raring issue) we need to
-# dist-upgrade instead of just upgrade
-apt-get dist-upgrade -y

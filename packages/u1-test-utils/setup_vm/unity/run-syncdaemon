@@ -1,4 +1,0 @@
-#!/bin/sh -ex
-
-/usr/lib/ubuntuone-client/ubuntuone-syncdaemon --disable_ssl_verify  --dns_srv=None --host={filesync.address} &
-u1sdtool --connect

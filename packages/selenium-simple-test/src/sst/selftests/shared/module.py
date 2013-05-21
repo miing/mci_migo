@@ -1,2 +1,0 @@
-def truthiness():
-    return True
