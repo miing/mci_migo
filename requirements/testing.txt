@@ -28,6 +28,6 @@ zope.event==4.0.0
 zope.interface==4.0.1
 zope.schema==4.2.0
 zope.testbrowser==3.5.1
-packages/selenium-simple-test
-packages/u1-test-utils
-packages/test-email-server
+git+git://github.com/miing/mci_migo_packages_selenium-simple-test.git
+git+git://github.com/miing/mci_migo_packages_u1-test-utils.git
+git+git://github.com/miing/mci_migo_packages_test-email-server.git
