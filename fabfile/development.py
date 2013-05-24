@@ -22,7 +22,7 @@ from urlparse import urlparse
 from fabric.api import settings
 
 from .environment import bootstrap, virtualenv_local
-from .dbengine import setup_pgsql_database drop_pgsql_database
+from .dbengine import setup_pgsql_database, drop_pgsql_database
 from .django import get_django_settings, manage, syncdb
 
 
