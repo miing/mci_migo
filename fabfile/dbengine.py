@@ -21,7 +21,7 @@ from .postgresql import (
 	pgsql_createdb,
 	pgsql_dropuser,
 )
-from .django import syncdb grantuser
+from .django import syncdb, grantuser
 
 
 def setup_pgsql_database():
