@@ -15,7 +15,12 @@
 ###################################################################
 
 
-from .postgresql import pgsql_*
+from .postgresql import (
+	pgsql_createuser,
+	pgsql_dropdb,
+	pgsql_createdb,
+	pgsql_dropuser,
+)
 from .django import syncdb grantuser
 
 
