@@ -17,6 +17,9 @@
 ###################################################################
 
 
+import os
+import sys
+
 import paths
 paths.setup_paths()
 
