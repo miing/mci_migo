@@ -33,7 +33,6 @@ raven==1.4.6
 saml2idp==0.18
 South==0.7.6
 statsd==1.0.0
-gargoyle==0.10.7
 nexus==0.2.3
 convoy==0.2.4
 
@@ -43,3 +42,6 @@ git+git://github.com/miing/mci_migo_packages_configglue.git
 git+git://github.com/miing/mci_migo_packages_django-configglue.git
 git+git://github.com/miing/mci_migo_packages_django-oauth-backend.git
 git+git://github.com/miing/mci_migo_packages_ssoclient.git
+
+# Upstream dependencies
+git+git://github.com/miing/mci_migo_packages_gargoyle

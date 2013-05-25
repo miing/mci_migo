@@ -86,10 +86,7 @@ def syncdb():
 
 	If south is listed in INSTALLED_APPS syncdb runs with --migrate.
 	"""
-	django_settings = get_django_settings('DATABASES')
-	database = django_settings['DATABASES']['default']
-	args = ['--noinput', '--django_database_user=%s' % database['USER'],
-        '--django_database_password=%s' % database['PASSWORD']]    
+	args = []
 	django_settings = get_django_settings('INSTALLED_APPS')
 	if 'south' in django_settings['INSTALLED_APPS']:
 		args.append('--migrate')
