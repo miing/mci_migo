@@ -1,6 +1,6 @@
 Django==1.5.1
 django-adminaudit==0.3.3
-django-jsonfield==0.9.4
+django-jsonfield==0.8.11
 django-openid-auth==0.5
 django-piston==0.2.3
 django-preflight==0.1.4
